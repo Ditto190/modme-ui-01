@@ -66,8 +66,9 @@ check_item "Python 3 installed" "command -v python3"
 if command -v python3 &> /dev/null; then
     PYTHON_VERSION=$(python3 --version)
     echo "   Version: $PYTHON_VERSION"
-    PYTHON_MINOR=$(python3 --version | cut -d. -f2)
-    if [ "$PYTHON_MINOR" -ge 12 ]; then
+    PYTHON_MAJOR=$(python3 --version | awk '{print $2}' | cut -d. -f1)
+    PYTHON_MINOR=$(python3 --version | awk '{print $2}' | cut -d. -f2)
+    if [ "$PYTHON_MAJOR" -eq 3 ] && [ "$PYTHON_MINOR" -ge 12 ]; then
         echo -e "   ${GREEN}✅${NC} Version is compatible (>= 3.12)"
     else
         echo -e "   ${YELLOW}⚠️${NC}  Version should be >= 3.12"
