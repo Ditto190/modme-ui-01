@@ -47,8 +47,7 @@ WORKDIR /workspaces
 # Switch back to root for final setup
 USER root
 
-# Install uv for all users
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+# Make uv available system-wide for all users
 RUN cp /root/.cargo/bin/uv /usr/local/bin/uv
 
 # Set the default user back to vscode
