@@ -1,0 +1,25 @@
+{
+    "name": "Universal Workbench",
+    "image": "mcr.microsoft.com/devcontainers/universal:2",
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "usernamehw.errorlens",
+                "esbenp.prettier-vscode",
+                "streetsidesoftware.code-spell-checker",
+                "christian-kohler.path-intellisense",
+                "formulahendry.code-runner",
+                "donjayamanne.githistory"
+            ],
+            "settings": {
+                "editor.formatOnSave": true,
+                "editor.defaultFormatter": "esbenp.prettier-vscode",
+                "files.autoSave": "afterDelay"
+            }
+        }
+    },
+    "postCreateCommand": "echo 'Welcome to your Universal Workbench!'"
+}
