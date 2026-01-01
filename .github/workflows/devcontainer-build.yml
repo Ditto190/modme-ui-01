@@ -1,0 +1,98 @@
+name: DevContainer Build and Validate
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+    paths:
+      - '.devcontainer/**'
+      - '.github/workflows/devcontainer-build.yml'
+  pull_request:
+    paths:
+      - '.devcontainer/**'
+      - '.github/workflows/devcontainer-build.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build DevContainer
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: ghcr.io/${{ github.repository }}/devcontainer
+          cacheFrom: ghcr.io/${{ github.repository }}/devcontainer
+          push: never
+          runCmd: |
+            echo "Testing devcontainer environment..."
+            node --version
+            python3 --version
+            npm --version
+            uv --version || echo "UV not found, using pip"
+            git --version
+            gh --version
+
+      - name: Test Node.js environment
+        uses: devcontainers/ci@v0.3
+        with:
+          runCmd: |
+            echo "Verifying Node.js version..."
+            node --version | grep -q "v22" || exit 1
+            echo "Node.js version check passed"
+
+      - name: Test Python environment
+        uses: devcontainers/ci@v0.3
+        with:
+          runCmd: |
+            echo "Verifying Python version..."
+            python3 --version | grep -q "3.12" || exit 1
+            echo "Python version check passed"
+
+      - name: Test workspace setup
+        uses: devcontainers/ci@v0.3
+        with:
+          runCmd: |
+            echo "Testing workspace directory structure..."
+            ls -la
+            echo "Checking for key files..."
+            test -f package.json || exit 1
+            test -f agent/pyproject.toml || exit 1
+            echo "Workspace structure validated"
+
+  health-check:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run health check in devcontainer
+        uses: devcontainers/ci@v0.3
+        with:
+          runCmd: |
+            # Check if post-create script ran successfully
+            echo "Running health checks..."
+            
+            # Check Node.js installation
+            which node || exit 1
+            
+            # Check Python installation
+            which python3 || exit 1
+            
+            # Check if npm is available
+            which npm || exit 1
+            
+            echo "All health checks passed!"

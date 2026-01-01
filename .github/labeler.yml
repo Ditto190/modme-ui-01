@@ -1,0 +1,27 @@
+# This workflow will triage pull requests and apply a label based on the
+# paths that are modified in the pull request.
+#
+# To use this workflow, you will need to set up a .github/labeler.yml
+# file with configuration.  For more information, see:
+# https://github.com/actions/labeler
+# .github/labeler.yml
+
+jobs:
+  - '. github/workflows/**'
+  - '. github/actions/**'
+
+documentation:
+  - '**/*.md'
+
+frontend:
+  - 'src/frontend/**'
+  - 'client/**'
+
+backend:
+  - 'src/backend/**'
+  - 'server/**'
+
+tests:
+  - '**/*.test.js'
+  - '**/*.spec.js'
+  - 'tests/**'
