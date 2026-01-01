@@ -62,7 +62,7 @@ try {
         $pythonMajor = [int]$versionParts[0]
         $pythonMinor = [int]$versionParts[1]
 
-        if (($pythonMajor -lt 3) -or (($pythonMajor -eq 3) -and ($pythonMinor -lt 12))) {
+        if (($pythonMajor -ne 3) -or ($pythonMinor -lt 12)) {
             Print-Warning "Python version should be 3.12 or higher"
             Print-Warning "Current version: $pythonVersion"
         }
