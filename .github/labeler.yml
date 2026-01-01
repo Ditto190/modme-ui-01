@@ -4,19 +4,24 @@
 # To use this workflow, you will need to set up a .github/labeler.yml
 # file with configuration.  For more information, see:
 # https://github.com/actions/labeler
-
-name: Labeler
-on: [pull_request_target]
+# .github/labeler.yml
 
 jobs:
-  label:
+  - '. github/workflows/**'
+  - '. github/actions/**'
 
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
+documentation:
+  - '**/*.md'
 
-    steps:
-    - uses: actions/labeler@v4
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+frontend:
+  - 'src/frontend/**'
+  - 'client/**'
+
+backend:
+  - 'src/backend/**'
+  - 'server/**'
+
+tests:
+  - '**/*.test.js'
+  - '**/*.spec.js'
+  - 'tests/**'
