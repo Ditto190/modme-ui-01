@@ -55,11 +55,20 @@ try {
     $pythonVersion = python --version
     Print-Success "$pythonVersion found"
     
-    # Check if version is >= 3.12
-    $pythonMinor = [int](($pythonVersion -split '\.')[1])
-    if ($pythonMinor -lt 12) {
-        Print-Warning "Python version should be 3.12 or higher"
-        Print-Warning "Current version: $pythonVersion"
+    # Check if version is >= 3.12 (major == 3 and minor >= 12)
+    $versionString = $pythonVersion -replace '^Python\s+', ''
+    $versionParts = $versionString -split '\.'
+    if ($versionParts.Length -ge 2) {
+        $pythonMajor = [int]$versionParts[0]
+        $pythonMinor = [int]$versionParts[1]
+
+        if (($pythonMajor -ne 3) -or ($pythonMinor -lt 12)) {
+            Print-Warning "Python version should be 3.12 or higher"
+            Print-Warning "Current version: $pythonVersion"
+        }
+    } else {
+        Print-Warning "Unable to parse Python version from: $pythonVersion"
+        Print-Warning "Please ensure Python 3.12 or higher is installed."
     }
 } catch {
     Print-Error "Python not found!"
