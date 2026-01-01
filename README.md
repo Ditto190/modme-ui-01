@@ -192,8 +192,8 @@ The following scripts can also be run using your preferred package manager:
 
 For detailed information, see:
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Development workflow and guidelines
-- [Architecture Overview](.copilot/knowledge/architecture.md) - System architecture
-- [GenUI Development](.copilot/instructions/genui-development.md) - GenUI patterns and practices
+- [Architecture Overview](.copilot/knowledge/architecture.md) - System architecture *(new in this workspace; may not exist on older branches)*
+- [GenUI Development](.copilot/instructions/genui-development.md) - GenUI patterns and practices *(new in this workspace; may not exist on older branches)*
 - [ADK Documentation](https://google.github.io/adk-docs/) - Google ADK features
 - [CopilotKit Documentation](https://docs.copilotkit.ai) - Explore CopilotKit's capabilities
 - [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API
