@@ -34,7 +34,7 @@ npm run dev
 
 ## 📋 Prerequisites
 
-- Node.js 18+ (22.9.0+ recommended for full compatibility)
+- Node.js 22.9.0+ (required; earlier versions may cause EBADENGINE warnings and compatibility issues)
   - We recommend using [nvm](https://github.com/nvm-sh/nvm) (Unix/macOS) or [nvm-windows](https://github.com/coreybutler/nvm-windows) (Windows) to manage Node.js versions
 - Python 3.12+
 - Google Makersuite API Key (for the ADK agent) (see https://makersuite.google.com/app/apikey)
