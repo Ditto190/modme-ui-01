@@ -56,10 +56,29 @@ jobs:
         run: |
           pip install pip-audit
           echo "### 🐍 Python Dependency Status" >> "$GITHUB_STEP_SUMMARY"
-          if pip-audit --desc >> "$GITHUB_STEP_SUMMARY"; then
-            echo "pip-audit completed successfully." >> "$GITHUB_STEP_SUMMARY"
+          
+          # Run pip-audit and capture output in JSON format
+          pip-audit --format json --desc > pip-audit.json
+          pip_audit_status=$?
+          
+          if [ -s pip-audit.json ]; then
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat pip-audit.json >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "pip-audit encountered issues (see above). Continuing workflow without failing the job." >> "$GITHUB_STEP_SUMMARY"
+            echo "pip-audit did not produce output; results may be incomplete." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          
+          # If pip-audit ran and reported critical vulnerabilities, fail the job
+          if [ -s pip-audit.json ] && grep -q '"severity": "CRITICAL"' pip-audit.json; then
+            echo "❌ Critical Python dependency vulnerabilities found. Failing job." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          else
+            if [ "$pip_audit_status" -ne 0 ]; then
+              echo "pip-audit completed with non-zero exit code ($pip_audit_status) but no critical vulnerabilities were detected in the output." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "✅ No critical Python dependency vulnerabilities found." >> "$GITHUB_STEP_SUMMARY"
+            fi
           fi
 
       - name: Upload outdated packages report
