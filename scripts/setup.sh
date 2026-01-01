@@ -63,8 +63,10 @@ if command -v python3 &> /dev/null; then
     print_success "$PYTHON_VERSION found"
     
     # Check if version is >= 3.12
-    PYTHON_MINOR=$(python3 --version | cut -d. -f2)
-    if [ "$PYTHON_MINOR" -lt 12 ]; then
+    PYTHON_NUMERIC_VERSION=$(python3 --version | awk '{print $2}')
+    PYTHON_MAJOR=$(echo "$PYTHON_NUMERIC_VERSION" | cut -d. -f1)
+    PYTHON_MINOR=$(echo "$PYTHON_NUMERIC_VERSION" | cut -d. -f2)
+    if [ "$PYTHON_MAJOR" -lt 3 ] || { [ "$PYTHON_MAJOR" -eq 3 ] && [ "$PYTHON_MINOR" -lt 12 ]; }; then
         print_warning "Python version should be 3.12 or higher"
         print_warning "Current version: $PYTHON_VERSION"
     fi
