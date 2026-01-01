@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -52,3 +53,14 @@ bun.lockb
 agent/venv/
 agent/__pycache__/
 agent/.venv/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.Python
+
+# data directory (local client data)
+/data/
+
+# DevContainer
+.devcontainer/.env
