@@ -1,8 +1,38 @@
-# CopilotKit <> ADK Starter
+# ModMe GenUI Workspace
 
-This is a starter template for building AI agents using Google's [ADK](https://google.github.io/adk-docs/) and [CopilotKit](https://copilotkit.ai). It provides a modern Next.js application with an integrated investment analyst agent that can research stocks, analyze market data, and provide investment insights.
+A **Generative UI (GenUI) R&D laboratory** combining Next.js 16, React 19, and Python ADK for building dynamic, AI-generated interfaces.
 
-## Prerequisites
+[![DevContainer](https://img.shields.io/badge/DevContainer-Ready-blue?logo=docker)](https://github.com/Ditto190/modme-ui-01/tree/main/.devcontainer)
+[![CI](https://github.com/Ditto190/modme-ui-01/workflows/CI/badge.svg)](https://github.com/Ditto190/modme-ui-01/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## 🚀 Quick Start
+
+### Option 1: GitHub Codespaces (Recommended)
+1. Click **Code** → **Codespaces** → **Create codespace**
+2. Wait for setup to complete (~3-5 minutes)
+3. Run `npm run dev` to start both servers
+4. Access UI at forwarded port 3000
+
+### Option 2: DevContainer (Local)
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+2. Install [VS Code](https://code.visualstudio.com/) with [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+3. Clone and open in VS Code
+4. Click **Reopen in Container** when prompted
+5. Run `npm run dev` after setup completes
+
+### Option 3: Local Setup
+```bash
+# Quick setup script
+./scripts/setup.sh  # Linux/macOS
+# or
+.\scripts\setup.ps1  # Windows
+
+# Start development servers
+npm run dev
+```
+
+## 📋 Prerequisites
 
 - Node.js 18+ (22.9.0+ recommended for full compatibility)
   - We recommend using [nvm](https://github.com/nvm-sh/nvm) (Unix/macOS) or [nvm-windows](https://github.com/coreybutler/nvm-windows) (Windows) to manage Node.js versions
@@ -18,7 +48,11 @@ This is a starter template for building AI agents using Google's [ADK](https://g
 
 ## Getting Started
 
-### 1. Set up Node.js with nvm (Recommended)
+> **💡 Tip**: For the easiest setup, use **GitHub Codespaces** or **DevContainer** (see Quick Start above). Everything is pre-configured!
+
+### Manual Setup
+
+#### 1. Set up Node.js with nvm (Recommended)
 
 If you're using nvm, install and activate the recommended Node.js version:
 
@@ -33,9 +67,24 @@ nvm use 22.9.0
 node --version  # Should output v22.9.0
 ```
 
-### 2. Install Dependencies
+#### 2. Run Setup Script
+```bash
+# Automated setup (recommended)
+./scripts/setup.sh  # Linux/macOS
+# or
+.\scripts\setup.ps1  # Windows PowerShell
 
-Install dependencies using your preferred package manager:
+# This will:
+# - Check Node.js and Python versions
+# - Install Node.js dependencies
+# - Set up Python virtual environment
+# - Install agent dependencies with uv (or pip)
+# - Create .env from .env.example
+```
+
+#### 3. Manual Installation (Alternative)
+
+Install dependencies manually if you prefer:
 ```bash
 # Using pnpm (recommended)
 pnpm install
@@ -50,8 +99,7 @@ yarn install
 bun install
 ```
 
-### 3. Install Python Dependencies for the ADK Agent
-
+**Install Python dependencies:**
 ```bash
 # Using pnpm
 pnpm install:agent
@@ -66,20 +114,22 @@ yarn install:agent
 bun run install:agent
 ```
 
-> **Note:** This will automatically setup a `.venv` (virtual environment) inside the `agent` directory.
->
-> To activate the virtual environment manually, you can run:
-> ```bash
-> source agent/.venv/bin/activate
-> ```
+#### 4. Set Up Your Google API Key
 
-### 4. Set Up Your Google API Key
-
+Create a `.env` file (or copy from `.env.example`):
 ```bash
-export GOOGLE_API_KEY="your-google-api-key-here"
+cp .env.example .env
 ```
 
-### 5. Start the Development Server
+Then add your Google API key:
+```bash
+export GOOGLE_API_KEY="your-google-api-key-here"
+# Or add to .env file: GOOGLE_API_KEY=your-google-api-key-here
+```
+
+Get your API key from [Google AI Studio](https://makersuite.google.com/app/apikey).
+
+#### 5. Start the Development Server
 
 ```bash
 # Using pnpm
@@ -97,6 +147,36 @@ bun run dev
 
 This will start both the UI and agent servers concurrently.
 
+## 🐳 DevContainer Features
+
+This workspace includes a full DevContainer setup for portable, consistent development:
+
+### What's Included
+- ✅ **Multi-runtime support**: Node.js 22.9.0+ and Python 3.12+
+- ✅ **Package managers**: npm, nvm, uv (Python)
+- ✅ **VS Code extensions**: Pre-installed and configured
+- ✅ **Port forwarding**: Automatic for UI (3000) and Agent (8000)
+- ✅ **Auto-setup**: Dependencies installed on container creation
+- ✅ **GitHub CLI**: For managing issues, PRs, and workflows
+
+### DevContainer Commands
+```bash
+# Health check your workspace
+./scripts/health-check.sh
+
+# Start development servers
+./scripts/start-dev.sh
+
+# Manual setup (if needed)
+./scripts/setup.sh
+```
+
+### Workspace File
+Open `workspace.code-workspace` in VS Code for a multi-root workspace with:
+- Separate folders for Frontend, Agent, Scripts, and Prompts
+- Pre-configured debugging for both Node.js and Python
+- Integrated tasks for common operations
+
 ## Available Scripts
 The following scripts can also be run using your preferred package manager:
 - `dev` - Starts both UI and agent servers in development mode
@@ -108,23 +188,34 @@ The following scripts can also be run using your preferred package manager:
 - `lint` - Runs ESLint for code linting
 - `install:agent` - Installs Python dependencies for the agent
 
-## Documentation
-
-The main UI component is in `src/app/page.tsx`. You can:
-- Modify the theme colors and styling
-- Add new frontend actions
-- Customize the CopilotKit sidebar appearance
-
 ## 📚 Documentation
 
-- [ADK Documentation](https://google.github.io/adk-docs/) - Learn more about the ADK and its features
+For detailed information, see:
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Development workflow and guidelines
+- [Architecture Overview](.copilot/knowledge/architecture.md) - System architecture
+- [GenUI Development](.copilot/instructions/genui-development.md) - GenUI patterns and practices
+- [ADK Documentation](https://google.github.io/adk-docs/) - Google ADK features
 - [CopilotKit Documentation](https://docs.copilotkit.ai) - Explore CopilotKit's capabilities
 - [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API
 
+## 🔒 Privacy & Security
 
-## Contributing
+This workspace follows a **local-first, privacy-focused** approach:
+- Client data in `data/` directory never leaves your machine
+- All API keys stored in `.env` (git-ignored)
+- Agent processing happens locally or through configured endpoints
+- Sandboxed execution for generated code
 
-Feel free to submit issues and enhancement requests! This starter is designed to be easily extensible.
+## 🤝 Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- DevContainer setup instructions
+- Development workflow
+- Code standards and conventions
+- Testing guidelines
+- Pull request process
+
+Feel free to submit issues and enhancement requests!
 
 ## License
 
