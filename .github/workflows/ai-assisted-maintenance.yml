@@ -55,8 +55,12 @@ jobs:
         working-directory: ./agent
         run: |
           pip install pip-audit
-          echo "### 🐍 Python Dependency Status" >> $GITHUB_STEP_SUMMARY
-          pip-audit --desc >> $GITHUB_STEP_SUMMARY || true
+          echo "### 🐍 Python Dependency Status" >> "$GITHUB_STEP_SUMMARY"
+          if pip-audit --desc >> "$GITHUB_STEP_SUMMARY"; then
+            echo "pip-audit completed successfully." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "pip-audit encountered issues (see above). Continuing workflow without failing the job." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Upload outdated packages report
         if: steps.npm-outdated.outputs.has_updates == 'true'
