@@ -1,0 +1,24 @@
+# This is a template configuration for GenAI Toolbox
+# Documentation: https://googleapis.github.io/genai-toolbox/getting-started/configure/
+
+sources:
+  # Example PostgreSQL source
+  # my-db:
+  #   kind: postgres
+  #   host: localhost
+  #   port: 5432
+  #   database: my_database
+  #   user: ${DB_USER}
+  #   password: ${DB_PASSWORD}
+
+tools:
+  # Example tool definition
+  # search_users:
+  #   kind: postgres-sql
+  #   source: my-db
+  #   description: "Search for users by name."
+  #   parameters:
+  #     - name: name
+  #       type: string
+  #       description: "The name of the user."
+  #   statement: "SELECT * FROM users WHERE name ILIKE '%' || $1 || '%';"

@@ -1,0 +1,74 @@
+# {{name}}
+
+**ID**: `{{id}}`  
+{{#if metadata.status}}
+**Status**: {{#if (eq metadata.status "active")}}🟢{{/if}}{{#if (eq metadata.status "deprecated")}}🔴{{/if}}{{#if (eq metadata.status "experimental")}}🟡{{/if}}{{#if (eq metadata.status "beta")}}🟠{{/if}} {{metadata.status}}  
+{{/if}}
+{{#if metadata.category}}
+**Category**: {{metadata.category}}  
+{{/if}}
+{{#if metadata.version}}
+**Version**: {{metadata.version}}  
+{{/if}}
+{{#if metadata.authors}}
+**Authors**: {{metadata.authors}}  
+{{/if}}
+{{#if metadata.created}}
+**Created**: {{metadata.created}}  
+{{/if}}
+{{#if metadata.last_modified}}
+**Last Modified**: {{metadata.last_modified}}  
+{{/if}}
+
+## Description
+
+{{description}}
+
+{{#if metadata.deprecated}}
+---
+
+⚠️ **DEPRECATED**
+
+This toolset has been deprecated.
+
+- **Deprecated Since**: {{metadata.deprecated.deprecated_since}}
+- **Removal Date**: {{metadata.deprecated.removal_date}}
+- **Superseded By**: {{metadata.deprecated.superseded_by}}
+- **Reason**: {{metadata.deprecated.reason}}
+{{#if metadata.deprecated.migration_guide}}
+- **Migration Guide**: [{{metadata.deprecated.migration_guide}}]({{metadata.deprecated.migration_guide}})
+{{/if}}
+
+---
+{{/if}}
+
+## Tools
+
+{{#each tools}}
+- `{{this}}`
+{{/each}}
+
+{{#if metadata.requires}}
+{{#if metadata.requires.length}}
+## Dependencies
+
+This toolset requires:
+{{#each metadata.requires}}
+- [`{{this}}`]({{this}}.md)
+{{/each}}
+{{/if}}
+{{/if}}
+
+{{#if metadata.related_toolsets}}
+{{#if metadata.related_toolsets.length}}
+## Related Toolsets
+
+{{#each metadata.related_toolsets}}
+- [`{{this}}`]({{this}}.md)
+{{/each}}
+{{/if}}
+{{/if}}
+
+---
+
+*Auto-generated from [agent/toolsets.json](../../agent/toolsets.json)*
