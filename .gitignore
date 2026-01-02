@@ -49,6 +49,14 @@ yarn.lock
 pnpm-lock.yaml
 bun.lockb
 
+# knowledge management generated files
+/docs/toolsets/*.md
+/docs/toolsets/*.mmd
+/docs/toolsets/*.svg
+/docs/toolsets/*.png
+/docs/toolsets/*.pdf
+.ripgrep-cache/
+
 # python
 agent/venv/
 agent/__pycache__/

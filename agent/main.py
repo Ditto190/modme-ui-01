@@ -125,6 +125,38 @@ adk_agent = ADKAgent(
 app = FastAPI(title="GenUI Workbench Agent")
 add_adk_fastapi_endpoint(app, adk_agent, path="/")
 
+# Health check endpoints
+@app.get("/health")
+async def health_check():
+    """Basic liveness check for the agent."""
+    return {
+        "status": "healthy",
+        "service": "GenUI Workbench Agent",
+        "version": "1.0.0"
+    }
+
+@app.get("/ready")
+async def readiness_check():
+    """Readiness check - ensure all dependencies are loaded."""
+    try:
+        # Check if toolsets are loaded
+        from toolset_manager import toolset_manager
+        toolsets = toolset_manager.list_available_toolsets()
+        
+        return {
+            "status": "ready",
+            "dependencies": {
+                "toolsets_loaded": len(toolsets) > 0,
+                "toolset_count": len(toolsets),
+                "toolsets": toolsets
+            }
+        }
+    except Exception as e:
+        return {
+            "status": "not_ready",
+            "error": str(e)
+        }
+
 if __name__ == "__main__":
     import os
     import uvicorn

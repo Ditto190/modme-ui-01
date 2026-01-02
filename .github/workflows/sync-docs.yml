@@ -1,0 +1,163 @@
+name: Sync Documentation
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'docs/toolsets/**/*.md'
+      - 'agent/toolsets.json'
+      - 'agent/toolset-schema.json'
+      - 'templates/**/*.hbs'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'docs/toolsets/**/*.md'
+      - 'agent/toolsets.json'
+      - 'agent/toolset-schema.json'
+      - 'templates/**/*.hbs'
+  workflow_dispatch:
+    inputs:
+      direction:
+        description: 'Sync direction'
+        required: true
+        default: 'json-to-md'
+        type: choice
+        options:
+          - json-to-md
+          - md-to-json
+          - both
+
+jobs:
+  validate:
+    name: Validate Toolsets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.9.0'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Validate toolsets
+        run: node scripts/knowledge-management/sync-docs.js --validate-only --verbose
+
+  sync-md-to-json:
+    name: Sync Markdown to JSON
+    needs: validate
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' && 
+      (contains(github.event.head_commit.modified, 'docs/toolsets/') ||
+       contains(github.event.head_commit.added, 'docs/toolsets/') ||
+       github.event.inputs.direction == 'md-to-json' ||
+       github.event.inputs.direction == 'both')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.9.0'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Sync markdown to JSON
+        run: node scripts/knowledge-management/sync-docs.js --direction md-to-json --verbose
+      
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code agent/toolsets.json || echo "changed=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit changes
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add agent/toolsets.json
+          git commit -m "docs: sync markdown to JSON [skip ci]"
+          git push
+
+  sync-json-to-md:
+    name: Sync JSON to Markdown
+    needs: validate
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' && 
+      (contains(github.event.head_commit.modified, 'agent/toolsets.json') ||
+       contains(github.event.head_commit.modified, 'templates/') ||
+       github.event.inputs.direction == 'json-to-md' ||
+       github.event.inputs.direction == 'both')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.9.0'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Sync JSON to markdown
+        run: node scripts/knowledge-management/sync-docs.js --direction json-to-md --verbose
+      
+      - name: Generate diagram
+        run: node scripts/knowledge-management/generate-diagram.js --format svg --verbose
+      
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code docs/toolsets/ || echo "changed=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit changes
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/toolsets/
+          git commit -m "docs: sync JSON to markdown [skip ci]"
+          git push
+
+  generate-diagram:
+    name: Generate Toolset Diagram
+    needs: sync-json-to-md
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.9.0'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Generate diagram
+        run: node scripts/knowledge-management/generate-diagram.js --format svg --verbose
+      
+      - name: Upload diagram artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: toolset-diagram
+          path: docs/toolsets/toolset-relationships.svg
+          retention-days: 90
