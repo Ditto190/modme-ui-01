@@ -15,5 +15,5 @@ def TOOL_NAME(tool_context: ToolContext, PARAM_NAME: PARAM_TYPE) -> Dict[str, st
     
     return {
         "status": "success",
-        "message": f"TOOL_NAME executed successfully"
+        "message": "TOOL_NAME executed successfully"
     }

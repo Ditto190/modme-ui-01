@@ -1,369 +1,721 @@
-# Copilot Instructions — ModMe GenUI Workbench
+# ModMe GenUI Workbench - AI Agent Instructions
 
-## Project Purpose
+## Purpose
 
-A **Generative UI workbench** where a Python ADK agent dynamically creates React dashboards through natural language. The agent maintains a canvas of UI elements (StatCards, DataTables, ChartCards) that it can add, update, or remove via tools—no hardcoded screens.
-
-**Key Insight**: The agent doesn't render UI directly; it manipulates a shared state (`elements: UIElement[]`) that the React frontend observes and renders via a component registry.
+This is a **Generative UI (GenUI) R&D laboratory** where a Python ADK agent generates React UI components through natural language. The system uses a dual-runtime architecture with one-way state synchronization.
 
 ## Architecture Overview
 
 ### Dual-Runtime Communication Flow
 
 ```
-User Chat → CopilotKit Runtime → HttpAgent → Python ADK (localhost:8000)
-                                            ↓
-                                    Agent updates state.elements[]
-                                            ↓
-          React useCoAgent hook ← State synced back ← Python tool_context.state
-                                            ↓
-                          Components rendered from registry
+Python Agent (localhost:8000)          React UI (localhost:3000)
+      │                                         │
+      │ writes to tool_context.state           │ reads via useCoAgent
+      ├─[upsert_ui_element]──────────────────> │
+      ├─[remove_ui_element]───────────────────> │
+      └─[clear_canvas]────────────────────────> │
+                                                 │
+                                                 └─> GenerativeCanvas renders
 ```
 
-**Critical Files**:
+**Key Point**: State flows ONE WAY: Python writes → React reads. React never writes back to agent state.
 
-- `src/app/api/copilotkit/route.ts` — CopilotKit → ADK bridge via HttpAgent
-- `agent/main.py` — Agent with tools: `upsert_ui_element`, `remove_ui_element`, `clear_canvas`
-- `src/app/page.tsx` — Frontend uses `useCoAgent<AgentState>` to sync state
-- `src/lib/types.ts` — Shared TypeScript types: `UIElement`, `AgentState`
+### Critical Dependencies
 
-Key files and patterns
+- **Node.js**: 22.9.0+ required (earlier versions cause EBADENGINE errors)
+  - Use `nvm` or `nvm-windows` to manage versions
+  - Verify: `node --version` should show v22.9.0+
+- **Python**: 3.12+ with `uv` or `pip` for dependency management
+- **Google API Key**: Required for ADK agent (https://makersuite.google.com/app/apikey)
 
-- State contract: `AgentState = { elements: UIElement[] }` — see [src/lib/types.ts].
-- Component registry: add/modify components under [src/components/registry/].
-- Agent tools: `upsert_ui_element`, `remove_ui_element`, `clear_canvas` live in [agent/main.py].
-- Rendering: `page.tsx` maps `elements[].type` → registry component (StatCard, DataTable, ChartCard).
+### State Contract
 
-Developer workflows (how to run & test)
-
-- Start both runtimes (recommended): `npm run dev` — starts UI:3000 + Agent:8000.
-- Or start individually: `npm run dev:ui` and `npm run dev:agent` (see `package.json` scripts).
-- Node requirement: Node 22.9.0+; Python: 3.12+ for the agent.
-- Environment: copy `.env.example` → `.env` and set `GOOGLE_API_KEY` if using Google/Gemini models.
-
-Agent + component change flow (how to make edits that agents will use)
-
-- To add a new UI component:
-  1. Create component file in `src/components/registry/` (export props type).
-  2. Update `src/lib/types.ts` if you add props to `UIElement` types.
-  3. Add a rendering case in `src/app/page.tsx` to return the component.
-  4. Teach the Python agent by updating the agent system instructions in `agent/main.py`.
-- To change agent tools: edit the tool function in `agent/main.py`. Tools modify `tool_context.state` (Python → React one-way).
-
-Examples
-
-- Agent writes a StatCard (pseudo-tool call):
-
-  upsert_ui_element(id="kpi-1", type="StatCard", props={"title":"Sales","value":12345})
-
-  After this call React will render a `StatCard` with `id=kpi-1`.
-
-Repo-specific conventions
-
-- Use `elements` array as the canonical single source of truth; do not try to mutate frontend state from Python other than replacing `tool_context.state["elements"]`.
-- Component type names are literal strings (e.g., "StatCard") and must match names in the registry.
-- Keep tools' docstrings descriptive — they become the LLM-visible tool descriptions.
-
-Where to look for more context
-
-- Agent logic and system prompts: [agent/main.py]
-- Frontend rendering & state hookup: [src/app/page.tsx] and [src/app/api/copilotkit/route.ts]
-- Shared types: [src/lib/types.ts]
-- Existing components: [src/components/registry/StatCard.tsx], [DataTable.tsx], [ChartCard.tsx]
-
-What agents should NOT do
-
-- Do not hardcode API keys or client secrets into source files—use `.env` and `src/utils/config`.
-- Do not assume two-way reactive sync: Python writes → React reads. There is no built-in React→Python state write path.
-
-If unclear or missing
-
-- Ask a human: point to the file you want to modify and whether the change is frontend, backend (agent), or both.
-
-Next step for you
-
-- Tell me if you want me to run dev servers, update an example tool, or add a sample component+agent tool pair.
-
-# Copilot Instructions - ModifyMe GenUI Workspace
-
-## What This Project Does
-
-A **Generative UI workbench** where a Python ADK agent dynamically creates React dashboards through natural language. The agent maintains a canvas of UI elements (StatCards, DataTables, ChartCards) that it can add, update, or remove via tools—no hardcoded screens.
-
-**Key Insight**: The agent doesn't render UI directly; it manipulates a shared state (`elements: UIElement[]`) that the React frontend observes and renders via a component registry.
-
----
-
-## Architecture Overview
-
-### Dual-Runtime Communication Flow
-
-```
-User Chat → CopilotKit Runtime → HttpAgent → Python ADK (localhost:8000)
-                                            ↓
-                                    Agent updates state.elements[]
-                                            ↓
-          React useCoAgent hook ← State synced back ← Python callback_context.state
-                                            ↓
-                          Components rendered from registry
-```
-
-**Critical Files**:
-
-- [src/app/api/copilotkit/route.ts](src/app/api/copilotkit/route.ts) — CopilotKit → ADK bridge via HttpAgent
-- [agent/main.py](agent/main.py) — Agent with tools: `upsert_ui_element`, `remove_ui_element`, `clear_canvas`
-- [src/app/page.tsx](src/app/page.tsx) — Frontend uses `useCoAgent<AgentState>` to sync state
-- [src/lib/types.ts](src/lib/types.ts) — Shared TypeScript types: `UIElement`, `AgentState`
-
-### The State Contract
-
-Both Python and TypeScript agree on this shape:
-
-```typescript
-type AgentState = {
-  elements: UIElement[]; // Array of {id, type, props}
-};
-```
-
-**Python side** ([agent/main.py#L23-L39](agent/main.py#L23-L39)):
+**Python Side** ([agent/main.py](../agent/main.py)):
 
 ```python
-def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict[str, Any]):
-    elements = tool_context.state.get("elements", [])
-    elements.append({"id": id, "type": type, "props": props})
-    tool_context.state["elements"] = elements
+tool_context.state["elements"] = [
+    {"id": "revenue", "type": "StatCard", "props": {...}},
+    {"id": "users", "type": "DataTable", "props": {...}}
+]
 ```
 
-**React side** ([src/app/page.tsx#L72-L76](src/app/page.tsx#L72-L76)):
+**TypeScript Side** ([src/lib/types.ts](../src/lib/types.ts)):
 
-```tsx
-const { state } = useCoAgent<AgentState>({ name: "WorkbenchAgent" });
-state.elements.map((el) => renderElement(el));
+```typescript
+type AgentState = { elements: UIElement[] };
+type UIElement = { id: string; type: string; props: any };
 ```
+
+**Critical**: Keys must match exactly between Python dicts and TypeScript interfaces. Python uses snake_case internally, but exports match TypeScript camelCase expectations.
 
 ---
 
 ## Development Workflow
 
-### Starting Both Runtimes
+### Starting the System
 
 ```bash
-npm run dev  # Concurrently starts UI:3000 + Agent:8000
-# Or separately: npm run dev:ui, npm run dev:agent
+npm run dev                  # Starts both runtimes concurrently
+npm run dev:ui               # React only (localhost:3000)
+npm run dev:agent            # Python only (localhost:8000)
+npm run dev:debug            # With LOG_LEVEL=debug
 ```
 
-**Environment Prerequisites**:
+**Important**: Ensure `.env` file exists with `GOOGLE_API_KEY`. Copy from `.env.example` if missing.
 
-- Node.js 22.9.0+ (use `nvm use 22.9.0` — earlier versions break)
-- Python 3.12+ with `uv` (dependency manager)
-- Google API key in `.env`: `GOOGLE_API_KEY=your-key-here`
+### Environment Setup
 
-### Adding a New Component to the Registry
+```bash
+# Quick setup (Windows)
+.\scripts\setup.ps1
 
-1. Create the component in [src/components/registry/](src/components/registry/):
+# Quick setup (Unix/macOS)
+./scripts/setup.sh
+
+# Manual setup
+npm install                           # Node dependencies
+./scripts/setup-agent.sh             # Python venv + agent deps
+cp .env.example .env                 # Configure environment
+# Edit .env: Add GOOGLE_API_KEY
+```
+
+### Building & Linting
+
+```bash
+npm run build                # Build Next.js production bundle
+npm run lint                 # ESLint (TS) + Ruff (Python)
+npm run lint:fix             # Auto-fix issues
+npm run format               # Prettier + Ruff format
+npm run check                # Lint + format combined
+```
+
+### Adding New Components
+
+1. **Create React Component** in [src/components/registry/](../src/components/registry/)
+
+   - Export named component (e.g., `export function MyWidget({ ...props })`)
+   - Keep props simple and JSON-serializable
+
+2. **Register in Renderer** ([src/app/page.tsx](../src/app/page.tsx)):
+
    ```tsx
-   export function MyWidget({ title, data }: MyWidgetProps) { ... }
+   const renderElement = (el: UIElement) => {
+     switch (el.type) {
+       case "MyWidget": return <MyWidget key={el.id} {...el.props} />;
    ```
-2. Update [src/lib/types.ts](src/lib/types.ts) if needed
-3. Add rendering logic in [src/app/page.tsx#L84-L96](src/app/page.tsx#L84-L96):
-   ```tsx
-   case "MyWidget": return <MyWidget key={el.id} {...el.props} />;
+
+3. **Update Agent Instructions** ([agent/main.py](../agent/main.py)):
+   ```python
+   instruction="""
+   Available Components & Props:
+   4. MyWidget: { title, config, items }
+   """
    ```
-4. Update Python agent's system instructions in [agent/main.py#L69-L75](agent/main.py#L69-L75) to teach it about the new component type
 
 ### Modifying Agent Behavior
 
-**Two places control what the agent knows**:
+- **Tools**: Add functions decorated with `tool_context: ToolContext` parameter
+- **State Injection**: Modify `before_model_modifier()` to inject canvas state into system prompt
+- **Response Control**: Use `after_model_modifier()` to stop consecutive tool calls
 
-1. **System Instructions** ([agent/main.py#L69-L75](agent/main.py#L69-L75)):
-
-   - Injected via `before_model_modifier` callback
-   - Includes current canvas state and available component types
-   - Example: "Available Types: StatCard, DataTable, ChartCard"
-
-2. **Cognitive Layer Prompts** ([src/prompts/copilot/01_molecules.md](src/prompts/copilot/01_molecules.md)):
-   - Markdown files describing component APIs and usage patterns
-   - Currently not auto-loaded; reference when updating agent instructions
-
-**Tool Definition Pattern** ([agent/main.py#L23-L39](agent/main.py#L23-L39)):
+**Example Tool Pattern** (see [docs/REFACTORING_PATTERNS.md](../docs/REFACTORING_PATTERNS.md) Pattern 1):
 
 ```python
-def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict[str, Any]):
-    """Docstring becomes the tool description shown to LLM"""
-    # Modify tool_context.state to affect React
+def my_tool(tool_context: ToolContext, param: str) -> Dict[str, str]:
+    """
+    Tool description for agent instructions.
+
+    Args:
+        param: Description with type info
+
+    Returns:
+        Success/error dict with status and message
+    """
+    # 1. Validate inputs
+    if not param or not isinstance(param, str):
+        return {"status": "error", "message": "Invalid param"}
+
+    # 2. Get state safely
+    elements = tool_context.state.get("elements", [])
+
+    # 3. Perform operation
+    # ... your logic here ...
+
+    # 4. Update state
+    tool_context.state["elements"] = elements
+
+    # 5. Return structured response
+    return {"status": "success", "message": f"Operation completed"}
 ```
-
-### Testing Agent Changes
-
-1. Modify tool in `agent/main.py`
-2. Agent server auto-reloads (uvicorn watch mode via `scripts/run-agent.sh`)
-3. Open UI at `localhost:3000`, use chat sidebar
-4. Try suggestion: "Generate a sales KPI dashboard"
-5. Check DevTools Console for state changes from `useCoAgent`
-
----
 
 ## Component Registry Conventions
 
-**Current Components** ([src/components/registry/](src/components/registry/)):
-
-- **StatCard**: Single metric display (title, value, trend, trendDirection)
-- **DataTable**: Tabular data (columns, data arrays)
-- **ChartCard**: Visualization wrapper (chartType, data, config)
-
-**Adding Props**:
-
-- Define in component file with TypeScript types
-- Document in [src/prompts/copilot/01_molecules.md](src/prompts/copilot/01_molecules.md)
-- Update agent's system instructions to teach it the new prop schema
-
-**Rendering Pattern** ([src/app/page.tsx#L84-L96](src/app/page.tsx#L84-L96)):
+### Component Structure
 
 ```tsx
-const renderElement = (el: UIElement) => {
-  switch (el.type) {
-    case "StatCard":
-      return <StatCard key={el.id} {...el.props} />;
-    default:
-      return <div>Unknown: {el.type}</div>;
-  }
-};
+// StatCard.tsx (example)
+export function StatCard({
+  title,
+  value,
+  trend,
+  trendDirection,
+}: {
+  title: string;
+  value: string | number;
+  trend?: string;
+  trendDirection?: "up" | "down";
+}) {
+  return <div className="stat-card">...</div>;
+}
 ```
 
----
+### Naming Patterns
+
+- **File**: PascalCase (`StatCard.tsx`)
+- **Export**: Named export matching filename
+- **Type**: String literal in agent tools ("StatCard")
 
 ## Critical Conventions
 
-### State Synchronization
+### State Sync Pattern
 
-- **Python writes** to `tool_context.state` (mutable dict)
-- **React reads** via `useCoAgent` hook (immutable snapshot)
-- Changes flow one-way: Python → React (no React → Python state writes)
+```typescript
+// ✅ CORRECT: Read-only consumption
+const { state } = useCoAgent<AgentState>({ name: "WorkbenchAgent" });
+const elements = state?.elements || [];
 
-### Agent Lifecycle Hooks ([agent/main.py#L54-L100](agent/main.py#L54-L100))
-
-```python
-on_before_agent()           # Initialize state.elements = []
-before_model_modifier()     # Inject canvas state into system instructions
-after_model_modifier()      # Stop tool-calling loop if agent returns text
+// ❌ WRONG: Never mutate or setState
+setState((prev) => [...prev, newElement]); // DON'T DO THIS
 ```
 
-**Why `after_model_modifier`?** Prevents infinite tool-calling when agent is done building UI.
+### Tool Schema
 
-### Debugging
+```python
+# Agent expects: id (unique), type (component name), props (JSON dict)
+upsert_ui_element(tool_context,
+    id="revenue_stat",              # Snake_case recommended
+    type="StatCard",                # PascalCase matches component
+    props={"title": "Revenue", ...} # Camelcase matches React props
+)
+```
 
-- **Frontend**: Check React DevTools → Components → `YourMainContent` → `state.elements`
-- **Backend**: Add `print(tool_context.state)` in tools, watch terminal output
-- **Network**: Open DevTools Network tab, filter by `copilotkit`, inspect WebSocket frames
+### Theme System
 
-### Package Manager Flexibility
+- Global theme color controlled by `setThemeColor` frontend tool
+- CSS custom property: `--copilot-kit-primary-color`
+- Applied via CopilotKitCSSProperties on main element
 
-Lock files (`.gitignore`'d) — use any of: `npm`, `pnpm`, `yarn`, `bun`. Scripts work with all.
+## Debugging
 
----
+### Check Agent State
+
+```bash
+curl http://localhost:8000/health  # Basic health check
+curl http://localhost:8000/ready   # Readiness + toolset info
+```
+
+### Common Issues
+
+1. **Element not rendering**: Verify type string matches switch case exactly in [src/app/page.tsx](../src/app/page.tsx)
+2. **Props not showing**: Check JSON serialization - no functions, no circular refs
+3. **State not updating**: Ensure agent tool returns success dict with `{"status": "success"}`
+4. **Type errors**: State contract must match between Python dict and TypeScript interface
+5. **Node version errors**: Run `node --version` → should be v22.9.0+ (use nvm if not)
+6. **Python import errors**: Activate venv: `source agent/.venv/bin/activate` or `agent\.venv\Scripts\activate`
+
+### Debugging Checklist
+
+```bash
+# 1. Check services are running
+curl http://localhost:8000/health    # Agent should return healthy
+curl http://localhost:3000           # UI should load
+
+# 2. Check environment
+cat .env | grep GOOGLE_API_KEY       # Must be set
+node --version                       # Must be v22.9.0+
+python --version                     # Must be 3.12+
+
+# 3. Check logs
+# Agent logs appear in terminal running npm run dev:agent
+# UI logs appear in browser DevTools console
+
+# 4. Validate state contract
+# Compare agent/main.py state writes with src/lib/types.ts
+```
 
 ## Common Tasks
 
+### Clear Canvas
+
+```python
+clear_canvas(tool_context)
+```
+
+### Update Element
+
+```python
+# Same ID = update existing element
+upsert_ui_element(tool_context, id="stat1", type="StatCard", props={"value": 999})
+```
+
+### Multi-Component Layout
+
+```python
+# Order matters - elements render in array order
+tool_context.state["elements"] = [
+    {"id": "header", "type": "StatCard", "props": {...}},
+    {"id": "table", "type": "DataTable", "props": {...}},
+    {"id": "chart", "type": "ChartCard", "props": {...}}
+]
+```
+
 ### Change Theme Color
 
-Agent can call frontend tool `setThemeColor` ([src/app/page.tsx#L17-L28](src/app/page.tsx#L17-L28)):
+User prompt: "Change theme to orange" → Agent calls frontend tool `setThemeColor({ themeColor: "#ff6600" })`
 
-```tsx
-useFrontendTool({
-  name: "setThemeColor",
-  handler({ themeColor }) {
-    setThemeColor(themeColor);
-  },
+## Toolset Management
+
+This project includes GitHub MCP-style toolset lifecycle automation:
+
+- **Registry**: [agent/toolsets.json](../agent/toolsets.json) - Canonical toolset definitions
+- **Aliases**: [agent/toolset_aliases.json](../agent/toolset_aliases.json) - Deprecation mappings
+- **Scripts**: [scripts/toolset-management/](../scripts/toolset-management/) - Validation, detection, migration
+- **Documentation**: [docs/TOOLSET_MANAGEMENT.md](../docs/TOOLSET_MANAGEMENT.md), [TOOLSET_README.md](../TOOLSET_README.md)
+
+### Key Commands
+
+```bash
+npm run validate:toolsets    # JSON schema validation
+npm run detect:changes       # Find new/modified toolsets
+npm run test:aliases         # Test alias resolution
+npm run docs:all             # Generate full documentation
+npm run docs:sync            # Sync JSON ↔ Markdown
+npm run docs:diagram:svg     # Generate toolset relationship diagram
+```
+
+### Workflow: Adding a New Toolset
+
+1. **Define tool** in [agent/main.py](../agent/main.py)
+2. **Run detection**: `npm run detect:changes` (auto-detects new tools)
+3. **Validate**: `npm run validate:toolsets` (checks schema, naming, refs)
+4. **Sync docs**: `npm run docs:all` (generates markdown)
+5. **Commit changes**: Git add JSON + generated markdown files
+
+### Workflow: Editing Documentation
+
+```bash
+# Option 1: Edit JSON directly
+vim agent/toolsets.json
+npm run docs:json-to-md      # Sync to markdown
+
+# Option 2: Edit Markdown
+vim docs/toolsets/ui_elements.md
+npm run docs:md-to-json      # Sync to JSON
+
+# Always validate after editing
+npm run docs:sync --validate-only
+```
+
+## MCP Collections & Resources
+
+### Active Collections
+
+- **frontend-web-dev**: React 19+, Next.js patterns, TypeScript conventions
+- **python-mcp-development**: FastMCP server patterns, official SDK practices
+- **software-engineering-team**: Security reviewer, GitOps/CI specialist agents
+
+### GitHub MCP Toolsets (Enabled)
+
+- **code_security**: Code scanning alerts, security analysis
+- **pull_requests**: PR operations, Copilot code reviews (`request_copilot_review`)
+- **repos**: Code search, branch management, file operations
+
+### Code Review Resources
+
+- **Instructions**: `code-review-generic.instructions.md`, `github-actions-ci-cd-best-practices.instructions.md` (from awesome-copilot MCP)
+- **Agents**: SE Security Reviewer (OWASP Top 10, Zero Trust), SE GitOps/CI Specialist (deployment debugging)
+- **Refactoring**: Janitor agent (tech debt elimination), TDD Refactor agent (quality & security hardening)
+
+## ChromaDB Integration
+
+This project uses a **dual ChromaDB architecture** for semantic code indexing and session memory.
+
+### Embedding Model
+
+Uses **Google Gemini Embeddings** (`gemini-embedding-001`) with configurable dimensions:
+
+- **768** (default): Standard semantic search
+- **1536**: Higher fidelity
+- **3072**: Maximum precision
+
+Task types supported:
+
+- `RETRIEVAL_DOCUMENT`: For indexing documents
+- `RETRIEVAL_QUERY`: For search queries
+- `SEMANTIC_SIMILARITY`: For comparing text similarity
+- `CLASSIFICATION`: For classification tasks
+- `CLUSTERING`: For clustering applications
+
+### Part A: Session ChromaDB (HTTP Server)
+
+Session-scoped storage for observability, metrics, and MCP server logs. Terminates with codespace.
+
+```bash
+# Start ChromaDB HTTP server
+python scripts/start_chroma_server.py --port 8001
+
+# Connect from Python
+import chromadb
+client = chromadb.HttpClient(host="localhost", port=8001)
+
+# Collections available:
+# - session_<run_id>_code_index: Semantic code search
+# - session_<run_id>_agent_interactions: Agent queries/responses
+# - session_<run_id>_observability_metrics: Performance metrics
+# - session_<run_id>_mcp_server_logs: MCP tool execution logs
+# - session_<run_id>_sandbox_executions: Code sandbox results
+```
+
+### Part B: In-Session Memory Artifact
+
+Persistent ChromaDB artifact for state tracking across agents. Exported as downloadable artifact.
+
+```bash
+# Start session memory manager
+python scripts/session_memory.py --serve --serve-port 8002
+
+# Or use programmatically
+from scripts.session_memory import SessionMemory
+
+memory = SessionMemory(mode="persistent", embedding_dim=768)
+memory.store_interaction("user_query", "Generate a dashboard")
+memory.store_state_change("elements", [{"id": "card1", "type": "StatCard"}])
+
+results = memory.search_context("dashboard creation")
+```
+
+### GitHub Actions Workflow
+
+The `build-code-index.yml` workflow runs on push/schedule:
+
+```bash
+# Manual trigger with options
+gh workflow run build-code-index.yml \
+  -f full_reindex=true \
+  -f chroma_mode=http \
+  -f embedding_dim=768
+
+# View workflow runs
+gh run list --workflow=build-code-index.yml
+
+# Download artifacts
+gh run download <run_id> -n chromadb-memory-<sha>
+```
+
+### Required Secrets
+
+Add these in GitHub repository settings:
+
+- `GOOGLE_API_KEY`: For Gemini embeddings (gemini-embedding-001)
+
+### Local Development
+
+```bash
+# Install dependencies
+pip install chromadb google-generativeai pykomodo
+
+# Run ingestion manually
+python scripts/ingest_chunks.py \
+  --mode persistent \
+  --persist-dir ./chroma_data \
+  --chunks-file output_chunks/chunks.jsonl \
+  --create-collections code_index,agent_interactions \
+  --embedding-dim 768
+
+# With custom task type
+python scripts/ingest_chunks.py \
+  --mode persistent \
+  --persist-dir ./chroma_data \
+  --chunks-file output_chunks/chunks.jsonl \
+  --task-type RETRIEVAL_DOCUMENT
+```
+
+## Anti-Patterns to Avoid
+
+### ❌ Bidirectional State Sync
+
+**Problem**: Trying to write to agent state from React
+
+```typescript
+// ❌ DON'T DO THIS
+const { state, setState } = useCoAgent<AgentState>({ name: "WorkbenchAgent" });
+setState((prev) => ({ elements: [...prev.elements, newElement] }));
+```
+
+**Solution**: State is read-only in React. Only Python agent writes to `tool_context.state`.
+
+### ❌ Missing Key Props
+
+```typescript
+// ❌ Missing keys (React warnings, broken updates)
+{
+  elements.map((el) => <StatCard {...el.props} />);
+}
+
+// ✅ Unique keys
+{
+  elements.map((el) => <StatCard key={el.id} {...el.props} />);
+}
+```
+
+### ❌ Unvalidated Props
+
+```python
+# ❌ No validation (XSS vulnerability)
+def upsert_ui_element(tool_context, id, type, props):
+    tool_context.state["elements"].append({"id": id, "type": type, "props": props})
+
+# ✅ Validated with whitelist
+ALLOWED_TYPES = {"StatCard", "DataTable", "ChartCard"}
+if type not in ALLOWED_TYPES:
+    return {"status": "error", "message": f"Unknown type: {type}"}
+```
+
+## External Documentation
+
+- **CopilotKit Docs**: https://docs.copilotkit.ai/
+- **Google ADK**: https://ai.google.dev/adk/docs
+- **AG-UI Client**: https://www.npmjs.com/package/@ag-ui/client
+- **Generative UI Architecture**: [Project_Overview.md](../Project_Overview.md)
+- **Refactoring Patterns**: [docs/REFACTORING_PATTERNS.md](../docs/REFACTORING_PATTERNS.md)
+- **Schema Crawler Tool**: [agent-generator/SCHEMA_CRAWLER_README.md](../agent-generator/SCHEMA_CRAWLER_README.md)
+- **Node.js Version**: 22.9.0+ required (use nvm for version management)
+- **Python Environment**: 3.12+ with uv or pip for dependency management
+
+## Testing & Validation
+
+### Running Tests
+
+```bash
+# TypeScript type checking
+npx tsc --noEmit
+
+# Linting (both TS and Python)
+npm run lint
+npm run lint:fix              # Auto-fix issues
+
+# Python linting separately
+cd agent
+uv run ruff check .
+uv run ruff format .
+```
+
+### Component Testing Pattern
+
+```typescript
+// src/components/registry/StatCard.test.tsx
+import { render, screen } from "@testing-library/react";
+import { StatCard } from "./StatCard";
+
+describe("StatCard", () => {
+  it("renders with valid props", () => {
+    render(<StatCard title="Revenue" value={120000} />);
+    expect(screen.getByText("Revenue")).toBeInTheDocument();
+    expect(screen.getByText("120,000")).toBeInTheDocument();
+  });
+
+  it("renders fallback for invalid props", () => {
+    render(<StatCard title={123} value={null} />);
+    expect(screen.getByText("Invalid StatCard props")).toBeInTheDocument();
+  });
 });
 ```
 
-Try: "Change the theme to green" → Agent calls tool, CSS variable updates.
+### Agent Tool Testing Pattern
 
-### Clear the Canvas
+```python
+# tests/test_agent_tools.py
+import pytest
+from agent.main import upsert_ui_element
+from unittest.mock import MagicMock
 
-User: "Clear all" → Agent calls `clear_canvas()` → `state.elements = []` → UI empties.
+def test_upsert_ui_element_creates_new():
+    mock_context = MagicMock()
+    mock_context.state = {"elements": []}
 
-### Generate Multi-Component Layout
+    result = upsert_ui_element(
+        mock_context,
+        id="test_card",
+        type="StatCard",
+        props={"title": "Test", "value": 42}
+    )
 
-User: "Sales dashboard with 3 KPIs and a customer table"
-→ Agent calls `upsert_ui_element` 4 times (3 StatCards, 1 DataTable)
-→ React renders all elements in grid layout ([src/app/page.tsx#L103-L108](src/app/page.tsx#L103-L108))
-
----
-
-## What's NOT Implemented Yet
-
-- **Declarative GenUI**: Dashboard schema/renderer (planned, not active)
-- **Open-Ended GenUI**: Sandboxed HTML iframe (planned, not active)
-- **Audit logging**: `src/utils/audit.py` doesn't exist yet
-- **`data/` directory**: Mentioned in docs but not used in current implementation
-
-Focus on the **Static GenUI** pattern (component registry + agent tools) — that's what's operational now.
-
----
-
-## Relevant MCP Collections & GitHub Toolsets
-
-This repository uses patterns from these awesome-copilot collections:
-
-### Frontend Development Collection
-
-- **frontend-web-dev**: React, TypeScript, Next.js development patterns
-  - Instructions: `reactjs.instructions.md`, `nextjs.instructions.md`, `typescript-5-es2022.instructions.md`
-  - Agent: `expert-react-frontend-engineer.agent.md`
-  - Applies to React 19+ with hooks, TypeScript, functional components, and modern patterns
-
-### Python MCP Development Collection
-
-- **python-mcp-development**: Building Model Context Protocol servers in Python
-  - Instructions: `python-mcp-server.instructions.md`
-  - Agent: `python-mcp-expert.agent.md`
-  - Prompt: `python-mcp-server-generator.prompt.md`
-  - Uses FastMCP, `uv` for dependency management, decorators for tool registration
-
-### Available GitHub MCP Toolsets
-
-Use `#mcp_github_enable_toolset` to enable more capabilities:
-
-**Currently Enabled:**
-
-- `code_security` — GitHub Code Scanning
-
-**Available (not yet enabled):**
-
-- `pull_requests` — PR management and review workflows
-- `issues` — Issue creation, labeling, assignment
-- `repos` — Repository operations (branches, commits, files)
-- `actions` — GitHub Actions workflows and CI/CD
-- `discussions` — GitHub Discussions integration
-- `projects` — GitHub Projects board management
-
-**To enable:** Use GitHub MCP tools or run:
-
-```
-mcp_github_enable_toolset({toolset: "pull_requests"})
+    assert result["status"] == "success"
+    assert len(mock_context.state["elements"]) == 1
 ```
 
----
+### Manual Testing Workflow
 
-## References
+1. Start services: `npm run dev`
+2. Open browser: http://localhost:3000
+3. Test in CopilotSidebar: "Generate a KPI dashboard with revenue, users, and churn cards"
+4. Verify elements render correctly
+5. Check agent logs in terminal for errors
+6. Inspect browser DevTools console for frontend errors
 
-- **Project Documentation:**
+## Critical Workflows
 
-  - `Project_Overview.md` — High-level vision (aspirational)
-  - `CONTRIBUTING.md` — DevContainer setup, testing guidelines
-  - `src/prompts/copilot/` — Agent cognitive layer (not yet auto-loaded)
+### First-Time Setup
 
-- **External Documentation:**
-  - [CopilotKit Docs](https://docs.copilotkit.ai) — `useCoAgent`, `useFrontendTool` API
-  - [Google ADK](https://google.github.io/adk-docs/) — Agent Development Kit reference
-  - [React Documentation](https://react.dev) — React 19+ official patterns
-  - [FastMCP Documentation](https://github.com/jlowin/fastmcp) — Python MCP server framework
+```bash
+# 1. Install nvm (if not already)
+# Windows: https://github.com/coreybutler/nvm-windows
+# Unix/macOS: https://github.com/nvm-sh/nvm
 
-## Next Steps for Agents
+# 2. Install Node.js 22.9.0+
+nvm install 22.9.0
+nvm use 22.9.0
 
-- **To run dev servers:** Use `npm run dev` or ask me to start UI/Agent individually
-- **To add new components:** Follow the 4-step process in "Adding a New Component" above
-- **For React/TypeScript questions:** Reference the `frontend-web-dev` collection patterns
-- **For Python agent questions:** Reference the `python-mcp-development` collection
-- **For repository operations:** Enable relevant GitHub MCP toolsets as needed (e.g., `pull_requests`, `issues`)
+# 3. Clone and setup
+git clone <repo-url>
+cd modme-ui-01
+npm install
+
+# 4. Setup Python environment (automatic via postinstall)
+# Or manually:
+./scripts/setup-agent.sh  # Unix/macOS
+.\scripts\setup-agent.bat  # Windows
+
+# 5. Configure environment
+cp .env.example .env
+# Edit .env and add GOOGLE_API_KEY
+
+# 6. Start development
+npm run dev
+```
+
+### Adding a New Component to Registry
+
+```bash
+# 1. Create component file
+# src/components/registry/NewWidget.tsx
+export function NewWidget({ title, data }: { title: string; data: any[] }) {
+  return <div className="widget">{/* ... */}</div>;
+}
+
+# 2. Register in page.tsx renderer
+# src/app/page.tsx
+import { NewWidget } from "@/components/registry/NewWidget";
+
+const renderElement = (el: UIElement) => {
+  switch (el.type) {
+    case "NewWidget": return <NewWidget key={el.id} {...el.props} />;
+    // ... other cases
+  }
+};
+
+# 3. Update agent instructions
+# agent/main.py - Add to ALLOWED_TYPES and agent instruction
+ALLOWED_TYPES = {"StatCard", "DataTable", "ChartCard", "NewWidget"}
+
+# 4. Test
+npm run dev
+# Use sidebar: "Create a NewWidget with title 'Test' and sample data"
+```
+
+### Debugging State Synchronization Issues
+
+```bash
+# 1. Check agent state injection
+curl http://localhost:8000/ready | jq
+
+# 2. Add logging to before_model_modifier
+# agent/main.py
+def before_model_modifier(callback_context, llm_request):
+    elements = callback_context.state.get("elements", [])
+    print(f"[DEBUG] Current elements: {len(elements)}")
+    print(f"[DEBUG] Elements: {json.dumps(elements, indent=2)}")
+    # ... rest of function
+
+# 3. Check React state consumption
+# src/app/page.tsx
+function YourMainContent() {
+  const { state } = useCoAgent<AgentState>({ name: "WorkbenchAgent" });
+  console.log("[DEBUG] React state:", state);
+  console.log("[DEBUG] Elements:", state?.elements);
+  // ... rest of component
+}
+
+# 4. Restart both services
+npm run dev
+# Watch both terminals for [DEBUG] output
+```
+
+### Schema Validation Workflow
+
+```bash
+# 1. Generate Zod schemas from JSON Schema
+cd agent-generator
+npm run generate:schemas
+
+# 2. Use generated schemas in validation
+# src/components/registry/StatCard.tsx
+import { StatCardPropsSchema } from "@/schemas/StatCard.schema";
+
+export function StatCard(rawProps: unknown) {
+  const result = StatCardPropsSchema.safeParse(rawProps);
+  if (!result.success) {
+    console.error("Validation failed:", result.error);
+    return <ErrorFallback />;
+  }
+  const props = result.data;  // Type-safe!
+  // ... rest of component
+}
+```
+
+### Upgrading Dependencies
+
+```bash
+# Check for updates
+npm outdated
+
+# Update Next.js (critical for compatibility)
+npm install next@latest
+
+# Update React (if needed)
+npm install react@latest react-dom@latest
+
+# Update CopilotKit (major version changes may require code updates)
+npm install @copilotkit/react-core@latest @copilotkit/react-ui@latest @copilotkit/runtime@latest
+
+# Update Python dependencies
+cd agent
+uv add google-adk@latest ag-ui-adk@latest
+# or
+pip install --upgrade google-adk ag-ui-adk
+
+# Test after updates
+npm run dev
+npm run lint
+npm run validate:toolsets
+```
+
+## Quick Reference
+
+| Task                 | Command/File                                                                            |
+| -------------------- | --------------------------------------------------------------------------------------- |
+| Start dev            | `npm run dev`                                                                           |
+| Add component        | [src/components/registry/](../src/components/registry/)                                 |
+| Update agent tools   | [agent/main.py](../agent/main.py)                                                       |
+| State type contract  | [src/lib/types.ts](../src/lib/types.ts)                                                 |
+| API endpoint         | [src/app/api/copilotkit/route.ts](../src/app/api/copilotkit/route.ts)                   |
+| Canvas renderer      | [src/app/page.tsx](../src/app/page.tsx)                                                 |
+| Health check         | http://localhost:8000/health                                                            |
+| Toolset validation   | `npm run validate:toolsets`                                                             |
+| Documentation sync   | `npm run docs:all`                                                                      |
+| Refactoring patterns | [docs/REFACTORING_PATTERNS.md](../docs/REFACTORING_PATTERNS.md)                         |
+| Schema crawler       | [agent-generator/SCHEMA_CRAWLER_README.md](../agent-generator/SCHEMA_CRAWLER_README.md) |
+| ChromaDB HTTP server | `python scripts/start_chroma_server.py --port 8001`                                     |
+| Session memory       | `python scripts/session_memory.py --serve --serve-port 8002`                            |
+| Code indexing        | `python scripts/ingest_chunks.py --mode persistent`                                     |

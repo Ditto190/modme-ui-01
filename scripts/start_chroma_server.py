@@ -26,7 +26,6 @@ from __future__ import annotations
 
 import argparse
 import os
-import signal
 import subprocess
 import sys
 import time
@@ -42,7 +41,7 @@ DEFAULT_PERSIST_DIR = "./.chroma_server"
 def check_chroma_installed() -> bool:
     """Check if chromadb is installed."""
     try:
-        import chromadb
+        import chromadb  # noqa: E402
         return True
     except ImportError:
         return False
@@ -50,8 +49,8 @@ def check_chroma_installed() -> bool:
 
 def wait_for_server(host: str, port: int, timeout: int = 30) -> bool:
     """Wait for ChromaDB server to become available."""
-    import urllib.request
-    import urllib.error
+    import urllib.request  # noqa: E402
+    import urllib.error  # noqa: E402
     
     url = f"http://{host}:{port}/api/v2/heartbeat"
     start_time = time.time()
@@ -117,15 +116,15 @@ def start_server_embedded(
 ) -> None:
     """Start ChromaDB server in the current process."""
     try:
-        import chromadb
-        from chromadb.config import Settings
+        import chromadb  # noqa: E402
+        from chromadb.config import Settings  # noqa: E402
     except ImportError:
         print("❌ chromadb not installed. Run: pip install chromadb")
         sys.exit(1)
     
     try:
-        import uvicorn
-        from chromadb.server import create_app
+        import uvicorn  # noqa: E402
+        from chromadb.server import create_app  # noqa: E402
     except ImportError:
         print("❌ uvicorn not installed. Run: pip install uvicorn")
         sys.exit(1)
@@ -192,7 +191,7 @@ def print_connection_info(host: str, port: int, persist_dir: str | None):
     
     # Python client
     print("\n🐍 Python Client:")
-    print(f"   import chromadb")
+    print("   import chromadb")
     print(f"   client = chromadb.HttpClient(host='{host}', port={port})")
     
     # MCP configuration
@@ -274,7 +273,7 @@ def main():
     
     if args.background:
         # Start as background process
-        print(f"🚀 Starting ChromaDB server in background...")
+        print("🚀 Starting ChromaDB server in background...")
         
         process = start_server_subprocess(
             host=args.host,
@@ -286,7 +285,7 @@ def main():
         print(f"⏳ Waiting for server to start (PID: {process.pid})...")
         
         if wait_for_server("127.0.0.1", args.port):
-            print(f"✅ ChromaDB server started successfully")
+            print("✅ ChromaDB server started successfully")
             print_connection_info(args.host, args.port, persist_dir)
             
             # Save PID file

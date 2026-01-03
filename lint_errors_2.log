@@ -1,0 +1,45 @@
+
+> adk-starter@0.1.0 lint
+> eslint . && ruff check .
+
+
+C:\Users\dylan\modme-ui-01\.copilot\templates\component-template.tsx
+  21:6  warning  'props' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\agent-generator\src\mcp-registry\molecule-generator.ts
+   18:24  warning  'JSONSchema' is defined but never used    @typescript-eslint/no-unused-vars
+   34:35  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   50:25  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  363:44  warning  'tools' is defined but never used         @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\agent-generator\src\mcp-registry\schema-crawler.ts
+   12:10  warning  'z' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+  281:5   error    Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+  307:5   error    Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+  340:3   warning  'zodCode' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+  341:3   warning  'testData' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\agent-generator\src\scripts\generate.ts
+  55:33  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\dylan\modme-ui-01\agent-generator\src\skills\pptx\scripts\html2pptx.js
+   28:22  error    A `require()` style import is forbidden     @typescript-eslint/no-require-imports
+   29:14  error    A `require()` style import is forbidden     @typescript-eslint/no-require-imports
+   30:7   warning  'sharp' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   30:15  error    A `require()` style import is forbidden     @typescript-eslint/no-require-imports
+  121:54  warning  'tmpDir' is defined but never used          @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\knowledge-management\fetch-anthropic-skills.js
+  223:16  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\knowledge-management\generate-diagram.js
+  15:7  warning  'OUTPUT_SVG' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\knowledge-management\skill-spec-validator.js
+  116:12  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\toolset-management\detect-toolset-changes.js
+  63:25  warning  'toolDef' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 20 problems (8 errors, 12 warnings)
+

@@ -78,7 +78,7 @@ def configure_genai() -> None:
     if not api_key:
         raise ValueError("GOOGLE_API_KEY environment variable not set")
     genai.configure(api_key=api_key)
-    print(f"✅ Google Generative AI configured")
+    print("✅ Google Generative AI configured")
 
 
 def get_chroma_client(

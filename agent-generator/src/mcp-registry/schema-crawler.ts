@@ -278,8 +278,8 @@ export function generateZodModulesBatch(
   const modules = new Map<string, string>();
   
   for (const tool of tools) {
-    const module = generateZodModule(tool.name, tool.inputSchema, tool.outputSchema);
-    modules.set(tool.name, module);
+    const zodModule = generateZodModule(tool.name, tool.inputSchema, tool.outputSchema);
+    modules.set(tool.name, zodModule);
   }
   
   return modules;
@@ -304,8 +304,8 @@ export function generateSchemaFileStructure(
   
   // Generate individual tool schema files
   for (const tool of tools) {
-    const module = generateZodModule(tool.name, tool.inputSchema, tool.outputSchema);
-    files.set(`${serverName}/${tool.name}.schema.ts`, module);
+    const zodModule = generateZodModule(tool.name, tool.inputSchema, tool.outputSchema);
+    files.set(`${serverName}/${tool.name}.schema.ts`, zodModule);
   }
   
   // Generate barrel export

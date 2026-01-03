@@ -21,7 +21,7 @@ import sys
 from typing import Literal
 
 try:
-    import google.generativeai as genai
+    import google.generativeai as genai  # noqa: E402
 except ImportError:
     print("❌ google-generativeai not installed. Run: pip install google-generativeai")
     sys.exit(1)
@@ -54,7 +54,7 @@ def test_embedding_generation():
     
     # Configure genai
     genai.configure(api_key=api_key)
-    print(f"✅ Google Generative AI configured")
+    print("✅ Google Generative AI configured")
     
     # Test texts
     test_texts = [
@@ -84,7 +84,7 @@ def test_embedding_generation():
                 return False
     
     # Test different task types
-    print(f"\n📋 Testing different task types...")
+    print("\n📋 Testing different task types...")
     task_types: list[TaskType] = [
         "RETRIEVAL_DOCUMENT",
         "RETRIEVAL_QUERY",
@@ -104,7 +104,7 @@ def test_embedding_generation():
             print(f"   ❌ {task_type} failed: {e}")
     
     # Test batch embedding
-    print(f"\n📦 Testing batch embedding...")
+    print("\n📦 Testing batch embedding...")
     try:
         result = genai.embed_content(
             model=DEFAULT_EMBEDDING_MODEL,
@@ -119,7 +119,7 @@ def test_embedding_generation():
         print(f"   ❌ Batch embedding failed: {e}")
     
     # Test semantic similarity
-    print(f"\n🔍 Testing semantic similarity...")
+    print("\n🔍 Testing semantic similarity...")
     try:
         similar_texts = [
             "Python is a popular programming language",
@@ -165,9 +165,9 @@ def test_embedding_generation():
         print(f"   Dissimilar texts similarity: {sim_dissimilar:.4f}")
         
         if sim_similar > sim_dissimilar:
-            print(f"   ✅ Semantic similarity working correctly!")
+            print("   ✅ Semantic similarity working correctly!")
         else:
-            print(f"   ⚠️ Unexpected similarity scores")
+            print("   ⚠️ Unexpected similarity scores")
             
     except Exception as e:
         print(f"   ❌ Similarity test failed: {e}")

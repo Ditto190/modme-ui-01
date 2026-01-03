@@ -17,7 +17,6 @@ The vault stores encrypted JSON at `.vault/secrets.enc` and the key at `.vault/k
 import argparse
 import base64
 import json
-import os
 import secrets
 from pathlib import Path
 
