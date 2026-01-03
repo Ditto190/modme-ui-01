@@ -15,7 +15,7 @@
  */
 
 import { z } from 'zod';
-import type { MCPTool, JSONSchema } from './registry-fetcher';
+import type { MCPTool, JSONSchema } from './registry-fetcher.js';
 
 /**
  * Molecule: A semantic wrapper around one or more MCP tools
@@ -31,7 +31,7 @@ export interface Molecule {
   
   // Interface
   parameters: z.ZodSchema;                        // What the agent passes in
-  parameterSchema: Record<string, any>;           // JSON Schema representation
+  parameterSchema: Record<string, unknown>;           // JSON Schema representation
   
   // Semantics
   semantics: string;                              // "Allows agents to edit source files"
@@ -47,7 +47,7 @@ export interface Molecule {
 
 export interface MoleculeExample {
   description: string;
-  input: Record<string, any>;
+  input: Record<string, unknown>;
   expectedOutcome: string;
 }
 

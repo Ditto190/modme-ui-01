@@ -52,7 +52,7 @@ async function generateToolSchemas() {
     return;
   }
 
-  const schemas: Record<string, any> = {};
+  const schemas: Record<string, unknown> = {};
 
   for (const symbol of targetSymbols) {
       try {

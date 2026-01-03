@@ -7,17 +7,14 @@ into your agent/main.py file.
 
 from google import genai
 from google.genai import types
-from google.genai.types import Tool, ToolContext
+from google.genai.types import ToolContext
 from typing import Dict, Any
 import logging
 
 # Import toolset manager
 from toolset_manager import (
     initialize_toolsets,
-    get_toolset_manager,
-    resolve_toolset,
-    get_toolset,
-    list_toolsets
+    get_toolset_manager
 )
 
 # Configure logging
@@ -210,7 +207,7 @@ def example_toolset_usage():
     # Example 4: Check if toolset is deprecated
     if manager.is_deprecated("old_feature"):
         info = manager.get_deprecation_info("old_feature")
-        print(f"\n⚠️  'old_feature' is deprecated!")
+        print("\n⚠️  'old_feature' is deprecated!")
         print(f"Replacement: {info.get('replacement')}")
         print(f"Removal date: {info.get('removal_date')}")
 
