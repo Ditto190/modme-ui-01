@@ -1,0 +1,275 @@
+name: 🏷️ Issue Auto-Labeler
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  label-issue:
+    name: Auto-label based on template selections
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      
+      - name: Install TypeScript dependencies
+        run: |
+          cd scripts/knowledge-management
+          npm install
+      
+      - name: Analyze issue with Knowledge Base
+        id: kb_context
+        run: |
+          cd scripts/knowledge-management
+          npm run build
+          TITLE="${{ github.event.issue.title }}"
+          BODY="${{ github.event.issue.body }}"
+          CONTEXT_JSON=$(node dist/issue-context-mapper.js "$TITLE" "$BODY")
+          echo "context<<EOF" >> $GITHUB_OUTPUT
+          echo "$CONTEXT_JSON" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Parse issue and apply labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const body = issue.body || '';
+            
+            // Initialize labels array with existing labels
+            const labelsToAdd = new Set(issue.labels.map(l => l.name));
+            const labelsToRemove = new Set();
+            
+            console.log('Processing issue #' + issue.number);
+            console.log('Current labels:', Array.from(labelsToAdd));
+            
+            // Parse Knowledge Base context
+            let kbContext = null;
+            try {
+              const contextOutput = `${{ steps.kb_context.outputs.context }}`;
+              kbContext = JSON.parse(contextOutput);
+              console.log('KB detected concepts:', kbContext.detectedConcepts);
+              console.log('KB suggested labels:', kbContext.suggestedLabels);
+              
+              // Add KB-suggested labels
+              if (kbContext.suggestedLabels) {
+                kbContext.suggestedLabels.forEach(label => labelsToAdd.add(label));
+              }
+            } catch (error) {
+              console.log('Could not parse KB context:', error.message);
+            }
+            
+            // Component-based labels (from Bug Report)
+            const componentPatterns = {
+              'agent': /Python Agent.*?\(agent\/main\.py\)/i,
+              'frontend': /React Frontend.*?\(src\/app\/page\.tsx\)/i,
+              'state-sync': /State Sync.*?\(tool_context\.state\)/i,
+              'component-registry': /Component Registry.*?\(StatCard|DataTable|ChartCard\)/i,
+              'theme': /Theme System.*?\(setThemeColor\)/i,
+              'toolset': /Toolset Management/i,
+              'api': /API Endpoint.*?\(CopilotKit runtime\)/i,
+              'documentation': /📝 Documentation/i,
+              'build-system': /Build System.*?\(npm\/uv\/Docker\)/i
+            };
+            
+            for (const [label, pattern] of Object.entries(componentPatterns)) {
+              if (pattern.test(body)) {
+                labelsToAdd.add(label);
+                console.log('Added label via component pattern:', label);
+              }
+            }
+            
+            // Runtime environment labels
+            if (/Runtime Environment[^]*?Python Agent \(localhost:8000\)/i.test(body)) {
+              labelsToAdd.add('agent');
+              console.log('Added label: agent (runtime)');
+            }
+            if (/Runtime Environment[^]*?React UI \(localhost:3000\)/i.test(body)) {
+              labelsToAdd.add('frontend');
+              console.log('Added label: frontend (runtime)');
+            }
+            if (/Both \(Agent \+ UI\)/i.test(body)) {
+              labelsToAdd.add('agent');
+              labelsToAdd.add('frontend');
+              console.log('Added labels: agent, frontend (both)');
+            }
+            if (/CI\/CD Pipeline/i.test(body)) {
+              labelsToAdd.add('ci-cd');
+              console.log('Added label: ci-cd');
+            }
+            
+            // Feature category labels
+            const featurePatterns = {
+              'component-registry': /📦 New Component \(Registry\)/i,
+              'agent': /🔧 Agent Tool Enhancement/i,
+              'frontend': /🎨 UI\/UX Improvement/i,
+              'state-sync': /🔗 State Management/i,
+              'performance': /⚡ Performance Optimization/i,
+              'security': /🔒 Security Enhancement/i,
+              'documentation': /📚 Documentation/i,
+              'testing': /🧪 Testing Infrastructure/i,
+              'developer-experience': /🏗️ Developer Experience/i
+            };
+            
+            for (const [label, pattern] of Object.entries(featurePatterns)) {
+              if (pattern.test(body)) {
+                labelsToAdd.add(label);
+                console.log('Added label via feature pattern:', label);
+              }
+            }
+            
+            // Priority labels (from Feature Request)
+            const priorityPatterns = {
+              'priority:critical': /🔴 Critical - Blocking/i,
+              'priority:high': /🟠 High - Significant/i,
+              'priority:medium': /🟡 Medium - Nice to have/i,
+              'priority:low': /🟢 Low - Future enhancement/i
+            };
+            
+            // Remove existing priority labels before adding new one
+            const existingPriorities = ['priority:critical', 'priority:high', 'priority:medium', 'priority:low'];
+            existingPriorities.forEach(p => {
+              if (labelsToAdd.has(p)) {
+                labelsToRemove.add(p);
+              }
+            });
+            
+            for (const [label, pattern] of Object.entries(priorityPatterns)) {
+              if (pattern.test(body)) {
+                labelsToAdd.add(label);
+                console.log('Added priority label:', label);
+                break; // Only one priority
+              }
+            }
+            
+            // Toolset issue types
+            const toolsetPatterns = {
+              'toolset:new': /🆕 New Toolset Registration/i,
+              'toolset:deprecation': /⚠️ Toolset Deprecation Request/i,
+              'toolset:metadata': /🔧 Toolset Metadata Update/i,
+              'toolset:validation': /🐛 Toolset Validation Failure/i,
+              'toolset:docs': /📝 Toolset Documentation Issue/i,
+              'toolset:alias': /🔀 Alias Resolution Problem/i,
+              'toolset:migration': /🔄 Migration Guide/i
+            };
+            
+            for (const [label, pattern] of Object.entries(toolsetPatterns)) {
+              if (pattern.test(body)) {
+                labelsToAdd.add(label);
+                console.log('Added toolset label:', label);
+              }
+            }
+            
+            // Lifecycle stage labels
+            if (/needs-triage/i.test(Array.from(labelsToAdd).join(' '))) {
+              labelsToAdd.add('status:triage');
+              labelsToRemove.add('needs-triage');
+              console.log('Replaced needs-triage with status:triage');
+            }
+            
+            // Convert Sets to Arrays
+            const finalLabels = Array.from(labelsToAdd).filter(l => !labelsToRemove.has(l));
+            
+            console.log('Final labels to set:', finalLabels);
+            
+            // Update issue labels
+            if (finalLabels.length > 0) {
+              await github.rest.issues.setLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: finalLabels
+              });
+              
+              console.log('✅ Successfully updated labels for issue #' + issue.number);
+            }
+
+      - name: Add contextual comments
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            
+            // Parse Knowledge Base context
+            let kbContext = null;
+            try {
+              const contextOutput = `${{ steps.kb_context.outputs.context }}`;
+              kbContext = JSON.parse(contextOutput);
+            } catch (error) {
+              console.log('Could not parse KB context for comments:', error.message);
+            }
+            
+            // Add Knowledge Base context comment
+            if (kbContext && kbContext.comment && kbContext.comment.trim()) {
+              const comments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number
+              });
+              
+              const kbCommentExists = comments.data.find(c => 
+                c.user.type === 'Bot' && c.body.includes('Detected Context')
+              );
+              
+              if (!kbCommentExists) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: kbContext.comment
+                });
+                console.log('Added Knowledge Base context comment');
+              }
+            }
+            
+            // Add toolset-specific comment if applicable
+            const isToolsetIssue = issue.labels.some(l => l.name === 'toolset');
+            if (isToolsetIssue) {
+              const body = `
+            👋 Thanks for reporting a toolset-related issue!
+            
+            **Next Steps:**
+            1. A maintainer will triage this issue within 48 hours
+            2. For validation issues, run \`npm run validate:toolsets\` locally
+            3. For deprecations, review the [180-day grace period policy](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/docs/TOOLSET_MANAGEMENT.md#deprecating-toolsets)
+            
+            **Useful Commands:**
+            - \`npm run validate:toolsets\` - Full validation suite
+            - \`npm run detect:changes\` - Find new/modified toolsets
+            - \`npm run test:aliases\` - Test alias resolution
+            
+            📚 [Toolset Management Documentation](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/docs/TOOLSET_MANAGEMENT.md)
+            `;
+              
+              const comments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number
+              });
+              
+              const toolsetCommentExists = comments.data.find(c => 
+                c.user.type === 'Bot' && c.body.includes('Thanks for reporting a toolset-related issue')
+              );
+              
+              if (!toolsetCommentExists) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: body
+                });
+                console.log('Added toolset-specific comment');
+              }
+            }

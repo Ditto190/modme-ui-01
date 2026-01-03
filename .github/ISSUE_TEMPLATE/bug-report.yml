@@ -1,0 +1,152 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior in the ModMe GenUI Workbench
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐛 Bug Report
+        
+        Thanks for reporting a bug! Please provide detailed information to help us fix it quickly.
+        
+        **Note**: This is for ModMe GenUI Workbench (Python ADK Agent + React UI). 
+        For toolset-specific issues, use the "Toolset Management Issue" template.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component Affected
+      description: Which part of the system has the bug?
+      options:
+        - "🐍 Python Agent (agent/main.py)"
+        - "⚛️ React Frontend (src/app/page.tsx)"
+        - "🔗 State Sync (tool_context.state)"
+        - "📦 Component Registry (StatCard, DataTable, ChartCard)"
+        - "🎨 Theme System (setThemeColor)"
+        - "🛠️ Toolset Management"
+        - "🔌 API Endpoint (CopilotKit runtime)"
+        - "📝 Documentation"
+        - "🏗️ Build System (npm/uv/Docker)"
+        - "❓ Not Sure"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: Runtime Environment
+      description: Where does the bug occur?
+      options:
+        - "Python Agent (localhost:8000)"
+        - "React UI (localhost:3000)"
+        - "Both (Agent + UI)"
+        - "CI/CD Pipeline"
+        - "Documentation/Tooling"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Clear description of what went wrong
+      placeholder: |
+        Example: "When calling upsert_ui_element with type='ChartCard', the component doesn't render in the canvas even though the state updates correctly."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Step-by-step instructions to reproduce the bug
+      placeholder: |
+        1. Start dev environment with `npm run dev`
+        2. Open CopilotSidebar
+        3. Ask agent to "create a chart card showing revenue"
+        4. Observe the state updates in React DevTools
+        5. Notice the component doesn't render
+      value: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen instead?
+      placeholder: "ChartCard component should render in the GenerativeCanvas with the provided props"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happens?
+      placeholder: "State updates correctly in tool_context, but React renders the 'Unknown component type' fallback"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs/Screenshots
+      description: |
+        Paste relevant logs, error messages, or screenshots.
+        
+        **Python logs**: Check terminal running `npm run dev:agent`
+        **React logs**: Check browser console
+        **State inspection**: Use React DevTools or `curl http://localhost:8000/ready`
+      placeholder: |
+        ```
+        Paste logs here
+        ```
+      render: shell
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: System and dependency versions
+      value: |
+        - **OS**: 
+        - **Node.js Version**: 
+        - **Python Version**: 
+        - **Browser** (if UI bug): 
+        - **npm Version**: 
+        - **uv/pip Version**: 
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: |
+        Any other relevant information:
+        - Does it happen consistently or intermittently?
+        - Any recent changes before the bug appeared?
+        - Workarounds you've tried?
+        - Related issues or PRs?
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please verify you've completed these steps
+      options:
+        - label: I've searched existing issues to avoid duplicates
+          required: true
+        - label: I've included clear reproduction steps
+          required: true
+        - label: I've provided error logs or screenshots
+          required: false
+        - label: I've tested on the latest `main` branch
+          required: false
