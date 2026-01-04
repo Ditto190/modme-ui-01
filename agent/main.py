@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import os
+import atexit
 from typing import Dict, Optional, Any
 
 from ag_ui_adk import ADKAgent, add_adk_fastapi_endpoint
@@ -15,6 +17,15 @@ from google.adk.models.llm_response import LlmResponse
 from google.adk.tools import ToolContext
 from google.genai import types
 from pydantic import BaseModel, Field
+
+# Import VT Code integration
+from tools.code_tools import (
+    edit_component,
+    analyze_component_props,
+    create_new_component,
+    run_build_check,
+)
+from mcp_vtcode import get_vtcode_client
 
 load_dotenv()
 
@@ -82,6 +93,12 @@ Current Canvas Elements:
 
 When asked to create or update UI, use 'upsert_ui_element'.
 Available Types: StatCard, DataTable, ChartCard.
+
+Code Editing Capabilities (via VT Code MCP):
+- You can edit existing components using 'edit_component'
+- You can analyze component props using 'analyze_component_props'
+- You can create new components using 'create_new_component'
+- You can verify builds using 'run_build_check'
 """
     original_instruction.parts[0].text = prefix + (original_instruction.parts[0].text or "")
     llm_request.config.system_instruction = original_instruction
@@ -108,8 +125,23 @@ workbench_agent = LlmAgent(
     3. ChartCard: { title, chartType, data: object[] }
     
     Always use a meaningful unique 'id' for elements (e.g. 'rev_stat', 'user_table').
+    
+    Code Editing Tools (VT Code MCP Integration):
+    - edit_component: Modify existing GenUI components
+    - analyze_component_props: Inspect TypeScript interfaces
+    - create_new_component: Generate new components from scratch
+    - run_build_check: Verify TypeScript compilation
     """,
-    tools=[upsert_ui_element, remove_ui_element, clear_canvas],
+    tools=[
+        upsert_ui_element, 
+        remove_ui_element, 
+        clear_canvas,
+        # VT Code integration tools
+        edit_component,
+        analyze_component_props,
+        create_new_component,
+        run_build_check,
+    ],
     before_agent_callback=on_before_agent,
     before_model_callback=before_model_modifier,
     after_model_callback=after_model_modifier,
@@ -125,8 +157,22 @@ adk_agent = ADKAgent(
 app = FastAPI(title="GenUI Workbench Agent")
 add_adk_fastapi_endpoint(app, adk_agent, path="/")
 
+# Add cleanup handler for VT Code MCP connection
+@atexit.register
+def cleanup():
+    """Cleanup MCP connections on shutdown."""
+    import asyncio
+    vtcode = get_vtcode_client()
+    try:
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            loop.create_task(vtcode.close())
+        else:
+            loop.run_until_complete(vtcode.close())
+    except Exception as e:
+        print(f"Error closing VT Code client: {e}")
+
 if __name__ == "__main__":
-    import os
     import uvicorn
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
