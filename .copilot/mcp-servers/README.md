@@ -5,12 +5,15 @@ Model Context Protocol (MCP) allows AI assistants to securely access external to
 ## Available Servers
 
 ### Filesystem Server
+
 Provides controlled access to the local `data/` directory for reading and writing files.
 
 ### GitHub Server
+
 Integrates with GitHub API for repository operations, issues, PRs, etc.
 
 ### Custom Agent Server
+
 Your custom Python ADK agent running on localhost:8000.
 
 ## Configuration

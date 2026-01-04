@@ -11,6 +11,7 @@
 ## Overview
 
 Converted TypeScript tool generation script to Python agent tools compatible with:
+
 - Google ADK agent framework
 - GenAI Toolbox configuration
 - FastMCP-inspired patterns
@@ -21,11 +22,11 @@ Converted TypeScript tool generation script to Python agent tools compatible wit
 
 ### Original TypeScript Functions → Python Agent Tools
 
-| TypeScript Function | Python Tool | Status |
-|---------------------|-------------|--------|
-| `generateToolSchemas()` | `generate_tool_schemas()` | ✅ Complete |
-| `generateAgentPrompt()` | `generate_agent_prompt()` | ✅ Complete |
-| - | `generate_all()` | ✅ Added (convenience) |
+| TypeScript Function     | Python Tool               | Status                 |
+| ----------------------- | ------------------------- | ---------------------- |
+| `generateToolSchemas()` | `generate_tool_schemas()` | ✅ Complete            |
+| `generateAgentPrompt()` | `generate_agent_prompt()` | ✅ Complete            |
+| -                       | `generate_all()`          | ✅ Added (convenience) |
 
 ---
 
@@ -34,6 +35,7 @@ Converted TypeScript tool generation script to Python agent tools compatible wit
 ### 1. Function Signatures
 
 **TypeScript**:
+
 ```typescript
 async function generateToolSchemas(): Promise<void> {
   // Implementation
@@ -41,6 +43,7 @@ async function generateToolSchemas(): Promise<void> {
 ```
 
 **Python**:
+
 ```python
 def generate_tool_schemas(
     tool_context: ToolContext,
@@ -52,6 +55,7 @@ def generate_tool_schemas(
 ```
 
 **Changes**:
+
 - ✅ Added `tool_context: ToolContext` parameter (required for ADK tools)
 - ✅ Made paths configurable (not hardcoded)
 - ✅ Return structured dict instead of void
@@ -62,11 +66,13 @@ def generate_tool_schemas(
 ### 2. Return Values
 
 **TypeScript** (prints to console):
+
 ```typescript
 console.log(`Saved schemas to ${OUTPUT_DIR}/tools_schema.json`);
 ```
 
 **Python** (structured response):
+
 ```python
 return {
     "status": "success",
@@ -79,6 +85,7 @@ return {
 ```
 
 **Benefits**:
+
 - Agent can programmatically check success
 - Contains all relevant metadata
 - Human-readable message included
@@ -89,13 +96,15 @@ return {
 ### 3. Path Resolution
 
 **TypeScript** (hardcoded):
+
 ```typescript
-const TOOLS_DIR = path.join(ROOT_DIR, 'src/tools');
-const SKILLS_DIR = path.join(ROOT_DIR, 'src/skills');
-const OUTPUT_DIR = path.join(ROOT_DIR, 'output');
+const TOOLS_DIR = path.join(ROOT_DIR, "src/tools");
+const SKILLS_DIR = path.join(ROOT_DIR, "src/skills");
+const OUTPUT_DIR = path.join(ROOT_DIR, "output");
 ```
 
 **Python** (configurable with defaults):
+
 ```python
 TOOLS_DIR = AGENT_GENERATOR_ROOT / "src" / "tools"
 SKILLS_DIR = AGENT_GENERATOR_ROOT / "src" / "skills"
@@ -111,6 +120,7 @@ def generate_tool_schemas(
 ```
 
 **Benefits**:
+
 - Can be called from different working directories
 - Supports custom paths for testing
 - Defaults match original behavior
@@ -120,14 +130,16 @@ def generate_tool_schemas(
 ### 4. Error Handling
 
 **TypeScript** (minimal):
+
 ```typescript
 if (!generator) {
-  console.error('Failed to create schema generator');
+  console.error("Failed to create schema generator");
   return;
 }
 ```
 
 **Python** (comprehensive):
+
 ```python
 try:
     # Operation
@@ -151,6 +163,7 @@ except Exception as e:
 ```
 
 **Benefits**:
+
 - Never crashes agent
 - Structured error responses
 - Error type included for debugging
@@ -161,9 +174,10 @@ except Exception as e:
 ### 5. XML Generation
 
 **TypeScript** (string concatenation):
+
 ```typescript
 for (const skillFile of skillFiles) {
-  const content = fs.readFileSync(skillFile, 'utf-8');
+  const content = fs.readFileSync(skillFile, "utf-8");
   skillsXml += `  <skill>\n`;
   skillsXml += `    <name>${skillName}</name>\n`;
   // ...
@@ -171,6 +185,7 @@ for (const skillFile of skillFiles) {
 ```
 
 **Python** (list + join):
+
 ```python
 skills_xml = ['<available_skills>']
 
@@ -183,6 +198,7 @@ skills_xml_str = '\n'.join(skills_xml)
 ```
 
 **Benefits**:
+
 - More Pythonic (list comprehension possible)
 - Deterministic output (sorted files)
 - Easier to test
@@ -213,13 +229,14 @@ def generate_all(
 if __name__ == "__main__":
     # Mock ToolContext for manual testing
     mock_context = MockToolContext()
-    
+
     if sys.argv[1] == "schemas":
         result = generate_tool_schemas(mock_context)
     # ...
 ```
 
 **Usage**:
+
 ```bash
 python agent/tools/generate_schemas.py all
 python agent/tools/generate_schemas.py schemas
@@ -231,6 +248,7 @@ python agent/tools/generate_schemas.py prompt
 ### 3. GenAI Toolbox Integration
 
 **Configuration** (genai-toolbox/tools.yaml):
+
 ```yaml
 tools:
   generate_tool_schemas:
@@ -248,6 +266,7 @@ tools:
 ```
 
 **Benefits**:
+
 - Tools discoverable by GenAI Toolbox CLI
 - Can be invoked via `genai-toolbox run generate_tool_schemas`
 - Integrates with larger tooling ecosystem
@@ -280,24 +299,24 @@ from unittest.mock import MagicMock
 def test_generate_tool_schemas_success():
     context = MagicMock()
     context.state = {}
-    
+
     result = generate_tool_schemas(
         context,
         tools_dir="agent-generator/src/tools"
     )
-    
+
     assert result["status"] == "success"
     assert result["schemas_count"] > 0
     assert "schemas" in result
 
 def test_generate_tool_schemas_invalid_dir():
     context = MagicMock()
-    
+
     result = generate_tool_schemas(
         context,
         tools_dir="/nonexistent/path"
     )
-    
+
     assert result["status"] == "error"
     assert "not found" in result["message"]
 ```
@@ -367,16 +386,16 @@ genai-toolbox run generate_agent_prompt \
 
 ### New Files
 
-| File | Purpose |
-|------|---------|
-| `agent/tools/generate_schemas.py` | Main tool implementation |
-| `agent/tools/README.md` | Complete tool documentation |
-| `docs/GENERATE_SCHEMAS_CONVERSION.md` | This document |
+| File                                  | Purpose                     |
+| ------------------------------------- | --------------------------- |
+| `agent/tools/generate_schemas.py`     | Main tool implementation    |
+| `agent/tools/README.md`               | Complete tool documentation |
+| `docs/GENERATE_SCHEMAS_CONVERSION.md` | This document               |
 
 ### Modified Files
 
-| File | Changes |
-|------|---------|
+| File                       | Changes                   |
+| -------------------------- | ------------------------- |
 | `genai-toolbox/tools.yaml` | Added tool configurations |
 
 ---
@@ -430,6 +449,7 @@ The Python implementation preserves the core logic from the TypeScript version w
 **Python Conversion**: [agent/tools/generate_schemas.py](agent/tools/generate_schemas.py)
 
 **Skills Reference Implementation**: The Python [skills-ref library](https://github.com/anthropics/skills-ref) provides:
+
 - `skills-ref validate <path>` - Validate skill directories
 - `skills-ref to-prompt <path>...` - Generate `<available_skills>` XML
 
@@ -440,6 +460,7 @@ Our implementation follows similar patterns but integrates with Google ADK agent
 ## Support
 
 For questions or issues:
+
 1. Review [agent/tools/README.md](agent/tools/README.md)
 2. Check [REFACTORING_PATTERNS.md](docs/REFACTORING_PATTERNS.md)
 3. Examine test files for usage examples

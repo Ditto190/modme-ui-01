@@ -5,6 +5,7 @@
 ## Actions Performed
 
 ### 1. Node.js Version Management Setup
+
 - **Tool Used:** nvm (Node Version Manager for Windows)
 - **Version Detected:** nvm v1.1.12
 - **Actions:**
@@ -15,6 +16,7 @@
   - Verified npm installation: `npm --version` → v10.8.3
 
 ### 2. Package Dependency Fixes
+
 - **Issue:** Multiple packages required Node.js `^20.17.0 || >=22.9.0` but system was running v21.7.3
 - **Resolution:** Upgraded to Node.js v22.9.0, which eliminated all EBADENGINE warnings
 - **Remaining Vulnerabilities:**
@@ -24,10 +26,12 @@
   - Breaking change: Would upgrade `@copilotkit/react-ui` from current version to v0.2.0
 
 ### 3. Additional Packages Installed
+
 - **supabase:** Installed as dev dependency (`npm install supabase --save-dev`)
 - **next:** Updated to latest version (`npm install next@latest`)
 
 ### 4. Documentation Updates
+
 - **File:** [README.md](README.md)
 - **Changes:**
   - Added nvm setup instructions in Prerequisites section
@@ -41,32 +45,34 @@
   - Clarified that Node.js 22.9.0+ is recommended for full compatibility
 
 ### 5. MCP Configuration
+
 - **File:** `mcp.json` (located in VS Code user settings)
 - **Requested Action:** Comment out the `com.supabase/mcp` server configuration (lines 33-52)
 - **Reason:** Better Supabase MCP version available; local version may be used later
 - **Status:** Manual edit required (file outside workspace)
-  
+
 **Commented-out configuration for manual application:**
+
 ```jsonc
 // "com.supabase/mcp": {
-// 	"type": "stdio",
-// 	"command": "npx",
-// 	"args": [
-// 		"--project-ref",
-// 		"${input:project-ref}",
-// 		"--read-only",
-// 		"${input:read-only}",
-// 		"--features",
-// 		"${input:features}",
-// 		"--api-url",
-// 		"${input:api-url}",
-// 		"@supabase/mcp-server-supabase@0.5.10"
-// 	],
-// 	"env": {
-// 		"SUPABASE_ACCESS_TOKEN": "${input:SUPABASE_ACCESS_TOKEN}"
-// 	},
-// 	"gallery": "https://api.mcp.github.com",
-// 	"version": "0.5.10"
+//  "type": "stdio",
+//  "command": "npx",
+//  "args": [
+//   "--project-ref",
+//   "${input:project-ref}",
+//   "--read-only",
+//   "${input:read-only}",
+//   "--features",
+//   "${input:features}",
+//   "--api-url",
+//   "${input:api-url}",
+//   "@supabase/mcp-server-supabase@0.5.10"
+//  ],
+//  "env": {
+//   "SUPABASE_ACCESS_TOKEN": "${input:SUPABASE_ACCESS_TOKEN}"
+//  },
+//  "gallery": "https://api.mcp.github.com",
+//  "version": "0.5.10"
 // }
 ```
 
@@ -99,9 +105,11 @@ nvm list
 ## Next Steps (Optional)
 
 1. **Address Remaining Vulnerabilities:**
+
    ```bash
    npm audit fix --force
    ```
+
    - **Warning:** This will upgrade `@copilotkit/react-ui` to v0.2.0 (breaking change)
    - Review [CopilotKit documentation](https://docs.copilotkit.ai) for migration guide
 
@@ -111,9 +119,11 @@ nvm list
    - Use the provided commented-out configuration above
 
 3. **Test the Setup:**
+
    ```bash
    npm run dev
    ```
+
    - This should start both the UI (port 3000) and agent (port 8000) servers
    - Verify no Node.js engine warnings appear
 
@@ -134,7 +144,8 @@ export GOOGLE_API_KEY="your-google-api-key-here"
 
 ## Troubleshooting
 
-### If you need to switch Node.js versions:
+### If you need to switch Node.js versions
+
 ```bash
 # List available versions
 nvm list
@@ -143,7 +154,8 @@ nvm list
 nvm use 22.9.0
 ```
 
-### If you encounter package installation issues:
+### If you encounter package installation issues
+
 ```bash
 # Clear npm cache
 npm cache clean --force
@@ -153,7 +165,8 @@ rm -rf node_modules
 npm install
 ```
 
-### If the agent server fails to start:
+### If the agent server fails to start
+
 ```bash
 # Verify Python virtual environment
 cd agent

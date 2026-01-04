@@ -71,6 +71,7 @@ agent-generator/src/skills/
 ### Step 1: Download from GitHub
 
 The converter uses the GitHub API to:
+
 1. Fetch SKILL.md with frontmatter and body
 2. Download all files in `scripts/`, `references/`, `assets/`
 3. Preserve directory structure
@@ -78,6 +79,7 @@ The converter uses the GitHub API to:
 ### Step 2: Parse and Validate
 
 Validates against [Agent Skills Specification](https://agentskills.io/specification):
+
 - ✅ Frontmatter format (name, description, license)
 - ✅ Naming conventions (hyphen-case, max 64 chars)
 - ✅ Description completeness (50-1024 chars, includes triggers)
@@ -100,10 +102,10 @@ from typing import Dict, Any
 def rotate_pdf(tool_context: ToolContext, **kwargs) -> Dict[str, Any]:
     """
     Execute rotate_pdf.py from pdf-editor skill
-    
+
     Args:
         **kwargs: Parameters for the script
-    
+
     Returns:
         Dictionary with status and result
     """
@@ -124,7 +126,7 @@ tools:
     parameters:
       - name: input
         type: string
-        description: 'Input for the tool'
+        description: "Input for the tool"
 ```
 
 ### Step 5: Add ModMe Metadata
@@ -204,7 +206,7 @@ workbench_agent = LlmAgent(
 def load_skill(skill_name: str):
     """Dynamically load skill and register tools"""
     skill_path = Path(f"agent-generator/src/skills/{skill_name}")
-    
+
     # Load tools.py
     spec = importlib.util.spec_from_file_location(
         f"skills.{skill_name}",
@@ -212,7 +214,7 @@ def load_skill(skill_name: str):
     )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    
+
     # Return all tool functions
     return [
         getattr(module, name)
@@ -264,7 +266,7 @@ tools:
         description: "getWeather"
       - name: input_schema
         type: object
-        description: {...}
+        description: { ... }
 ```
 
 ## Validation
@@ -278,7 +280,7 @@ node scripts/knowledge-management/skill-spec-validator.js \
 
 # Output:
 # ✅ Skill is valid!
-# 
+#
 # 📊 Metrics:
 #    - Body: 347 lines, 2,850 words
 #    - Description: 156 chars, 24 words
@@ -287,11 +289,11 @@ node scripts/knowledge-management/skill-spec-validator.js \
 
 ### Common Validation Errors
 
-| Error | Fix |
-|-------|-----|
-| `Invalid name format` | Use lowercase with hyphens only |
-| `Description too short` | Add more detail + triggers (min 50 chars) |
-| `Body too long` | Split into `references/` files (<500 lines) |
+| Error                         | Fix                                                                            |
+| ----------------------------- | ------------------------------------------------------------------------------ |
+| `Invalid name format`         | Use lowercase with hyphens only                                                |
+| `Description too short`       | Add more detail + triggers (min 50 chars)                                      |
+| `Body too long`               | Split into `references/` files (<500 lines)                                    |
 | `Unexpected frontmatter keys` | Remove invalid keys (only name, description, license, allowed-tools, metadata) |
 
 ## Best Practices
@@ -304,9 +306,11 @@ Keep SKILL.md body concise (<400 lines ideal):
 # PDF Editor
 
 ## Quick Start
+
 [Basic usage...]
 
 ## Advanced Features
+
 - **Form filling**: See [FORMS.md](references/FORMS.md)
 - **API reference**: See [REFERENCE.md](references/REFERENCE.md)
 ```
@@ -393,10 +397,10 @@ node -e "const {generateZodFromJSONSchema} = require('./schema-crawler'); \
 
 ## Related Documentation
 
-- **Agent Skills Specification**: https://agentskills.io/specification
-- **Anthropic Skills Repo**: https://github.com/anthropics/skills
+- **Agent Skills Specification**: <https://agentskills.io/specification>
+- **Anthropic Skills Repo**: <https://github.com/anthropics/skills>
 - **Schema Crawler README**: [agent-generator/SCHEMA_CRAWLER_README.md](../agent-generator/SCHEMA_CRAWLER_README.md)
-- **GenAI Toolbox Docs**: https://googleapis.github.io/genai-toolbox/
+- **GenAI Toolbox Docs**: <https://googleapis.github.io/genai-toolbox/>
 
 ## NPM Scripts
 

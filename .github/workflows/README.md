@@ -5,6 +5,7 @@ This directory contains CI/CD workflows for the ModMe GenUI Workspace.
 ## Workflows
 
 ### `ci.yml` - Continuous Integration
+
 **Trigger**: Push to main/develop/feature branches, Pull Requests
 
 Runs comprehensive checks on every code change:
@@ -20,6 +21,7 @@ Runs comprehensive checks on every code change:
 **Artifacts**: Next.js build output (7 days retention)
 
 ### `devcontainer-build.yml` - DevContainer Validation
+
 **Trigger**: Push to .devcontainer files, Pull Requests, Manual
 
 Validates that the DevContainer builds and works correctly:
@@ -33,6 +35,7 @@ Validates that the DevContainer builds and works correctly:
 **Cache**: Docker layers cached for faster builds
 
 ### `ai-assisted-maintenance.yml` - Automated Maintenance
+
 **Trigger**: Weekly schedule (Monday 9 AM UTC), Manual
 
 Automates routine maintenance tasks:
@@ -62,6 +65,7 @@ Or via GitHub UI: Actions → Select workflow → Run workflow
 ## Workflow Status Badges
 
 Add to README.md:
+
 ```markdown
 [![CI](https://github.com/Ditto190/modme-ui-01/workflows/CI/badge.svg)](https://github.com/Ditto190/modme-ui-01/actions)
 [![DevContainer](https://github.com/Ditto190/modme-ui-01/workflows/DevContainer%20Build/badge.svg)](https://github.com/Ditto190/modme-ui-01/actions)
@@ -70,36 +74,46 @@ Add to README.md:
 ## Environment Variables
 
 ### Required Secrets
+
 These must be set in repository settings:
+
 - None currently required (workflows use GitHub default tokens)
 
 ### Optional Secrets
+
 For enhanced functionality:
+
 - `GOOGLE_API_KEY` - For running agent tests (not in CI currently)
 - `CODECOV_TOKEN` - For code coverage reporting (if added)
 
 ## Customizing Workflows
 
 ### Change Node.js Version
+
 Edit in workflow files:
+
 ```yaml
 - name: Setup Node.js
   uses: actions/setup-node@v4
   with:
-    node-version: '22.9.0'  # Change here
+    node-version: "22.9.0" # Change here
 ```
 
 ### Change Python Version
+
 Edit in workflow files:
+
 ```yaml
 - name: Setup Python
   uses: actions/setup-python@v5
   with:
-    python-version: '3.12'  # Change here
+    python-version: "3.12" # Change here
 ```
 
 ### Add New CI Steps
+
 Add to `ci.yml` under `jobs`:
+
 ```yaml
 your-new-job:
   name: Your Job Name
@@ -112,11 +126,13 @@ your-new-job:
 ```
 
 ### Change Maintenance Schedule
+
 Edit in `ai-assisted-maintenance.yml`:
+
 ```yaml
 on:
   schedule:
-    - cron: '0 9 * * 1'  # Change cron expression
+    - cron: "0 9 * * 1" # Change cron expression
 ```
 
 Cron format: `minute hour day month weekday`
@@ -124,6 +140,7 @@ Cron format: `minute hour day month weekday`
 ## Troubleshooting
 
 ### CI Failing on Lint
+
 ```bash
 # Run locally to reproduce
 npm run lint
@@ -133,6 +150,7 @@ npm run lint -- --fix
 ```
 
 ### CI Failing on Type Check
+
 ```bash
 # Run locally
 npx tsc --noEmit
@@ -141,11 +159,13 @@ npx tsc --noEmit
 ```
 
 ### DevContainer Build Failing
+
 1. Test locally: `docker build -f .devcontainer/Dockerfile .`
 2. Check for syntax errors in Dockerfile
 3. Verify all base images are accessible
 
 ### Maintenance Workflow Not Creating Issues
+
 1. Check repository settings → Actions → General → Workflow permissions
 2. Ensure "Read and write permissions" is enabled
 3. Or grant specific permission in workflow file
@@ -153,16 +173,19 @@ npx tsc --noEmit
 ## Best Practices
 
 ### Before Pushing
+
 1. Run `npm run lint` locally
 2. Run `npx tsc --noEmit` for type checking
 3. Test builds with `npm run build`
 
 ### Pull Requests
+
 1. Ensure all CI checks pass
 2. Review workflow logs if failures occur
 3. Fix issues before requesting review
 
 ### Maintenance
+
 1. Review weekly maintenance issues
 2. Update dependencies in separate PRs
 3. Test thoroughly after updates
@@ -170,17 +193,22 @@ npx tsc --noEmit
 ## Performance
 
 ### Caching
+
 Workflows use caching to speed up runs:
+
 - npm dependencies cached by `actions/setup-node`
 - Python dependencies cached by uv
 - Docker layers cached for DevContainer builds
 
 ### Parallel Execution
+
 CI jobs run in parallel when possible:
+
 - Lint and type-check run simultaneously
 - Build verification runs independently
 
 ### Optimization Tips
+
 1. Keep dependencies minimal
 2. Use cache-friendly tools (uv for Python)
 3. Split large jobs into smaller parallel jobs
@@ -188,18 +216,23 @@ CI jobs run in parallel when possible:
 ## Security
 
 ### Workflow Permissions
+
 Workflows use minimal permissions:
+
 - `contents: read` - Read repository code
 - `issues: write` - Create maintenance issues (maintenance workflow only)
 - `packages: read` - Read GitHub packages (if needed)
 
 ### Secrets Management
+
 - Never log secrets
 - Use GitHub Secrets for sensitive data
 - Rotate tokens regularly
 
 ### Third-Party Actions
+
 All actions are from trusted sources:
+
 - `actions/*` - Official GitHub actions
 - `devcontainers/*` - Official DevContainers actions
 - Always pin to specific versions (v4, v5, etc.)

@@ -29,26 +29,26 @@ from typing import Dict, Any
 def my_tool(tool_context: ToolContext, param: str) -> Dict[str, Any]:
     """
     Tool description for agent instructions.
-    
+
     Args:
         param: Description with type info
-    
+
     Returns:
         Dictionary with status and result
     """
     # 1. Validate inputs
     if not param or not isinstance(param, str):
         return {"status": "error", "message": "Invalid param"}
-    
+
     # 2. Get state safely
     state = tool_context.state.get("key", default_value)
-    
+
     # 3. Perform operation
     result = perform_operation(param)
-    
+
     # 4. Update state if needed
     tool_context.state["key"] = result
-    
+
     # 5. Return structured response
     return {
         "status": "success",
@@ -60,6 +60,7 @@ def my_tool(tool_context: ToolContext, param: str) -> Dict[str, Any]:
 ### Return Value Convention
 
 All tools return dictionaries with:
+
 - **status**: `"success"`, `"error"`, or `"warning"`
 - **message**: Human-readable status message
 - Additional keys for tool-specific data
@@ -77,6 +78,7 @@ All tools return dictionaries with:
 **Source**: Converted from [agent-generator/src/scripts/generate.ts](../../agent-generator/src/scripts/generate.ts)
 
 **Usage**:
+
 ```python
 from agent.tools.generate_schemas import generate_tool_schemas
 
@@ -95,6 +97,7 @@ result = generate_tool_schemas(
 ```
 
 **Configuration** (genai-toolbox/tools.yaml):
+
 ```yaml
 generate_tool_schemas:
   kind: python
@@ -119,6 +122,7 @@ generate_tool_schemas:
 **Source**: Converted from [agent-generator/src/scripts/generate.ts](../../agent-generator/src/scripts/generate.ts)
 
 **Usage**:
+
 ```python
 from agent.tools.generate_schemas import generate_agent_prompt
 
@@ -138,25 +142,27 @@ result = generate_agent_prompt(
 ```
 
 **Output Format**:
+
 ```markdown
 # AI Agent System Prompt
 
 You are a helpful AI assistant equipped with specific skills and tools.
 
 <available_skills>
-  <skill>
-    <name>mcp-builder</name>
-    <description>
-      Guide for creating high-quality MCP servers...
-    </description>
-    <instructions>
-      [Full SKILL.md content...]
-    </instructions>
-  </skill>
-  ...
+<skill>
+<name>mcp-builder</name>
+<description>
+Guide for creating high-quality MCP servers...
+</description>
+<instructions>
+[Full SKILL.md content...]
+</instructions>
+</skill>
+...
 </available_skills>
 
 ## Instructions
+
 1. Review the <available_skills> to understand what you can do.
 2. If a user request matches a skill's capabilities, follow those instructions.
 3. Use the provided tools when necessary to fulfill requests.
@@ -169,6 +175,7 @@ You are a helpful AI assistant equipped with specific skills and tools.
 **Purpose**: Generate both tool schemas and agent prompt in one operation
 
 **Usage**:
+
 ```python
 from agent.tools.generate_schemas import generate_all
 
@@ -197,6 +204,7 @@ result = generate_all(
 **Documentation**: See [agent-generator/SCHEMA_CRAWLER_README.md](../../agent-generator/SCHEMA_CRAWLER_README.md)
 
 **Usage**:
+
 ```python
 from agent.tools.schema_crawler_tool import generate_zod_from_json_schema
 
@@ -222,6 +230,7 @@ result = generate_zod_from_json_schema(
 **Purpose**: Generate complete Zod module for MCP tool with input/output schemas
 
 **Usage**:
+
 ```python
 from agent.tools.schema_crawler_tool import generate_zod_module
 
@@ -259,17 +268,17 @@ from agent.tools.generate_schemas import generate_all
 
 def regenerate_schemas():
     """Regenerate all agent schemas and prompts."""
-    
+
     # Mock ToolContext for script usage
     class MockContext:
         def __init__(self):
             self.state = {}
-    
+
     context = MockContext()
-    
+
     # Generate everything
     result = generate_all(context)
-    
+
     if result["status"] == "success":
         print(f"✅ Generated {result['schemas_result']['schemas_count']} schemas")
         print(f"✅ Generated prompt from {result['prompt_result']['skills_count']} skills")
@@ -343,11 +352,11 @@ def my_new_tool(
 ) -> Dict[str, Any]:
     """
     Tool description for agent.
-    
+
     Args:
         param1: Required parameter description
         param2: Optional parameter (default: 10)
-    
+
     Returns:
         Dictionary with status and result
     """
@@ -355,17 +364,17 @@ def my_new_tool(
         # Validate inputs
         if not param1:
             return {"status": "error", "message": "param1 is required"}
-        
+
         # Perform operation
         result = perform_operation(param1, param2)
-        
+
         # Return success
         return {
             "status": "success",
             "message": f"Completed operation on {param1}",
             "result": result
         }
-    
+
     except Exception as e:
         return {
             "status": "error",
@@ -374,7 +383,7 @@ def my_new_tool(
         }
 ```
 
-2. **Register in GenAI Toolbox**
+1. **Register in GenAI Toolbox**
 
 ```yaml
 # genai-toolbox/tools.yaml
@@ -395,7 +404,7 @@ tools:
         required: false
 ```
 
-3. **Add Tests**
+1. **Add Tests**
 
 ```python
 # tests/test_my_new_tool.py
@@ -406,17 +415,17 @@ from unittest.mock import MagicMock
 def test_my_new_tool_success():
     context = MagicMock()
     context.state = {}
-    
+
     result = my_new_tool(context, param1="test", param2=20)
-    
+
     assert result["status"] == "success"
     assert "result" in result
 
 def test_my_new_tool_invalid_input():
     context = MagicMock()
-    
+
     result = my_new_tool(context, param1="")
-    
+
     assert result["status"] == "error"
     assert "required" in result["message"]
 ```
@@ -492,6 +501,7 @@ pytest --cov=agent.tools tests/
 ## Support
 
 For issues or questions:
+
 1. Check tool docstrings for usage details
 2. Review [REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md) for patterns
 3. Run tool with `--help` flag (if CLI entry point exists)

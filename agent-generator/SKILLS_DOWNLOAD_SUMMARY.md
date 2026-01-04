@@ -1,7 +1,7 @@
 # Anthropic Skills Download Summary
 
 **Date**: January 2025  
-**Source**: https://github.com/anthropics/skills  
+**Source**: <https://github.com/anthropics/skills>  
 **Branch Used**: `main` (fallback from requested branches)  
 **Status**: ✅ **Complete - All 11 skills downloaded successfully**
 
@@ -23,15 +23,18 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ### Requested Branches
 
 **❌ klazuka/expor**
+
 - Status: Does not exist (404 errors)
 - Evidence: All skill SKILL.md files returned "Not found" from raw.githubusercontent.com
 - Fallback: Used main branch instead
 
 **⏳ ba8e7042a9d6b788772cf409c0f421ca81244072/spec**
+
 - Status: Not yet tested
 - Next: Should try fetching from this commit hash branch
 
 **✅ main**
+
 - Status: Fully working
 - Contains: All 11 requested skills with bundled resources
 - Used as fallback successfully
@@ -41,6 +44,7 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ## Downloaded Skills Inventory
 
 ### 1. **skill-creator** (Meta-Skill)
+
 - **Purpose**: Guide for creating effective skills
 - **Description**: Template and best practices for skill development
 - **Bundled Resources**:
@@ -53,6 +57,7 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ---
 
 ### 2. **pdf**
+
 - **Purpose**: PDF manipulation toolkit
 - **Description**: Work with PDFs—extract text, images, form fields, merge files
 - **License**: Proprietary (Anthropic)
@@ -64,6 +69,7 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ---
 
 ### 3. **docx**
+
 - **Purpose**: Document creation and editing
 - **Description**: Create, edit, and format Word documents programmatically
 - **License**: Proprietary (Anthropic)
@@ -75,6 +81,7 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ---
 
 ### 4. **pptx**
+
 - **Purpose**: Presentation creation
 - **Description**: Generate and modify PowerPoint presentations
 - **License**: Proprietary (Anthropic)
@@ -91,6 +98,7 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ---
 
 ### 5. **xlsx**
+
 - **Purpose**: Spreadsheet creation
 - **Description**: Create and manipulate Excel spreadsheets
 - **License**: Proprietary (Anthropic)
@@ -101,6 +109,7 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ---
 
 ### 6. **mcp-builder**
+
 - **Purpose**: MCP server generation tool
 - **Description**: Create high-quality Model Context Protocol servers (Python FastMCP, Node/TypeScript SDK)
 - **Bundled Resources**:
@@ -115,6 +124,7 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ---
 
 ### 7. **theme-factory**
+
 - **Purpose**: Styling/theming toolkit
 - **Description**: Create consistent visual themes and styling systems
 - **Bundled Resources**: None (SKILL.md only)
@@ -124,6 +134,7 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ---
 
 ### 8. **web-artifacts-builder**
+
 - **Purpose**: Web artifact builder
 - **Description**: Build modern web applications with React, shadcn/ui, and Tailwind CSS
 - **Bundled Resources**:
@@ -137,6 +148,7 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ---
 
 ### 9. **algorithmic-art**
+
 - **Purpose**: Generative art with p5.js
 - **Description**: Create algorithmic art and visualizations using p5.js
 - **Bundled Resources**: None (SKILL.md only)
@@ -146,6 +158,7 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ---
 
 ### 10. **brand-guidelines**
+
 - **Purpose**: Anthropic brand styling guide
 - **Description**: Official Anthropic brand standards, colors, typography, voice
 - **Bundled Resources**: None (SKILL.md only)
@@ -155,6 +168,7 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ---
 
 ### 11. **internal-comms**
+
 - **Purpose**: Internal communications templates
 - **Description**: Templates and best practices for internal company communications
 - **Bundled Resources**: None (SKILL.md only)
@@ -176,7 +190,6 @@ description: |
   with specialized knowledge, workflows, or tool integrations.
 license: MIT
 ---
-
 # Skill Creator
 
 This skill provides guidance for creating effective skills.
@@ -223,6 +236,7 @@ This skill provides guidance for creating effective skills.
 ### Fetch Script: `scripts/knowledge-management/fetch-anthropic-skills.js`
 
 **Features**:
+
 - Direct GitHub HTTPS/API access (no external dependencies except built-in https)
 - Frontmatter extraction via regex
 - Rate limiting (500ms delays between skills)
@@ -231,6 +245,7 @@ This skill provides guidance for creating effective skills.
 - Clear success/failure reporting
 
 **CLI Usage**:
+
 ```bash
 # Default (main branch)
 node scripts/knowledge-management/fetch-anthropic-skills.js
@@ -241,6 +256,7 @@ node scripts/knowledge-management/fetch-anthropic-skills.js ba8e7042a9d6b788772c
 ```
 
 **Exit Codes**:
+
 - 0: All skills fetched successfully
 - 1: One or more skills failed
 
@@ -259,19 +275,19 @@ node scripts/knowledge-management/fetch-anthropic-skills.js ba8e7042a9d6b788772c
 
 ### Successful Downloads
 
-| # | Skill Name | SKILL.md | Scripts | References | Assets | Total Files |
-|---|------------|----------|---------|------------|--------|-------------|
-| 1 | skill-creator | ✅ | 5+ files | 2+ files | ✅ | 10+ |
-| 2 | pdf | ✅ | 5 files | - | - | 6 |
-| 3 | docx | ✅ | ✅ | - | - | 5+ |
-| 4 | pptx | ✅ | 5 files | - | - | 6 |
-| 5 | xlsx | ✅ | - | - | - | 1 |
-| 6 | mcp-builder | ✅ | 4 files | - | - | 5 |
-| 7 | theme-factory | ✅ | - | - | - | 1 |
-| 8 | web-artifacts-builder | ✅ | 3 files | - | - | 4 |
-| 9 | algorithmic-art | ✅ | - | - | - | 1 |
-| 10 | brand-guidelines | ✅ | - | - | - | 1 |
-| 11 | internal-comms | ✅ | - | - | - | 1 |
+| #   | Skill Name            | SKILL.md | Scripts  | References | Assets | Total Files |
+| --- | --------------------- | -------- | -------- | ---------- | ------ | ----------- |
+| 1   | skill-creator         | ✅       | 5+ files | 2+ files   | ✅     | 10+         |
+| 2   | pdf                   | ✅       | 5 files  | -          | -      | 6           |
+| 3   | docx                  | ✅       | ✅       | -          | -      | 5+          |
+| 4   | pptx                  | ✅       | 5 files  | -          | -      | 6           |
+| 5   | xlsx                  | ✅       | -        | -          | -      | 1           |
+| 6   | mcp-builder           | ✅       | 4 files  | -          | -      | 5           |
+| 7   | theme-factory         | ✅       | -        | -          | -      | 1           |
+| 8   | web-artifacts-builder | ✅       | 3 files  | -          | -      | 4           |
+| 9   | algorithmic-art       | ✅       | -        | -          | -      | 1           |
+| 10  | brand-guidelines      | ✅       | -        | -          | -      | 1           |
+| 11  | internal-comms        | ✅       | -        | -          | -      | 1           |
 
 ---
 
@@ -280,21 +296,25 @@ node scripts/knowledge-management/fetch-anthropic-skills.js ba8e7042a9d6b788772c
 ### Most Valuable Scripts
 
 **pptx skill**:
+
 - `html2pptx.js` - Convert HTML to PowerPoint
 - `inventory.py` - Analyze presentation structure
 - `rearrange.py`, `replace.py`, `thumbnail.py` - Slide manipulation
 
 **mcp-builder skill**:
+
 - `connections.py` - Test MCP server connectivity
 - `evaluation.py` - Assess server quality
 - `example_evaluation.xml` - Sample evaluation report
 
 **web-artifacts-builder skill**:
+
 - `init-artifact.sh` - Scaffold new web project
 - `bundle-artifact.sh` - Package artifact for deployment
 - `shadcn-components.tar.gz` - Pre-packaged shadcn/ui components (~5MB archive)
 
 **skill-creator skill**:
+
 - `init_skill.py` - Initialize new skill structure
 - `package_skill.py` - Package skill for distribution
 - `quick_validate.py` - Validate skill against spec
@@ -306,6 +326,7 @@ node scripts/knowledge-management/fetch-anthropic-skills.js ba8e7042a9d6b788772c
 ### Immediate Actions
 
 1. **Validate converted skills**:
+
    ```bash
    node scripts/knowledge-management/skill-spec-validator.js agent-generator/src/skills/skill-creator
    node scripts/knowledge-management/skill-spec-validator.js agent-generator/src/skills/mcp-builder
@@ -318,6 +339,7 @@ node scripts/knowledge-management/fetch-anthropic-skills.js ba8e7042a9d6b788772c
    - Test bundled scripts with sample data
 
 3. **Try spec branch**:
+
    ```bash
    node scripts/knowledge-management/fetch-anthropic-skills.js ba8e7042a9d6b788772cf409c0f421ca81244072
    ```
@@ -329,16 +351,16 @@ node scripts/knowledge-management/fetch-anthropic-skills.js ba8e7042a9d6b788772c
 
 ### Integration Tasks
 
-5. **Register skills with agent**:
+1. **Register skills with agent**:
    - Update agent/main.py to load skills dynamically
    - Add skill selection logic based on user intent
 
-6. **Test bundled resources**:
+2. **Test bundled resources**:
    - Verify Python scripts are executable
    - Test JavaScript utilities (html2pptx.js)
    - Extract and test shadcn-components.tar.gz
 
-7. **Documentation updates**:
+3. **Documentation updates**:
    - Update agent-generator README
    - Create skill usage examples
    - Document conversion process
@@ -352,14 +374,16 @@ node scripts/knowledge-management/fetch-anthropic-skills.js ba8e7042a9d6b788772c
 **Problem**: User requested klazuka/expor branch, but it returned 404 errors.
 
 **Evidence**:
+
 ```
-❌ Failed to fetch skill-creator: Not found: 
+❌ Failed to fetch skill-creator: Not found:
 https://raw.githubusercontent.com/anthropics/skills/klazuka/expor/skills/skill-creator/SKILL.md
 ```
 
 **Solution**: Pivoted to main branch which contains all requested skills.
 
 **Recommendation**: Check GitHub repository for available branches:
+
 ```bash
 # List all branches
 gh api repos/anthropics/skills/branches --jq '.[].name'
@@ -438,7 +462,7 @@ agent-generator/src/skills/
 ✅ **Conversion applied correctly** (YAML frontmatter → local format)  
 ✅ **No rate limit errors** (500ms delays effective)  
 ✅ **Clear file organization** (one directory per skill)  
-✅ **Source attribution added** (GitHub links in footers)  
+✅ **Source attribution added** (GitHub links in footers)
 
 ---
 

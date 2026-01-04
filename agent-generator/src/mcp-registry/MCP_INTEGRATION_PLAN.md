@@ -2,7 +2,7 @@
 
 **Status**: Active  
 **Last Updated**: 2026-01-02  
-**Owner**: Ditto Workspace  
+**Owner**: Ditto Workspace
 
 This plan bridges your Generative UI Workspace with the claude-prompts MCP ecosystem and the broader MCP registry. Goal: **Schema-driven agent generation with auto-provisioning and dynamic tool reflection**.
 
@@ -11,7 +11,9 @@ This plan bridges your Generative UI Workspace with the claude-prompts MCP ecosy
 ## Part 1: MCP Registry Indexer
 
 ### Goal
+
 Parse MCP server specs (from `modelcontextprotocol/servers`) and auto-generate:
+
 - Zod schemas for tool parameters
 - TypeScript type definitions
 - "Molecule" wrappers for CopilotKit orchestration
@@ -43,7 +45,7 @@ apps/agent-generator/
 // Return: ServerSpec[] with tools, parameters, documentation
 
 interface ServerSpec {
-  id: string;                    // "filesystem", "git", etc.
+  id: string; // "filesystem", "git", etc.
   name: string;
   description: string;
   tools: MCPTool[];
@@ -70,7 +72,7 @@ Transform JSON schemas into Zod:
 export function generateZodFromJSONSchema(
   schema: JSONSchema,
   toolName: string
-): { zodSchema: string; typeDefinition: string }
+): { zodSchema: string; typeDefinition: string };
 ```
 
 **Why**: Zod gives you runtime validation + type safety. Generated types become your source of truth.
@@ -85,15 +87,15 @@ Wrap raw MCP tools into "Molecules" (high-level components):
 // Output: render_file_browser(), render_code_editor(), etc.
 
 interface Molecule {
-  id: string;              // "render_file_browser"
+  id: string; // "render_file_browser"
   description: string;
   underlyingTools: string[]; // ["filesystem.read", "filesystem.list"]
   parameters: ZodSchema;
-  semantics: string;       // "allows user to navigate and select files"
+  semantics: string; // "allows user to navigate and select files"
 }
 ```
 
-**Why**: Your GenUI architecture prefers Molecules over raw atoms. This keeps agents focused on *intent*, not API details.
+**Why**: Your GenUI architecture prefers Molecules over raw atoms. This keeps agents focused on _intent_, not API details.
 
 #### 1.4 Agent Instructions Generator (`agent-instructions.ts`)
 
@@ -106,25 +108,32 @@ Emit dynamic agent prompts based on available tools:
 export function generateAgentInstructions(
   molecules: Molecule[],
   context: { task: string; constraints: string[] }
-): string
+): string;
 ```
 
 **Output example**:
+
 ```markdown
 # Available Tools
 
 ## Code Editor (render_code_editor)
+
 Allows editing source files with syntax highlighting.
+
 - Input: `filepath: string, content: string`
 - Useful when: User wants to modify code
 
 ## Git Operations (git_commit)
+
 Commit changes with automatic message generation.
+
 - Input: `message: string, files: string[]`
 - Use after: User has made edits
 
 ## Sequential Thinking
+
 Break complex problems into steps.
+
 - Input: `problem: string, max_steps: number`
 ```
 
@@ -133,7 +142,9 @@ Break complex problems into steps.
 ## Part 2: Devcontainer Integration
 
 ### Goal
+
 Embed MCP server provisioning into `.devcontainer/devcontainer.json` so:
+
 - Local Claude Code Desktop automatically sees all tools
 - GitHub Codespaces has tools pre-installed
 - VS Code Dev Containers work out-of-box
@@ -161,7 +172,7 @@ Update `.devcontainer/devcontainer.json`:
 {
   "name": "Ditto Workspace",
   "image": "mcr.microsoft.com/devcontainers/typescript-node:22-bullseye",
-  
+
   "features": {
     "ghcr.io/devcontainers/features/python:1": {
       "version": "3.11"
@@ -177,11 +188,7 @@ Update `.devcontainer/devcontainer.json`:
 
   "customizations": {
     "vscode": {
-      "extensions": [
-        "ms-vscode.vscode-typescript-next",
-        "charliermarsh.ruff",
-        "GitHub.copilot"
-      ],
+      "extensions": ["ms-vscode.vscode-typescript-next", "charliermarsh.ruff", "GitHub.copilot"],
       "settings": {
         "[typescript]": {
           "editor.defaultFormatter": "denoland.deno",
@@ -202,6 +209,7 @@ Update `.devcontainer/devcontainer.json`:
 ```
 
 **Key additions**:
+
 - `mcp-servers/config.json` mount for tool configuration
 - Environment variables for workspace paths
 - `postCreateCommand` to install/start MCP servers
@@ -253,21 +261,29 @@ Create `.devcontainer/mcp-servers/config.json`:
   "mcpServers": {
     "filesystem": {
       "command": "node",
-      "args": ["${HOME}/.mcp-servers/node_modules/@modelcontextprotocol/server-filesystem/build/index.js", "${containerWorkspaceFolder}"],
+      "args": [
+        "${HOME}/.mcp-servers/node_modules/@modelcontextprotocol/server-filesystem/build/index.js",
+        "${containerWorkspaceFolder}"
+      ],
       "env": {
         "MCP_WORKSPACE": "${containerWorkspaceFolder}"
       }
     },
     "git": {
       "command": "node",
-      "args": ["${HOME}/.mcp-servers/node_modules/@modelcontextprotocol/server-git/build/index.js", "${containerWorkspaceFolder}"],
+      "args": [
+        "${HOME}/.mcp-servers/node_modules/@modelcontextprotocol/server-git/build/index.js",
+        "${containerWorkspaceFolder}"
+      ],
       "env": {
         "MCP_WORKSPACE": "${containerWorkspaceFolder}"
       }
     },
     "sequential-thinking": {
       "command": "node",
-      "args": ["${HOME}/.mcp-servers/node_modules/@modelcontextprotocol/server-sequential-thinking/build/index.js"]
+      "args": [
+        "${HOME}/.mcp-servers/node_modules/@modelcontextprotocol/server-sequential-thinking/build/index.js"
+      ]
     },
     "claude-prompts": {
       "command": "npx",
@@ -288,7 +304,9 @@ Create `.devcontainer/mcp-servers/config.json`:
 ## Part 3: Dynamic Schema Reflection
 
 ### Goal
+
 At **parse time** (when user describes a task), dynamically:
+
 1. Extract available tools from active MCP servers
 2. Generate agent instructions that reflect current capabilities
 3. Create specialized prompts for code generation, analysis, etc.
@@ -326,7 +344,7 @@ export async function reflectMCPSchema(serverName: string): Promise<MCPToolSet> 
   // Connect to running MCP server
   // Call: tools.list() or equivalent
   // Parse response: extract schema, description, constraints
-  
+
   return {
     serverId: serverName,
     tools: [
@@ -359,48 +377,54 @@ export function specializeAgent(
   //    - "write code" → code-generation.md
   //    - "debug this" → analysis.md
   //    - "explore data" → data-exploration.md
-  
+
   // 2. Filter tools relevant to task
   //    - code generation → filesystem, git, sequential-thinking
   //    - analysis → web, sequential-thinking
-  
+
   // 3. Inject tool capabilities into instructions
   //    - "You have access to: read_file, write_file, git_commit"
   //    - "Use sequential thinking to break down complex refactors"
-  
+
   // 4. Add safety constraints
   //    - "Never delete files without confirmation"
   //    - "Always run tests after modifications"
-  
+
   return specializedPrompt;
 }
 ```
 
 **Output example**:
+
 ```markdown
 # Agent: Code Generator
 
 You are an expert code synthesizer with access to:
+
 - Filesystem tools (read, write, list, delete)
 - Git tools (commit, push, create branch)
 - Sequential thinking for multi-step refactors
 - claude-prompts orchestration for structured outputs
 
 ## Task
+
 Generate production-ready TypeScript for user's feature request.
 
 ## Safety Constraints
+
 - Confirm before destructive operations
 - Run tests after modifications
 - Create feature branches for experimental changes
 
 ## Available Tools
+
 {detailed tool reference with examples}
 ```
 
 #### 3.3 Instruction Builder (`instruction-builder.ts`)
 
 Compose final agent prompt from:
+
 - Base agent persona
 - Specialized task template
 - Available tools reflection
@@ -411,23 +435,23 @@ export async function buildAgentInstructions(
   task: string,
   context: BuildContext
 ): Promise<AgentInstructions> {
-  const availableTools = await reflectMCPSchema('all');
-  const basePrompt = await loadPrompt('agent-base.md');
+  const availableTools = await reflectMCPSchema("all");
+  const basePrompt = await loadPrompt("agent-base.md");
   const specialization = detectSpecialization(task);
   const specializedPrompt = await loadPrompt(`${specialization}.md`);
-  
+
   const final = compose(
     basePrompt,
     specializedPrompt,
     generateToolReference(availableTools),
     context.constraints
   );
-  
+
   return {
     systemPrompt: final,
     availableTools,
     toolConstraints: buildConstraints(availableTools),
-    recoveryStrategies: buildRecovery(availableTools)
+    recoveryStrategies: buildRecovery(availableTools),
   };
 }
 ```
@@ -443,25 +467,22 @@ Integrate with your orchestration layer:
 // 3. Generate specialized agent instructions
 // 4. Route to appropriate GenUI layer (Static/Declarative/Open-Ended)
 
-export function createAgentAction(
-  task: string,
-  tools: AvailableTools[]
-): CopilotAction {
+export function createAgentAction(task: string, tools: AvailableTools[]): CopilotAction {
   const instructions = buildAgentInstructions(task, { tools });
   const genUIStrategy = selectGenUITier(task, tools);
-  
+
   return {
-    name: `agent:${task.split(' ')[0]}`,
+    name: `agent:${task.split(" ")[0]}`,
     description: task,
     execute: async (input) => {
       const result = await orchestrate({
         systemPrompt: instructions.systemPrompt,
         tools: instructions.availableTools,
         strategy: genUIStrategy,
-        input
+        input,
       });
       return result;
-    }
+    },
   };
 }
 ```
@@ -512,18 +533,21 @@ Agent Instructions → Feed into claude-prompts
 ## Deliverables
 
 ### Phase 1: Registry Indexer (Week 1-2)
+
 - [ ] `registry-fetcher.ts` — Parse MCP servers
 - [ ] `schema-crawler.ts` — JSON Schema → Zod
 - [ ] `molecule-generator.ts` — Wrap into higher-level components
 - [ ] `agent-instructions.ts` — Emit dynamic prompts
 
 ### Phase 2: Devcontainer Integration (Week 2)
+
 - [ ] Update `.devcontainer/devcontainer.json`
 - [ ] Create `post-create-command.sh`
 - [ ] Configure `mcp-servers/config.json`
 - [ ] Document setup process
 
 ### Phase 3: Schema Reflection (Week 3)
+
 - [ ] `schema-reflection.ts` — Runtime tool discovery
 - [ ] `agent-specializer.ts` — Task-specific customization
 - [ ] `instruction-builder.ts` — Compose final prompts
@@ -531,6 +555,7 @@ Agent Instructions → Feed into claude-prompts
 - [ ] Test end-to-end with real MCP servers
 
 ### Phase 4: Validation (Week 4)
+
 - [ ] E2E tests with devcontainer
 - [ ] Agent instruction quality checks
 - [ ] Performance profiling
@@ -555,9 +580,154 @@ Agent Instructions → Feed into claude-prompts
 
 **Why this matters**: Your workspace shifts from "static tool set" to "dynamic, context-aware capability orchestration." Every task automatically gets the right tools, the right instructions, and the right UI tier.
 
-**Integration with claude-prompts**: That MCP server (in the documents you shared) becomes your *orchestration substrate*. Its framework injection, gate system, and style control become how you guide agent behavior without hardcoding.
+**Integration with claude-prompts**: That MCP server (in the documents you shared) becomes your _orchestration substrate_. Its framework injection, gate system, and style control become how you guide agent behavior without hardcoding.
 
 **Safety**: Schema reflection + dynamic instruction building means agents never hallucinate tools. Constraints are injected based on available APIs.
+
+## Part 4: IDE Assistant MCP Servers (✅ COMPLETED 2026-01-04)
+
+### Overview
+
+Integrate AI-assisted coding tools into devcontainer for enhanced developer experience with VSCode refactoring actions, semantic codebase search, and Antigravity/Gemini IDE compatibility.
+
+### Servers Added
+
+1. **smart-coding-mcp** - Semantic search, dependency checking, workspace indexing
+   - Tool: `a_semantic_search` - Exploratory codebase research (replaces Grep/Glob)
+   - Tool: `d_check_last_version` - Always-current dependency version checking
+   - Tool: `e_set_workspace` - Workspace path configuration
+   - Tool: `f_get_status` - MCP server health verification
+
+2. **@modelcontextprotocol/server-filesystem** - File operations for code editing
+   - Integrated with VSCode refactoring actions
+   - Supports Extract Method, Extract Variable, Rename Symbol
+
+3. **@modelcontextprotocol/server-git** - Git operations for version control
+   - Automatic commit message generation
+   - Branch creation for experimental changes
+
+### Configuration
+
+All MCP servers are configured in `.devcontainer/mcp-servers/config.json` and mounted into:
+
+- **Cline/Roo Code**: Reads from VSCode settings via MCP extension
+- **Antigravity**: Reads from `~/.gemini/antigravity/mcp_config.json`
+
+**Config Structure**:
+
+```json
+{
+  "mcpServers": {
+    "smart-coding-mcp": {
+      "command": "npx",
+      "args": ["-y", "smart-coding-mcp", "--workspace", "${workspaceFolder}"],
+      "env": { "NODE_ENV": "development" }
+    },
+    "filesystem": { ... },
+    "git": { ... }
+  },
+  "transport": "stdio"
+}
+```
+
+### Usage Rules
+
+Agent rules in `.clinerules/` and `.agent/rules/` enforce best practices:
+
+#### Rule 1: Dependency Management
+
+- **MUST** use `d_check_last_version` tool before installing packages
+- **DO NOT** guess versions or trust training data
+- **DO NOT** use generic web search unless tool fails
+
+#### Rule 2: Codebase Research
+
+- **MUST** use `a_semantic_search` as FIRST tool for exploratory searches
+- **DO NOT** use Grep/Glob for "how does X work" questions
+- Use Grep ONLY for exact literal string matching
+- Use Glob ONLY when exact filename pattern is known
+
+#### Rule 3: Environment & Status
+
+- Use `e_set_workspace` if workspace path is incorrect
+- Use `f_get_status` to verify MCP server health on session start
+
+### VSCode Refactoring Integration
+
+**Keyboard Shortcuts**:
+
+- `Ctrl+Shift+R` - Open refactoring menu
+- `Ctrl+Shift+R Ctrl+E` - Extract to function (auto-apply first)
+- `Shift+Ctrl+E` - Extract to constant (preferred, if single)
+
+**Code Actions on Save**:
+
+- `source.organizeImports: always` - Auto-organize imports
+- `source.fixAll.eslint: explicit` - Fix ESLint issues on manual save
+- `source.sortImports: explicit` - Sort imports on manual save
+
+**Refactor Preview**:
+
+- Hover over refactoring → Press `Ctrl+Enter` to open preview panel
+- Review changes before applying
+- Partial application by deselecting changes
+
+### Devcontainer Updates
+
+**Files Modified**:
+
+- `.devcontainer/devcontainer.json` - Added refactoring settings, keybindings, MCP mount
+- `.devcontainer/post-create.sh` - Added Smart Coding MCP installation
+- `.github/workflows/mcp-starter.yml` - Added MCP server health checks
+
+**New Files Created**:
+
+- `.devcontainer/mcp-servers/config.json` - MCP server configuration
+- `.clinerules/01-smart-mcp.md` - Cline/Roo Code usage rules
+- `.agent/rules/smart-mcp.md` - Antigravity/Gemini IDE usage rules
+- `.gemini/antigravity/mcp_config.json` - Gemini IDE MCP config
+- `docs/migration/IDE_ASSISTANT_MCP_INTEGRATION.md` - Complete integration guide
+- `scripts/toolset-management/apply-ide-assistant-migration.js` - Migration script
+
+### Testing Checklist
+
+- [x] Devcontainer rebuilds successfully
+- [x] Smart Coding MCP installed (`npx smart-coding-mcp --version`)
+- [x] VSCode refactoring actions configured
+- [ ] Semantic search tested (`npx smart-coding-mcp --workspace . --query "test"`)
+- [ ] Dependency checking tested (`npx smart-coding-mcp --dependency react --check-version`)
+- [ ] Refactor Preview panel tested (`Ctrl+Enter` on refactor action)
+- [ ] Cline/Roo Code loads MCP config
+- [ ] Agent rules enforce semantic search over Grep/Glob
+- [ ] GitHub workflow runs without errors
+
+### Migration Script
+
+Automated migration applied via:
+
+```bash
+node scripts/toolset-management/apply-ide-assistant-migration.js
+```
+
+**Backup Created**: All modified files backed up with `.backup-2026-01-04` suffix
+
+### Documentation
+
+**Primary Guide**: [docs/migration/IDE_ASSISTANT_MCP_INTEGRATION.md](../../../docs/migration/IDE_ASSISTANT_MCP_INTEGRATION.md)
+
+**Related Resources**:
+
+- [VSCode Refactoring Docs](https://code.visualstudio.com/docs/editing/refactoring)
+- [Smart Coding MCP - VSCode Setup](https://github.com/omar-haris/smart-coding-mcp/blob/main/docs/ide-setup/vscode.md)
+- [Smart Coding MCP - Antigravity Setup](https://github.com/omar-haris/smart-coding-mcp/blob/main/docs/ide-setup/antigravity.md)
+
+### Benefits
+
+✅ **Semantic Search**: Exploratory codebase research with natural language queries  
+✅ **Dependency Safety**: Always-current package versions, no outdated training data  
+✅ **Refactoring AI**: Preview and partially apply refactorings before committing  
+✅ **Antigravity Ready**: Compatible with Google's Gemini IDE via absolute paths  
+✅ **Agent Rules**: Automated enforcement of best practices via `.clinerules` and `.agent/rules`
 
 ---
 
