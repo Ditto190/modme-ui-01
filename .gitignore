@@ -70,5 +70,8 @@ agent/.venv/
 # data directory (local client data)
 /data/
 
+# vault files (encrypted secrets should not be committed)
+.vault/
+
 # DevContainer
 .devcontainer/.env
