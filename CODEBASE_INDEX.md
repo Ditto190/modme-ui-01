@@ -61,13 +61,13 @@ modme-ui-01/
 │   ├── ISSUE_TEMPLATE/        # Issue templates (4 files)
 │   └── workflows/             # CI/CD workflows (8+ files)
 │
-├── .config/                                  # NEW
-│   ├── README.md                             # Shell integration comprehensive guide
-│   ├── QUICKSTART.md                         # Quick reference guide
+├── .config/                                  # Shell integration profiles
+│   ├── README.md                             # Shell integration comprehensive guide (~210 lines)
+│   ├── QUICKSTART.md                         # Quick reference guide (~150 lines)
 │   ├── powershell/                           # PowerShell project profile
-│   │   └── Microsoft.PowerShell_profile.ps1  # Project PowerShell profile
+│   │   └── Microsoft.PowerShell_profile.ps1  # Project PowerShell profile (~170 lines)
 │   └── bash/                                 # Bash project profile
-│       └── bashrc                            # Project bashrc
+│       └── bashrc                            # Project bashrc (~115 lines)
 │
 ├── .vscode/                                  # VS Code folder settings
 │   └── settings.json                         # VS Code workspace settings (shell integration)
@@ -172,6 +172,8 @@ modme-ui-01/
 │   ├── run-agent.sh
 │   ├── setup-agent.bat
 │   ├── setup-agent.sh
+│   ├── setup-shell-integration.ps1  # PowerShell shell integration setup (~167 lines)
+│   ├── setup-shell-integration.sh   # Bash shell integration setup (~120 lines)
 │   ├── setup.ps1
 │   ├── setup.sh
 │   ├── start-dev.sh
@@ -1010,6 +1012,9 @@ COPILOT_CLOUD_API_KEY=""  # Optional
 | **Schema Crawler**     | `agent-generator/SCHEMA_CRAWLER_README.md`                 | 3,800 | Complete guide         |
 | **MCP Integration**    | `docs/MCP_EVERYTHING_SERVER.md`                            | 650   | MCP server docs        |
 |                        | `agent-generator/src/mcp-registry/MCP_INTEGRATION_PLAN.md` | 400   | Integration plan       |
+| **Shell Integration**  | `.config/README.md`                                        | 210   | Comprehensive guide    |
+|                        | `.config/QUICKSTART.md`                                    | 150   | Quick reference        |
+|                        | `SHELL_INTEGRATION_SUMMARY.md`                             | 400   | Implementation summary |
 | **Setup**              | `DEVCONTAINER_SETUP.md`                                    | 300   | Devcontainer guide     |
 |                        | `INSTALLATION_CHECKLIST.md`                                | 250   | Installation steps     |
 |                        | `SETUP_RECORD.md`                                          | 200   | Setup log              |
@@ -1059,6 +1064,16 @@ COPILOT_CLOUD_API_KEY=""  # Optional
 - `scripts/knowledge-management/README.md` - KB scripts
 - `scripts/toolset-management/README.md` - Toolset scripts
 
+#### 7. Shell Integration
+
+- `.config/README.md` - Comprehensive setup guide
+- `.config/QUICKSTART.md` - Quick reference
+- `SHELL_INTEGRATION_SUMMARY.md` - Implementation summary
+- `scripts/setup-shell-integration.ps1` - PowerShell setup script
+- `scripts/setup-shell-integration.sh` - Bash setup script
+- `.config/powershell/Microsoft.PowerShell_profile.ps1` - PowerShell profile
+- `.config/bash/bashrc` - Bash profile
+
 ---
 
 ## 🔍 Search Index
@@ -1077,6 +1092,7 @@ COPILOT_CLOUD_API_KEY=""  # Optional
 | **Validation**         | `src/components/registry/*.tsx` (Zod), `scripts/toolset-management/validate-toolsets.js`         |
 | **Testing**            | `scripts/knowledge-management/test-kb-mapper.js`, `docs/KB_TEST_FIX.md`                          |
 | **Workflows**          | `.github/workflows/`, `docs/TOOLSET_MANAGEMENT.md`                                               |
+| **Shell Integration**  | `.config/`, `scripts/setup-shell-integration.*`, `SHELL_INTEGRATION_SUMMARY.md`                  |
 
 ### By File Extension
 
@@ -1094,9 +1110,52 @@ COPILOT_CLOUD_API_KEY=""  # Optional
 
 ## 🚀 Development Workflows
 
-### 1. Start Development Environment
+### 1. Setup Shell Integration (First Time)
+
+**PowerShell (Windows)**:
+
+```powershell
+# Run automated setup script
+.\scripts\setup-shell-integration.ps1
+
+# Reload VS Code window
+# Ctrl+Shift+P → "Developer: Reload Window"
+
+# Open new terminal - you should see welcome message
+# Type 'help' to see available commands
+```
+
+**Bash (Git Bash, WSL, Linux, macOS)**:
 
 ```bash
+# Run automated setup script
+bash scripts/setup-shell-integration.sh
+
+# Reload shell
+source ~/.bashrc
+
+# Or open new terminal - you should see welcome message
+# Type 'help' to see available commands
+```
+
+**Available Project Commands** (after setup):
+
+- `dev` - Start both frontend and agent servers
+- `ui` - Start Next.js frontend only
+- `agent` - Start Python agent only
+- `mcp` - Start MCP servers
+- `validate` - Validate toolsets configuration
+- `docs` - Generate all documentation
+- `venv` - Activate Python virtual environment
+- `help` - Show available commands
+
+### 2. Start Development Environment
+
+```bash
+# With shell integration (simple aliases)
+dev
+
+# OR traditional method:
 # Terminal 1: Python agent
 cd agent
 uv run uvicorn main:app --reload --port 8000
@@ -1106,7 +1165,7 @@ npm run dev
 # http://localhost:3000
 ```
 
-### 2. Run Tests
+### 3. Run Tests
 
 ```bash
 # Knowledge Base tests
@@ -1121,24 +1180,28 @@ cd agent
 uv run ruff check .
 ```
 
-### 3. Validate Toolsets
+### 4. Validate Toolsets
 
 ```bash
 npm run validate:toolsets
 # or
 node scripts/toolset-management/validate-toolsets.js
+# or with shell integration
+validate
 ```
 
-### 4. Generate Documentation
+### 5. Generate Documentation
 
 ```bash
 npm run docs:all
+# or with shell integration
+docs
 # Generates:
 # - Toolset docs (docs/toolsets/)
 # - Relationship diagram (docs/toolsets/toolset-relationships.mmd)
 ```
 
-### 5. Index Codebase
+### 6. Index Codebase
 
 ```bash
 # 1. Generate chunks (using pykomodo or similar)
