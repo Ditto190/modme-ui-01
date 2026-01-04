@@ -25,25 +25,25 @@
 
 ### By Category
 
-| Category | Directory | File Count | Lines of Code |
-|----------|-----------|------------|---------------|
-| **Python Agent** | `agent/` | 5 | ~1,200 |
-| **TypeScript Agent Generator** | `agent-generator/` | 15+ | ~2,500 |
-| **React Frontend** | `src/` | 12+ | ~1,800 |
-| **Scripts & Utilities** | `scripts/` | 20+ | ~3,500 |
-| **Documentation** | `docs/` | 12+ | ~8,000 |
-| **GitHub Workflows** | `.github/workflows/` | 8+ | ~1,200 |
-| **Configuration** | Root | 10+ | ~800 |
+| Category                       | Directory            | File Count | Lines of Code |
+| ------------------------------ | -------------------- | ---------- | ------------- |
+| **Python Agent**               | `agent/`             | 5          | ~1,200        |
+| **TypeScript Agent Generator** | `agent-generator/`   | 15+        | ~2,500        |
+| **React Frontend**             | `src/`               | 12+        | ~1,800        |
+| **Scripts & Utilities**        | `scripts/`           | 20+        | ~3,500        |
+| **Documentation**              | `docs/`              | 12+        | ~8,000        |
+| **GitHub Workflows**           | `.github/workflows/` | 8+         | ~1,200        |
+| **Configuration**              | Root                 | 10+        | ~800          |
 
 ### By Technology
 
-| Technology | Primary Directories | Purpose |
-|------------|---------------------|---------|
-| **Python** | `agent/`, `scripts/` | ADK agent, ChromaDB ingestion, tools |
+| Technology     | Primary Directories                                         | Purpose                              |
+| -------------- | ----------------------------------------------------------- | ------------------------------------ |
+| **Python**     | `agent/`, `scripts/`                                        | ADK agent, ChromaDB ingestion, tools |
 | **TypeScript** | `agent-generator/`, `src/`, `scripts/knowledge-management/` | Code generation, frontend, KB system |
-| **React** | `src/app/`, `src/components/` | GenUI interface, component registry |
-| **Next.js** | `src/app/` | App router, API routes |
-| **JSON/YAML** | `agent/`, `genai-toolbox/` | Configuration, toolsets, GenAI tools |
+| **React**      | `src/app/`, `src/components/`                               | GenUI interface, component registry  |
+| **Next.js**    | `src/app/`                                                  | App router, API routes               |
+| **JSON/YAML**  | `agent/`, `genai-toolbox/`                                  | Configuration, toolsets, GenAI tools |
 
 ---
 
@@ -60,6 +60,17 @@ modme-ui-01/
 ├── .github/                    # GitHub Actions workflows
 │   ├── ISSUE_TEMPLATE/        # Issue templates (4 files)
 │   └── workflows/             # CI/CD workflows (8+ files)
+│
+├── .config/                                  # NEW
+│   ├── README.md                             # Shell integration comprehensive guide
+│   ├── QUICKSTART.md                         # Quick reference guide
+│   ├── powershell/                           # PowerShell project profile
+│   │   └── Microsoft.PowerShell_profile.ps1  # Project PowerShell profile
+│   └── bash/                                 # Bash project profile
+│       └── bashrc                            # Project bashrc
+│
+├── .vscode/                                  # VS Code folder settings
+│   └── settings.json                         # VS Code workspace settings (shell integration)
 │
 ├── agent/                      # Python ADK agent runtime
 │   ├── main.py                # Main agent entry point (420 lines)
@@ -240,17 +251,20 @@ export default function CopilotKitPage() {
 ```
 
 **Key Functions**:
+
 - `YourMainContent()` - Renders canvas with elements
 - `renderElement(el: UIElement)` - Component registry router
 - `useFrontendTool()` - Theme color management
 
 **Imports**:
+
 - `@copilotkit/react-core` - Agent orchestration
 - `@copilotkit/react-ui` - CopilotSidebar
 - `@/lib/types` - TypeScript types
 - `@/components/registry/*` - UI components
 
 **API Route**: `src/app/api/copilotkit/route.ts`
+
 - Bridges CopilotKit runtime ← → Python agent (localhost:8000)
 - Uses `HttpAgent` from `@ag-ui/client`
 
@@ -271,6 +285,7 @@ if __name__ == "__main__":
 ```
 
 **Key Functions**:
+
 - `upsert_ui_element()` - Add/update UI element
 - `remove_ui_element()` - Remove UI element
 - `clear_canvas()` - Clear all elements
@@ -280,11 +295,13 @@ if __name__ == "__main__":
 - `readiness_check()` - Readiness probe with toolset info
 
 **Tools Available**:
+
 ```python
 ALLOWED_TYPES = {"StatCard", "DataTable", "ChartCard"}
 ```
 
 **State Contract**:
+
 ```python
 tool_context.state["elements"] = [
     {"id": str, "type": str, "props": dict}
@@ -304,12 +321,14 @@ export function analyzeIssue(issueText: string): KnowledgeBaseAnalysis
 ```
 
 **CLI Usage**:
+
 ```bash
 node issue-context-mapper.js "issue text here"
 # Outputs JSON with concepts, labels, files, docs
 ```
 
 **Workflow Integration**:
+
 - `.github/workflows/issue-labeler.yml` calls script
 - Parses stdout JSON
 - Posts comment to issue with KB analysis
@@ -350,6 +369,7 @@ python scripts/ingest_chunks.py \
 ```
 
 **Key Functions**:
+
 - `configure_genai()` - Setup Google Gemini API
 - `get_chroma_client()` - Initialize ChromaDB client
 - `embed_texts()` - Generate embeddings (single)
@@ -357,6 +377,7 @@ python scripts/ingest_chunks.py \
 - `ingest_to_collection()` - Ingest chunks into collection
 
 **Collections Created**:
+
 - `code_index` - Source code chunks
 - `agent_tools` - Agent tool definitions
 - `documentation` - Markdown docs
@@ -370,15 +391,16 @@ python scripts/ingest_chunks.py \
 
 ```typescript
 // Primary exports
-export function generateZodFromJSONSchema(schema, typeName)
-export function generateZodModule(toolName, inputSchema, outputSchema)
-export function generateZodModulesBatch(tools)
-export function generateSchemaFileStructure(serverName, tools)
+export function generateZodFromJSONSchema(schema, typeName);
+export function generateZodModule(toolName, inputSchema, outputSchema);
+export function generateZodModulesBatch(tools);
+export function generateSchemaFileStructure(serverName, tools);
 ```
 
 **Usage**:
+
 ```typescript
-import { generateZodModule } from './schema-crawler';
+import { generateZodModule } from "./schema-crawler";
 
 const module = generateZodModule("getWeather", inputSchema, outputSchema);
 fs.writeFileSync("schemas/getWeather.schema.ts", module);
@@ -397,26 +419,29 @@ fs.writeFileSync("schemas/getWeather.schema.ts", module);
 **Purpose**: Metric display card with trends
 
 **Props**:
+
 ```typescript
 interface StatCardProps {
-  title: string;              // Card title
-  value: string | number;     // Main metric value
-  trend?: string;             // Trend indicator (e.g., "+12%")
-  trendDirection?: "up" | "down";  // Trend direction
+  title: string; // Card title
+  value: string | number; // Main metric value
+  trend?: string; // Trend indicator (e.g., "+12%")
+  trendDirection?: "up" | "down"; // Trend direction
 }
 ```
 
 **Dependencies**:
+
 - `zod` - Runtime validation
 - (Optional) `@mui/material` - Styling
 
 **Example**:
+
 ```typescript
-<StatCard 
-  title="Revenue" 
-  value={120000} 
-  trend="+12%" 
-  trendDirection="up" 
+<StatCard
+  title="Revenue"
+  value={120000}
+  trend="+12%"
+  trendDirection="up"
 />
 ```
 
@@ -429,24 +454,27 @@ interface StatCardProps {
 **Purpose**: Data grid / table component
 
 **Props**:
+
 ```typescript
 interface DataTableProps {
-  columns: string[];          // Column headers
-  data: object[];             // Row data
-  pageSize?: number;          // Rows per page (default: 10)
-  sortable?: boolean;         // Enable sorting (default: true)
+  columns: string[]; // Column headers
+  data: object[]; // Row data
+  pageSize?: number; // Rows per page (default: 10)
+  sortable?: boolean; // Enable sorting (default: true)
 }
 ```
 
 **Features**:
+
 - Sorting
 - Pagination
 - Column filtering
 - Responsive design
 
 **Example**:
+
 ```typescript
-<DataTable 
+<DataTable
   columns={["Name", "Email", "Plan"]}
   data={[
     { name: "Alice", email: "alice@example.com", plan: "Pro" },
@@ -464,23 +492,26 @@ interface DataTableProps {
 **Purpose**: Chart wrapper component
 
 **Props**:
+
 ```typescript
 interface ChartCardProps {
-  title: string;              // Chart title
-  chartType: "line" | "bar" | "pie";  // Chart type
-  data: object[];             // Chart data
-  xKey?: string;              // X-axis key (default: "x")
-  yKey?: string;              // Y-axis key (default: "y")
+  title: string; // Chart title
+  chartType: "line" | "bar" | "pie"; // Chart type
+  data: object[]; // Chart data
+  xKey?: string; // X-axis key (default: "x")
+  yKey?: string; // Y-axis key (default: "y")
 }
 ```
 
 **Dependencies**:
+
 - (Optional) `recharts` or `chart.js`
 
 **Example**:
+
 ```typescript
-<ChartCard 
-  title="Weekly Growth" 
+<ChartCard
+  title="Weekly Growth"
   chartType="line"
   data={[
     { week: "W1", revenue: 1000 },
@@ -500,13 +531,15 @@ interface ChartCardProps {
 **Purpose**: Chat+ style persistent canvas for GenUI
 
 **Props**:
+
 ```typescript
 interface GenerativeCanvasProps {
-  children: React.ReactNode;  // Rendered elements
+  children: React.ReactNode; // Rendered elements
 }
 ```
 
 **Features**:
+
 - Scrollable canvas
 - Responsive layout
 - Integrates with CopilotSidebar
@@ -522,6 +555,7 @@ interface GenerativeCanvasProps {
 **Purpose**: Add or update UI element on canvas
 
 **Parameters**:
+
 ```python
 def upsert_ui_element(
     tool_context: ToolContext,
@@ -532,11 +566,13 @@ def upsert_ui_element(
 ```
 
 **Returns**:
+
 ```python
 {"status": "success", "message": "Element 'X' of type 'Y' added/updated.", "element_count": N}
 ```
 
 **Validation**:
+
 - ID must be non-empty string
 - Type must be in `ALLOWED_TYPES`
 - Props must be dict
@@ -550,6 +586,7 @@ def upsert_ui_element(
 **Purpose**: Remove UI element from canvas
 
 **Parameters**:
+
 ```python
 def remove_ui_element(
     tool_context: ToolContext,
@@ -558,6 +595,7 @@ def remove_ui_element(
 ```
 
 **Returns**:
+
 ```python
 {"status": "success", "message": "Element 'X' removed.", "element_count": N}
 ```
@@ -571,6 +609,7 @@ def remove_ui_element(
 **Purpose**: Remove all elements from canvas
 
 **Parameters**:
+
 ```python
 def clear_canvas(
     tool_context: ToolContext
@@ -578,6 +617,7 @@ def clear_canvas(
 ```
 
 **Returns**:
+
 ```python
 {"status": "success", "message": "Canvas cleared."}
 ```
@@ -593,18 +633,20 @@ def clear_canvas(
 **Purpose**: Analyze GitHub issue text for semantic enrichment
 
 **Exports**:
+
 ```typescript
 export interface KnowledgeBaseAnalysis {
   concepts: string[];
   labels: string[];
-  relatedFiles: Array<{path: string, description: string}>;
+  relatedFiles: Array<{ path: string; description: string }>;
   relatedDocs: string[];
 }
 
-export function analyzeIssue(issueText: string): KnowledgeBaseAnalysis
+export function analyzeIssue(issueText: string): KnowledgeBaseAnalysis;
 ```
 
 **Usage**:
+
 ```typescript
 const analysis = analyzeIssue("Agent fails to render ChartCard");
 // concepts: ["Agent Tools"]
@@ -621,27 +663,29 @@ const analysis = analyzeIssue("Agent fails to render ChartCard");
 **Purpose**: Convert JSON Schema → Zod + TypeScript
 
 **Exports**:
+
 ```typescript
 export interface ZodSchemaOutput {
-  zodCode: string;              // Zod schema code
-  typeDefinition: string;       // TypeScript interface
-  validatorCode: string;        // Validator functions
+  zodCode: string; // Zod schema code
+  typeDefinition: string; // TypeScript interface
+  validatorCode: string; // Validator functions
 }
 
-export function generateZodFromJSONSchema(
-  schema: JSONSchema,
-  typeName: string
-): ZodSchemaOutput
+export function generateZodFromJSONSchema(schema: JSONSchema, typeName: string): ZodSchemaOutput;
 ```
 
 **Usage**:
+
 ```typescript
-const result = generateZodFromJSONSchema({
-  type: "object",
-  properties: {
-    city: { type: "string", minLength: 2 }
-  }
-}, "WeatherInput");
+const result = generateZodFromJSONSchema(
+  {
+    type: "object",
+    properties: {
+      city: { type: "string", minLength: 2 },
+    },
+  },
+  "WeatherInput"
+);
 
 console.log(result.zodCode);
 // z.object({ city: z.string().min(2) })
@@ -711,6 +755,7 @@ agent-generator/src/mcp-registry/schema-crawler.ts
 ### 1. Agent ↔ Frontend State Contract
 
 **Python Side** (`agent/main.py`):
+
 ```python
 tool_context.state["elements"] = [
     {"id": "revenue", "type": "StatCard", "props": {"title": "MRR", "value": 120000}},
@@ -719,15 +764,16 @@ tool_context.state["elements"] = [
 ```
 
 **TypeScript Side** (`src/lib/types.ts`):
+
 ```typescript
 export type UIElement = {
-  id: string;                // Must match Python "id" key
-  type: string;              // Must match Python "type" key
-  props: any;                // Must match Python "props" key
+  id: string; // Must match Python "id" key
+  type: string; // Must match Python "type" key
+  props: any; // Must match Python "props" key
 };
 
 export type AgentState = {
-  elements: UIElement[];     // Must match Python "elements" key
+  elements: UIElement[]; // Must match Python "elements" key
 };
 ```
 
@@ -738,6 +784,7 @@ export type AgentState = {
 ### 2. Tool Response Format
 
 **All agent tools return**:
+
 ```python
 {
     "status": "success" | "error" | "warning",
@@ -748,11 +795,13 @@ export type AgentState = {
 ```
 
 **Example Success**:
+
 ```python
 {"status": "success", "message": "Element 'card1' of type 'StatCard' added.", "element_count": 3}
 ```
 
 **Example Error**:
+
 ```python
 {"status": "error", "message": "Invalid type 'InvalidCard'. Allowed: StatCard, DataTable, ChartCard"}
 ```
@@ -762,18 +811,16 @@ export type AgentState = {
 ### 3. Knowledge Base Analysis Format
 
 **Output** (`issue-context-mapper.ts`):
+
 ```json
 {
   "concepts": ["Agent Tools", "State Sync"],
   "labels": ["agent", "tools", "state-management"],
   "relatedFiles": [
-    {"path": "agent/main.py", "description": "Python ADK agent"},
-    {"path": "src/lib/types.ts", "description": "State contract"}
+    { "path": "agent/main.py", "description": "Python ADK agent" },
+    { "path": "src/lib/types.ts", "description": "State contract" }
   ],
-  "relatedDocs": [
-    "docs/REFACTORING_PATTERNS.md",
-    ".github/copilot-instructions.md"
-  ]
+  "relatedDocs": ["docs/REFACTORING_PATTERNS.md", ".github/copilot-instructions.md"]
 }
 ```
 
@@ -782,6 +829,7 @@ export type AgentState = {
 ### 4. Toolset JSON Schema
 
 **Format** (`agent/toolsets.json`):
+
 ```json
 {
   "$schema": "./toolset-schema.json",
@@ -812,12 +860,14 @@ export type AgentState = {
 ### 5. ChromaDB Chunks Format
 
 **Input** (`chunks.jsonl`):
+
 ```json
 {"id": "chunk_001", "text": "function upsert_ui_element...", "metadata": {"file": "agent/main.py", "type": "function", "name": "upsert_ui_element"}}
 {"id": "chunk_002", "text": "export function StatCard...", "metadata": {"file": "src/components/registry/StatCard.tsx", "type": "component", "name": "StatCard"}}
 ```
 
 **Metadata Schema**:
+
 ```typescript
 {
   file: string;               // Source file path
@@ -839,6 +889,7 @@ export type AgentState = {
 **Location**: `package.json`
 
 **Key Scripts**:
+
 ```json
 {
   "dev": "next dev",
@@ -851,6 +902,7 @@ export type AgentState = {
 ```
 
 **Dependencies**:
+
 - `next`: 16.0.0
 - `react`: 19.0.0
 - `@copilotkit/react-core`: 1.50.0
@@ -866,6 +918,7 @@ export type AgentState = {
 **Target**: ES2022, Module: ESNext
 
 **Path Aliases**:
+
 ```json
 {
   "paths": {
@@ -881,6 +934,7 @@ export type AgentState = {
 **Location**: `next.config.ts`
 
 **Key Config**:
+
 ```typescript
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -895,6 +949,7 @@ const nextConfig: NextConfig = {
 **Location**: `agent/pyproject.toml`
 
 **Dependencies**:
+
 ```toml
 [project]
 dependencies = [
@@ -917,6 +972,7 @@ dependencies = [
 **Schema**: `agent/toolset-schema.json`
 
 **Current Toolsets**:
+
 - `ui_elements` - StatCard, DataTable, ChartCard
 - `theme` - setThemeColor
 
@@ -927,6 +983,7 @@ dependencies = [
 **Location**: `.env.example`
 
 **Required Secrets**:
+
 ```bash
 GOOGLE_API_KEY="your-gemini-api-key"
 COPILOT_CLOUD_API_KEY=""  # Optional
@@ -938,37 +995,39 @@ COPILOT_CLOUD_API_KEY=""  # Optional
 
 ### By Topic
 
-| Topic | File | Lines | Purpose |
-|-------|------|-------|---------|
-| **Knowledge Base** | `docs/KNOWLEDGE_BASE_INTEGRATION.md` | 750 | Integration guide |
-| | `docs/KB_IMPLEMENTATION_SUMMARY.md` | 450 | Implementation details |
-| | `docs/KB_QUICK_REFERENCE.md` | 200 | Quick reference |
-| | `docs/KB_MEMORY_GRAPH.md` | 3,000 | Memory graph structure |
-| | `docs/KNOWLEDGE_MANAGEMENT.md` | 800 | System overview |
-| | `docs/KNOWLEDGE_QUICKSTART.md` | 400 | Quick start guide |
-| **Toolset Management** | `docs/TOOLSET_MANAGEMENT.md` | 900 | Complete reference |
-| | `docs/TOOLSET_QUICKSTART.md` | 600 | Quick start |
-| | `TOOLSET_README.md` | 450 | System overview |
-| **Refactoring** | `docs/REFACTORING_PATTERNS.md` | 1,200 | Refactoring guide |
-| **Schema Crawler** | `agent-generator/SCHEMA_CRAWLER_README.md` | 3,800 | Complete guide |
-| **MCP Integration** | `docs/MCP_EVERYTHING_SERVER.md` | 650 | MCP server docs |
-| | `agent-generator/src/mcp-registry/MCP_INTEGRATION_PLAN.md` | 400 | Integration plan |
-| **Setup** | `DEVCONTAINER_SETUP.md` | 300 | Devcontainer guide |
-| | `INSTALLATION_CHECKLIST.md` | 250 | Installation steps |
-| | `SETUP_RECORD.md` | 200 | Setup log |
-| | `GITHUB_MCP_INSTALL.md` | 180 | GitHub MCP setup |
-| **Project** | `Project_Overview.md` | 1,500 | High-level vision |
-| | `README.md` | 400 | Getting started |
-| | `CONTRIBUTING.md` | 350 | Contribution guide |
+| Topic                  | File                                                       | Lines | Purpose                |
+| ---------------------- | ---------------------------------------------------------- | ----- | ---------------------- |
+| **Knowledge Base**     | `docs/KNOWLEDGE_BASE_INTEGRATION.md`                       | 750   | Integration guide      |
+|                        | `docs/KB_IMPLEMENTATION_SUMMARY.md`                        | 450   | Implementation details |
+|                        | `docs/KB_QUICK_REFERENCE.md`                               | 200   | Quick reference        |
+|                        | `docs/KB_MEMORY_GRAPH.md`                                  | 3,000 | Memory graph structure |
+|                        | `docs/KNOWLEDGE_MANAGEMENT.md`                             | 800   | System overview        |
+|                        | `docs/KNOWLEDGE_QUICKSTART.md`                             | 400   | Quick start guide      |
+| **Toolset Management** | `docs/TOOLSET_MANAGEMENT.md`                               | 900   | Complete reference     |
+|                        | `docs/TOOLSET_QUICKSTART.md`                               | 600   | Quick start            |
+|                        | `TOOLSET_README.md`                                        | 450   | System overview        |
+| **Refactoring**        | `docs/REFACTORING_PATTERNS.md`                             | 1,200 | Refactoring guide      |
+| **Schema Crawler**     | `agent-generator/SCHEMA_CRAWLER_README.md`                 | 3,800 | Complete guide         |
+| **MCP Integration**    | `docs/MCP_EVERYTHING_SERVER.md`                            | 650   | MCP server docs        |
+|                        | `agent-generator/src/mcp-registry/MCP_INTEGRATION_PLAN.md` | 400   | Integration plan       |
+| **Setup**              | `DEVCONTAINER_SETUP.md`                                    | 300   | Devcontainer guide     |
+|                        | `INSTALLATION_CHECKLIST.md`                                | 250   | Installation steps     |
+|                        | `SETUP_RECORD.md`                                          | 200   | Setup log              |
+|                        | `GITHUB_MCP_INSTALL.md`                                    | 180   | GitHub MCP setup       |
+| **Project**            | `Project_Overview.md`                                      | 1,500 | High-level vision      |
+|                        | `README.md`                                                | 400   | Getting started        |
+|                        | `CONTRIBUTING.md`                                          | 350   | Contribution guide     |
 
 ### Documentation Categories
 
 #### 1. Getting Started
+
 - `README.md` - Quick start
 - `INSTALLATION_CHECKLIST.md` - Setup steps
 - `DEVCONTAINER_SETUP.md` - Devcontainer guide
 
 #### 2. Knowledge Base System
+
 - `docs/KNOWLEDGE_BASE_INTEGRATION.md` - How to integrate
 - `docs/KB_IMPLEMENTATION_SUMMARY.md` - Implementation decisions
 - `docs/KB_QUICK_REFERENCE.md` - Cheat sheet
@@ -976,22 +1035,26 @@ COPILOT_CLOUD_API_KEY=""  # Optional
 - `docs/KNOWLEDGE_QUICKSTART.md` - 5-minute start
 
 #### 3. Toolset Management
+
 - `docs/TOOLSET_MANAGEMENT.md` - Complete guide
 - `docs/TOOLSET_QUICKSTART.md` - Quick start
 - `TOOLSET_README.md` - Overview
 - `docs/toolsets/` - Individual toolset docs
 
 #### 4. Development
+
 - `docs/REFACTORING_PATTERNS.md` - Refactoring guide
 - `.github/copilot-instructions.md` - AI agent instructions
 - `prompts/copilot/` - AI prompts
 
 #### 5. Architecture
+
 - `Project_Overview.md` - Vision and architecture
 - `agent-generator/src/mcp-registry/ARCHITECTURE_DIAGRAM.md` - MCP architecture
 - `docs/KB_MEMORY_GRAPH.md` - Knowledge graph structure
 
 #### 6. Tools & Utilities
+
 - `agent-generator/SCHEMA_CRAWLER_README.md` - Schema crawler
 - `scripts/knowledge-management/README.md` - KB scripts
 - `scripts/toolset-management/README.md` - Toolset scripts
@@ -1002,30 +1065,30 @@ COPILOT_CLOUD_API_KEY=""  # Optional
 
 ### By Keyword
 
-| Keyword | Relevant Files |
-|---------|----------------|
-| **Agent** | `agent/main.py`, `agent/toolset_manager.py`, `.github/copilot-instructions.md` |
-| **Component Registry** | `src/components/registry/*.tsx`, `src/app/page.tsx` |
-| **Knowledge Base** | `scripts/knowledge-management/`, `docs/KNOWLEDGE_*.md` |
-| **Toolset** | `agent/toolsets.json`, `scripts/toolset-management/`, `docs/TOOLSET_*.md` |
-| **Schema Crawler** | `agent-generator/src/mcp-registry/schema-crawler.ts`, `agent-generator/SCHEMA_CRAWLER_README.md` |
-| **ChromaDB** | `scripts/ingest_chunks.py`, `scripts/start_chroma_server.py` |
-| **State Sync** | `agent/main.py:before_model_modifier`, `src/lib/types.ts`, `src/app/page.tsx` |
-| **Validation** | `src/components/registry/*.tsx` (Zod), `scripts/toolset-management/validate-toolsets.js` |
-| **Testing** | `scripts/knowledge-management/test-kb-mapper.js`, `docs/KB_TEST_FIX.md` |
-| **Workflows** | `.github/workflows/`, `docs/TOOLSET_MANAGEMENT.md` |
+| Keyword                | Relevant Files                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------------ |
+| **Agent**              | `agent/main.py`, `agent/toolset_manager.py`, `.github/copilot-instructions.md`                   |
+| **Component Registry** | `src/components/registry/*.tsx`, `src/app/page.tsx`                                              |
+| **Knowledge Base**     | `scripts/knowledge-management/`, `docs/KNOWLEDGE_*.md`                                           |
+| **Toolset**            | `agent/toolsets.json`, `scripts/toolset-management/`, `docs/TOOLSET_*.md`                        |
+| **Schema Crawler**     | `agent-generator/src/mcp-registry/schema-crawler.ts`, `agent-generator/SCHEMA_CRAWLER_README.md` |
+| **ChromaDB**           | `scripts/ingest_chunks.py`, `scripts/start_chroma_server.py`                                     |
+| **State Sync**         | `agent/main.py:before_model_modifier`, `src/lib/types.ts`, `src/app/page.tsx`                    |
+| **Validation**         | `src/components/registry/*.tsx` (Zod), `scripts/toolset-management/validate-toolsets.js`         |
+| **Testing**            | `scripts/knowledge-management/test-kb-mapper.js`, `docs/KB_TEST_FIX.md`                          |
+| **Workflows**          | `.github/workflows/`, `docs/TOOLSET_MANAGEMENT.md`                                               |
 
 ### By File Extension
 
-| Extension | Count | Purpose | Primary Directories |
-|-----------|-------|---------|---------------------|
-| `.ts` | 15+ | TypeScript source | `agent-generator/src/`, `scripts/knowledge-management/` |
-| `.tsx` | 12+ | React components | `src/app/`, `src/components/` |
-| `.py` | 10+ | Python source | `agent/`, `scripts/` |
-| `.md` | 25+ | Documentation | `docs/`, root, subdirectories |
-| `.json` | 15+ | Configuration | `agent/`, root |
-| `.yaml` / `.yml` | 10+ | Workflows, GenAI config | `.github/workflows/`, `genai-toolbox/` |
-| `.js` | 8+ | Scripts | `scripts/knowledge-management/`, `scripts/toolset-management/` |
+| Extension        | Count | Purpose                 | Primary Directories                                            |
+| ---------------- | ----- | ----------------------- | -------------------------------------------------------------- |
+| `.ts`            | 15+   | TypeScript source       | `agent-generator/src/`, `scripts/knowledge-management/`        |
+| `.tsx`           | 12+   | React components        | `src/app/`, `src/components/`                                  |
+| `.py`            | 10+   | Python source           | `agent/`, `scripts/`                                           |
+| `.md`            | 25+   | Documentation           | `docs/`, root, subdirectories                                  |
+| `.json`          | 15+   | Configuration           | `agent/`, root                                                 |
+| `.yaml` / `.yml` | 10+   | Workflows, GenAI config | `.github/workflows/`, `genai-toolbox/`                         |
+| `.js`            | 8+    | Scripts                 | `scripts/knowledge-management/`, `scripts/toolset-management/` |
 
 ---
 
@@ -1098,16 +1161,16 @@ python scripts/ingest_chunks.py \
 
 ### Lines of Code Summary
 
-| Category | Files | Approx. LoC | Languages |
-|----------|-------|-------------|-----------|
-| **Python Agent** | 5 | ~1,200 | Python |
-| **TypeScript Agent Generator** | 15+ | ~2,500 | TypeScript |
-| **React Frontend** | 12+ | ~1,800 | TypeScript/TSX |
-| **Scripts** | 20+ | ~3,500 | TypeScript, Python, Shell |
-| **Documentation** | 25+ | ~15,000 | Markdown |
-| **Configuration** | 15+ | ~1,500 | JSON, YAML, TOML |
-| **GitHub Actions** | 8+ | ~1,200 | YAML |
-| **Total** | **100+** | **~26,700** | Multi-language |
+| Category                       | Files    | Approx. LoC | Languages                 |
+| ------------------------------ | -------- | ----------- | ------------------------- |
+| **Python Agent**               | 5        | ~1,200      | Python                    |
+| **TypeScript Agent Generator** | 15+      | ~2,500      | TypeScript                |
+| **React Frontend**             | 12+      | ~1,800      | TypeScript/TSX            |
+| **Scripts**                    | 20+      | ~3,500      | TypeScript, Python, Shell |
+| **Documentation**              | 25+      | ~15,000     | Markdown                  |
+| **Configuration**              | 15+      | ~1,500      | JSON, YAML, TOML          |
+| **GitHub Actions**             | 8+       | ~1,200      | YAML                      |
+| **Total**                      | **100+** | **~26,700** | Multi-language            |
 
 ### File Type Distribution
 
@@ -1126,12 +1189,14 @@ Shell Scripts:   ~15 files  (~1,700 LoC)
 When porting components to another project:
 
 ### Pre-Port
+
 - [ ] Identify target components (see [PORTING_GUIDE.md](PORTING_GUIDE.md))
 - [ ] Review dependencies in this index
 - [ ] Check API contracts section
 - [ ] Verify Node.js/Python versions
 
 ### During Port
+
 - [ ] Copy relevant directories from directory structure
 - [ ] Update file paths in configuration files
 - [ ] Update import statements (use path aliases)
@@ -1140,6 +1205,7 @@ When porting components to another project:
 - [ ] Run validation scripts
 
 ### Post-Port
+
 - [ ] Run tests
 - [ ] Verify workflows (if applicable)
 - [ ] Generate documentation
@@ -1149,11 +1215,11 @@ When porting components to another project:
 
 ## 🔗 External References
 
-- **CopilotKit**: https://docs.copilotkit.ai/
-- **Google ADK**: https://ai.google.dev/adk/docs
-- **AG-UI Client**: https://www.npmjs.com/package/@ag-ui/client
-- **ChromaDB**: https://docs.trychroma.com/
-- **Zod**: https://zod.dev/
+- **CopilotKit**: <https://docs.copilotkit.ai/>
+- **Google ADK**: <https://ai.google.dev/adk/docs>
+- **AG-UI Client**: <https://www.npmjs.com/package/@ag-ui/client>
+- **ChromaDB**: <https://docs.trychroma.com/>
+- **Zod**: <https://zod.dev/>
 
 ---
 
