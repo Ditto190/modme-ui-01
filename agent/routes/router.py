@@ -8,7 +8,7 @@ It supports both local (privacy-first) and cloud-based embedding models.
 import os
 from typing import List, Optional, Tuple
 
-from semantic_router import RouteLayer
+from semantic_router import SemanticRouter
 from semantic_router.encoders import HuggingFaceEncoder, OpenAIEncoder
 
 from .definitions import ALL_ROUTES
@@ -49,8 +49,8 @@ class ModMeSemanticRouter:
         else:
             raise ValueError(f"Invalid mode: {mode}. Must be 'local' or 'cloud'")
         
-        # Initialize route layer with in-memory vector storage
-        self.route_layer = RouteLayer(
+        # Initialize semantic router with in-memory vector storage
+        self.router = SemanticRouter(
             encoder=encoder,
             routes=ALL_ROUTES,
             auto_sync="local",  # Keep vectors in-memory, no external DB
@@ -66,7 +66,7 @@ class ModMeSemanticRouter:
         Returns:
             The best matching Route object, or None if no match above threshold
         """
-        result = self.route_layer(query)
+        result = self.router(query)
         return result
     
     def route_with_score(self, query: str) -> Tuple[Optional[object], float]:
@@ -79,12 +79,12 @@ class ModMeSemanticRouter:
         Returns:
             Tuple of (Route object or None, confidence score)
         """
-        # Get route and access scores from route layer
-        route = self.route_layer(query)
+        # Get route and access scores from router
+        route = self.router(query)
         
         # If we have a route, try to get the score
         if route:
-            # The route layer stores the last classification scores
+            # The router stores the last classification scores
             # We'll return a default high score if route matched
             return (route, 1.0)
         else:
@@ -108,14 +108,14 @@ class ModMeSemanticRouter:
         scores = []
         
         # Encode the query
-        query_embedding = self.route_layer.encoder([query])
+        query_embedding = self.router.encoder([query])
         
         # Compare against each route's embeddings
-        for route in self.route_layer.routes:
+        for route in self.router.routes:
             # Get route embeddings
             if hasattr(route, 'utterances') and route.utterances:
                 # Calculate similarity with route utterances
-                utterance_embeddings = self.route_layer.encoder(route.utterances)
+                utterance_embeddings = self.router.encoder(route.utterances)
                 
                 # Calculate cosine similarity (simplified - using dot product for normalized vectors)
                 similarities = []
@@ -144,15 +144,15 @@ class ModMeSemanticRouter:
         Returns:
             True if successful, False if route not found
         """
-        for route in self.route_layer.routes:
+        for route in self.router.routes:
             if route.name == route_name:
                 if hasattr(route, 'utterances'):
                     route.utterances.append(utterance)
-                    # Re-initialize route layer to update embeddings
-                    encoder = self.route_layer.encoder
-                    self.route_layer = RouteLayer(
+                    # Re-initialize router to update embeddings
+                    encoder = self.router.encoder
+                    self.router = SemanticRouter(
                         encoder=encoder,
-                        routes=self.route_layer.routes,
+                        routes=self.router.routes,
                         auto_sync="local",
                     )
                     return True
