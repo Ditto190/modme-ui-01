@@ -229,8 +229,8 @@ The following scripts can also be run using your preferred package manager:
 
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development workflow, issue templates, and guidelines
 - **[Project_Overview.md](Project_Overview.md)** - Generative UI architecture and vision
-- **[Architecture Overview](.copilot/knowledge/architecture.md)** - System architecture *(new in this workspace; may not exist on older branches)*
-- **[GenUI Development](.copilot/instructions/genui-development.md)** - GenUI patterns and practices *(new in this workspace; may not exist on older branches)*
+- **[Architecture Overview](.copilot/knowledge/architecture.md)** - System architecture _(new in this workspace; may not exist on older branches)_
+- **[GenUI Development](.copilot/instructions/genui-development.md)** - GenUI patterns and practices _(new in this workspace; may not exist on older branches)_
 - **[Shell Integration](docs/SHELL_INTEGRATION.md)** - How to enable VS Code terminal shell integration (PowerShell, bash, zsh, fish, Git Bash) and included installer scripts
 
 ### Issue Management & Automation
