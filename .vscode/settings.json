@@ -40,9 +40,9 @@
     "mv": true
   },
   "yaml.schemas": {
-    "file:///c%3A/Users/dylan/.vscode/extensions/continue.continue-1.2.11-win32-x64/config-yaml-schema.json": [
+    "file://${userHome}/.vscode/extensions/continue.continue-1.2.11-win32-x64/config-yaml-schema.json": [
       ".continue/**/*.yaml"
     ],
-    "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json": "file:///c%3A/Users/dylan/modme-ui-01/genai-toolbox/tools.yaml"
+    "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json": "genai-toolbox/tools.yaml"
   }
 }
