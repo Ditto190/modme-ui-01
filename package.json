@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev:ui\" \"npm run dev:agent\" --names ui,agent --prefix-colors blue,green --kill-others",
+    "dev": "concurrently \"npm run dev:ui\" \"npm run dev:agent\" \"npm run dev:vtcode\" --names ui,agent,vtcode --prefix-colors blue,green,yellow --kill-others",
     "dev:debug": "LOG_LEVEL=debug npm run dev",
     "dev:agent": "./scripts/run-agent.sh || scripts/run-agent.bat",
     "dev:ui": "next dev --turbopack",
+    "dev:vtcode": "vtcode --mcp-server --port 8080 || echo 'VT Code not installed. Run: npm run vtcode:install'",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . && ruff check .",
@@ -15,6 +16,7 @@
     "check": "npm run lint && npm run format",
     "install:agent": "./scripts/setup-agent.sh || scripts\\setup-agent.bat",
     "postinstall": "npm run install:agent",
+    "vtcode:install": "echo 'Please install VT Code manually: cargo install vtcode OR npm install -g vtcode OR brew install vtcode'"
     "validate:toolsets": "node scripts/toolset-management/validate-toolsets.js",
     "validate:naming": "node scripts/toolset-management/validate-naming.js",
     "test:aliases": "node scripts/toolset-management/test-alias-resolution.js",
