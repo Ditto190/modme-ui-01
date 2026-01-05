@@ -75,3 +75,12 @@ echo "  3. Access the UI at http://localhost:3000"
 echo "  4. Access the agent at http://localhost:8000"
 echo ""
 echo "Happy coding! 🎉"
+
+# Install Smart Coding MCP
+echo "📦 Installing Smart Coding MCP..."
+npm install -g smart-coding-mcp
+
+# Verify installation
+npx smart-coding-mcp --version
+
+echo "✅ Smart Coding MCP installed!"

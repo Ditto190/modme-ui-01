@@ -1,7 +1,9 @@
+# yaml-language-server: $schema=./tools.schema.json
 # GenAI Toolbox Configuration for ModMe GenUI Workbench
 # Documentation: https://googleapis.github.io/genai-toolbox/getting-started/configure/
 
-sources:
+sources: {}
+
   # MCP Server connections (when applicable)
   # mcp_server:
   #   kind: mcp
@@ -11,7 +13,7 @@ tools:
   # ============================================================================
   # Schema Generation Tools
   # ============================================================================
-  
+
   generate_tool_schemas:
     kind: python
     module: agent.tools.generate_schemas
@@ -26,7 +28,7 @@ tools:
         type: string
         description: "Optional path for output JSON (defaults to output/tools_schema.json)"
         required: false
-  
+
   generate_agent_prompt:
     kind: python
     module: agent.tools.generate_schemas
@@ -45,7 +47,7 @@ tools:
         type: boolean
         description: "Whether to include usage instructions in output"
         required: false
-  
+
   generate_all:
     kind: python
     module: agent.tools.generate_schemas
@@ -64,11 +66,11 @@ tools:
         type: string
         description: "Optional path for output files"
         required: false
-  
+
   # ============================================================================
   # Agent Skills Tools - skills-ref library integration
   # ============================================================================
-  
+
   validate_skill:
     kind: python
     module: agent.tools.skills_ref_tools
@@ -79,7 +81,7 @@ tools:
         type: string
         description: "Path to the skill directory to validate"
         required: true
-  
+
   read_skill_properties:
     kind: python
     module: agent.tools.skills_ref_tools
@@ -90,7 +92,7 @@ tools:
         type: string
         description: "Path to the skill directory"
         required: true
-  
+
   generate_skills_prompt:
     kind: python
     module: agent.tools.skills_ref_tools
@@ -105,11 +107,11 @@ tools:
         type: string
         description: "Optional path to write the prompt XML to"
         required: false
-  
+
   # ============================================================================
   # Schema Crawler Tools - JSON Schema to Zod conversion
   # ============================================================================
-  
+
   generate_zod_schema:
     kind: python
     module: agent.tools.schema_crawler_tool
@@ -151,11 +153,11 @@ tools:
         type: string
         description: "Optional path to write module file"
         required: false
-  
+
   # ============================================================================
   # UI Element Management Tools
   # ============================================================================
-  
+
   upsert_ui_element:
     kind: python
     module: agent.main

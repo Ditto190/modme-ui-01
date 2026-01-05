@@ -385,13 +385,13 @@ Opens .devcontainer/
                         post-create runs
                         MCP servers installed
                         ↓
-                        
+
 Claude Code Desktop launches
     ↓
                         Reads mcp-servers/config.json
                         Connects to all 6 servers
                         ↓
-                        
+
 Enters task: "Refactor component"
     ↓
                         schema-reflection.ts connects
@@ -401,14 +401,14 @@ Enters task: "Refactor component"
                         agent-specializer.ts runs
                         Generates task-specific prompt
                         ↓
-                        
+
 Sees specialized agent
 with dynamic tool knowledge
     ↓
                         CopilotKit executes
                         Route to GenUI tier
                         ↓
-                        
+
 Agent reads code, commits changes,
 runs tests - all with validated tools
     ↓
@@ -419,21 +419,22 @@ runs tests - all with validated tools
 
 ## Key Architectural Principles
 
-| Principle | Implementation |
-|-----------|-----------------|
-| **Type Safety** | Zod schemas from JSON Schemas ensure validated tool calls |
-| **No Hallucination** | Schema reflection discovers only tools that actually exist |
+| Principle            | Implementation                                                          |
+| -------------------- | ----------------------------------------------------------------------- |
+| **Type Safety**      | Zod schemas from JSON Schemas ensure validated tool calls               |
+| **No Hallucination** | Schema reflection discovers only tools that actually exist              |
 | **Semantic Clarity** | Molecules hide complexity, expose intent ("edit code" not "read/write") |
-| **Zero Config** | Devcontainer auto-provisions everything |
-| **Dynamic** | Agent instructions generated per-task based on available tools |
-| **Safe** | Constraints injected, diffs shown, confirmations required |
-| **Scalable** | New MCP servers auto-indexed, no code changes needed |
+| **Zero Config**      | Devcontainer auto-provisions everything                                 |
+| **Dynamic**          | Agent instructions generated per-task based on available tools          |
+| **Safe**             | Constraints injected, diffs shown, confirmations required               |
+| **Scalable**         | New MCP servers auto-indexed, no code changes needed                    |
 
 ---
 
 ## Deployment Scenarios
 
 ### Scenario 1: Local Development
+
 ```
 Developer opens .devcontainer/ in VS Code
 → Container starts
@@ -443,6 +444,7 @@ Developer opens .devcontainer/ in VS Code
 ```
 
 ### Scenario 2: GitHub Codespaces
+
 ```
 Create Codespace from repo
 → devcontainer.json applied
@@ -453,6 +455,7 @@ Create Codespace from repo
 ```
 
 ### Scenario 3: CI/CD Pipeline
+
 ```
 CI job spins up container
 → MCP servers auto-installed

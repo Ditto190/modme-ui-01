@@ -17,7 +17,7 @@ This is a **local-first, privacy-focused consulting data science platform** desi
 This is a **multi-agent data analysis platform** combining AG2 (AutoGen), MicroSandbox, FastAgency, and CopilotKit. The workspace enables:
 
 - Multi-agent Jupyter notebook workflows with persistent memory (SQLite + ChromaDB)
-- Safe code execution in MicroSandbox microVMs (**never use Docker**)
+- Safe code execution in MicroSandbox microVMs (**preferable to Docker for security and speed**)
 - Web-based multi-agent dashboards (FastAgency + Mesop UI)
 - Agent library of 333+ specialized experts (`src/Agents/agent_library_master.json`)
   - **Recent**: Converted 118 Copilot agents + 118 AG2 agents (18 data science focused)

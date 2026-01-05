@@ -5,16 +5,21 @@ This directory contains configurations and resources for AI-assisted development
 ## Structure
 
 ### `/instructions`
+
 Agent instructions and prompts for specific tasks. These guide AI assistants in understanding the project context and coding standards.
 
 ### `/mcp-servers`
+
 Model Context Protocol (MCP) server configurations. MCP allows AI assistants to access external tools and data sources securely.
 
 ### `/knowledge`
+
 Knowledge base references, documentation snippets, and architectural decision records (ADRs) that help AI understand the codebase better.
 
 ### `/templates`
+
 Templates for common tasks like:
+
 - Component creation
 - API endpoint setup
 - Test file structure

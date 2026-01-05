@@ -29,6 +29,7 @@ Based on the GitHub MCP server architecture, toolsets are managed through:
 ### Workflow Triggers
 
 All workflows are triggered by:
+
 - **Push to main branch**: When toolset changes are merged
 - **Manual dispatch**: For on-demand operations
 - **Pull request**: For validation before merge
@@ -42,10 +43,12 @@ All workflows are triggered by:
 **Purpose**: Automatically detect and register new toolsets when tools/features are added.
 
 **Triggers**:
+
 - Push to `main` branch with changes to agent toolset definitions
 - Manual workflow dispatch
 
 **Actions**:
+
 - Scans codebase for new toolset definitions
 - Validates toolset structure and naming
 - Updates toolset registry
@@ -53,11 +56,12 @@ All workflows are triggered by:
 - Creates PR with changes (if auto-commit is disabled)
 
 **Configuration**:
+
 ```yaml
 env:
-  AUTO_COMMIT: true  # Automatically commit changes to main
+  AUTO_COMMIT: true # Automatically commit changes to main
   TOOLSET_CONFIG_PATH: agent/toolsets.json
-  REQUIRE_APPROVAL: false  # Set to true for manual review
+  REQUIRE_APPROVAL: false # Set to true for manual review
 ```
 
 ### 2. Toolset Deprecation Workflow (`.github/workflows/toolset-deprecate.yml`)
@@ -65,10 +69,12 @@ env:
 **Purpose**: Safely deprecate old toolsets by creating aliases and migration guides.
 
 **Triggers**:
+
 - Manual workflow dispatch with toolset name parameters
 - Scheduled check for deprecated toolsets
 
 **Actions**:
+
 - Creates deprecation alias mapping (old → new)
 - Generates migration documentation
 - Updates user-facing documentation
@@ -76,6 +82,7 @@ env:
 - Sends notifications to dependent repositories
 
 **Deprecation Process**:
+
 ```text
 1. Identify toolset to deprecate
 2. Create alias in toolset_aliases.json
@@ -90,11 +97,13 @@ env:
 **Purpose**: Validate toolset changes before deployment.
 
 **Triggers**:
+
 - Pull request targeting `main` branch
 - Before toolset update/deprecation workflows
 - Manual validation
 
 **Actions**:
+
 - Schema validation for toolset definitions
 - Backward compatibility checks
 - Alias resolution testing
@@ -102,6 +111,7 @@ env:
 - Documentation link validation
 
 **Validation Rules**:
+
 - Toolset names must follow naming conventions
 - Aliases must point to existing toolsets
 - No circular dependencies
@@ -113,11 +123,13 @@ env:
 **Purpose**: Auto-generate and update toolset documentation.
 
 **Triggers**:
+
 - After toolset update workflow
 - After deprecation workflow
 - Manual dispatch
 
 **Actions**:
+
 - Regenerates toolset reference documentation
 - Updates README with toolset tables
 - Creates migration guides for deprecated toolsets
@@ -131,6 +143,7 @@ env:
 ### Manual Process
 
 1. **Define Toolset** in agent configuration:
+
    ```python
    # agent/main.py
    def register_toolsets():
@@ -159,6 +172,7 @@ env:
 ### Automated Detection
 
 The update workflow automatically detects new toolsets by:
+
 - Parsing agent configuration files
 - Comparing with existing toolset registry
 - Validating against schema
@@ -171,6 +185,7 @@ The update workflow automatically detects new toolsets by:
 ### Deprecation Workflow
 
 1. **Initiate Deprecation**:
+
    ```bash
    gh workflow run toolset-deprecate.yml \
      -f old_toolset=old_feature \
@@ -179,6 +194,7 @@ The update workflow automatically detects new toolsets by:
    ```
 
 2. **Alias Creation**: Workflow creates alias mapping:
+
    ```json
    {
      "deprecated_toolsets": {
@@ -208,6 +224,7 @@ The update workflow automatically detects new toolsets by:
 The system maintains backward compatibility through:
 
 **Alias Resolution**:
+
 ```javascript
 // User's old config
 {
@@ -229,6 +246,7 @@ The system maintains backward compatibility through:
 ```
 
 **Deprecation Warning**:
+
 ```text
 Warning: Toolset 'old_feature' is deprecated and will be removed on 2026-07-02.
 Please migrate to 'new_feature'. See docs/migration/old_feature_to_new_feature.md
@@ -247,15 +265,15 @@ jobs:
     steps:
       - name: Schema Validation
         run: npm run validate:toolsets
-      
+
       - name: Alias Resolution Test
         run: npm run test:aliases
-      
+
       - name: Integration Test
         run: |
           # Start MCP server with test config
           npm run test:integration
-      
+
       - name: Documentation Validation
         run: npm run validate:docs
 ```
@@ -276,6 +294,7 @@ npm run test:integration
 ### Continuous Monitoring
 
 Post-deployment monitoring includes:
+
 - Toolset usage metrics
 - Deprecation warning counts
 - Migration adoption rates
@@ -290,14 +309,16 @@ Post-deployment monitoring includes:
 #### 1. Circular Dependency in Aliases
 
 **Problem**: Alias points to another alias in a loop
+
 ```json
 {
   "toolset_a": "toolset_b",
-  "toolset_b": "toolset_a"  // ❌ Circular
+  "toolset_b": "toolset_a" // ❌ Circular
 }
 ```
 
 **Solution**: Validation workflow detects and fails with error
+
 ```bash
 Error: Circular alias dependency detected: toolset_a → toolset_b → toolset_a
 ```
@@ -305,9 +326,10 @@ Error: Circular alias dependency detected: toolset_a → toolset_b → toolset_a
 #### 2. Missing Toolset in Alias
 
 **Problem**: Deprecated toolset points to non-existent toolset
+
 ```json
 {
-  "old_toolset": "nonexistent_toolset"  // ❌ Target doesn't exist
+  "old_toolset": "nonexistent_toolset" // ❌ Target doesn't exist
 }
 ```
 
@@ -318,6 +340,7 @@ Error: Circular alias dependency detected: toolset_a → toolset_b → toolset_a
 **Problem**: Docs don't reflect current toolsets
 
 **Solution**: Rerun documentation workflow:
+
 ```bash
 gh workflow run toolset-docs.yml
 ```
@@ -326,7 +349,8 @@ gh workflow run toolset-docs.yml
 
 **Problem**: Deprecation workflow fails mid-execution
 
-**Solution**: 
+**Solution**:
+
 1. Check workflow logs for specific error
 2. Manually rollback partial changes
 3. Fix issue and re-run workflow
@@ -338,13 +362,13 @@ gh workflow run toolset-docs.yml
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `TOOLSET_CONFIG_PATH` | Path to toolset definitions | `agent/toolsets.json` |
-| `AUTO_COMMIT` | Auto-commit changes | `true` |
-| `REQUIRE_APPROVAL` | Require manual approval for changes | `false` |
-| `DEPRECATION_PERIOD_DAYS` | Days before toolset removal | `180` |
-| `NOTIFICATION_CHANNEL` | Slack/Teams webhook for notifications | `` |
+| Variable                  | Description                           | Default               |
+| ------------------------- | ------------------------------------- | --------------------- |
+| `TOOLSET_CONFIG_PATH`     | Path to toolset definitions           | `agent/toolsets.json` |
+| `AUTO_COMMIT`             | Auto-commit changes                   | `true`                |
+| `REQUIRE_APPROVAL`        | Require manual approval for changes   | `false`               |
+| `DEPRECATION_PERIOD_DAYS` | Days before toolset removal           | `180`                 |
+| `NOTIFICATION_CHANNEL`    | Slack/Teams webhook for notifications | ``                    |
 
 ### File Structure
 
@@ -420,4 +444,4 @@ For issues with toolset management workflows:
 
 ---
 
-*Last Updated: January 2, 2026*
+_Last Updated: January 2, 2026_

@@ -1,0 +1,38 @@
+name: Auto-fix Markdown Issues
+
+on:
+  push:
+    branches: ["feature/**", "fix/**"]
+    paths:
+      - "**.md"
+
+jobs:
+  fix-markdown:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          
+      - name: Install tools
+        run: |
+          npm install -g markdownlint-cli prettier
+        
+      - name: Fix markdown issues
+        run: |
+          markdownlint '**/*.md' --fix --ignore node_modules --ignore .venv || true
+          prettier --write '**/*.md'
+        
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: auto-fix markdown formatting [skip ci]"
+          file_pattern: "*.md **/*.md"

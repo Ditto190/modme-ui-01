@@ -29,9 +29,38 @@ Get-ChildItem -Path $McpDir -File | ForEach-Object {
 
     function Is-RunningByCmdline($path) {
         try {
+            # Fast path: check likely candidate processes by name to avoid enumerating every process.
             $escaped = [Regex]::Escape($path)
-            $procs = Get-CimInstance Win32_Process -ErrorAction Stop | Where-Object { $_.CommandLine -and ($_.CommandLine -match $escaped) }
-            return ($procs | Measure-Object).Count -gt 0
+
+            $candidates = Get-Process -ErrorAction SilentlyContinue
+            foreach ($p in $candidates) {
+                $name = $p.ProcessName.ToLower()
+                # Only inspect common runtimes that are likely to have the script/path in their command line
+                if ($name -in @('pwsh', 'powershell', 'cmd', 'cmd.exe', 'node', 'python', 'pythonw', 'java', 'dotnet')) {
+                    try {
+                        $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$($p.Id)" -ErrorAction Stop
+                        if ($proc.CommandLine -and ($proc.CommandLine -match $escaped)) { return $true }
+                    }
+                    catch {
+                        # Ignore per-process lookup failures and continue
+                    }
+                }
+            }
+
+            # Last resort: run a bounded, background enumeration of all processes and wait with timeout.
+            # This prevents the script from hanging indefinitely if WMI/CIM is slow.
+            $job = Start-Job -ScriptBlock { Get-CimInstance Win32_Process -ErrorAction Stop }
+            if (Wait-Job -Job $job -Timeout 5) {
+                $all = Receive-Job -Job $job
+                $found = $all | Where-Object { $_.CommandLine -and ($_.CommandLine -match $escaped) }
+                Remove-Job -Job $job -Force
+                return ($found | Measure-Object).Count -gt 0
+            }
+            else {
+                Stop-Job -Job $job -Force
+                Remove-Job -Job $job -Force
+                return $false
+            }
         }
         catch {
             return $false

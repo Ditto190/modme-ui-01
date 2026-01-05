@@ -41,13 +41,13 @@ Python Agent (localhost:8000)          React UI (localhost:3000)
 
 ### Key Files
 
-| Layer | Files | Responsibility |
-|-------|-------|----------------|
-| **Python Agent** | `agent/main.py` | Tool definitions, state injection, lifecycle hooks |
-| **State Contract** | `src/lib/types.ts` | TypeScript interfaces matching Python dict structure |
-| **React Frontend** | `src/app/page.tsx` | Component registry, CopilotSidebar, canvas rendering |
-| **API Gateway** | `src/app/api/copilotkit/route.ts` | CopilotKit runtime + HttpAgent bridge |
-| **Component Registry** | `src/components/registry/*.tsx` | UI molecules (StatCard, DataTable, ChartCard) |
+| Layer                  | Files                             | Responsibility                                       |
+| ---------------------- | --------------------------------- | ---------------------------------------------------- |
+| **Python Agent**       | `agent/main.py`                   | Tool definitions, state injection, lifecycle hooks   |
+| **State Contract**     | `src/lib/types.ts`                | TypeScript interfaces matching Python dict structure |
+| **React Frontend**     | `src/app/page.tsx`                | Component registry, CopilotSidebar, canvas rendering |
+| **API Gateway**        | `src/app/api/copilotkit/route.ts` | CopilotKit runtime + HttpAgent bridge                |
+| **Component Registry** | `src/components/registry/*.tsx`   | UI molecules (StatCard, DataTable, ChartCard)        |
 
 ---
 
@@ -63,19 +63,19 @@ from google.adk.tools import ToolContext
 from typing import Dict, Any
 
 def upsert_ui_element(
-    tool_context: ToolContext, 
-    id: str, 
-    type: str, 
+    tool_context: ToolContext,
+    id: str,
+    type: str,
     props: Dict[str, Any]
 ) -> Dict[str, str]:
     """
     Add or update a UI element in the workbench canvas.
-    
+
     Args:
         id: Unique element identifier (snake_case recommended)
         type: Component type (PascalCase, must match registry)
         props: JSON-serializable properties (camelCase keys)
-    
+
     Returns:
         Success message with element metadata
     """
@@ -84,11 +84,11 @@ def upsert_ui_element(
         return {"status": "error", "message": "Invalid id"}
     if type not in ALLOWED_TYPES:
         return {"status": "error", "message": f"Unknown type: {type}"}
-    
+
     # Get current state
     elements = tool_context.state.get("elements", [])
     new_element = {"id": id, "type": type, "props": props}
-    
+
     # Upsert logic
     found = False
     for i, el in enumerate(elements):
@@ -96,15 +96,15 @@ def upsert_ui_element(
             elements[i] = new_element
             found = True
             break
-    
+
     if not found:
         elements.append(new_element)
-    
+
     # Write back to state
     tool_context.state["elements"] = elements
-    
+
     return {
-        "status": "success", 
+        "status": "success",
         "message": f"Element '{id}' of type '{type}' {'updated' if found else 'added'}."
     }
 
@@ -126,6 +126,7 @@ def upsert_ui_element(tool_context, id, type, props):
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Add type hints for all parameters and return values
 - ✅ Validate inputs before state mutations
 - ✅ Check if element exists before deciding append vs update
@@ -146,32 +147,32 @@ from google.genai import types
 import json
 
 def before_model_modifier(
-    callback_context: CallbackContext, 
+    callback_context: CallbackContext,
     llm_request: LlmRequest
 ) -> Optional[LlmResponse]:
     """Inject current canvas state into system instructions."""
-    
+
     # Get current state safely
     elements = callback_context.state.get("elements", [])
     elements_json = json.dumps(elements, indent=2)
-    
+
     # Get existing instruction
     original_instruction = llm_request.config.system_instruction or types.Content(
-        role="system", 
+        role="system",
         parts=[]
     )
-    
+
     # Ensure instruction is Content type
     if not isinstance(original_instruction, types.Content):
         original_instruction = types.Content(
-            role="system", 
+            role="system",
             parts=[types.Part(text=str(original_instruction))]
         )
-    
+
     # Ensure parts exist
     if not original_instruction.parts:
         original_instruction.parts = [types.Part(text="")]
-    
+
     # Prepend state context
     state_context = f"""Current Canvas Elements:
 {elements_json}
@@ -179,10 +180,10 @@ def before_model_modifier(
 Element Count: {len(elements)}
 Available Actions: upsert_ui_element, remove_ui_element, clear_canvas
 """
-    
+
     original_instruction.parts[0].text = state_context + (original_instruction.parts[0].text or "")
     llm_request.config.system_instruction = original_instruction
-    
+
     return None  # Continue processing
 ```
 
@@ -197,6 +198,7 @@ def before_model_modifier(callback_context, llm_request):
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Use `.get()` with defaults for state access
 - ✅ Validate instruction structure before mutations
 - ✅ Format state for readability (JSON, counts, summaries)
@@ -236,13 +238,13 @@ async def readiness_check():
         # Check critical dependencies
         from toolset_manager import toolset_manager
         toolsets = toolset_manager.list_available_toolsets()
-        
+
         # Verify model connectivity
         model_status = await check_gemini_connection()
-        
+
         # Verify state manager
         state_healthy = verify_state_manager()
-        
+
         if not all([len(toolsets) > 0, model_status, state_healthy]):
             return JSONResponse(
                 content={
@@ -255,7 +257,7 @@ async def readiness_check():
                 },
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE
             )
-        
+
         return JSONResponse(
             content={
                 "status": "ready",
@@ -268,7 +270,7 @@ async def readiness_check():
             },
             status_code=status.HTTP_200_OK
         )
-    
+
     except Exception as e:
         return JSONResponse(
             content={
@@ -289,6 +291,7 @@ async def health_check():
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Separate `/health` (liveness) from `/ready` (readiness)
 - ✅ Check all critical dependencies in readiness probe
 - ✅ Return proper HTTP status codes (200 vs 503)
@@ -315,15 +318,15 @@ function YourMainContent() {
       elements: [],
     },
   });
-  
+
   // Safe access with fallback
   const elements = state?.elements || [];
-  
+
   // ❌ NEVER mutate state directly
   // setState((prev) => [...prev.elements, newElement]); // DON'T DO THIS
-  
+
   // ✅ CORRECT: State is read-only, only Python agent writes
-  
+
   return (
     <div className="canvas">
       {elements.length === 0 ? (
@@ -351,6 +354,7 @@ function handleAdd() {
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Import `AgentState` type from `src/lib/types.ts`
 - ✅ Use `state?.elements || []` for safe access
 - ✅ Never call `setState` to mutate agent state
@@ -374,19 +378,19 @@ function renderElement(el: UIElement): JSX.Element {
   switch (el.type) {
     case "StatCard":
       return <StatCard key={el.id} {...el.props} />;
-    
+
     case "DataTable":
       return <DataTable key={el.id} {...el.props} />;
-    
+
     case "ChartCard":
       return <ChartCard key={el.id} {...el.props} />;
-    
+
     default:
       // Log unknown types for debugging
       console.error(`Unknown component type: ${el.type}`, el);
       return (
-        <div 
-          key={el.id} 
+        <div
+          key={el.id}
           className="p-4 bg-red-50 text-red-500 rounded border border-red-200"
         >
           <p className="font-semibold">Unknown component type: {el.type}</p>
@@ -417,6 +421,7 @@ function renderElement(el: UIElement) {
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Include `default` case for unknown types
 - ✅ Log errors to console for debugging
 - ✅ Render fallback UI showing the error
@@ -440,7 +445,7 @@ const ThemeColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/);
 
 export default function CopilotKitPage() {
   const [themeColor, setThemeColor] = useState("#6366f1");
-  
+
   useFrontendTool({
     name: "setThemeColor",
     parameters: [
@@ -462,7 +467,7 @@ export default function CopilotKitPage() {
       }
     },
   });
-  
+
   return (
     <main style={{ "--copilot-kit-primary-color": themeColor } as React.CSSProperties}>
       {/* ... */}
@@ -478,12 +483,13 @@ useFrontendTool({
   name: "setThemeColor",
   parameters: [{ name: "themeColor", required: true }],
   handler({ themeColor }) {
-    setThemeColor(themeColor);  // No validation, could be malicious/invalid
+    setThemeColor(themeColor); // No validation, could be malicious/invalid
   },
 });
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Validate all inputs (use Zod schemas)
 - ✅ Add error handling in handler
 - ✅ Log actions for debugging
@@ -511,13 +517,13 @@ def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict
 ```typescript
 // src/lib/types.ts (TypeScript side)
 export type UIElement = {
-  id: string;                // Must match Python "id" key
-  type: string;              // Must match Python "type" key
-  props: any;                // Must match Python "props" key (JSON-serializable)
+  id: string; // Must match Python "id" key
+  type: string; // Must match Python "type" key
+  props: any; // Must match Python "props" key (JSON-serializable)
 };
 
 export type AgentState = {
-  elements: UIElement[];     // Must match Python "elements" key
+  elements: UIElement[]; // Must match Python "elements" key
 };
 ```
 
@@ -533,13 +539,14 @@ tool_context.state["elements"] = [
 ```typescript
 // TypeScript expects "id"
 type UIElement = {
-  id: string;  // ❌ Mismatch! Python uses "component_id"
+  id: string; // ❌ Mismatch! Python uses "component_id"
   type: string;
   props: any;
 };
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Use identical keys in Python dicts and TypeScript interfaces
 - ✅ Document key names in both files
 - ✅ Use `snake_case` for Python, `camelCase` for TypeScript (but matching semantics)
@@ -553,14 +560,14 @@ type UIElement = {
 
 /**
  * State contract for WorkbenchAgent.
- * 
+ *
  * ⚠️ Must match Python dict structure in agent/main.py
- * 
+ *
  * Python:
  *   tool_context.state["elements"] = [
  *     {"id": str, "type": str, "props": dict}
  *   ]
- * 
+ *
  * TypeScript:
  *   AgentState.elements: UIElement[]
  */
@@ -594,7 +601,7 @@ type StatCardProps = z.infer<typeof StatCardPropsSchema>;
 export function StatCard(rawProps: unknown) {
   // Validate props at runtime
   const result = StatCardPropsSchema.safeParse(rawProps);
-  
+
   if (!result.success) {
     console.error("StatCard validation failed:", result.error);
     return (
@@ -603,14 +610,14 @@ export function StatCard(rawProps: unknown) {
       </div>
     );
   }
-  
+
   const { title, value, trend, trendDirection } = result.data;
-  
+
   // Provide defaults
-  const formattedValue = typeof value === "number" 
-    ? value.toLocaleString() 
+  const formattedValue = typeof value === "number"
+    ? value.toLocaleString()
     : value;
-  
+
   return (
     <div className="stat-card bg-white p-6 rounded-lg shadow">
       <h3 className="text-sm font-medium text-gray-500">{title}</h3>
@@ -640,6 +647,7 @@ export function StatCard({ title, value, trend, trendDirection }: any) {
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Define Zod schema for props
 - ✅ Validate props at runtime with `.safeParse()`
 - ✅ Render fallback UI for invalid props
@@ -683,7 +691,7 @@ const mcpToolSchema = {
  * MCP Tool: getWeather
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
 /* ==================== INPUT ==================== */
 
@@ -708,7 +716,7 @@ export function validategetWeatherInputSafe(input: unknown): Result<getWeatherIn
 /* ==================== TOOL DEFINITION ==================== */
 
 export const getWeatherTool = {
-  name: 'getWeather',
+  name: "getWeather",
   inputSchema: getWeatherInputSchema,
   outputSchema: z.unknown(),
 } as const;
@@ -722,6 +730,7 @@ export const getWeatherTool = {
 4. **Use Validators** before passing data to tools
 
 **Benefits**:
+
 - ✅ Type safety for all MCP tool calls
 - ✅ Runtime validation prevents bad data
 - ✅ Auto-generated code reduces manual errors
@@ -746,15 +755,15 @@ def test_upsert_ui_element_creates_new():
     # Arrange
     mock_context = MagicMock()
     mock_context.state = {"elements": []}
-    
+
     # Act
     result = upsert_ui_element(
-        mock_context, 
-        id="test_card", 
-        type="StatCard", 
+        mock_context,
+        id="test_card",
+        type="StatCard",
         props={"title": "Test", "value": 42}
     )
-    
+
     # Assert
     assert result["status"] == "success"
     assert len(mock_context.state["elements"]) == 1
@@ -770,15 +779,15 @@ def test_upsert_ui_element_updates_existing():
             {"id": "card1", "type": "StatCard", "props": {"value": 10}}
         ]
     }
-    
+
     # Act
     result = upsert_ui_element(
-        mock_context, 
-        id="card1", 
-        type="StatCard", 
+        mock_context,
+        id="card1",
+        type="StatCard",
         props={"value": 20}
     )
-    
+
     # Assert
     assert result["status"] == "success"
     assert len(mock_context.state["elements"]) == 1  # Still 1 element
@@ -788,26 +797,27 @@ def test_upsert_ui_element_invalid_type():
     # Arrange
     mock_context = MagicMock()
     mock_context.state = {"elements": []}
-    
+
     # Act
     result = upsert_ui_element(
-        mock_context, 
-        id="bad", 
-        type="InvalidType", 
+        mock_context,
+        id="bad",
+        type="InvalidType",
         props={}
     )
-    
+
     # Assert
     assert result["status"] == "error"
     assert "Unknown type" in result["message"]
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Test each tool function in isolation
 - ✅ Mock `ToolContext` to avoid dependencies
 - ✅ Test create, update, and error paths
 - ✅ Assert both return values and state mutations
-- ✅ Use descriptive test names (test_<function>_<scenario>)
+- ✅ Use descriptive test names (test*<function>*<scenario>)
 - ✅ Follow Arrange-Act-Assert pattern
 
 ---
@@ -824,25 +834,25 @@ import { StatCard } from "./StatCard";
 describe("StatCard", () => {
   it("renders with valid props", () => {
     render(
-      <StatCard 
-        title="Revenue" 
-        value={120000} 
-        trend="+12%" 
-        trendDirection="up" 
+      <StatCard
+        title="Revenue"
+        value={120000}
+        trend="+12%"
+        trendDirection="up"
       />
     );
-    
+
     expect(screen.getByText("Revenue")).toBeInTheDocument();
     expect(screen.getByText("120,000")).toBeInTheDocument();
     expect(screen.getByText("+12%")).toBeInTheDocument();
     expect(screen.getByText("+12%")).toHaveClass("text-green-600");
   });
-  
+
   it("renders fallback for invalid props", () => {
     render(<StatCard title={123} value={null} />);
     expect(screen.getByText("Invalid StatCard props")).toBeInTheDocument();
   });
-  
+
   it("handles missing optional props", () => {
     render(<StatCard title="Users" value={1500} />);
     expect(screen.getByText("Users")).toBeInTheDocument();
@@ -853,6 +863,7 @@ describe("StatCard", () => {
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Test valid prop combinations
 - ✅ Test invalid props (validation failures)
 - ✅ Test optional props (present vs absent)
@@ -886,12 +897,12 @@ const MemoizedDataTable = memo(DataTable, (prevProps, nextProps) => {
 
 function YourMainContent() {
   const { state } = useCoAgent<AgentState>({ name: "WorkbenchAgent" });
-  
+
   // Memoize filtered elements (avoid recalculating on every render)
   const visibleElements = useMemo(() => {
     return state.elements.filter((el) => el.props.visible !== false);
   }, [state.elements]);
-  
+
   return (
     <div>
       {visibleElements.map((el) => (
@@ -915,10 +926,11 @@ const MemoizedDataTable = memo(DataTable);
 const MemoizedChartCard = memo(ChartCard);
 
 // Memoizing cheap computations
-const count = useMemo(() => state.elements.length, [state.elements]);  // Overkill
+const count = useMemo(() => state.elements.length, [state.elements]); // Overkill
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Only memoize expensive components (large lists, heavy renders)
 - ✅ Use custom equality checks for complex props
 - ✅ Avoid memoizing cheap computations
@@ -962,19 +974,19 @@ def sanitize_props(props: Dict[str, Any]) -> Dict[str, Any]:
     return sanitized
 
 def upsert_ui_element(
-    tool_context: ToolContext, 
-    id: str, 
-    type: str, 
+    tool_context: ToolContext,
+    id: str,
+    type: str,
     props: Dict[str, Any]
 ) -> Dict[str, str]:
     # Sanitize inputs
     id = sanitize_id(id)
     props = sanitize_props(props)
-    
+
     # Validate type against whitelist
     if type not in ALLOWED_TYPES:
         return {"status": "error", "message": f"Type '{type}' not allowed"}
-    
+
     # ... rest of function
 ```
 
@@ -991,6 +1003,7 @@ def upsert_ui_element(tool_context, id, type, props):
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Sanitize all string inputs with regex/escape
 - ✅ Whitelist allowed component types
 - ✅ Validate IDs against safe character sets
@@ -1099,4 +1112,3 @@ async def my_tool(tool_context: ToolContext):
 **Last Updated**: January 2, 2026  
 **Maintained by**: ModMe GenUI Team  
 **Tech Stack**: Python 3.12+, TypeScript 5, React 19, Next.js 16, CopilotKit 1.50.0
-

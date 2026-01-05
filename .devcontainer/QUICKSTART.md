@@ -3,6 +3,7 @@
 ## One-Click Setup Options
 
 ### 🌐 GitHub Codespaces (Cloud)
+
 ```
 1. Click the "Code" button on GitHub
 2. Select "Codespaces" tab
@@ -12,6 +13,7 @@
 ```
 
 ### 🐳 VS Code + Docker (Local)
+
 ```
 1. Open repository in VS Code
 2. Click "Reopen in Container" popup
@@ -26,7 +28,7 @@
 ✅ **Python 3.12** with uv  
 ✅ **13 VS Code extensions** pre-installed  
 ✅ **Auto-installed dependencies**  
-✅ **Port forwarding** (3000, 8000)  
+✅ **Port forwarding** (3000, 8000)
 
 ## First Time Setup
 
@@ -61,15 +63,18 @@ npm run dev
 ## Troubleshooting
 
 ### Container won't build?
+
 - Check Docker Desktop is running
 - Ensure >10GB disk space available
 - Try: F1 → "Dev Containers: Rebuild Container"
 
 ### Ports not forwarding?
+
 - Check nothing is using ports 3000 or 8000
 - View ports panel in VS Code (Ctrl+Shift+P → "View: Ports")
 
 ### Dependencies missing?
+
 ```bash
 # Reinstall Node.js dependencies
 npm install

@@ -26,4 +26,3 @@ This is a comprehensive reference implementation that demonstrates all MCP proto
 
 - The starter uses command-line inspection to detect already-running processes. If your server launches child processes or detaches, adjust your script to write a PID file and modify the starter to use that.
 - On non-Windows machines, you can still run the starter script with `pwsh` if PowerShell Core is installed. For POSIX-only setups, create a sibling `scripts/start-mcp-servers.sh` and a platform-specific task.
-

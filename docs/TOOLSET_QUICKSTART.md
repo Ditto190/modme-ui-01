@@ -54,6 +54,7 @@ npm run validate:naming
 ### Adding a New Toolset
 
 1. **Define tools in agent code** ([agent/main.py](agent/main.py)):
+
    ```python
    def my_new_tool(tool_context: ToolContext, param: str):
        """Tool description"""
@@ -61,6 +62,7 @@ npm run validate:naming
    ```
 
 2. **Push to main branch** - Toolset will be auto-detected:
+
    ```bash
    git add agent/main.py
    git commit -m "feat: add my_new_tool"
@@ -77,6 +79,7 @@ npm run validate:naming
 ### Deprecating a Toolset
 
 1. **Trigger deprecation workflow:**
+
    ```bash
    gh workflow run toolset-deprecate.yml \
      -f old_toolset=old_feature \
@@ -93,6 +96,7 @@ npm run validate:naming
    - Updates documentation
 
 3. **Users see deprecation warnings:**
+
    ```
    ⚠️  Toolset "old_feature" is deprecated. Use "new_feature" instead.
        Removal planned for: 2026-07-01
@@ -102,18 +106,21 @@ npm run validate:naming
 ### Manual Operations
 
 #### Detect Changes
+
 ```bash
 node scripts/toolset-management/detect-toolset-changes.js
 # Outputs JSON with new/modified/removed toolsets
 ```
 
 #### Validate Toolsets
+
 ```bash
 node scripts/toolset-management/validate-toolsets.js
 # Validates schema, naming, references, dependencies
 ```
 
 #### Create Alias
+
 ```bash
 node scripts/toolset-management/create-alias.js \
   --old old_name \
@@ -123,6 +130,7 @@ node scripts/toolset-management/create-alias.js \
 ```
 
 #### Generate Migration Guide
+
 ```bash
 node scripts/toolset-management/generate-migration-guide.js \
   --old old_name \
@@ -138,6 +146,7 @@ node scripts/toolset-management/generate-migration-guide.js \
 **Trigger:** Push to main (agent code changes)
 
 **Process:**
+
 1. Detect toolset changes
 2. Validate new/modified toolsets
 3. Update registry (toolsets.json)
@@ -146,6 +155,7 @@ node scripts/toolset-management/generate-migration-guide.js \
 6. Create PR or auto-commit
 
 **Configuration:**
+
 ```yaml
 # Enable auto-commit (default: create PR)
 workflow_dispatch:
@@ -158,6 +168,7 @@ workflow_dispatch:
 **Trigger:** Manual (`workflow_dispatch`)
 
 **Process:**
+
 1. Validate deprecation request
 2. Create alias mapping
 3. Inject deprecation warning
@@ -166,6 +177,7 @@ workflow_dispatch:
 6. Create tracking issue (optional)
 
 **Inputs:**
+
 - `old_toolset` (required)
 - `new_toolset` (required)
 - `reason` (required)
@@ -177,6 +189,7 @@ workflow_dispatch:
 **Trigger:** Pull request, push to main
 
 **10 Validation Jobs:**
+
 1. Schema validation
 2. Naming conventions
 3. Dependency analysis
@@ -193,6 +206,7 @@ workflow_dispatch:
 **Trigger:** After update/deprecate, weekly schedule
 
 **Process:**
+
 1. Generate toolset reference docs
 2. Update README statistics
 3. Update CHANGELOG
@@ -360,6 +374,7 @@ gh run view <run-id> --log
 If you're currently managing toolsets manually:
 
 1. **Audit existing toolsets**
+
    ```bash
    # List all tool functions
    grep -r "def.*tool_context.*ToolContext" agent/

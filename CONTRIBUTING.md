@@ -3,6 +3,7 @@
 Thank you for your interest in contributing! This guide will help you get started with the development environment and issue reporting.
 
 ## Table of Contents
+
 - [Issue Templates & Reporting](#issue-templates--reporting)
 - [Automatic Labeling](#automatic-labeling)
 - [Development Environment Setup](#development-environment-setup)
@@ -18,15 +19,18 @@ Thank you for your interest in contributing! This guide will help you get starte
 We use structured issue templates to ensure we can help you quickly and effectively. Please choose the appropriate template when creating an issue:
 
 ### 🐛 Bug Report
+
 Use for reporting bugs or unexpected behavior in the system.
 
 **When to use:**
+
 - Component not rendering correctly
 - State sync issues between Python agent and React UI
 - Build or runtime errors
 - Performance problems
 
 **What to include:**
+
 - Clear reproduction steps
 - Expected vs actual behavior
 - Error logs or screenshots
@@ -37,9 +41,11 @@ Use for reporting bugs or unexpected behavior in the system.
 ---
 
 ### ✨ Feature Request
+
 Propose new features or enhancements.
 
 **When to use:**
+
 - New component types for the registry
 - Agent tool improvements
 - UI/UX enhancements
@@ -47,6 +53,7 @@ Propose new features or enhancements.
 - Documentation additions
 
 **What to include:**
+
 - Problem statement (what gap does this fill?)
 - Proposed solution with examples
 - Use cases
@@ -57,9 +64,11 @@ Propose new features or enhancements.
 ---
 
 ### 🛠️ Toolset Management Issue
+
 For issues related to the GitHub MCP-style toolset lifecycle automation.
 
 **When to use:**
+
 - Registering new toolsets
 - Requesting toolset deprecation
 - Alias resolution problems
@@ -67,6 +76,7 @@ For issues related to the GitHub MCP-style toolset lifecycle automation.
 - Migration guide issues
 
 **What to include:**
+
 - Toolset ID affected
 - Current vs expected behavior
 - Breaking changes (for deprecations)
@@ -79,15 +89,18 @@ For issues related to the GitHub MCP-style toolset lifecycle automation.
 ---
 
 ### ❓ Question
+
 Ask questions about using or contributing to the project.
 
 **When to use:**
+
 - Setup or getting started questions
 - Architecture or design questions
 - How-to questions
 - Contributing guidance
 
 **Before asking:**
+
 1. Check the [README](README.md)
 2. Search [existing discussions](../../discussions)
 3. Review relevant [documentation](docs/)
@@ -101,6 +114,7 @@ Ask questions about using or contributing to the project.
 Issues are automatically labeled based on your template selections. Here's what labels mean:
 
 ### Component Labels
+
 - `agent` - Python agent backend (agent/main.py)
 - `frontend` - React UI (src/app/page.tsx)
 - `state-sync` - State synchronization between agent and UI
@@ -112,18 +126,21 @@ Issues are automatically labeled based on your template selections. Here's what 
 - `build-system` - npm/uv/Docker build configuration
 
 ### Priority Labels
+
 - `priority:critical` - Blocking issue requiring immediate attention
 - `priority:high` - Significant impact, should be addressed soon
 - `priority:medium` - Nice to have, moderate importance
 - `priority:low` - Future enhancement, low urgency
 
 ### Status Labels
+
 - `status:triage` - Awaiting maintainer review
 - `status:needs-info` - More information needed from reporter
 - `status:in-progress` - Being actively worked on
 - `status:blocked` - Waiting on external dependency
 
 ### Toolset-Specific Labels
+
 - `toolset:new` - New toolset registration
 - `toolset:deprecation` - Toolset deprecation request
 - `toolset:validation` - Validation failure
@@ -146,12 +163,14 @@ Issues are automatically labeled based on your template selections. Here's what 
 ## Development Environment Setup
 
 ### Prerequisites
+
 - **Node.js**: 22.9.0 or higher (use [nvm](https://github.com/nvm-sh/nvm) or [nvm-windows](https://github.com/coreybutler/nvm-windows))
 - **Python**: 3.12 or higher
 - **Git**: Latest version
 - **Optional**: Docker Desktop (for DevContainer)
 
 ### Quick Start
+
 ```bash
 # Clone the repository
 git clone https://github.com/Ditto190/modme-ui-01.git
@@ -171,6 +190,7 @@ npm run dev
 DevContainers provide a consistent, portable development environment that works across different machines.
 
 ### Option 1: GitHub Codespaces (Easiest)
+
 1. Go to the repository on GitHub
 2. Click the **Code** button
 3. Select **Codespaces** tab
@@ -181,11 +201,13 @@ DevContainers provide a consistent, portable development environment that works 
 ### Option 2: VS Code + Docker Desktop (Local)
 
 #### Setup
+
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 2. Install [VS Code](https://code.visualstudio.com/)
 3. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
 #### Open in DevContainer
+
 1. Clone the repository
 2. Open the folder in VS Code
 3. When prompted, click **Reopen in Container**
@@ -194,6 +216,7 @@ DevContainers provide a consistent, portable development environment that works 
 5. The `postCreateCommand` will automatically set up dependencies
 
 #### DevContainer Features
+
 - ✅ Pre-installed Node.js 22.9.0 with nvm
 - ✅ Pre-installed Python 3.12 with uv
 - ✅ All VS Code extensions configured
@@ -202,6 +225,7 @@ DevContainers provide a consistent, portable development environment that works 
 - ✅ Git configuration preserved
 
 ### Option 3: DevContainer CLI
+
 ```bash
 # Install devcontainer CLI
 npm install -g @devcontainers/cli
@@ -218,6 +242,7 @@ devcontainer exec --workspace-folder . npm run dev
 If you prefer not to use DevContainers:
 
 ### Initial Setup
+
 ```bash
 # Install Node.js 22.9.0 using nvm
 nvm install 22.9.0
@@ -232,6 +257,7 @@ cp .env.example .env
 ```
 
 ### Development Commands
+
 ```bash
 # Start both UI and Agent servers
 npm run dev
@@ -255,14 +281,17 @@ npm run build
 ## Development Workflow
 
 ### 1. Create a Branch
+
 ```bash
 git checkout -b feature/your-feature-name
 ```
 
 ### 2. Make Changes
+
 Follow the [GenUI Development Guidelines](.copilot/instructions/genui-development.md) for coding patterns.
 
 ### 3. Test Your Changes
+
 ```bash
 # Run linting
 npm run lint
@@ -276,12 +305,14 @@ uv run flake8 .
 ```
 
 ### 4. Commit Your Changes
+
 ```bash
 git add .
 git commit -m "feat: your descriptive commit message"
 ```
 
 We follow [Conventional Commits](https://www.conventionalcommits.org/):
+
 - `feat:` New feature
 - `fix:` Bug fix
 - `docs:` Documentation changes
@@ -291,14 +322,17 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore:` Maintenance tasks
 
 ### 5. Push and Create PR
+
 ```bash
 git push origin feature/your-feature-name
 ```
+
 Then create a Pull Request on GitHub.
 
 ## Code Standards
 
 ### TypeScript/React
+
 - Use functional components with hooks
 - Follow existing patterns in `src/components/`
 - Use Tailwind CSS for styling
@@ -306,12 +340,14 @@ Then create a Pull Request on GitHub.
 - Keep components small and focused
 
 ### Python
+
 - Follow PEP 8 style guide
 - Use type hints
 - Document functions with docstrings
 - Keep tools focused and testable
 
 ### General
+
 - Write self-documenting code
 - Add comments for complex logic
 - Update documentation when changing behavior
@@ -320,12 +356,14 @@ Then create a Pull Request on GitHub.
 ## Testing
 
 ### Manual Testing
+
 1. Start the development servers: `npm run dev`
-2. Access UI at http://localhost:3000
+2. Access UI at <http://localhost:3000>
 3. Test your changes in the browser
 4. Check agent logs in the terminal
 
 ### Automated Testing
+
 ```bash
 # Run TypeScript type checking
 npx tsc --noEmit
@@ -340,6 +378,7 @@ cd agent && uv run flake8 .
 ## Submitting Changes
 
 ### Before Submitting
+
 - ✅ Code passes all linting checks
 - ✅ No TypeScript errors
 - ✅ Python code follows style guidelines
@@ -349,6 +388,7 @@ cd agent && uv run flake8 .
 - ✅ `.env` file is not committed
 
 ### Pull Request Guidelines
+
 1. **Title**: Use conventional commit format
 2. **Description**: Explain what and why
 3. **Screenshots**: Include for UI changes

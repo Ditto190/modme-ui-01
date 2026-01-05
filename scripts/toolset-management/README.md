@@ -53,11 +53,13 @@ This directory contains scripts for managing GitHub MCP server toolsets in the M
 ## Usage Examples
 
 ### Detect Changes
+
 ```bash
 node scripts/toolset-management/detect-toolset-changes.js
 ```
 
 ### Validate Toolsets
+
 ```bash
 npm run validate:toolsets
 # or
@@ -65,6 +67,7 @@ node scripts/toolset-management/validate-toolsets.js
 ```
 
 ### Create Deprecation Alias
+
 ```bash
 node scripts/toolset-management/create-alias.js \
   --old old_feature \
@@ -74,6 +77,7 @@ node scripts/toolset-management/create-alias.js \
 ```
 
 ### Generate Documentation
+
 ```bash
 node scripts/toolset-management/generate-toolset-docs.js \
   --output docs/toolsets/ \
@@ -81,6 +85,7 @@ node scripts/toolset-management/generate-toolset-docs.js \
 ```
 
 ### Test Alias Resolution
+
 ```bash
 node scripts/toolset-management/test-alias-resolution.js --toolset old_feature
 ```
@@ -105,20 +110,21 @@ Add these to your `package.json`:
 ## Configuration
 
 Scripts read configuration from:
+
 - `agent/toolsets.json` - Toolset definitions
 - `agent/toolset_aliases.json` - Deprecation aliases
 - `package.json` - Project metadata
 
 ## Error Codes
 
-| Code | Meaning |
-|------|---------|
-| 0 | Success |
-| 1 | Validation failure |
-| 2 | Schema violation |
-| 3 | Circular dependency detected |
-| 4 | Missing required file |
-| 5 | Breaking change detected |
+| Code | Meaning                      |
+| ---- | ---------------------------- |
+| 0    | Success                      |
+| 1    | Validation failure           |
+| 2    | Schema violation             |
+| 3    | Circular dependency detected |
+| 4    | Missing required file        |
+| 5    | Breaking change detected     |
 
 ## Development
 
