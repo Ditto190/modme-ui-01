@@ -1,7 +1,7 @@
 [project]
-name = "proverbs-agent"
-version = "0.1.0"
-description = "ADK Proverbs Agent with shared state"
+name = "modme-ui-agent"
+version = "0.2.0"
+description = "ModifyMe GenUI Workbench Agent with Semantic Routing"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi",
@@ -11,4 +11,15 @@ dependencies = [
     "google-adk",
     "google-genai",
     "ag-ui-adk",
+    "semantic-router>=0.1.0",
+]
+
+[project.optional-dependencies]
+local = [
+    "semantic-router[local]",
+]
+test = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-mock>=3.12.0",
 ]
