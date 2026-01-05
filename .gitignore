@@ -66,6 +66,7 @@ agent/.venv/
 **/*.pyo
 **/*.pyd
 .Python
+*.egg-info/
 
 # data directory (local client data)
 /data/
