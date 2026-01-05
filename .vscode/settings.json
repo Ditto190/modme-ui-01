@@ -61,16 +61,10 @@
     "cp": true,
     "mv": true
   },
-  "terminal.integrated.shellIntegration.enabled": true,
-  "terminal.integrated.shellIntegration.decorationsEnabled": "both",
-  "terminal.integrated.shellIntegration.showCommandGuide": true,
-  "terminal.integrated.shellIntegration.history": 100,
-  "terminal.integrated.stickyScroll.enabled": true,
-  "terminal.integrated.suggest.enabled": true,
-  "terminal.integrated.suggest.quickSuggestions": true,
-  "terminal.integrated.suggest.suggestOnTriggerCharacters": true,
-  "terminal.integrated.suggest.runOnEnter": "never",
-  "terminal.integrated.suggest.selectionMode": "none",
-  "python.terminal.activateEnvironment": true,
-  "python.defaultInterpreterPath": ".venv\\Scripts\\python.exe"
+  "yaml.schemas": {
+    "file://${userHome}/.vscode/extensions/continue.continue-1.2.11-win32-x64/config-yaml-schema.json": [
+      ".continue/**/*.yaml"
+    ],
+    "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json": "genai-toolbox/tools.yaml"
+  }
 }
