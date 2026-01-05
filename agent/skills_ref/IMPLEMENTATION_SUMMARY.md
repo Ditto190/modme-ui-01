@@ -40,6 +40,7 @@ The `prompt.py` module now generates **GitLens-compatible custom instructions** 
    ```
 
 3. **Instruction Injection Pattern**:
+
    ```typescript
    // GitLens appends custom instructions to base prompts
    instructions = `${configuration.get("ai.generateCommitMessage.customInstructions")}`;

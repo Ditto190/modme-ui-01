@@ -28,15 +28,15 @@ bash scripts/setup-shell-integration.sh
 
 ## ⚡ Keyboard Shortcuts
 
-| Action                   | Shortcut              | Description                        |
-| ------------------------ | --------------------- | ---------------------------------- |
-| Navigate to prev command | `Ctrl/Cmd+Up`         | Jump to previous command           |
-| Navigate to next command | `Ctrl/Cmd+Down`       | Jump to next command               |
-| Select to prev command   | `Shift+Ctrl/Cmd+Up`   | Select from cursor to prev command |
-| Select to next command   | `Shift+Ctrl/Cmd+Down` | Select from cursor to next command |
-| Recent commands          | `Ctrl+Alt+R`          | Open command history picker        |
-| Recent directories       | `Ctrl+G`              | Open directory history picker      |
-| Manually trigger suggestions       | `Ctrl+Space`          | Trigger IntelliSense in terminal   |
+| Action                       | Shortcut              | Description                        |
+| ---------------------------- | --------------------- | ---------------------------------- |
+| Navigate to prev command     | `Ctrl/Cmd+Up`         | Jump to previous command           |
+| Navigate to next command     | `Ctrl/Cmd+Down`       | Jump to next command               |
+| Select to prev command       | `Shift+Ctrl/Cmd+Up`   | Select from cursor to prev command |
+| Select to next command       | `Shift+Ctrl/Cmd+Down` | Select from cursor to next command |
+| Recent commands              | `Ctrl+Alt+R`          | Open command history picker        |
+| Recent directories           | `Ctrl+G`              | Open directory history picker      |
+| Manually trigger suggestions | `Ctrl+Space`          | Trigger IntelliSense in terminal   |
 
 ## 🎨 Visual Features
 

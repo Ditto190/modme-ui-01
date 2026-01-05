@@ -129,14 +129,14 @@ Updated `agent-generator/src/mcp-registry/MCP_INTEGRATION_PLAN.md`:
 
 ## 📚 Key Files Created
 
-| File | Lines | Purpose |
-|------|-------|---------|
-| `docs/migration/IDE_ASSISTANT_MCP_INTEGRATION.md` | 750+ | Complete integration guide |
-| `scripts/toolset-management/apply-ide-assistant-migration.js` | 300+ | Automated migration script |
-| `.devcontainer/mcp-servers/config.json` | 30 | MCP server configuration |
-| `.clinerules/01-smart-mcp.md` | 60 | Cline/Roo Code usage rules |
-| `.agent/rules/smart-mcp.md` | 60 | Antigravity/Gemini usage rules |
-| `.gemini/antigravity/mcp_config.json` | 15 | Gemini IDE MCP config |
+| File                                                          | Lines | Purpose                        |
+| ------------------------------------------------------------- | ----- | ------------------------------ |
+| `docs/migration/IDE_ASSISTANT_MCP_INTEGRATION.md`             | 750+  | Complete integration guide     |
+| `scripts/toolset-management/apply-ide-assistant-migration.js` | 300+  | Automated migration script     |
+| `.devcontainer/mcp-servers/config.json`                       | 30    | MCP server configuration       |
+| `.clinerules/01-smart-mcp.md`                                 | 60    | Cline/Roo Code usage rules     |
+| `.agent/rules/smart-mcp.md`                                   | 60    | Antigravity/Gemini usage rules |
+| `.gemini/antigravity/mcp_config.json`                         | 15    | Gemini IDE MCP config          |
 
 ---
 
@@ -145,6 +145,7 @@ Updated `agent-generator/src/mcp-registry/MCP_INTEGRATION_PLAN.md`:
 ### Immediate (Before Devcontainer Rebuild)
 
 1. **Review Backups**
+
    ```bash
    # Check backup files
    ls -la .devcontainer/*.backup-2026-01-04
@@ -152,65 +153,69 @@ Updated `agent-generator/src/mcp-registry/MCP_INTEGRATION_PLAN.md`:
    ```
 
 2. **Verify Configurations**
+
    ```bash
    # Check devcontainer.json changes
    git diff .devcontainer/devcontainer.json
-   
+
    # Check post-create.sh changes
    git diff .devcontainer/post-create.sh
-   
+
    # Check workflow changes
    git diff .github/workflows/mcp-starter.yml
    ```
 
 ### After Devcontainer Rebuild
 
-3. **Test Smart Coding MCP**
+1. **Test Smart Coding MCP**
+
    ```bash
    # Verify installation
    npx smart-coding-mcp --version
-   
+
    # Test semantic search
    npx smart-coding-mcp --workspace . --query "how does upsert_ui_element work"
-   
+
    # Test dependency checking
    npx smart-coding-mcp --dependency react --check-version
    ```
 
-4. **Test VSCode Refactoring**
+2. **Test VSCode Refactoring**
    - Open any TypeScript file
    - Select a code block
    - Press `Ctrl+Shift+R` to open refactor menu
    - Choose "Extract to function"
    - Verify Refactor Preview panel opens with `Ctrl+Enter`
 
-5. **Test Cline/Roo Code Integration**
+3. **Test Cline/Roo Code Integration**
    - Open Cline sidebar
    - Verify MCP Servers icon shows "smart-coding-mcp"
    - Test a query that should trigger semantic search
    - Verify agent uses `a_semantic_search` instead of Grep
 
-6. **Test GitHub Workflow**
+4. **Test GitHub Workflow**
+
    ```bash
    # Trigger workflow manually
    gh workflow run mcp-starter.yml
-   
+
    # Check logs
    gh run list --workflow=mcp-starter.yml
    ```
 
 ### Optional (Antigravity Users)
 
-7. **Configure Antigravity**
+1. **Configure Antigravity**
+
    ```bash
    # Update absolute path in config
    vim .gemini/antigravity/mcp_config.json
-   
+
    # Replace ${workspaceFolder} with absolute path:
    # Example: /Users/dylan/modme-ui-01
    ```
 
-8. **Test Antigravity Rules**
+2. **Test Antigravity Rules**
    - Open Antigravity IDE
    - Verify `.agent/rules/smart-mcp.md` is loaded
    - Test dependency check (should use `d_check_last_version`)
@@ -222,6 +227,7 @@ Updated `agent-generator/src/mcp-registry/MCP_INTEGRATION_PLAN.md`:
 ### Issue: Smart Coding MCP not found
 
 **Solution**:
+
 ```bash
 npm install -g smart-coding-mcp
 which smart-coding-mcp  # Verify installation
@@ -230,6 +236,7 @@ which smart-coding-mcp  # Verify installation
 ### Issue: MCP server not connecting
 
 **Solution**:
+
 ```bash
 cat .devcontainer/mcp-servers/config.json  # Check config
 echo $WORKSPACE_FOLDER  # Verify environment variable
@@ -247,6 +254,7 @@ echo $WORKSPACE_FOLDER  # Verify environment variable
 ### Issue: Antigravity not loading rules
 
 **Solution**:
+
 ```bash
 ls -la .agent/rules/  # Check file exists
 cat .agent/rules/smart-mcp.md | head -n 5  # Verify YAML frontmatter
