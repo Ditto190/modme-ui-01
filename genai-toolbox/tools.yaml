@@ -1,0 +1,194 @@
+# GenAI Toolbox Configuration for ModMe GenUI Workbench
+# Documentation: https://googleapis.github.io/genai-toolbox/getting-started/configure/
+
+sources:
+  # MCP Server connections (when applicable)
+  # mcp_server:
+  #   kind: mcp
+  #   url: http://localhost:8000
+
+tools:
+  # ============================================================================
+  # Schema Generation Tools
+  # ============================================================================
+  
+  generate_tool_schemas:
+    kind: python
+    module: agent.tools.generate_schemas
+    function: generate_tool_schemas
+    description: "Generate JSON Schemas from TypeScript tool interface definitions"
+    parameters:
+      - name: tools_dir
+        type: string
+        description: "Optional path to tools directory (defaults to src/tools)"
+        required: false
+      - name: output_file
+        type: string
+        description: "Optional path for output JSON (defaults to output/tools_schema.json)"
+        required: false
+  
+  generate_agent_prompt:
+    kind: python
+    module: agent.tools.generate_schemas
+    function: generate_agent_prompt
+    description: "Generate agent system prompt from skill SKILL.md files"
+    parameters:
+      - name: skills_dir
+        type: string
+        description: "Optional path to skills directory (defaults to src/skills)"
+        required: false
+      - name: output_file
+        type: string
+        description: "Optional path for output prompt (defaults to output/agent_prompt.md)"
+        required: false
+      - name: include_instructions
+        type: boolean
+        description: "Whether to include usage instructions in output"
+        required: false
+  
+  generate_all:
+    kind: python
+    module: agent.tools.generate_schemas
+    function: generate_all
+    description: "Generate both tool schemas and agent prompt in one operation"
+    parameters:
+      - name: tools_dir
+        type: string
+        description: "Optional path to tools directory"
+        required: false
+      - name: skills_dir
+        type: string
+        description: "Optional path to skills directory"
+        required: false
+      - name: output_dir
+        type: string
+        description: "Optional path for output files"
+        required: false
+  
+  # ============================================================================
+  # Agent Skills Tools - skills-ref library integration
+  # ============================================================================
+  
+  validate_skill:
+    kind: python
+    module: agent.tools.skills_ref_tools
+    function: validate_skill
+    description: "Validate an Agent Skill directory structure and SKILL.md file"
+    parameters:
+      - name: skill_path
+        type: string
+        description: "Path to the skill directory to validate"
+        required: true
+  
+  read_skill_properties:
+    kind: python
+    module: agent.tools.skills_ref_tools
+    function: read_skill_properties
+    description: "Read properties from a skill's SKILL.md frontmatter"
+    parameters:
+      - name: skill_path
+        type: string
+        description: "Path to the skill directory"
+        required: true
+  
+  generate_skills_prompt:
+    kind: python
+    module: agent.tools.skills_ref_tools
+    function: generate_skills_prompt
+    description: "Generate <available_skills> XML block for agent system prompts"
+    parameters:
+      - name: skill_paths
+        type: array
+        description: "List of paths to skill directories"
+        required: true
+      - name: output_file
+        type: string
+        description: "Optional path to write the prompt XML to"
+        required: false
+  
+  # ============================================================================
+  # Schema Crawler Tools - JSON Schema to Zod conversion
+  # ============================================================================
+  
+  generate_zod_schema:
+    kind: python
+    module: agent.tools.schema_crawler_tool
+    function: generate_zod_from_json_schema
+    description: "Convert JSON Schema to Zod validation schema with TypeScript types"
+    parameters:
+      - name: json_schema
+        type: object
+        description: "JSON Schema object to convert"
+        required: true
+      - name: schema_name
+        type: string
+        description: "Name for the generated schema (e.g., 'PersonInput')"
+        required: true
+      - name: output_path
+        type: string
+        description: "Optional path to write generated module file"
+        required: false
+
+  generate_zod_module:
+    kind: python
+    module: agent.tools.schema_crawler_tool
+    function: generate_zod_module
+    description: "Generate complete Zod module for MCP tool with input/output schemas"
+    parameters:
+      - name: tool_name
+        type: string
+        description: "Name of the tool (e.g., 'getWeather')"
+        required: true
+      - name: input_schema
+        type: object
+        description: "JSON Schema for tool input"
+        required: true
+      - name: output_schema
+        type: object
+        description: "Optional JSON Schema for tool output"
+        required: false
+      - name: output_path
+        type: string
+        description: "Optional path to write module file"
+        required: false
+  
+  # ============================================================================
+  # UI Element Management Tools
+  # ============================================================================
+  
+  upsert_ui_element:
+    kind: python
+    module: agent.main
+    function: upsert_ui_element
+    description: "Add or update a UI element in the workbench canvas"
+    parameters:
+      - name: id
+        type: string
+        description: "Unique element identifier (snake_case recommended)"
+        required: true
+      - name: type
+        type: string
+        description: "Component type (must be StatCard, DataTable, or ChartCard)"
+        required: true
+      - name: props
+        type: object
+        description: "JSON-serializable properties (camelCase keys)"
+        required: true
+
+  remove_ui_element:
+    kind: python
+    module: agent.main
+    function: remove_ui_element
+    description: "Remove a UI element from the canvas by its ID"
+    parameters:
+      - name: id
+        type: string
+        description: "Unique identifier of the element to remove"
+        required: true
+
+  clear_canvas:
+    kind: python
+    module: agent.main
+    function: clear_canvas
+    description: "Remove all elements from the canvas"
+    parameters: []

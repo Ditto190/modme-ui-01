@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"console.log\\(JSON.stringify\\(require\\(''c:/Users/dylan/.claude/settings.local.json''\\), null, 2\\)\\)\")"
+    ]
+  }
+}

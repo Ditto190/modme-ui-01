@@ -49,6 +49,14 @@ yarn.lock
 pnpm-lock.yaml
 bun.lockb
 
+.# knowledge management generated files (keep authored markdown under version control)
+# Ignore generated binary assets and export outputs only
+/docs/toolsets/*.svg
+/docs/toolsets/*.png
+/docs/toolsets/*.pdf
+/docs/toolsets/generated/
+.ripgrep-cache/
+
 # python
 agent/venv/
 agent/__pycache__/
@@ -58,6 +66,7 @@ agent/.venv/
 **/*.pyo
 **/*.pyd
 .Python
+*.egg-info/
 
 # data directory (local client data)
 /data/

@@ -1,0 +1,370 @@
+name: Toolset Validation & Testing
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'agent/**'
+      - 'src/lib/types.ts'
+      - 'src/components/registry/**'
+      - '.github/workflows/toolset-*.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'agent/**'
+  workflow_call:
+    # Allow other workflows to call this for validation
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '22.9.0'
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  schema-validation:
+    name: Schema Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Validate toolset JSON schema
+        run: |
+          npm run validate:toolsets || {
+            echo "❌ Toolset schema validation failed"
+            echo "See docs/TOOLSET_MANAGEMENT.md for schema requirements"
+            exit 1
+          }
+      
+      - name: Validate TypeScript types
+        run: npm run type-check
+      
+      - name: Check for TypeScript errors
+        run: npx tsc --noEmit
+
+  naming-conventions:
+    name: Check Naming Conventions
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Check toolset naming conventions
+        run: |
+          # Toolset names must be lowercase with underscores
+          # Must not contain special characters
+          # Must be descriptive (min 3 chars)
+          node scripts/validate-naming.js
+      
+      - name: Check for reserved names
+        run: |
+          # Ensure toolsets don't use reserved names
+          node scripts/check-reserved-names.js
+
+  dependency-analysis:
+    name: Analyze Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Check for circular dependencies
+        run: |
+          node scripts/check-circular-deps.js || {
+            echo "❌ Circular dependency detected"
+            echo "Toolsets must not have circular alias dependencies"
+            exit 1
+          }
+      
+      - name: Verify tool existence
+        run: |
+          # Ensure all tools referenced in toolsets exist
+          node scripts/verify-tools.js
+      
+      - name: Check for orphaned tools
+        run: |
+          # Find tools not assigned to any toolset
+          node scripts/find-orphaned-tools.js
+
+  alias-resolution-test:
+    name: Test Alias Resolution
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Test alias resolution logic
+        run: npm run test:aliases
+      
+      - name: Test deprecated toolset warnings
+        run: |
+          # Verify deprecation warnings are properly triggered
+          node scripts/test-deprecation-warnings.js
+      
+      - name: Validate alias targets exist
+        run: |
+          # Ensure all alias targets point to existing toolsets
+          node scripts/validate-alias-targets.js
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [schema-validation, dependency-analysis]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install Node dependencies
+        run: npm ci
+      
+      - name: Install Python dependencies
+        run: |
+          cd agent
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+      
+      - name: Start test MCP server
+        run: |
+          # Start agent in background for integration testing
+          cd agent
+          python main.py &
+          MCP_PID=$!
+          echo "MCP_PID=$MCP_PID" >> $GITHUB_ENV
+          sleep 5  # Wait for server to start
+      
+      - name: Run integration tests
+        run: |
+          npm run test:integration
+      
+      - name: Test with deprecated toolsets
+        run: |
+          # Test that deprecated toolsets still work via aliases
+          npm run test:deprecated-toolsets
+      
+      - name: Stop test server
+        if: always()
+        run: kill ${{ env.MCP_PID }} || true
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: |
+            coverage/
+            test-results/
+          retention-days: 7
+
+  python-agent-tests:
+    name: Python Agent Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: |
+          cd agent
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-asyncio
+      
+      - name: Run Python unit tests
+        run: |
+          cd agent
+          python -m pytest tests/ -v --cov=. --cov-report=xml --cov-report=html
+      
+      - name: Test toolset registration
+        run: |
+          cd agent
+          python -m pytest tests/test_toolsets.py -v
+      
+      - name: Test deprecation warnings
+        run: |
+          cd agent
+          python -m pytest tests/test_deprecation.py -v
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./agent/coverage.xml
+          flags: python-agent
+          name: python-agent-coverage
+
+  documentation-validation:
+    name: Validate Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Check for broken links
+        run: |
+          npm run validate:docs-links
+      
+      - name: Verify migration guide completeness
+        run: |
+          # Ensure all deprecated toolsets have migration guides
+          node scripts/verify-migration-guides.js
+      
+      - name: Check documentation formatting
+        run: |
+          npm run lint:markdown
+
+  backward-compatibility:
+    name: Backward Compatibility Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for comparison
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Compare with previous version
+        run: |
+          # Check if any toolsets were removed without deprecation
+          node scripts/check-breaking-changes.js
+      
+      - name: Verify alias completeness
+        run: |
+          # Ensure all removed toolsets have aliases
+          node scripts/verify-alias-completeness.js
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+      
+      - name: Scan for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+
+  validation-summary:
+    name: Validation Summary
+    needs: 
+      - schema-validation
+      - naming-conventions
+      - dependency-analysis
+      - alias-resolution-test
+      - integration-tests
+      - python-agent-tests
+      - documentation-validation
+      - backward-compatibility
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Check validation results
+        run: |
+          echo "## Validation Results 📊" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Schema Validation | ${{ needs.schema-validation.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Naming Conventions | ${{ needs.naming-conventions.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependency Analysis | ${{ needs.dependency-analysis.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Alias Resolution | ${{ needs.alias-resolution-test.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Integration Tests | ${{ needs.integration-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Python Tests | ${{ needs.python-agent-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Documentation | ${{ needs.documentation-validation.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Backward Compatibility | ${{ needs.backward-compatibility.result }} |" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Fail if any validation failed
+        if: |
+          needs.schema-validation.result == 'failure' ||
+          needs.naming-conventions.result == 'failure' ||
+          needs.dependency-analysis.result == 'failure' ||
+          needs.alias-resolution-test.result == 'failure' ||
+          needs.integration-tests.result == 'failure' ||
+          needs.python-agent-tests.result == 'failure' ||
+          needs.documentation-validation.result == 'failure' ||
+          needs.backward-compatibility.result == 'failure'
+        run: |
+          echo "❌ One or more validation checks failed"
+          exit 1
+      
+      - name: Success message
+        if: success()
+        run: |
+          echo "✅ All validation checks passed!"
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All toolset validation checks completed successfully." >> $GITHUB_STEP_SUMMARY

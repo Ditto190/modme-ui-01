@@ -1,27 +1,91 @@
-# This workflow will triage pull requests and apply a label based on the
-# paths that are modified in the pull request.
-#
-# To use this workflow, you will need to set up a .github/labeler.yml
-# file with configuration.  For more information, see:
-# https://github.com/actions/labeler
-# .github/labeler.yml
+# ModMe GenUI Workbench - PR Auto-Labeler Configuration
+# 
+# This file controls automatic labeling for pull requests based on changed files.
+# Works in conjunction with .github/workflows/issue-labeler.yml for issues.
 
-jobs:
-  - '. github/workflows/**'
-  - '. github/actions/**'
+# Agent (Python Backend)
+agent:
+  - 'agent/**/*.py'
+  - 'agent/main.py'
+  - 'agent/toolset_manager.py'
+  - 'agent/pyproject.toml'
 
+# Frontend (React UI)
+frontend:
+  - 'src/**/*.tsx'
+  - 'src/**/*.ts'
+  - 'src/app/**/*'
+  - 'src/components/**/*'
+  - 'src/lib/**/*'
+
+# Component Registry
+component-registry:
+  - 'src/components/registry/**/*'
+  - 'src/components/registry/*.tsx'
+
+# State Sync / Types
+state-sync:
+  - 'src/lib/types.ts'
+  - 'agent/main.py'  # Contains state contract
+
+# Toolset Management
+toolset:
+  - 'agent/toolsets.json'
+  - 'agent/toolset_aliases.json'
+  - 'agent/toolset-schema.json'
+  - 'scripts/toolset-management/**/*'
+  - 'docs/TOOLSET_MANAGEMENT.md'
+  - 'docs/toolsets/**/*'
+
+# Theme System
+theme:
+  - 'src/app/page.tsx'  # Contains setThemeColor tool
+  - 'src/app/globals.css'
+
+# API Layer
+api:
+  - 'src/app/api/**/*'
+  - 'src/app/api/copilotkit/**/*'
+
+# Documentation
 documentation:
   - '**/*.md'
+  - 'docs/**/*'
+  - 'README.md'
+  - 'CONTRIBUTING.md'
+  - '.github/copilot-instructions.md'
 
-frontend:
-  - 'src/frontend/**'
-  - 'client/**'
+# CI/CD & Workflows
+ci-cd:
+  - '.github/workflows/**/*'
+  - '.github/actions/**/*'
 
-backend:
-  - 'src/backend/**'
-  - 'server/**'
+# Build System
+build-system:
+  - 'package.json'
+  - 'package-lock.json'
+  - 'tsconfig.json'
+  - 'next.config.ts'
+  - 'agent/pyproject.toml'
+  - 'Dockerfile'
+  - '.devcontainer/**/*'
 
-tests:
-  - '**/*.test.js'
-  - '**/*.spec.js'
-  - 'tests/**'
+# Testing
+testing:
+  - '**/*.test.{ts,tsx,js,jsx,py}'
+  - '**/*.spec.{ts,tsx,js,jsx,py}'
+  - 'tests/**/*'
+  - 'test-*/**/*'
+
+# Security
+security:
+  - '.github/workflows/*security*'
+  - '**/SECURITY.md'
+
+# Developer Experience
+developer-experience:
+  - '.vscode/**/*'
+  - '.github/copilot-instructions.md'
+  - 'scripts/**/*'
+  - 'SETUP_RECORD.md'
+  - 'DEVCONTAINER_SETUP.md'
