@@ -1,0 +1,148 @@
+name: 🛠️ Toolset Management Issue
+description: Report issues or request changes related to toolset lifecycle automation
+title: "[Toolset]: "
+labels: ["toolset", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🛠️ Toolset Management Issue
+        
+        Use this template for issues related to the GitHub MCP-style toolset lifecycle automation system.
+        
+        **Relevant Docs**: [TOOLSET_MANAGEMENT.md](https://github.com/Ditto190/modme-ui-01/blob/main/docs/TOOLSET_MANAGEMENT.md)
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      description: What type of toolset issue is this?
+      options:
+        - "🆕 New Toolset Registration"
+        - "⚠️ Toolset Deprecation Request"
+        - "🔧 Toolset Metadata Update"
+        - "🐛 Toolset Validation Failure"
+        - "📝 Toolset Documentation Issue"
+        - "🔀 Alias Resolution Problem"
+        - "🔄 Migration Guide Missing/Incorrect"
+        - "❓ Toolset Discovery Question"
+    validations:
+      required: true
+
+  - type: input
+    id: toolset-id
+    attributes:
+      label: Toolset ID
+      description: The identifier of the affected toolset (e.g., 'ui_elements', 'theme')
+      placeholder: "ui_elements"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Detailed Description
+      description: Describe the issue or request in detail
+      placeholder: |
+        Example: "The ui_elements toolset should be deprecated in favor of the new generative_ui_components toolset which has better prop validation and type safety."
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current Behavior
+      description: What is currently happening? (For bug reports)
+      placeholder: |
+        Example: "npm run validate:toolsets fails with 'Unknown toolset ui_elements_v2'"
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What should happen instead?
+      placeholder: |
+        Example: "Validation should recognize ui_elements_v2 as a valid alias for ui_elements"
+
+  - type: dropdown
+    id: affected-tools
+    attributes:
+      label: Affected Agent Tools
+      description: Which agent tool functions are involved?
+      multiple: true
+      options:
+        - "upsert_ui_element"
+        - "remove_ui_element"
+        - "clear_canvas"
+        - "setThemeColor"
+        - "Other (specify below)"
+
+  - type: textarea
+    id: breaking-changes
+    attributes:
+      label: Breaking Changes
+      description: |
+        (For deprecation/updates) What changes will break existing code?
+      placeholder: |
+        - Tool signature changes
+        - Prop name changes
+        - State schema modifications
+
+  - type: textarea
+    id: migration-path
+    attributes:
+      label: Migration Path
+      description: |
+        (For deprecations) How should users migrate from old to new?
+      placeholder: |
+        **Before:**
+        ```python
+        upsert_ui_element(tool_context, id="card", type="StatCard", props={...})
+        ```
+        
+        **After:**
+        ```python
+        create_component(tool_context, id="card", component_type="StatCard", config={...})
+        ```
+
+  - type: input
+    id: grace-period
+    attributes:
+      label: Deprecation Grace Period
+      description: (For deprecations) Suggested grace period in days (default 180)
+      placeholder: "180"
+
+  - type: textarea
+    id: validation-errors
+    attributes:
+      label: Validation Errors
+      description: |
+        (If validation failed) Paste the error output from `npm run validate:toolsets`
+      render: shell
+
+  - type: textarea
+    id: related-files
+    attributes:
+      label: Related Files
+      description: Which files need to be updated?
+      placeholder: |
+        - [ ] agent/toolsets.json
+        - [ ] agent/toolset_aliases.json
+        - [ ] docs/toolsets/<toolset-name>.md
+        - [ ] agent/main.py (tool definitions)
+        - [ ] src/app/page.tsx (component registry)
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I've read the Toolset Management documentation
+          required: true
+        - label: I've run `npm run validate:toolsets` locally
+          required: false
+        - label: I've checked for existing toolset aliases
+          required: true
+        - label: I understand the 180-day deprecation grace period
+          required: false

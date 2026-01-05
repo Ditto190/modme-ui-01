@@ -1,0 +1,161 @@
+name: ✨ Feature Request
+description: Propose a new feature or enhancement for the ModMe GenUI Workbench
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ✨ Feature Request
+        
+        Thanks for helping improve the ModMe GenUI Workbench!
+        
+        **Note**: For toolset-related features (new toolsets, deprecations), use the "Toolset Management Issue" template.
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: What type of feature is this?
+      options:
+        - "📦 New Component (Registry)"
+        - "🔧 Agent Tool Enhancement"
+        - "🎨 UI/UX Improvement"
+        - "🔗 State Management"
+        - "🛠️ Toolset Management"
+        - "⚡ Performance Optimization"
+        - "🔒 Security Enhancement"
+        - "📚 Documentation"
+        - "🧪 Testing Infrastructure"
+        - "🏗️ Developer Experience"
+        - "❓ Other"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component/Layer
+      description: Which part of the system would this feature impact?
+      options:
+        - "🐍 Python Agent (agent/main.py)"
+        - "⚛️ React Frontend (src/app/page.tsx)"
+        - "📦 Component Registry (src/components/registry/)"
+        - "🔗 State Contract (src/lib/types.ts)"
+        - "🎨 Theme System"
+        - "🛠️ Toolset System"
+        - "🔌 API Layer"
+        - "📝 Documentation"
+        - "🏗️ Build/Deploy"
+        - "Multiple Layers"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve?
+      placeholder: |
+        Example: "Currently, there's no way to render nested UI elements within components. Users can't create complex dashboards with cards containing sub-components."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How would you like to solve this problem?
+      placeholder: |
+        Example: "Add support for a 'children' prop in component schemas, allowing agent to nest elements:
+        
+        ```python
+        upsert_ui_element(
+          id='dashboard',
+          type='Container',
+          props={
+            'layout': 'grid',
+            'children': [
+              {'type': 'StatCard', 'props': {...}},
+              {'type': 'ChartCard', 'props': {...}}
+            ]
+          }
+        )
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Have you considered other approaches?
+      placeholder: |
+        Example: "Alternatively, could use a layout manager component that references elements by ID rather than nesting"
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Use Cases
+      description: Describe concrete scenarios where this feature would be useful
+      placeholder: |
+        1. **Complex Dashboards**: Build multi-level dashboards with sections containing multiple widgets
+        2. **Grouped Components**: Create logically grouped UI elements (e.g., "Revenue Metrics" section with 3 stat cards)
+        3. **Conditional Rendering**: Show/hide child elements based on user interactions
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - "🔴 Critical - Blocking my use case"
+        - "🟠 High - Significant improvement"
+        - "🟡 Medium - Nice to have"
+        - "🟢 Low - Future enhancement"
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation Notes
+      description: |
+        (Optional) Technical details for implementation
+        
+        - Which files would need changes?
+        - Any breaking changes?
+        - Dependencies needed?
+        - Testing considerations?
+      placeholder: |
+        **Files to modify:**
+        - `agent/main.py`: Update upsert_ui_element validation
+        - `src/lib/types.ts`: Add children to UIElement interface
+        - `src/app/page.tsx`: Recursive rendering in renderElement()
+        
+        **Breaking changes:** None (backward compatible with props.children=undefined)
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: How will we know this feature is complete?
+      placeholder: |
+        - [ ] Agent can create nested elements via tool calls
+        - [ ] React renders nested structures correctly
+        - [ ] State sync preserves nested element hierarchy
+        - [ ] Documentation updated with nesting examples
+        - [ ] Unit tests cover nested rendering
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I've searched existing issues to avoid duplicates
+          required: true
+        - label: I've considered how this fits the project architecture
+          required: true
+        - label: I'm willing to contribute a PR if needed
+          required: false

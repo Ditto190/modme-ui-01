@@ -6,6 +6,8 @@ A **Generative UI (GenUI) R&D laboratory** combining Next.js 16, React 19, and P
 [![CI](https://github.com/Ditto190/modme-ui-01/workflows/CI/badge.svg)](https://github.com/Ditto190/modme-ui-01/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+> **🎯 Porting Ready**: This monorepo contains **highly portable components** designed for reuse. See [PORTING_GUIDE.md](PORTING_GUIDE.md) and [CODEBASE_INDEX.md](CODEBASE_INDEX.md) for complete component catalog and integration patterns.
+
 ## 🚀 Quick Start
 
 ### Option 1: GitHub Codespaces (Recommended)
@@ -190,13 +192,46 @@ The following scripts can also be run using your preferred package manager:
 
 ## 📚 Documentation
 
-For detailed information, see:
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Development workflow and guidelines
-- [Architecture Overview](.copilot/knowledge/architecture.md) - System architecture *(new in this workspace; may not exist on older branches)*
-- [GenUI Development](.copilot/instructions/genui-development.md) - GenUI patterns and practices *(new in this workspace; may not exist on older branches)*
-- [ADK Documentation](https://google.github.io/adk-docs/) - Google ADK features
-- [CopilotKit Documentation](https://docs.copilotkit.ai) - Explore CopilotKit's capabilities
-- [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API
+### Core Documentation
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development workflow, issue templates, and guidelines
+- **[Project_Overview.md](Project_Overview.md)** - Generative UI architecture and vision
+- **[Architecture Overview](.copilot/knowledge/architecture.md)** - System architecture *(new in this workspace; may not exist on older branches)*
+- **[GenUI Development](.copilot/instructions/genui-development.md)** - GenUI patterns and practices *(new in this workspace; may not exist on older branches)*
+
+### Issue Management & Automation
+- **[Issue Management System](docs/ISSUE_MANAGEMENT_SYSTEM.md)** - Complete issue system with templates and automation
+- **[Knowledge Base Integration](docs/KNOWLEDGE_BASE_INTEGRATION.md)** - Semantic issue enrichment with KB Context Mapper
+- **[KB Quick Reference](docs/KB_QUICK_REFERENCE.md)** - Quick start guide for knowledge base features
+
+### Toolset Management
+- **[Toolset Management](docs/TOOLSET_MANAGEMENT.md)** - GitHub MCP-style toolset lifecycle automation
+- **[Toolset Quick Start](docs/TOOLSET_QUICKSTART.md)** - Quick start guide for toolsets
+- **[TOOLSET_README.md](TOOLSET_README.md)** - Toolset system overview
+
+### Code Quality & Patterns
+- **[Refactoring Patterns](docs/REFACTORING_PATTERNS.md)** - Project-specific refactoring guides
+- **[Schema Crawler](agent-generator/SCHEMA_CRAWLER_README.md)** - JSON Schema → Zod + TypeScript generator
+
+### External Resources
+- **[ADK Documentation](https://google.github.io/adk-docs/)** - Google ADK features
+- **[CopilotKit Documentation](https://docs.copilotkit.ai)** - CopilotKit capabilities
+- **[Next.js Documentation](https://nextjs.org/docs)** - Next.js features and API
+
+## 🤖 Issue Reporting & Management
+
+This project uses an intelligent issue management system with:
+- ✅ **Structured templates** for bugs, features, toolsets, and questions
+- ✅ **Automatic labeling** based on issue content (component, priority, type)
+- ✅ **Knowledge Base Context Mapper** - Automatically enriches issues with relevant files and documentation
+- ✅ **Toolset lifecycle integration** for deprecation and validation workflows
+
+**How it works**: When you open an issue, the Knowledge Base analyzes the content and automatically:
+1. Detects relevant concepts (e.g., "StatCard", "Agent Tools", "State Sync")
+2. Links to related files and documentation
+3. Suggests appropriate labels
+4. Posts a helpful context comment with all the information
+
+**Learn more**: See [Issue Management System](docs/ISSUE_MANAGEMENT_SYSTEM.md) and [Knowledge Base Integration](docs/KNOWLEDGE_BASE_INTEGRATION.md)
 
 ## 🔒 Privacy & Security
 

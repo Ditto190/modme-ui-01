@@ -1,12 +1,32 @@
 import React from 'react';
+import { z } from 'zod';
 
-interface ChartCardProps {
-    title: string;
-    chartType: 'line' | 'bar' | 'pie';
-    data: any[];
-}
+// Zod schema for runtime validation
+const ChartCardPropsSchema = z.object({
+    title: z.string().min(1, "Title is required"),
+    chartType: z.enum(['line', 'bar', 'pie']),
+    data: z.array(z.any()).min(1, "At least one data point is required"),
+});
 
-export const ChartCard: React.FC<ChartCardProps> = ({ title, chartType, data }) => {
+type ChartCardProps = z.infer<typeof ChartCardPropsSchema>;
+
+export const ChartCard: React.FC<ChartCardProps> = (rawProps) => {
+    // Validate props at runtime
+    const result = ChartCardPropsSchema.safeParse(rawProps);
+    
+    if (!result.success) {
+        console.error('ChartCard validation failed:', result.error);
+        return (
+            <div className="p-4 bg-yellow-50 text-yellow-700 rounded-xl border border-yellow-200">
+                <p className="font-semibold">Invalid ChartCard props</p>
+                <pre className="text-xs mt-2 overflow-auto">
+                    {JSON.stringify(result.error.issues, null, 2)}
+                </pre>
+            </div>
+        );
+    }
+    
+    const { title, chartType, data } = result.data;
     return (
         <div className="p-6 bg-white rounded-xl shadow-md border border-gray-100 flex flex-col gap-4 min-w-[300px]">
             <div className="flex justify-between items-center">

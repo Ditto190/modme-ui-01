@@ -7,10 +7,14 @@ import {
 } from "@copilotkit/react-core";
 import { CopilotKitCSSProperties, CopilotSidebar } from "@copilotkit/react-ui";
 import { useState } from "react";
+import { z } from "zod";
 import { GenerativeCanvas } from "./canvas/GenerativeCanvas";
 import { StatCard } from "@/components/registry/StatCard";
 import { DataTable } from "@/components/registry/DataTable";
 import { ChartCard } from "@/components/registry/ChartCard";
+
+// Validation schema for theme color
+const ThemeColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color format");
 
 export default function CopilotKitPage() {
   const [themeColor, setThemeColor] = useState("#6366f1");
@@ -20,12 +24,20 @@ export default function CopilotKitPage() {
     parameters: [
       {
         name: "themeColor",
-        description: "The theme color to set.",
+        description: "Hex color code (e.g., #ff6600)",
         required: true,
       },
     ],
     handler({ themeColor }) {
-      setThemeColor(themeColor);
+      try {
+        // Validate color format
+        ThemeColorSchema.parse(themeColor);
+        setThemeColor(themeColor);
+        console.info(`Theme color updated to ${themeColor}`);
+      } catch (error) {
+        console.error('Invalid theme color:', themeColor, error);
+        // Don't update state if invalid
+      }
     },
   });
 
@@ -75,6 +87,9 @@ function YourMainContent() {
       elements: [],
     },
   });
+  
+  // Safe access with fallback
+  const elements = state?.elements || [];
 
   const renderElement = (el: UIElement) => {
     switch (el.type) {
@@ -85,9 +100,21 @@ function YourMainContent() {
       case "ChartCard":
         return <ChartCard key={el.id} {...el.props} />;
       default:
+        // Log unknown types for debugging
+        console.error(`Unknown component type: ${el.type}`, el);
         return (
-          <div key={el.id} className="p-4 bg-red-50 text-red-500 rounded border border-red-200">
-            Unknown component type: {el.type}
+          <div 
+            key={el.id} 
+            className="p-4 bg-red-50 text-red-500 rounded-xl border border-red-200"
+          >
+            <p className="font-semibold">Unknown component type: {el.type}</p>
+            <p className="text-sm mt-1">Expected: StatCard, DataTable, or ChartCard</p>
+            <details className="mt-2">
+              <summary className="text-xs cursor-pointer hover:underline">Debug Info</summary>
+              <pre className="text-xs mt-1 overflow-auto bg-white p-2 rounded">
+                {JSON.stringify(el, null, 2)}
+              </pre>
+            </details>
           </div>
         );
     }
@@ -102,11 +129,12 @@ function YourMainContent() {
 
       <GenerativeCanvas>
         <div className="flex flex-wrap gap-6 items-start">
-          {state.elements && state.elements.length > 0 ? (
-            state.elements.map(renderElement)
+          {elements.length > 0 ? (
+            elements.map(renderElement)
           ) : (
             <div className="w-full text-center py-20 text-slate-400">
-              No elements yet. Ask the assistant to generate some UI.
+              <p className="text-lg font-medium mb-2">No elements yet</p>
+              <p className="text-sm">Ask the assistant to generate some UI.</p>
             </div>
           )}
         </div>
