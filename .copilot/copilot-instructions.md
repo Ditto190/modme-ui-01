@@ -6,7 +6,7 @@ This is a **local-first, privacy-focused consulting data science platform** desi
 
 ### Core Design Principles
 
-1. **Local-Only by Default**: No cloud dependencies, remote Git, or external API requirements (unless explicitly configured)
+1. **Local-First by Default**: No cloud dependencies, remote Git, or external API requirements (unless explicitly configured)
 2. **Auditability**: All operations logged to SQLite (`artifacts.db`) for compliance and review
 3. **Reproducibility**: Pinned dependencies, isolated venv, automated VSCode tasks for consistent environments
 4. **Privacy & Security**: Sensitive client data never leaves local machine; MicroSandbox isolation for code execution
