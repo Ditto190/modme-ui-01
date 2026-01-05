@@ -1,0 +1,15 @@
+{
+  "name": "knowledge-management-scripts",
+  "version": "1.0.0",
+  "description": "Knowledge base management and context mapping utilities",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node test-kb-mapper.js",
+    "context": "node dist/issue-context-mapper.js"
+  },
+  "dependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.3"
+  }
+}

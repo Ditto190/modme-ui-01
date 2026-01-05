@@ -1,8 +1,10 @@
 # Contributing to ModMe GenUI Workspace
 
-Thank you for your interest in contributing! This guide will help you get started with the development environment.
+Thank you for your interest in contributing! This guide will help you get started with the development environment and issue reporting.
 
 ## Table of Contents
+- [Issue Templates & Reporting](#issue-templates--reporting)
+- [Automatic Labeling](#automatic-labeling)
 - [Development Environment Setup](#development-environment-setup)
 - [Using DevContainer](#using-devcontainer)
 - [Local Development](#local-development)
@@ -10,6 +12,136 @@ Thank you for your interest in contributing! This guide will help you get starte
 - [Code Standards](#code-standards)
 - [Testing](#testing)
 - [Submitting Changes](#submitting-changes)
+
+## Issue Templates & Reporting
+
+We use structured issue templates to ensure we can help you quickly and effectively. Please choose the appropriate template when creating an issue:
+
+### 🐛 Bug Report
+Use for reporting bugs or unexpected behavior in the system.
+
+**When to use:**
+- Component not rendering correctly
+- State sync issues between Python agent and React UI
+- Build or runtime errors
+- Performance problems
+
+**What to include:**
+- Clear reproduction steps
+- Expected vs actual behavior
+- Error logs or screenshots
+- Environment details (OS, Node.js, Python versions)
+
+[**→ Create Bug Report**](../../issues/new?template=bug-report.yml)
+
+---
+
+### ✨ Feature Request
+Propose new features or enhancements.
+
+**When to use:**
+- New component types for the registry
+- Agent tool improvements
+- UI/UX enhancements
+- Performance optimizations
+- Documentation additions
+
+**What to include:**
+- Problem statement (what gap does this fill?)
+- Proposed solution with examples
+- Use cases
+- Implementation considerations
+
+[**→ Create Feature Request**](../../issues/new?template=feature-request.yml)
+
+---
+
+### 🛠️ Toolset Management Issue
+For issues related to the GitHub MCP-style toolset lifecycle automation.
+
+**When to use:**
+- Registering new toolsets
+- Requesting toolset deprecation
+- Alias resolution problems
+- Validation failures
+- Migration guide issues
+
+**What to include:**
+- Toolset ID affected
+- Current vs expected behavior
+- Breaking changes (for deprecations)
+- Migration path (for deprecations)
+
+[**→ Create Toolset Issue**](../../issues/new?template=toolset-management.yml)
+
+📚 **Related**: [Toolset Management Guide](docs/TOOLSET_MANAGEMENT.md)
+
+---
+
+### ❓ Question
+Ask questions about using or contributing to the project.
+
+**When to use:**
+- Setup or getting started questions
+- Architecture or design questions
+- How-to questions
+- Contributing guidance
+
+**Before asking:**
+1. Check the [README](README.md)
+2. Search [existing discussions](../../discussions)
+3. Review relevant [documentation](docs/)
+
+[**→ Ask Question**](../../issues/new?template=question.yml)
+
+---
+
+## Automatic Labeling
+
+Issues are automatically labeled based on your template selections. Here's what labels mean:
+
+### Component Labels
+- `agent` - Python agent backend (agent/main.py)
+- `frontend` - React UI (src/app/page.tsx)
+- `state-sync` - State synchronization between agent and UI
+- `component-registry` - UI component registry (StatCard, DataTable, etc.)
+- `theme` - Theme system and styling
+- `toolset` - Toolset management system
+- `api` - CopilotKit API layer
+- `documentation` - Documentation updates
+- `build-system` - npm/uv/Docker build configuration
+
+### Priority Labels
+- `priority:critical` - Blocking issue requiring immediate attention
+- `priority:high` - Significant impact, should be addressed soon
+- `priority:medium` - Nice to have, moderate importance
+- `priority:low` - Future enhancement, low urgency
+
+### Status Labels
+- `status:triage` - Awaiting maintainer review
+- `status:needs-info` - More information needed from reporter
+- `status:in-progress` - Being actively worked on
+- `status:blocked` - Waiting on external dependency
+
+### Toolset-Specific Labels
+- `toolset:new` - New toolset registration
+- `toolset:deprecation` - Toolset deprecation request
+- `toolset:validation` - Validation failure
+- `toolset:alias` - Alias resolution issue
+
+---
+
+## Issue Lifecycle
+
+1. **Opened** → Auto-labeled with `status:triage` + component labels
+2. **Triage** → Maintainer reviews within 48 hours
+3. **Labeled** → Issue categorized with priority + status
+4. **Assigned** → Contributor takes ownership
+5. **In Progress** → Work begins, label updated to `status:in-progress`
+6. **PR Created** → Linked to issue
+7. **Resolved** → Issue closed when PR merged
+
+---
 
 ## Development Environment Setup
 

@@ -38,5 +38,11 @@
     "pwd": true,
     "cp": true,
     "mv": true
+  },
+  "yaml.schemas": {
+    "file://${userHome}/.vscode/extensions/continue.continue-1.2.11-win32-x64/config-yaml-schema.json": [
+      ".continue/**/*.yaml"
+    ],
+    "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json": "genai-toolbox/tools.yaml"
   }
 }

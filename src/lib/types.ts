@@ -1,7 +1,7 @@
 export type UIElement = {
   id: string;
   type: string;
-  props: any;
+  props: Record<string, unknown>;
 };
 
 export type AgentState = {

@@ -1,0 +1,69 @@
+
+> adk-starter@0.1.0 lint
+> eslint . && ruff check .
+
+
+C:\Users\dylan\modme-ui-01\.copilot\templates\component-template.tsx
+  21:6  warning  'props' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\agent-generator\src\mcp-registry\molecule-generator.ts
+   18:24  warning  'JSONSchema' is defined but never used  @typescript-eslint/no-unused-vars
+  363:44  warning  'tools' is defined but never used       @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\agent-generator\src\mcp-registry\schema-crawler.ts
+   12:10  warning  'z' is defined but never used         @typescript-eslint/no-unused-vars
+  340:3   warning  'zodCode' is defined but never used   @typescript-eslint/no-unused-vars
+  341:3   warning  'testData' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\agent-generator\src\skills\pptx\scripts\html2pptx.js
+   30:7   warning  'sharp' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  121:54  warning  'tmpDir' is defined but never used          @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\knowledge-management\fetch-anthropic-skills.js
+  223:16  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\knowledge-management\generate-diagram.js
+  15:7  warning  'OUTPUT_SVG' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\knowledge-management\skill-spec-validator.js
+  116:12  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\toolset-management\detect-toolset-changes.js
+  63:25  warning  'toolDef' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 12 problems (0 errors, 12 warnings)
+
+.copilot\templates\agent-tool-template.py:1:29: F821 Undefined name `ToolContext`
+.copilot\templates\agent-tool-template.py:1:54: F821 Undefined name `PARAM_TYPE`
+.copilot\templates\agent-tool-template.py:1:69: F821 Undefined name `Dict`
+.copilot\templates\agent-tool-template.py:18:20: F541 [*] f-string without any placeholders
+agent-generator\src\skills\skill-creator\scripts\quick_validate.py:7:8: F401 [*] `os` imported but unused
+agent\INTEGRATION_EXAMPLE.py:10:32: F401 [*] `google.genai.types.Tool` imported but unused
+agent\INTEGRATION_EXAMPLE.py:18:5: F401 [*] `toolset_manager.resolve_toolset` imported but unused
+agent\INTEGRATION_EXAMPLE.py:19:5: F401 [*] `toolset_manager.get_toolset` imported but unused
+agent\INTEGRATION_EXAMPLE.py:20:5: F401 [*] `toolset_manager.list_toolsets` imported but unused
+agent\INTEGRATION_EXAMPLE.py:213:15: F541 [*] f-string without any placeholders
+agent\main.py:19:22: F401 [*] `pydantic.BaseModel` imported but unused
+agent\main.py:19:33: F401 [*] `pydantic.Field` imported but unused
+agent\toolset_manager.py:17:42: F401 [*] `typing.Any` imported but unused
+agent\toolset_manager.py:18:22: F401 [*] `datetime.datetime` imported but unused
+scripts\ingest_chunks.py:81:11: F541 [*] f-string without any placeholders
+scripts\local_vault.py:20:8: F401 [*] `os` imported but unused
+scripts\session_memory.py:40:24: F401 [*] `contextlib.asynccontextmanager` imported but unused
+scripts\session_memory.py:512:38: F401 `fastapi.HTTPException` imported but unused; consider using `importlib.util.find_spec` to test for availability
+scripts\session_memory.py:513:39: F401 `fastapi.responses.JSONResponse` imported but unused; consider using `importlib.util.find_spec` to test for availability
+scripts\start_chroma_server.py:29:8: F401 [*] `signal` imported but unused
+scripts\start_chroma_server.py:45:16: F401 `chromadb` imported but unused; consider using `importlib.util.find_spec` to test for availability
+scripts\start_chroma_server.py:120:16: F401 `chromadb` imported but unused; consider using `importlib.util.find_spec` to test for availability
+scripts\start_chroma_server.py:128:37: F401 `chromadb.server.create_app` imported but unused; consider using `importlib.util.find_spec` to test for availability
+scripts\start_chroma_server.py:195:11: F541 [*] f-string without any placeholders
+scripts\start_chroma_server.py:277:15: F541 [*] f-string without any placeholders
+scripts\start_chroma_server.py:289:19: F541 [*] f-string without any placeholders
+scripts\test_gemini_embeddings.py:57:11: F541 [*] f-string without any placeholders
+scripts\test_gemini_embeddings.py:87:11: F541 [*] f-string without any placeholders
+scripts\test_gemini_embeddings.py:107:11: F541 [*] f-string without any placeholders
+scripts\test_gemini_embeddings.py:122:11: F541 [*] f-string without any placeholders
+scripts\test_gemini_embeddings.py:168:19: F541 [*] f-string without any placeholders
+scripts\test_gemini_embeddings.py:170:19: F541 [*] f-string without any placeholders
+Found 32 errors.
+[*] 24 fixable with the `--fix` option.
