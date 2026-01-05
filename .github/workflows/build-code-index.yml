@@ -1,0 +1,332 @@
+# build-code-index.yml - Semantic Code Indexing with ChromaDB
+#
+# This workflow creates two ChromaDB configurations:
+#   Part A: Session-based ChromaDB (HTTP server) for observability, metrics, logs
+#   Part B: In-session memory store (artifact) for state tracking across agents
+#
+# Uses Google Gemini embeddings (gemini-embedding-001) with configurable dimensions.
+# Requires GOOGLE_API_KEY secret to be set in repository settings.
+#
+# Triggers: push to main, manual dispatch, scheduled (daily)
+
+name: Build Code Index
+
+on:
+  push:
+    branches: [main, 'feature/**']
+    paths:
+      - 'src/**'
+      - 'agent/**'
+      - 'scripts/**'
+      - '*.py'
+      - '*.ts'
+      - '*.tsx'
+  workflow_dispatch:
+    inputs:
+      full_reindex:
+        description: 'Force full reindex (ignore cache)'
+        required: false
+        default: false
+        type: boolean
+      chroma_mode:
+        description: 'ChromaDB mode (http|persistent|ephemeral)'
+        required: false
+        default: 'http'
+        type: choice
+        options:
+          - http
+          - persistent
+          - ephemeral
+      embedding_dim:
+        description: 'Embedding dimensions (768|1536|3072)'
+        required: false
+        default: '768'
+        type: choice
+        options:
+          - '768'
+          - '1536'
+          - '3072'
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  PYTHON_VERSION: '3.12'
+  NODE_VERSION: '22'
+  CHROMA_SERVER_PORT: 8001
+  CHROMA_PERSIST_DIR: ./chroma_data
+  GEMINI_EMBEDDING_MODEL: models/gemini-embedding-001
+  EMBEDDING_DIM: ${{ github.event.inputs.embedding_dim || '768' }}
+
+jobs:
+  # ============================================================
+  # Job 1: Chunk codebase with pykomodo
+  # ============================================================
+  chunk-codebase:
+    name: 📦 Chunk Codebase
+    runs-on: ubuntu-latest
+    outputs:
+      chunks_artifact_id: ${{ steps.upload.outputs.artifact-id }}
+      chunk_count: ${{ steps.count.outputs.count }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install pykomodo
+        run: |
+          pip install pykomodo
+
+      - name: Create output directory
+        run: mkdir -p output_chunks
+
+      - name: Chunk codebase with pykomodo
+        run: |
+          echo "🔍 Chunking codebase..."
+          pykomodo chunk \
+            --input-dir . \
+            --output-dir output_chunks \
+            --extensions py,ts,tsx,js,jsx,json,md,yaml,yml \
+            --exclude "node_modules,dist,.next,__pycache__,.git,*.lock" \
+            --max-chunk-size 1500 \
+            --overlap 200 \
+            --format jsonl
+          
+          echo "✅ Chunking complete"
+
+      - name: Count chunks
+        id: count
+        run: |
+          CHUNK_COUNT=$(wc -l < output_chunks/chunks.jsonl || echo "0")
+          echo "count=$CHUNK_COUNT" >> $GITHUB_OUTPUT
+          echo "📊 Generated $CHUNK_COUNT chunks"
+
+      - name: Upload chunks artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-chunks-${{ github.sha }}
+          path: output_chunks/
+          retention-days: 7
+
+  # ============================================================
+  # Job 2: Part A - Session ChromaDB (HTTP Server for MCP)
+  # ============================================================
+  build-session-index:
+    name: 🗄️ Part A - Session Index (HTTP)
+    runs-on: ubuntu-latest
+    needs: chunk-codebase
+    if: success()
+    
+    services:
+      # ChromaDB HTTP server as a service container
+      chromadb:
+        image: chromadb/chroma:latest
+        ports:
+          - 8001:8000
+        options: >-
+          --health-cmd "curl -f http://localhost:8000/api/v2/heartbeat || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install chromadb google-generativeai httpx python-dotenv
+
+      - name: Download chunks artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: code-chunks-${{ github.sha }}
+          path: output_chunks/
+
+      - name: Wait for ChromaDB server
+        run: |
+          echo "⏳ Waiting for ChromaDB server..."
+          for i in {1..30}; do
+            if curl -s http://localhost:${{ env.CHROMA_SERVER_PORT }}/api/v2/heartbeat > /dev/null; then
+              echo "✅ ChromaDB server is ready"
+              break
+            fi
+            echo "Attempt $i/30..."
+            sleep 2
+          done
+
+      - name: Create session collections
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          CHROMA_HOST: localhost
+          CHROMA_PORT: ${{ env.CHROMA_SERVER_PORT }}
+        run: |
+          python scripts/ingest_chunks.py \
+            --mode http \
+            --host localhost \
+            --port ${{ env.CHROMA_SERVER_PORT }} \
+            --chunks-file output_chunks/chunks.jsonl \
+            --collection-prefix "session_${{ github.run_id }}_" \
+            --create-collections code_index,agent_interactions,observability_metrics,mcp_server_logs,sandbox_executions \
+            --embedding-dim ${{ env.EMBEDDING_DIM }}
+
+      - name: Verify session index
+        run: |
+          curl -s "http://localhost:${{ env.CHROMA_SERVER_PORT }}/api/v2/collections" | python -m json.tool
+          echo "✅ Session collections created"
+
+      - name: Export session metadata
+        run: |
+          mkdir -p session_metadata
+          echo '{
+            "run_id": "${{ github.run_id }}",
+            "sha": "${{ github.sha }}",
+            "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+            "chroma_host": "localhost",
+            "chroma_port": ${{ env.CHROMA_SERVER_PORT }},
+            "collections": [
+              "session_${{ github.run_id }}_code_index",
+              "session_${{ github.run_id }}_agent_interactions",
+              "session_${{ github.run_id }}_observability_metrics",
+              "session_${{ github.run_id }}_mcp_server_logs",
+              "session_${{ github.run_id }}_sandbox_executions"
+            ],
+            "chunk_count": ${{ needs.chunk-codebase.outputs.chunk_count }}
+          }' > session_metadata/session_info.json
+
+      - name: Upload session metadata artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: session-metadata-${{ github.sha }}
+          path: session_metadata/
+          retention-days: 7
+
+  # ============================================================
+  # Job 3: Part B - In-Session Memory Store (Artifact)
+  # ============================================================
+  build-memory-artifact:
+    name: 💾 Part B - Memory Artifact
+    runs-on: ubuntu-latest
+    needs: chunk-codebase
+    if: success()
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install chromadb google-generativeai python-dotenv
+
+      - name: Download chunks artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: code-chunks-${{ github.sha }}
+          path: output_chunks/
+
+      - name: Create persistent memory database
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          echo "📦 Creating persistent ChromaDB for artifact..."
+          python scripts/ingest_chunks.py \
+            --mode persistent \
+            --persist-dir ${{ env.CHROMA_PERSIST_DIR }} \
+            --chunks-file output_chunks/chunks.jsonl \
+            --collection-prefix "memory_" \
+            --create-collections code_index,environment_state,agent_context,tool_outputs \
+            --embedding-dim ${{ env.EMBEDDING_DIM }}
+
+      - name: Generate memory manifest
+        run: |
+          echo '{
+            "artifact_type": "chromadb_memory_store",
+            "version": "1.0.0",
+            "sha": "${{ github.sha }}",
+            "run_id": "${{ github.run_id }}",
+            "created_at": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+            "collections": {
+              "code_index": "Semantic code search index",
+              "environment_state": "Current environment configuration",
+              "agent_context": "Agent interaction history and context",
+              "tool_outputs": "Tool execution results cache"
+            },
+            "usage": {
+              "load_command": "chromadb.PersistentClient(path=\"./chroma_data\")",
+              "query_example": "collection.query(query_texts=[\"...\"], n_results=5)"
+            },
+            "chunk_count": ${{ needs.chunk-codebase.outputs.chunk_count }}
+          }' > ${{ env.CHROMA_PERSIST_DIR }}/manifest.json
+
+      - name: Upload memory artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chromadb-memory-${{ github.sha }}
+          path: ${{ env.CHROMA_PERSIST_DIR }}/
+          retention-days: 30
+          compression-level: 6
+
+  # ============================================================
+  # Job 4: Summary and Notifications
+  # ============================================================
+  summary:
+    name: 📋 Build Summary
+    runs-on: ubuntu-latest
+    needs: [chunk-codebase, build-session-index, build-memory-artifact]
+    if: always()
+    
+    steps:
+      - name: Generate summary
+        run: |
+          echo "## 🔍 Code Index Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit SHA | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Run ID | \`${{ github.run_id }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Chunks Generated | ${{ needs.chunk-codebase.outputs.chunk_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Session Index | ${{ needs.build-session-index.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Memory Artifact | ${{ needs.build-memory-artifact.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- \`code-chunks-${{ github.sha }}\` - Raw code chunks (JSONL)" >> $GITHUB_STEP_SUMMARY
+          echo "- \`session-metadata-${{ github.sha }}\` - Session ChromaDB connection info" >> $GITHUB_STEP_SUMMARY
+          echo "- \`chromadb-memory-${{ github.sha }}\` - Portable ChromaDB database" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Usage" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`python" >> $GITHUB_STEP_SUMMARY
+          echo "# Part A: Connect to session ChromaDB (during workflow)" >> $GITHUB_STEP_SUMMARY
+          echo "import chromadb" >> $GITHUB_STEP_SUMMARY
+          echo "client = chromadb.HttpClient(host='localhost', port=8001)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Part B: Load memory artifact" >> $GITHUB_STEP_SUMMARY
+          echo "client = chromadb.PersistentClient(path='./chroma_data')" >> $GITHUB_STEP_SUMMARY
+          echo "collection = client.get_collection('memory_code_index')" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: Check for failures
+        if: contains(needs.*.result, 'failure')
+        run: |
+          echo "⚠️ One or more jobs failed. Check logs for details."
+          exit 1

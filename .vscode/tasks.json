@@ -1,0 +1,139 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start MCP servers if stopped",
+      "type": "shell",
+      "problemMatcher": [],
+      "runOptions": { "runOn": "folderOpen" },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "windows": {
+        "command": "pwsh",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "${workspaceFolder}\\scripts\\start-mcp-servers.ps1"
+        ]
+      },
+      "linux": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/start-mcp-servers.sh"]
+      },
+      "osx": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/start-mcp-servers.sh"]
+      }
+    },
+    {
+      "label": "Search Toolsets",
+      "type": "shell",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "windows": {
+        "command": "pwsh",
+        "args": [
+          "-NoProfile",
+          "-Command",
+          "${workspaceFolder}\\scripts\\knowledge-management\\search-toolsets.bat",
+          "${input:searchPattern}"
+        ]
+      },
+      "linux": {
+        "command": "bash",
+        "args": [
+          "${workspaceFolder}/scripts/knowledge-management/search-toolsets.sh",
+          "${input:searchPattern}"
+        ]
+      },
+      "osx": {
+        "command": "bash",
+        "args": [
+          "${workspaceFolder}/scripts/knowledge-management/search-toolsets.sh",
+          "${input:searchPattern}"
+        ]
+      }
+    },
+    {
+      "label": "Validate Toolsets",
+      "type": "npm",
+      "script": "docs:sync",
+      "args": ["--validate-only"],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Generate Documentation",
+      "type": "npm",
+      "script": "docs:all",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Sync Markdown to JSON",
+      "type": "npm",
+      "script": "docs:md-to-json",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Sync JSON to Markdown",
+      "type": "npm",
+      "script": "docs:json-to-md",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "View Toolset Diagram",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/scripts/knowledge-management/generate-diagram.js",
+        "--format",
+        "svg",
+        "--verbose"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "dependsOn": ["Generate Documentation"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "searchPattern",
+      "type": "promptString",
+      "description": "Enter search pattern (regex or literal)",
+      "default": ""
+    }
+  ]
+}
+

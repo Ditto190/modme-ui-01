@@ -7,30 +7,51 @@ from typing import Dict, Optional, Any
 
 from ag_ui_adk import ADKAgent, add_adk_fastapi_endpoint
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from datetime import datetime
+from fastapi import FastAPI, status
+from fastapi.responses import JSONResponse
 from google.adk.agents import LlmAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.models.llm_request import LlmRequest
 from google.adk.models.llm_response import LlmResponse
 from google.adk.tools import ToolContext
 from google.genai import types
-from pydantic import BaseModel, Field
 
 load_dotenv()
+
+# Validation constants for type safety
+ALLOWED_TYPES = {"StatCard", "DataTable", "ChartCard"}
 
 def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict[str, Any]) -> Dict[str, str]:
     """
     Add or update a UI element in the workbench canvas.
     
     Args:
-        "id": {"type": "string", "description": "Unique identifier for the element"},
-        "type": {"type": "string", "description": "Type of component (e.g. StatCard, DataTable, ChartCard)"},
-        "props": {"type": "object", "description": "The properties/data for the component"}
+        id: Unique identifier for the element (snake_case recommended)
+        type: Component type (PascalCase, must match registry)
+        props: JSON-serializable properties (camelCase keys)
+    
+    Returns:
+        Success message with element metadata
     """
+    # Validate inputs
+    if not id or not isinstance(id, str):
+        return {"status": "error", "message": "Invalid id: must be non-empty string"}
+    
+    if type not in ALLOWED_TYPES:
+        return {
+            "status": "error", 
+            "message": f"Unknown type '{type}'. Allowed types: {', '.join(ALLOWED_TYPES)}"
+        }
+    
+    if not isinstance(props, dict):
+        return {"status": "error", "message": "Invalid props: must be a dictionary"}
+    
+    # Get current state safely
     elements = tool_context.state.get("elements", [])
     new_element = {"id": id, "type": type, "props": props}
     
-    # Check if element exists
+    # Check if element exists (upsert logic)
     found = False
     for i, el in enumerate(elements):
         if el.get("id") == id:
@@ -41,19 +62,69 @@ def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict
     if not found:
         elements.append(new_element)
     
+    # Write back to state
     tool_context.state["elements"] = elements
-    return {"status": "success", "message": f"Element '{id}' of type '{type}' updated."}
+    
+    action = "updated" if found else "added"
+    return {
+        "status": "success", 
+        "message": f"Element '{id}' of type '{type}' {action}.",
+        "element_count": len(elements)
+    }
 
 def remove_ui_element(tool_context: ToolContext, id: str) -> Dict[str, str]:
-    """Remove a UI element from the canvas by its ID."""
+    """
+    Remove a UI element from the canvas by its ID.
+    
+    Args:
+        id: Unique identifier of the element to remove
+    
+    Returns:
+        Success message with removal confirmation
+    """
+    # Validate input
+    if not id or not isinstance(id, str):
+        return {"status": "error", "message": "Invalid id: must be non-empty string"}
+    
+    # Get current state
     elements = tool_context.state.get("elements", [])
+    initial_count = len(elements)
+    
+    # Filter out the element
     tool_context.state["elements"] = [el for el in elements if el.get("id") != id]
-    return {"status": "success", "message": f"Element '{id}' removed."}
+    final_count = len(tool_context.state["elements"])
+    
+    # Check if element was actually removed
+    if initial_count == final_count:
+        return {
+            "status": "warning", 
+            "message": f"Element '{id}' not found (no change made)",
+            "element_count": final_count
+        }
+    
+    return {
+        "status": "success", 
+        "message": f"Element '{id}' removed.",
+        "element_count": final_count
+    }
 
 def clear_canvas(tool_context: ToolContext) -> Dict[str, str]:
     """Remove all elements from the canvas."""
     tool_context.state["elements"] = []
     return {"status": "success", "message": "Canvas cleared."}
+
+def setThemeColor(transaction_context: ToolContext, themeColor: str) -> Dict[str, str]:
+    """
+    Set the application theme color.
+    
+    Args:
+        themeColor: Hex color code (e.g. #ff0000)
+        
+    Returns:
+        Success message
+    """
+    # This is primarily a frontend tool, but defined here for toolset consistency
+    return {"status": "success", "message": f"Theme color set to {themeColor}"}
 
 def on_before_agent(callback_context: CallbackContext):
     """Initialize state."""
@@ -109,7 +180,7 @@ workbench_agent = LlmAgent(
     
     Always use a meaningful unique 'id' for elements (e.g. 'rev_stat', 'user_table').
     """,
-    tools=[upsert_ui_element, remove_ui_element, clear_canvas],
+    tools=[upsert_ui_element, remove_ui_element, clear_canvas, setThemeColor],
     before_agent_callback=on_before_agent,
     before_model_callback=before_model_modifier,
     after_model_callback=after_model_modifier,
@@ -124,6 +195,71 @@ adk_agent = ADKAgent(
 
 app = FastAPI(title="GenUI Workbench Agent")
 add_adk_fastapi_endpoint(app, adk_agent, path="/")
+
+# Health check endpoints
+@app.get("/health")
+async def health_check():
+    """Liveness probe - basic service availability."""
+    return JSONResponse(
+        content={
+            "status": "healthy",
+            "service": "GenUI Workbench Agent",
+            "version": "1.0.0",
+            "timestamp": datetime.utcnow().isoformat(),
+            "model": "gemini-2.5-flash"
+        },
+        status_code=status.HTTP_200_OK
+    )
+
+@app.get("/ready")
+async def readiness_check():
+    """Readiness probe - all dependencies loaded."""
+    try:
+        # Check if toolsets are loaded
+        from toolset_manager import toolset_manager
+        toolsets = toolset_manager.list_available_toolsets()
+        
+        # Verify dependencies
+        toolsets_healthy = len(toolsets) > 0
+        
+        if not toolsets_healthy:
+            return JSONResponse(
+                content={
+                    "status": "not_ready",
+                    "dependencies": {
+                        "toolsets_loaded": False,
+                        "toolset_count": 0
+                    },
+                    "timestamp": datetime.utcnow().isoformat()
+                },
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
+        
+        return JSONResponse(
+            content={
+                "status": "ready",
+                "dependencies": {
+                    "toolsets_loaded": True,
+                    "toolset_count": len(toolsets),
+                    "toolsets": toolsets[:5],  # First 5 for brevity
+                    "model": "gemini-2.5-flash",
+                    "allowed_types": list(ALLOWED_TYPES)
+                },
+                "timestamp": datetime.utcnow().isoformat()
+            },
+            status_code=status.HTTP_200_OK
+        )
+    
+    except Exception as e:
+        return JSONResponse(
+            content={
+                "status": "not_ready",
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "timestamp": datetime.utcnow().isoformat()
+            },
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE
+        )
 
 if __name__ == "__main__":
     import os

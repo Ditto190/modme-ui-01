@@ -1,0 +1,73 @@
+name: ❓ Question
+description: Ask a question about using or contributing to ModMe GenUI Workbench
+title: "[Question]: "
+labels: ["question"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ❓ Question
+        
+        Have a question? We're here to help!
+        
+        **Before asking:**
+        - Check the [README](https://github.com/Ditto190/modme-ui-01/blob/main/README.md)
+        - Review [Documentation](https://github.com/Ditto190/modme-ui-01/tree/main/docs)
+        - Search [existing discussions](https://github.com/Ditto190/modme-ui-01/discussions)
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Question Category
+      options:
+        - "🚀 Getting Started / Setup"
+        - "🏗️ Architecture / Design"
+        - "🐍 Python Agent Development"
+        - "⚛️ React UI Development"
+        - "🔗 State Synchronization"
+        - "📦 Component Registry"
+        - "🛠️ Toolset Management"
+        - "🧪 Testing"
+        - "📚 Documentation"
+        - "🤝 Contributing"
+        - "❓ General"
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: Ask your question clearly and concisely
+      placeholder: |
+        Example: "How do I add a new component type to the registry? I want to create a GaugeChart component that the agent can use."
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: |
+        Provide any relevant details:
+        - What have you tried?
+        - What documentation have you read?
+        - What's your use case?
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Relevant Code Snippets
+      description: (Optional) Share relevant code
+      render: typescript
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I've searched existing issues and discussions
+          required: true
+        - label: I've reviewed the relevant documentation
+          required: true
