@@ -16,3 +16,6 @@ Starting logs update interval
 {"method":"notifications/message","params":{"level":"info","data":"Info-level message"},"jsonrpc":"2.0"}
 {"method":"notifications/message","params":{"level":"notice","data":"Notice-level message"},"jsonrpc":"2.0"}
 {"method":"notifications/message","params":{"level":"info","data":"Info-level message"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"level":"error","data":"Error-level message"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"level":"warning","data":"Warning-level message"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"level":"error","data":"Error-level message"},"jsonrpc":"2.0"}
