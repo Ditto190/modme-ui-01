@@ -75,7 +75,7 @@
     }
   },
 
-  "forwardPorts": [3000, 8000],
+  "forwardPorts": [3000, 8000, 8001],
   "portsAttributes": {
     "3000": {
       "label": "Next.js UI",
@@ -84,23 +84,27 @@
     "8000": {
       "label": "Python ADK Agent",
       "onAutoForward": "notify"
+    },
+    "8001": {
+      "label": "ChromaDB",
+      "onAutoForward": "notify"
     }
   },
 
   "postCreateCommand": "bash .devcontainer/post-create.sh",
-  
+
   "remoteEnv": {
     "NODE_ENV": "development",
-    "PYTHONPATH": "${workspaceFolder}/agent"
+    "PYTHONPATH": "${containerWorkspaceFolder}/agent"
   },
 
   "remoteUser": "vscode",
-  
+
   "mounts": [
     "source=${localWorkspaceFolder}/data,target=${containerWorkspaceFolder}/data,type=bind,consistency=cached"
   ],
 
   "containerEnv": {
-    "WORKSPACE_TYPE": "genui-devcontainer"
+    "WORKSPACE_TYPE": "genui-devcontainer-multiworktree"
   }
 }

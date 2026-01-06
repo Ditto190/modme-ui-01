@@ -1,0 +1,2 @@
+# VS Code shell integration (added by modme-ui helper)
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path bash)"

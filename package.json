@@ -16,7 +16,7 @@
     "check": "npm run lint && npm run format",
     "install:agent": "./scripts/setup-agent.sh || scripts\\setup-agent.bat",
     "postinstall": "npm run install:agent",
-    "vtcode:install": "echo 'Please install VT Code manually: cargo install vtcode OR npm install -g vtcode OR brew install vtcode'"
+    "vtcode:install": "echo 'Please install VT Code manually: cargo install vtcode OR npm install -g vtcode OR brew install vtcode'",
     "validate:toolsets": "node scripts/toolset-management/validate-toolsets.js",
     "validate:naming": "node scripts/toolset-management/validate-naming.js",
     "test:aliases": "node scripts/toolset-management/test-alias-resolution.js",
