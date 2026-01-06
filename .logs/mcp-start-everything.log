@@ -2,3 +2,17 @@ Starting MCP Everything Server...
 This is a reference implementation demonstrating all MCP protocol features.
 /workspaces/modme-ui-01/.copilot/mcp-servers/start-everything.sh: line 14:  4137 Hangup                  npx -y @modelcontextprotocol/server-everything stdio
 Failed to start everything server
+Starting MCP Everything Server...
+This is a reference implementation demonstrating all MCP protocol features.
+Starting default (STDIO) server...
+Starting logs update interval
+{"method":"notifications/message","params":{"level":"warning","data":"Warning-level message"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"level":"emergency","data":"Emergency-level message"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"level":"emergency","data":"Emergency-level message"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"level":"info","data":"Info-level message"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"level":"warning","data":"Warning-level message"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"level":"info","data":"Info-level message"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"level":"debug","data":"Debug-level message"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"level":"info","data":"Info-level message"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"level":"notice","data":"Notice-level message"},"jsonrpc":"2.0"}
+{"method":"notifications/message","params":{"level":"info","data":"Info-level message"},"jsonrpc":"2.0"}
