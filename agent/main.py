@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from datetime import datetime
 from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from google.adk.agents import LlmAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.models.llm_request import LlmRequest
@@ -243,6 +244,21 @@ adk_agent = ADKAgent(
 )
 
 app = FastAPI(title="GenUI Workbench Agent")
+
+# Configure CORS for Codespaces
+# Allow requests from the Codespace UI URL
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://urban-giggle-v9rg679gv4j25ww-3000.github.dev",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 add_adk_fastapi_endpoint(app, adk_agent, path="/")
 
 
@@ -284,9 +300,9 @@ async def readiness_check():
     """Readiness probe - all dependencies loaded."""
     try:
         # Check if toolsets are loaded
-        from toolset_manager import toolset_manager
+        from toolset_manager import list_toolsets
 
-        toolsets = toolset_manager.list_available_toolsets()
+        toolsets = list_toolsets()
 
         # Verify dependencies
         toolsets_healthy = len(toolsets) > 0
@@ -307,7 +323,7 @@ async def readiness_check():
                 "dependencies": {
                     "toolsets_loaded": True,
                     "toolset_count": len(toolsets),
-                    "toolsets": toolsets[:5],  # First 5 for brevity
+                    "toolsets": [ts["id"] for ts in toolsets[:5]],  # First 5 IDs for brevity
                     "model": "gemini-2.5-flash",
                     "allowed_types": list(ALLOWED_TYPES),
                 },

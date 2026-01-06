@@ -1,32 +1,48 @@
-# Copilot Instructions — ModMe GenUI Workbench (concise)
+# Copilot Instructions — ModMe GenUI Workbench
 
-This file gives targeted, repo-specific guidance so AI coding agents become productive quickly.
+> **Updated**: January 6, 2026  
+> **Purpose**: Targeted, repo-specific guidance for AI coding agents to become productive quickly in this GenUI R&D laboratory.
 
-Big picture
+## Big Picture Architecture
 
-- Dual-runtime: Python ADK agent (FastAPI) at http://localhost:8000 writes a single read-only state object; Next.js + CopilotKit frontend at http://localhost:3000 reads it via `useCoAgent`.
-- Canonical state: `tool_context.state["elements"] = [{ id, type, props }]`. The Python agent is the single writer; the frontend is read-only.
+**Dual-Runtime System**: Python ADK agent (FastAPI) at `http://localhost:8000` writes a single read-only state object; Next.js + CopilotKit frontend at `http://localhost:3000` reads it via `useCoAgent`.
 
-Start here (key files)
+**Critical Principle**: State flows ONE WAY (Python → React). React never writes back to agent state.
 
-- `agent/main.py` — agent tools, lifecycle hooks (`before_model_modifier`, `after_model_modifier`), `ALLOWED_TYPES` and tool registrations.
-- `src/app/page.tsx` — renderer and `useCoAgent` usage; `useFrontendTool` example (`setThemeColor`).
-- `src/lib/types.ts` — `UIElement` / `AgentState` contract used across runtimes.
-- `src/app/api/copilotkit/route.ts` — CopilotKit ↔ HTTP agent bridge.
-- `agent/toolsets.json`, `agent/toolset_aliases.json` — toolset registry and deprecation mappings.
-- `agent-generator/SCHEMA_CRAWLER_README.md` — JSON Schema → Zod generator (used to create runtime validators).
-- `docs/CHROMADB_INDEXING.md` — ChromaDB indexing & embedding workflows.
+**Canonical State**: `tool_context.state["elements"] = [{ id, type, props }]` — Python is the single writer; frontend is read-only.
 
-Critical tools & constraints (do not change names)
+## Essential Files & Entry Points
 
-- Tools exposed by the agent: `upsert_ui_element`, `remove_ui_element`, `clear_canvas`, `setThemeColor` (see `agent/main.py`).
-- Additional VT Code / code-editing tools: `edit_component`, `analyze_component_props`, `create_new_component`, `run_build_check`.
-- Component types enforced by agent (`ALLOWED_TYPES`): `StatCard`, `DataTable`, `ChartCard`. Match these `type` strings exactly.
+| File | Purpose |
+|------|---------|
+| `agent/main.py` | Agent tools, lifecycle hooks (`before_model_modifier`, `after_model_modifier`), `ALLOWED_TYPES`, tool registrations |
+| `src/app/page.tsx` | Renderer and `useCoAgent` usage; `useFrontendTool` example (`setThemeColor`) |
+| `src/lib/types.ts` | `UIElement` / `AgentState` contract used across runtimes |
+| `src/app/api/copilotkit/route.ts` | CopilotKit ↔ HTTP agent bridge |
+| `agent/toolsets.json` | Toolset registry (canonical source) |
+| `agent/toolset_aliases.json` | Deprecation mappings for backward compatibility |
+| `agent/skills_ref/` | Agent Skills library (validation, parsing, prompt generation) |
+| `agent/tools/code_tools.py` | VT Code MCP integration (edit/analyze/create components) |
 
-State examples and calling
+## Critical Tools & Constraints
 
-- Upsert example (JSON body to agent):
+**Agent Tools** (do not change names):
+- `upsert_ui_element` - Add/update canvas elements
+- `remove_ui_element` - Remove elements by ID
+- `clear_canvas` - Clear all elements
+- `setThemeColor` - Frontend-only tool for theme
 
+**VT Code Integration Tools**:
+- `edit_component` - Edit component files with semantic understanding
+- `analyze_component_props` - Inspect TypeScript interfaces
+- `create_new_component` - Generate new components
+- `run_build_check` - Verify TypeScript compilation
+
+**Component Whitelist** (`ALLOWED_TYPES`): `StatCard`, `DataTable`, `ChartCard` — Match these exact type strings.
+
+## Quick Start Examples
+
+**Upsert Element** (JSON body to agent):
 ```json
 {
   "tool": "upsert_ui_element",
@@ -38,84 +54,8 @@ State examples and calling
 }
 ```
 
-- Frontend reads `AgentState` from `src/lib/types.ts`. Always treat it as read-only — make any state change by calling the agent tools.
-
-Developer workflows & useful commands
-
-- Start both runtimes: `npm run dev` (frontend + agent per repo scripts).
-- Start frontend only: `npm run dev:ui`; agent only: `npm run dev:agent`.
-- Validate toolsets: `npm run validate:toolsets`.
-- Regenerate docs: `npm run docs:all`; sync: `npm run docs:json-to-md` / `npm run docs:md-to-json`.
-- Lint & format: `npm run lint`, `npm run lint:fix`, `npm run format`.
-
-Integration notes & environment
-
-- `GOOGLE_API_KEY` required for Gemini embeddings & ADK features — copy from `.env.example` to `.env`.
-- Node 22.9.0+ and Python 3.12+ are expected (see README and devcontainer docs).
-- Ensure MCP servers are available when using VT Code tools; see `agent/mcp_vtcode.py` and `.copilot/mcp-servers/` scripts.
-
-Testing & validation patterns
-
-- Agent tool unit tests mock a `ToolContext` (see `agent/tests` and examples in `docs/REFACTORING_PATTERNS.md`).
-- Use `agent-generator`'s schema-crawler to produce Zod validators for tool inputs/props; import these in frontend components for runtime validation.
-
-Important conventions (must follow)
-
-- ONE-WAY state: Python agent writes; React reads. Do NOT write agent state from the frontend.
-- Props must be JSON-serializable (no functions, no circular refs).
-- Use exact tool & type names defined in `agent/main.py` and `agent/toolsets.json` — these are validated at runtime.
-
-Where to dig deeper
-
-- Architecture and refactoring patterns: `docs/REFACTORING_PATTERNS.md`, `Project_Overview.md`.
-- Toolset lifecycle and deprecation: `docs/TOOLSET_MANAGEMENT.md`, `agent/toolset_aliases.json`.
-- ChromaDB & embedding: `docs/CHROMADB_INDEXING.md`.
-
-If you want the file expanded with prompt templates, example tests, or sanitization patterns, tell me which section to expand and I will update this file.
-
-# Copilot Instructions — ModMe GenUI Workbench (concise)
-
-Purpose: provide actionable, repository-specific guidance so AI coding agents can be immediately productive.
-
-Key architecture (quick):
-
-- Dual-runtime: Python ADK agent (FastAPI) at http://localhost:8000 writes a single read-only state object; Next.js React app (CopilotKit) at http://localhost:3000 reads it via `useCoAgent`.
-- Canonical state shape: `tool_context.state["elements"] = [{ id, type, props }]` — see [agent/main.py](agent/main.py).
-
-Essential files to inspect:
-
-- Agent tools and lifecycle: [agent/main.py](agent/main.py)
-- Toolset registry and management: [agent/toolsets.json](agent/toolsets.json) and [docs/TOOLSET_MANAGEMENT.md](docs/TOOLSET_MANAGEMENT.md)
-- Frontend renderer & tools: [src/app/page.tsx](src/app/page.tsx)
-- Component registry: [src/components/registry/](src/components/registry/)
-- Schema generator: [agent-generator/src/mcp-registry/schema-crawler.ts](agent-generator/src/mcp-registry/schema-crawler.ts)
-- Runtime bridge: [src/app/api/copilotkit/route.ts](src/app/api/copilotkit/route.ts)
-
-Project-specific conventions & patterns (do this):
-
-- One-way state flow: treat agent state as read-only in React. Never mutate it from the frontend — only the agent writes to `tool_context.state`.
-- Use exact tool names exported by the agent: `upsert_ui_element`, `remove_ui_element`, `clear_canvas`, `setThemeColor`.
-- Component types are whitelisted by the agent (`ALLOWED_TYPES`). Match `type` strings exactly (e.g., `StatCard`, `DataTable`, `ChartCard`).
-- Frontend tools register with `useFrontendTool` (example: `setThemeColor` in [src/app/page.tsx](src/app/page.tsx)).
-
-Practical examples (copy/paste-ready):
-
-- Upsert a UI element (tool call body):
-
-```json
-{
-  "tool": "upsert_ui_element",
-  "params": {
-    "id": "revenue_stat",
-    "type": "StatCard",
-    "props": { "title": "Revenue", "value": 1234 }
-  }
-}
-```
-
-- State contract (read-only consumption in React):
-
-```ts
+**State Contract** (TypeScript/React):
+```typescript
 // src/lib/types.ts
 export type UIElement = {
   id: string;
@@ -125,88 +65,138 @@ export type UIElement = {
 export type AgentState = { elements: UIElement[] };
 ```
 
-Developer workflows & commands you will run:
+## Developer Workflows
 
-- Start dev (both): `npm run dev` (dev scripts start frontend + agent per repo setup).
-- Frontend only: `npm run dev:ui`; Agent only: `npm run dev:agent`.
-- Generate docs: `npm run docs:all`; Sync JSON/MD: `npm run docs:json-to-md` or `npm run docs:md-to-json`.
-- Validate toolsets: `npm run validate:toolsets`.
-- Lint & format: `npm run lint`, `npm run lint:fix`, `npm run format`.
-
-Integration & environment notes:
-
-- `GOOGLE_API_KEY` is required for Google ADK features — copy from `.env.example` to `.env`.
-- Node 22.9.0+ and Python 3.12+ are expected (see project README and Devcontainer docs).
-- VT Code MCP client (`mcp_vtcode.py`) handles code-editing MCP flows; ensure MCP endpoints are reachable when using VT Code tools.
-
-Where agents should look for validations and schemas:
-
-- `agent/main.py` contains input validation patterns and lifecycle hooks (`before_model_modifier`, `after_model_modifier`).
-- Use `agent-generator`'s schema-crawler to generate Zod schemas from MCP JSON Schemas for runtime validation before calling tools.
-
-When editing code-gen or tool definitions:
-
-- Update `agent/toolsets.json` and run `npm run docs:all` + `npm run validate:toolsets` to update documentation and validate toolset changes.
-- Keep props JSON-serializable; do not include functions or non-serializable objects in `props`.
-
-If you need more detail: tell me which area to expand — examples, tests, prompt templates, or security/sanitization patterns.
-
-— ModMe GenUI concise agent guide
-
-# ModMe GenUI Workbench - AI Agent Instructions
-
-## Purpose
-
-This is a **Generative UI (GenUI) R&D laboratory** where a Python ADK agent generates React UI components through natural language. The system uses a dual-runtime architecture with one-way state synchronization.
-
-## Architecture Overview
-
-### Dual-Runtime Communication Flow
-
-```
-Python Agent (localhost:8000)          React UI (localhost:3000)
-      │                                         │
-      │ writes to tool_context.state           │ reads via useCoAgent
-      ├─[upsert_ui_element]──────────────────> │
-      ├─[remove_ui_element]───────────────────> │
-      └─[clear_canvas]────────────────────────> │
-                                                 │
-                                                 └─> GenerativeCanvas renders
+**Start Services**:
+```bash
+npm run dev              # Both runtimes (concurrently)
+npm run dev:ui           # Frontend only (port 3000)
+npm run dev:agent        # Python agent only (port 8000)
+npm run dev:vtcode       # VT Code MCP server (port 8080)
+npm run dev:debug        # With LOG_LEVEL=debug
 ```
 
-**Key Point**: State flows ONE WAY: Python writes → React reads. React never writes back to agent state.
-
-### Critical Dependencies
-
-- **Node.js**: 22.9.0+ required (earlier versions cause EBADENGINE errors)
-  - Use `nvm` or `nvm-windows` to manage versions
-  - Verify: `node --version` should show v22.9.0+
-- **Python**: 3.12+ with `uv` or `pip` for dependency management
-- **Google API Key**: Required for ADK agent (https://makersuite.google.com/app/apikey)
-
-### State Contract
-
-**Python Side** ([agent/main.py](../agent/main.py)):
-
-```python
-tool_context.state["elements"] = [
-    {"id": "revenue", "type": "StatCard", "props": {...}},
-    {"id": "users", "type": "DataTable", "props": {...}}
-]
+**Documentation & Validation**:
+```bash
+npm run docs:all         # Generate all docs + diagrams
+npm run docs:sync        # Sync JSON ↔ Markdown
+npm run validate:toolsets # JSON schema validation
+npm run detect:changes   # Find new/modified toolsets
 ```
 
-**TypeScript Side** ([src/lib/types.ts](../src/lib/types.ts)):
-
-```typescript
-type AgentState = { elements: UIElement[] };
-type UIElement = { id: string; type: string; props: any };
+**Code Quality**:
+```bash
+npm run lint             # ESLint (TS) + Ruff (Python)
+npm run lint:fix         # Auto-fix issues
+npm run format           # Prettier + Ruff format
+npm run check            # Lint + format combined
 ```
 
-**Critical**: Keys must match exactly between Python dicts and TypeScript interfaces. Python uses snake_case internally, but exports match TypeScript camelCase expectations.
+## Environment Setup
+
+**Required**:
+- Node.js 22.9.0+ (use `nvm` or `nvm-windows`)
+- Python 3.12+ (with `uv` or `pip`)
+- `GOOGLE_API_KEY` in `.env` (copy from `.env.example`)
+
+**Optional** (for VT Code integration):
+- VT Code MCP server running at `http://localhost:8080`
+- See `.copilot/mcp-servers/` for startup scripts
+
+**Quick Setup**:
+```bash
+# Automated
+./scripts/setup.sh       # Unix/macOS
+.\scripts\setup.ps1      # Windows
+
+# Manual
+npm install
+./scripts/setup-agent.sh
+cp .env.example .env
+# Edit .env and add GOOGLE_API_KEY
+```
+
+## Project Conventions (Must Follow)
+
+**State Synchronization**:
+- ✅ Python agent writes to `tool_context.state`
+- ✅ React reads via `useCoAgent` (read-only)
+- ❌ Never call `setState` in React to mutate agent state
+
+**Props**:
+- ✅ JSON-serializable only (strings, numbers, booleans, arrays, objects)
+- ❌ No functions, no circular references
+
+**Naming**:
+- Element IDs: `snake_case` (e.g., `revenue_stat`)
+- Component types: `PascalCase` (e.g., `StatCard`)
+- Props: `camelCase` (e.g., `trendDirection`)
+
+## Testing & Validation
+
+**Agent Tools**: Mock `ToolContext` (see `agent/tests/` and `docs/REFACTORING_PATTERNS.md` Pattern 10)
+
+**Component Props**: Use schema-crawler to generate Zod validators:
+```bash
+cd agent-generator
+npm run generate:schemas
+```
+
+**Integration Tests**: Start both services and test via CopilotSidebar prompts
+
+## Debugging
+
+**Health Checks**:
+```bash
+curl http://localhost:8000/health  # Liveness
+curl http://localhost:8000/ready   # Readiness + toolset info
+```
+
+**Common Issues**:
+1. Element not rendering → Check type string matches switch case in `src/app/page.tsx`
+2. Props not showing → Check JSON serialization (no functions/circular refs)
+3. State not updating → Ensure tool returns `{"status": "success"}`
+4. Node version errors → Run `node --version` (must be v22.9.0+)
+5. Python import errors → Activate venv: `source agent/.venv/bin/activate`
+
+## Advanced Features
+
+**Toolset Management**: GitHub MCP-style lifecycle automation
+- Registry: `agent/toolsets.json`
+- Aliases: `agent/toolset_aliases.json`
+- Scripts: `scripts/toolset-management/`
+- Docs: `docs/TOOLSET_MANAGEMENT.md`
+
+**Agent Skills**: Open format for extending agent capabilities
+- Library: `agent/skills_ref/`
+- Spec: https://agentskills.io/specification
+- CLI: `python -m agent.skills_ref.cli validate <skill-dir>`
+
+**ChromaDB Integration**: Dual architecture for semantic search
+- Session storage: HTTP server at port 8001
+- Persistent memory: Exported artifacts
+- Docs: `docs/CHROMADB_INDEXING.md`
+
+## Deep Dive Resources
+
+| Topic | Resource |
+|-------|----------|
+| Architecture & Patterns | `docs/REFACTORING_PATTERNS.md`, `Project_Overview.md` |
+| Toolset Lifecycle | `docs/TOOLSET_MANAGEMENT.md`, `TOOLSET_README.md` |
+| Schema Generation | `agent-generator/SCHEMA_CRAWLER_README.md` |
+| Agent Skills | `agent/skills_ref/README.md` |
+| ChromaDB & Embeddings | `docs/CHROMADB_INDEXING.md` |
+| Component Registry | `src/components/registry/`, `CODEBASE_INDEX.md` |
 
 ---
 
-## Development Workflow
+**Need more detail?** Tell me which section to expand: examples, tests, prompt templates, security patterns, or deployment workflows.
+
+---
+
+# Complete Implementation Guide
+
+## Architecture Details
 
 ### Starting the System
 
