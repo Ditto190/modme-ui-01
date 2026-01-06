@@ -1,0 +1,6 @@
+[
+  { "from": "DevContainer Preparation", "to": "Worktree Strategy Document", "relationType": "documents" },
+  { "from": "ESLint Fix", "to": "Lint Validation", "relationType": "verified_by" },
+  { "from": "Scripts and Data Setup", "to": "DevContainer Preparation", "relationType": "supports" },
+  { "from": "Commits Pushed", "to": "GitHub MCP Toolsets Enablement", "relationType": "records" }
+]

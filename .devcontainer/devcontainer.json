@@ -75,7 +75,7 @@
     }
   },
 
-  "forwardPorts": [3000, 8000, 8001],
+  "forwardPorts": [3000, 8000, 8001, 8002],
   "portsAttributes": {
     "3000": {
       "label": "Next.js UI",
@@ -87,6 +87,10 @@
     },
     "8001": {
       "label": "ChromaDB",
+      "onAutoForward": "notify"
+    },
+    "8002": {
+      "label": "Session Memory",
       "onAutoForward": "notify"
     }
   },
