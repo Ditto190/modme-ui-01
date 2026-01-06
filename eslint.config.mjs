@@ -11,6 +11,13 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      ".venv/**",
+      "agent/.venv/**",
+      "**/__pycache__/**",
+      "**/venv/**",
+      "data/**",
+      "test_output/**",
+      "test-mcp-validation/**",
     ],
   },
   {
