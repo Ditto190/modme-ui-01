@@ -102,9 +102,15 @@ echo "⚙️  Configuring environment..."
 if [ ! -f ".env" ] && [ -f ".env.example" ]; then
     cp .env.example .env
     echo "   ✓ .env created from .env.example"
-    echo "   ⚠️  Remember to update .env with your API keys!"
 elif [ -f ".env" ]; then
     echo "   ✓ .env already exists"
+fi
+
+# Load Codespaces secrets if available
+if [ -f ".devcontainer/load-codespaces-secrets.sh" ]; then
+    bash .devcontainer/load-codespaces-secrets.sh
+else
+    echo "   ⚠️  Remember to update .env with your API keys!"
 fi
 echo ""
 
