@@ -1,6 +1,6 @@
 """Code editing tools powered by VT Code MCP."""
 
-from typing import Dict, List
+from typing import Dict
 import sys
 import os
 

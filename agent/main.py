@@ -33,35 +33,38 @@ load_dotenv()
 # Validation constants for type safety
 ALLOWED_TYPES = {"StatCard", "DataTable", "ChartCard"}
 
-def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict[str, Any]) -> Dict[str, str]:
+
+def upsert_ui_element(
+    tool_context: ToolContext, id: str, type: str, props: Dict[str, Any]
+) -> Dict[str, str]:
     """
     Add or update a UI element in the workbench canvas.
-    
+
     Args:
         id: Unique identifier for the element (snake_case recommended)
         type: Component type (PascalCase, must match registry)
         props: JSON-serializable properties (camelCase keys)
-    
+
     Returns:
         Success message with element metadata
     """
     # Validate inputs
     if not id or not isinstance(id, str):
         return {"status": "error", "message": "Invalid id: must be non-empty string"}
-    
+
     if type not in ALLOWED_TYPES:
         return {
-            "status": "error", 
-            "message": f"Unknown type '{type}'. Allowed types: {', '.join(ALLOWED_TYPES)}"
+            "status": "error",
+            "message": f"Unknown type '{type}'. Allowed types: {', '.join(ALLOWED_TYPES)}",
         }
-    
+
     if not isinstance(props, dict):
         return {"status": "error", "message": "Invalid props: must be a dictionary"}
-    
+
     # Get current state safely
     elements = tool_context.state.get("elements", [])
     new_element = {"id": id, "type": type, "props": props}
-    
+
     # Check if element exists (upsert logic)
     found = False
     for i, el in enumerate(elements):
@@ -69,73 +72,77 @@ def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict
             elements[i] = new_element
             found = True
             break
-    
+
     if not found:
         elements.append(new_element)
-    
+
     # Write back to state
     tool_context.state["elements"] = elements
-    
+
     action = "updated" if found else "added"
     return {
-        "status": "success", 
+        "status": "success",
         "message": f"Element '{id}' of type '{type}' {action}.",
-        "element_count": len(elements)
+        "element_count": len(elements),
     }
+
 
 def remove_ui_element(tool_context: ToolContext, id: str) -> Dict[str, str]:
     """
     Remove a UI element from the canvas by its ID.
-    
+
     Args:
         id: Unique identifier of the element to remove
-    
+
     Returns:
         Success message with removal confirmation
     """
     # Validate input
     if not id or not isinstance(id, str):
         return {"status": "error", "message": "Invalid id: must be non-empty string"}
-    
+
     # Get current state
     elements = tool_context.state.get("elements", [])
     initial_count = len(elements)
-    
+
     # Filter out the element
     tool_context.state["elements"] = [el for el in elements if el.get("id") != id]
     final_count = len(tool_context.state["elements"])
-    
+
     # Check if element was actually removed
     if initial_count == final_count:
         return {
-            "status": "warning", 
+            "status": "warning",
             "message": f"Element '{id}' not found (no change made)",
-            "element_count": final_count
+            "element_count": final_count,
         }
-    
+
     return {
-        "status": "success", 
+        "status": "success",
         "message": f"Element '{id}' removed.",
-        "element_count": final_count
+        "element_count": final_count,
     }
+
 
 def clear_canvas(tool_context: ToolContext) -> Dict[str, str]:
     """Remove all elements from the canvas."""
     tool_context.state["elements"] = []
     return {"status": "success", "message": "Canvas cleared."}
 
+
 def setThemeColor(transaction_context: ToolContext, themeColor: str) -> Dict[str, str]:
     """
     Set the application theme color.
-    
+
     Args:
         themeColor: Hex color code (e.g. #ff0000)
-        
+
     Returns:
         Success message
     """
     # This is primarily a frontend tool, but defined here for toolset consistency
     return {"status": "success", "message": f"Theme color set to {themeColor}"}
+
 
 def on_before_agent(callback_context: CallbackContext):
     """Initialize state."""
@@ -143,18 +150,23 @@ def on_before_agent(callback_context: CallbackContext):
         callback_context.state["elements"] = []
     return None
 
+
 def before_model_modifier(
     callback_context: CallbackContext, llm_request: LlmRequest
 ) -> Optional[LlmResponse]:
     """Inject current canvas state into system instructions."""
     elements = callback_context.state.get("elements", [])
     elements_json = json.dumps(elements, indent=2)
-    
-    original_instruction = llm_request.config.system_instruction or types.Content(role="system", parts=[])
-    
+
+    original_instruction = llm_request.config.system_instruction or types.Content(
+        role="system", parts=[]
+    )
+
     if not isinstance(original_instruction, types.Content):
-        original_instruction = types.Content(role="system", parts=[types.Part(text=str(original_instruction))])
-    
+        original_instruction = types.Content(
+            role="system", parts=[types.Part(text=str(original_instruction))]
+        )
+
     if not original_instruction.parts:
         original_instruction.parts = [types.Part(text="")]
 
@@ -171,9 +183,12 @@ Code Editing Capabilities (via VT Code MCP):
 - You can create new components using 'create_new_component'
 - You can verify builds using 'run_build_check'
 """
-    original_instruction.parts[0].text = prefix + (original_instruction.parts[0].text or "")
+    original_instruction.parts[0].text = prefix + (
+        original_instruction.parts[0].text or ""
+    )
     llm_request.config.system_instruction = original_instruction
     return None
+
 
 def after_model_modifier(
     callback_context: CallbackContext, llm_response: LlmResponse
@@ -183,6 +198,7 @@ def after_model_modifier(
         if llm_response.content.role == "model" and llm_response.content.parts[0].text:
             callback_context._invocation_context.end_invocation = True
     return None
+
 
 workbench_agent = LlmAgent(
     name="WorkbenchAgent",
@@ -204,16 +220,16 @@ workbench_agent = LlmAgent(
     - run_build_check: Verify TypeScript compilation
     """,
     tools=[
-        upsert_ui_element, 
-        remove_ui_element, 
+        upsert_ui_element,
+        remove_ui_element,
         clear_canvas,
+        setThemeColor,
         # VT Code integration tools
         edit_component,
         analyze_component_props,
         create_new_component,
         run_build_check,
     ],
-    tools=[upsert_ui_element, remove_ui_element, clear_canvas, setThemeColor],
     before_agent_callback=on_before_agent,
     before_model_callback=before_model_modifier,
     after_model_callback=after_model_modifier,
@@ -229,11 +245,13 @@ adk_agent = ADKAgent(
 app = FastAPI(title="GenUI Workbench Agent")
 add_adk_fastapi_endpoint(app, adk_agent, path="/")
 
+
 # Add cleanup handler for VT Code MCP connection
 @atexit.register
 def cleanup():
     """Cleanup MCP connections on shutdown."""
     import asyncio
+
     vtcode = get_vtcode_client()
     try:
         loop = asyncio.get_event_loop()
@@ -243,6 +261,8 @@ def cleanup():
             loop.run_until_complete(vtcode.close())
     except Exception as e:
         print(f"Error closing VT Code client: {e}")
+
+
 # Health check endpoints
 @app.get("/health")
 async def health_check():
@@ -253,10 +273,11 @@ async def health_check():
             "service": "GenUI Workbench Agent",
             "version": "1.0.0",
             "timestamp": datetime.utcnow().isoformat(),
-            "model": "gemini-2.5-flash"
+            "model": "gemini-2.5-flash",
         },
-        status_code=status.HTTP_200_OK
+        status_code=status.HTTP_200_OK,
     )
+
 
 @app.get("/ready")
 async def readiness_check():
@@ -264,24 +285,22 @@ async def readiness_check():
     try:
         # Check if toolsets are loaded
         from toolset_manager import toolset_manager
+
         toolsets = toolset_manager.list_available_toolsets()
-        
+
         # Verify dependencies
         toolsets_healthy = len(toolsets) > 0
-        
+
         if not toolsets_healthy:
             return JSONResponse(
                 content={
                     "status": "not_ready",
-                    "dependencies": {
-                        "toolsets_loaded": False,
-                        "toolset_count": 0
-                    },
-                    "timestamp": datetime.utcnow().isoformat()
+                    "dependencies": {"toolsets_loaded": False, "toolset_count": 0},
+                    "timestamp": datetime.utcnow().isoformat(),
                 },
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
-        
+
         return JSONResponse(
             content={
                 "status": "ready",
@@ -290,25 +309,27 @@ async def readiness_check():
                     "toolset_count": len(toolsets),
                     "toolsets": toolsets[:5],  # First 5 for brevity
                     "model": "gemini-2.5-flash",
-                    "allowed_types": list(ALLOWED_TYPES)
+                    "allowed_types": list(ALLOWED_TYPES),
                 },
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.utcnow().isoformat(),
             },
-            status_code=status.HTTP_200_OK
+            status_code=status.HTTP_200_OK,
         )
-    
+
     except Exception as e:
         return JSONResponse(
             content={
                 "status": "not_ready",
                 "error": str(e),
                 "error_type": type(e).__name__,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.utcnow().isoformat(),
             },
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
         )
+
 
 if __name__ == "__main__":
     import uvicorn
+
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)

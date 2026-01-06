@@ -8,13 +8,12 @@ Reference Implementation: agent-generator/src/scripts/generate.ts
 """
 
 from google.adk.tools import ToolContext
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 import json
 import subprocess
 import tempfile
 from pathlib import Path
 import re
-from datetime import datetime
 
 # Paths
 AGENT_GENERATOR_ROOT = Path(__file__).parent.parent.parent / "agent-generator"

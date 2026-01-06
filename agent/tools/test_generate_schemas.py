@@ -4,7 +4,6 @@ Tests the schema generation functions with mocked dependencies
 """
 
 import sys
-import json
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -23,8 +22,8 @@ sys.modules["google"] = MagicMock()
 sys.modules["google.adk"] = MagicMock()
 sys.modules["google.adk.tools"] = MagicMock()
 
-# Now import our module
-from tools.generate_schemas import (
+# Now import our module (must be after mocking)
+from tools.generate_schemas import (  # noqa: E402
     generate_tool_schemas,
     generate_agent_prompt,
     generate_all,
@@ -75,7 +74,7 @@ if skills_dir.exists():
     if result["status"] == "success":
         print(f"Skills processed: {result.get('skills_count', 0)}")
         print(f"Skills: {result.get('skills_processed', [])}")
-        print(f"\nPrompt preview (first 500 chars):")
+        print("\nPrompt preview (first 500 chars):")
         print(result.get("prompt", "")[:500])
         print("✅ Test 3 passed\n")
     else:

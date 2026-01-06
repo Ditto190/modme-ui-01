@@ -9,15 +9,12 @@ Tests cover:
 """
 
 import pytest
-from pathlib import Path
 from click.testing import CliRunner
 import json
 
 from agent.skills_ref import (
     SkillError,
     ParseError,
-    ValidationError,
-    SkillProperties,
     find_skill_md,
     validate,
     read_properties,
