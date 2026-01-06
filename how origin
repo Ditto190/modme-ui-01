@@ -1,0 +1,50 @@
+* [33m149fdce[m[33m ([m[1;31morigin/copilot/sub-pr-7[m[33m)[m fix: address PR review feedback - remove YAML metadata, vault files, and hardcoded paths
+* [33mdcdf4f2[m Initial plan
+[31m|[m * [33m1057ad9[m[33m ([m[1;31morigin/copilot/setup-semantic-router-core[m[33m)[m Add egg-info to gitignore and complete Phase 1 implementation
+[31m|[m * [33mfb76450[m Fix tests to work in CI environment without network access
+[31m|[m * [33m5d1c219[m Add semantic router infrastructure: definitions, router class, tests, and documentation
+[31m|[m * [33mf01af55[m Initial plan
+[31m|[m [32m|[m * [33m3b8b0c0[m[33m ([m[1;31morigin/copilot/add-mcp-client-vtcode[m[33m)[m Add comprehensive architecture documentation for VT Code integration
+[31m|[m [32m|[m * [33mfd62aeb[m Add VT Code MCP integration infrastructure
+[31m|[m [32m|[m * [33m6100b64[m Initial plan
+[31m|[m [32m|[m[32m/[m  
+[31m|[m [32m|[m * [33mfe341fd[m[33m ([m[1;31morigin/copilot/constant-basilisk[m[33m)[m Update CODEBASE_INDEX.md generation date to January 4, 2026
+[31m|[m [32m|[m * [33m0e1059d[m Clean up shell integration profiles and update CODEBASE_INDEX.md
+[31m|[m [32m|[m * [33m522f4b3[m[33m ([m[1;32mcopilot/constant-basilisk[m[33m)[m Checkpoint from VS Code for coding agent session
+[31m|[m [32m|[m[31m/[m  
+[31m|[m[31m/[m[32m|[m   
+* [32m|[m [33m12178a2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/part-02-workbench-expansion-save-copilot-20260102-2028[m[33m, [m[1;31morigin/feature/part-02-workbench-expansion-save-copilot-20260102-2028[m[33m)[m chore: add project shell profiles and update CODEBASE_INDEX.md
+* [32m|[m [33m6a37480[m[33m ([m[1;32mrelaxed-hugle[m[33m)[m feat: Add Agent Skills system with generate_schemas tool
+* [32m|[m [33m1eac71e[m feat: add migration implementation plan, ChromaDB integration, and knowledge management tools
+* [32m|[m [33m19f53f4[m docs: add ChromaDB code indexing documentation
+* [32m|[m [33m97acb3e[m docs: add comprehensive monorepo porting infrastructure
+* [32m|[m [33mb677e43[m docs: track toolset source files
+* [32m|[m [33m0566a43[m chore: stop ignoring docs/toolsets markdown sources; keep generated assets ignored
+* [32m|[m [33m73daff1[m chore: update .github/copilot-instructions.md (merge .claude content) and add MCP references
+* [32m|[m [33m644b068[m[33m ([m[1;32mfeature/part-02-workbench-expansion[m[33m)[m chore: update .github/copilot-instructions.md (merge .claude content) and add MCP references
+[32m|[m[32m/[m  
+*   [33mf75a458[m[33m ([m[1;31morigin/feature/genui-workbench-refactor[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge remote-tracking branch 'origin/feature/genui-workbench-refactor' into feature/part-02-workbench-expansion
+[35m|[m[36m\[m  
+[35m|[m *   [33mc54b490[m Merge pull request #5 from Ditto190/copilot/sub-pr-3
+[35m|[m [1;31m|[m[1;32m\[m  
+[35m|[m [1;31m|[m * [33ma5c62ca[m[33m ([m[1;31morigin/copilot/sub-pr-3[m[33m)[m Initial plan
+[35m|[m [1;31m|[m[1;31m/[m  
+[35m|[m *   [33m7ee1120[m Merge pull request #4 from Ditto190/copilot/sub-pr-3
+[35m|[m [1;33m|[m[1;34m\[m  
+[35m|[m [1;33m|[m * [33m98bcaab[m Update scripts/setup.ps1
+[35m|[m [1;33m|[m * [33m1ce94f9[m Improve vulnerability detection with robust JSON parsing using jq
+[35m|[m [1;33m|[m * [33m89b674b[m Remove misplaced action metadata file from workflows directory
+[35m|[m [1;33m|[m * [33m3853f6d[m Fix PR review comments: workflows, scripts, and security issues
+[35m|[m [1;33m|[m * [33mc7c262b[m Initial plan
+[35m|[m * [1;34m|[m [33m81713c9[m Refactor labeler.yml for improved path matching
+[35m|[m * [1;34m|[m [33m186c623[m Add GitHub Labeler workflow configuration
+[35m|[m [1;34m|[m[1;34m/[m  
+[35m|[m * [33m6b6806e[m Update .github/workflows/AIsummary.yml
+[35m|[m * [33m66e3fde[m Add Node.js environment setup workflow
+[35m|[m * [33m621dad7[m Add GitHub Actions workflow for labeling PRs
+[35m|[m * [33m6ccd58e[m Add GitHub Actions workflow for issue summarization
+[35m|[m *   [33mf2b911d[m Merge pull request #1 from Ditto190/copilot/create-devcontainer-setup
+[35m|[m [1;35m|[m[1;36m\[m  
+[35m|[m [1;35m|[m * [33mc18f8a7[m Update .github/workflows/ai-assisted-maintenance.yml
+[35m|[m [1;35m|[m * [33mfea6a81[m Update scripts/setup.ps1
+[35m|[m [1;35m|[m * [33mef8a485[m Update scripts/setup.sh

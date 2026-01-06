@@ -1,163 +1,49 @@
-# Copilot Instructions — ModMe GenUI Workbench (concise)
-
-This file gives targeted, repo-specific guidance so AI coding agents become productive quickly.
-
-Big picture
-
-- Dual-runtime: Python ADK agent (FastAPI) at http://localhost:8000 writes a single read-only state object; Next.js + CopilotKit frontend at http://localhost:3000 reads it via `useCoAgent`.
-- Canonical state: `tool_context.state["elements"] = [{ id, type, props }]`. The Python agent is the single writer; the frontend is read-only.
-
-Start here (key files)
-
-- `agent/main.py` — agent tools, lifecycle hooks (`before_model_modifier`, `after_model_modifier`), `ALLOWED_TYPES` and tool registrations.
-- `src/app/page.tsx` — renderer and `useCoAgent` usage; `useFrontendTool` example (`setThemeColor`).
-- `src/lib/types.ts` — `UIElement` / `AgentState` contract used across runtimes.
-- `src/app/api/copilotkit/route.ts` — CopilotKit ↔ HTTP agent bridge.
-- `agent/toolsets.json`, `agent/toolset_aliases.json` — toolset registry and deprecation mappings.
-- `agent-generator/SCHEMA_CRAWLER_README.md` — JSON Schema → Zod generator (used to create runtime validators).
-- `docs/CHROMADB_INDEXING.md` — ChromaDB indexing & embedding workflows.
-
-Critical tools & constraints (do not change names)
-
-- Tools exposed by the agent: `upsert_ui_element`, `remove_ui_element`, `clear_canvas`, `setThemeColor` (see `agent/main.py`).
-- Additional VT Code / code-editing tools: `edit_component`, `analyze_component_props`, `create_new_component`, `run_build_check`.
-- Component types enforced by agent (`ALLOWED_TYPES`): `StatCard`, `DataTable`, `ChartCard`. Match these `type` strings exactly.
-
-State examples and calling
-
-- Upsert example (JSON body to agent):
-
-```json
-{
-  "tool": "upsert_ui_element",
-  "params": {
-    "id": "revenue_stat",
-    "type": "StatCard",
-    "props": { "title": "Revenue", "value": 1234 }
-  }
-}
-```
-
-- Frontend reads `AgentState` from `src/lib/types.ts`. Always treat it as read-only — make any state change by calling the agent tools.
-
-Developer workflows & useful commands
-
-- Start both runtimes: `npm run dev` (frontend + agent per repo scripts).
-- Start frontend only: `npm run dev:ui`; agent only: `npm run dev:agent`.
-- Validate toolsets: `npm run validate:toolsets`.
-- Regenerate docs: `npm run docs:all`; sync: `npm run docs:json-to-md` / `npm run docs:md-to-json`.
-- Lint & format: `npm run lint`, `npm run lint:fix`, `npm run format`.
-
-Integration notes & environment
-
-- `GOOGLE_API_KEY` required for Gemini embeddings & ADK features — copy from `.env.example` to `.env`.
-- Node 22.9.0+ and Python 3.12+ are expected (see README and devcontainer docs).
-- Ensure MCP servers are available when using VT Code tools; see `agent/mcp_vtcode.py` and `.copilot/mcp-servers/` scripts.
-
-Testing & validation patterns
-
-- Agent tool unit tests mock a `ToolContext` (see `agent/tests` and examples in `docs/REFACTORING_PATTERNS.md`).
-- Use `agent-generator`'s schema-crawler to produce Zod validators for tool inputs/props; import these in frontend components for runtime validation.
-
-Important conventions (must follow)
-
-- ONE-WAY state: Python agent writes; React reads. Do NOT write agent state from the frontend.
-- Props must be JSON-serializable (no functions, no circular refs).
-- Use exact tool & type names defined in `agent/main.py` and `agent/toolsets.json` — these are validated at runtime.
-
-Where to dig deeper
-
-- Architecture and refactoring patterns: `docs/REFACTORING_PATTERNS.md`, `Project_Overview.md`.
-- Toolset lifecycle and deprecation: `docs/TOOLSET_MANAGEMENT.md`, `agent/toolset_aliases.json`.
-- ChromaDB & embedding: `docs/CHROMADB_INDEXING.md`.
-
-If you want the file expanded with prompt templates, example tests, or sanitization patterns, tell me which section to expand and I will update this file.
-
-# Copilot Instructions — ModMe GenUI Workbench (concise)
-
-Purpose: provide actionable, repository-specific guidance so AI coding agents can be immediately productive.
-
-Key architecture (quick):
-
-- Dual-runtime: Python ADK agent (FastAPI) at http://localhost:8000 writes a single read-only state object; Next.js React app (CopilotKit) at http://localhost:3000 reads it via `useCoAgent`.
-- Canonical state shape: `tool_context.state["elements"] = [{ id, type, props }]` — see [agent/main.py](agent/main.py).
-
-Essential files to inspect:
-
-- Agent tools and lifecycle: [agent/main.py](agent/main.py)
-- Toolset registry and management: [agent/toolsets.json](agent/toolsets.json) and [docs/TOOLSET_MANAGEMENT.md](docs/TOOLSET_MANAGEMENT.md)
-- Frontend renderer & tools: [src/app/page.tsx](src/app/page.tsx)
-- Component registry: [src/components/registry/](src/components/registry/)
-- Schema generator: [agent-generator/src/mcp-registry/schema-crawler.ts](agent-generator/src/mcp-registry/schema-crawler.ts)
-- Runtime bridge: [src/app/api/copilotkit/route.ts](src/app/api/copilotkit/route.ts)
-
-Project-specific conventions & patterns (do this):
-
-- One-way state flow: treat agent state as read-only in React. Never mutate it from the frontend — only the agent writes to `tool_context.state`.
-- Use exact tool names exported by the agent: `upsert_ui_element`, `remove_ui_element`, `clear_canvas`, `setThemeColor`.
-- Component types are whitelisted by the agent (`ALLOWED_TYPES`). Match `type` strings exactly (e.g., `StatCard`, `DataTable`, `ChartCard`).
-- Frontend tools register with `useFrontendTool` (example: `setThemeColor` in [src/app/page.tsx](src/app/page.tsx)).
-
-Practical examples (copy/paste-ready):
-
-- Upsert a UI element (tool call body):
-
-```json
-{
-  "tool": "upsert_ui_element",
-  "params": {
-    "id": "revenue_stat",
-    "type": "StatCard",
-    "props": { "title": "Revenue", "value": 1234 }
-  }
-}
-```
-
-- State contract (read-only consumption in React):
-
-```ts
-// src/lib/types.ts
-export type UIElement = {
-  id: string;
-  type: string;
-  props: Record<string, unknown>;
-};
-export type AgentState = { elements: UIElement[] };
-```
-
-Developer workflows & commands you will run:
-
-- Start dev (both): `npm run dev` (dev scripts start frontend + agent per repo setup).
-- Frontend only: `npm run dev:ui`; Agent only: `npm run dev:agent`.
-- Generate docs: `npm run docs:all`; Sync JSON/MD: `npm run docs:json-to-md` or `npm run docs:md-to-json`.
-- Validate toolsets: `npm run validate:toolsets`.
-- Lint & format: `npm run lint`, `npm run lint:fix`, `npm run format`.
-
-Integration & environment notes:
-
-- `GOOGLE_API_KEY` is required for Google ADK features — copy from `.env.example` to `.env`.
-- Node 22.9.0+ and Python 3.12+ are expected (see project README and Devcontainer docs).
-- VT Code MCP client (`mcp_vtcode.py`) handles code-editing MCP flows; ensure MCP endpoints are reachable when using VT Code tools.
-
-Where agents should look for validations and schemas:
-
-- `agent/main.py` contains input validation patterns and lifecycle hooks (`before_model_modifier`, `after_model_modifier`).
-- Use `agent-generator`'s schema-crawler to generate Zod schemas from MCP JSON Schemas for runtime validation before calling tools.
-
-When editing code-gen or tool definitions:
-
-- Update `agent/toolsets.json` and run `npm run docs:all` + `npm run validate:toolsets` to update documentation and validate toolset changes.
-- Keep props JSON-serializable; do not include functions or non-serializable objects in `props`.
-
-If you need more detail: tell me which area to expand — examples, tests, prompt templates, or security/sanitization patterns.
-
-— ModMe GenUI concise agent guide
-
 # ModMe GenUI Workbench - AI Agent Instructions
+
+> **Last Updated**: January 5, 2026 | **Quick Start**: `npm run dev` | **Docs**: [CODEBASE_INDEX.md](../CODEBASE_INDEX.md)
 
 ## Purpose
 
-This is a **Generative UI (GenUI) R&D laboratory** where a Python ADK agent generates React UI components through natural language. The system uses a dual-runtime architecture with one-way state synchronization.
+This is a **Generative UI (GenUI) R&D laboratory** combining:
+
+- **Python ADK Agent** (Google Gemini) → Generates UI via natural language
+- **Next.js 16 + React 19** → Renders dynamic components
+- **ChromaDB + Gemini Embeddings** → Semantic code search & memory
+- **MCP Servers** → GitHub integration, filesystem access, and custom tools
+- **Dual-Runtime Architecture** → One-way state flow (Python → React)
+
+## 🚨 Critical First Principles
+
+1. **State is ONE-WAY**: Python agent writes → React reads (never the reverse)
+2. **Node.js 22.9.0+ REQUIRED**: Earlier versions break with EBADENGINE errors
+3. **GOOGLE_API_KEY REQUIRED**: Agent won't start without it (see `.env.example`)
+4. **Component Types Must Match**: Python `"StatCard"` ↔ TypeScript `case "StatCard"`
+5. **All Component Props JSON-Serializable**: No functions, no circular refs
+
+## Quick Command Reference
+
+```bash
+# Start everything
+npm run dev                    # Both UI (3000) + Agent (8000)
+npm run dev:debug              # With LOG_LEVEL=debug
+
+# Individual services
+npm run dev:ui                 # Frontend only
+npm run dev:agent              # Python agent only
+
+# Quality checks
+npm run lint                   # ESLint + Ruff
+npm run lint:fix               # Auto-fix issues
+npm run build                  # Production build
+
+# Toolset management
+npm run validate:toolsets      # Validate JSON schemas
+npm run detect:changes         # Find new tools
+npm run docs:all               # Generate all docs
+
+# Health check
+./scripts/health-check.sh      # Verify setup (Unix/macOS)
+```
 
 ## Architecture Overview
 
@@ -174,9 +60,201 @@ Python Agent (localhost:8000)          React UI (localhost:3000)
                                                  └─> GenerativeCanvas renders
 ```
 
-**Key Point**: State flows ONE WAY: Python writes → React reads. React never writes back to agent state.
+**Key Constraint**: State flows ONE WAY (Python → React). React never writes back to agent state.
 
-### Critical Dependencies
+### State Contract
+
+**Python Side** ([agent/main.py](../agent/main.py)):
+
+```python
+tool_context.state["elements"] = [
+    {"id": "revenue", "type": "StatCard", "props": {...}},
+    {"id": "users", "type": "DataTable", "props": {...}}
+]
+```
+
+**TypeScript Side** ([src/lib/types.ts](../src/lib/types.ts)):
+
+```typescript
+type AgentState = { elements: UIElement[] };
+type UIElement = { id: string; type: string; props: any };
+```
+
+**Critical**: Keys must match exactly between Python dicts and TypeScript interfaces.
+
+---
+
+## 🔑 Essential Files & Entry Points
+
+| Purpose                | File/Directory                    | Key Functionality                                    |
+| ---------------------- | --------------------------------- | ---------------------------------------------------- |
+| **Python Agent**       | `agent/main.py`                   | Tool definitions, state injection, LLM orchestration |
+| **Agent Tools**        | `agent/tools/`                    | Schema crawler, skills_ref integration               |
+| **Toolset Registry**   | `agent/toolsets.json`             | Tool definitions & metadata                          |
+| **React Frontend**     | `src/app/page.tsx`                | Component registry, canvas renderer                  |
+| **State Types**        | `src/lib/types.ts`                | TypeScript contracts for agent state                 |
+| **API Bridge**         | `src/app/api/copilotkit/route.ts` | CopilotKit ↔ HttpAgent bridge                        |
+| **Component Registry** | `src/components/registry/`        | StatCard, DataTable, ChartCard                       |
+| **Scripts**            | `scripts/`                        | Setup, health checks, MCP management                 |
+| **ChromaDB**           | `scripts/ingest_chunks.py`        | Semantic code indexing                               |
+| **Knowledge Base**     | `scripts/knowledge-management/`   | Doc sync, toolset detection                          |
+| **MCP Servers**        | `.copilot/mcp-servers/`           | MCP server starter scripts                           |
+
+---
+
+## ChromaDB & Semantic Code Search
+
+### Purpose
+
+**Dual ChromaDB architecture** for semantic code indexing and session memory using **Google Gemini embeddings** (`gemini-embedding-001`).
+
+### Part A: Session ChromaDB (HTTP Server - Port 8001)
+
+Ephemeral, terminates with codespace. Used for observability and metrics.
+
+```bash
+python scripts/start_chroma_server.py --port 8001
+```
+
+**Collections**:
+
+- `session_{run_id}_code_index` - Semantic code search
+- `session_{run_id}_agent_interactions` - Agent queries/responses
+- `session_{run_id}_observability_metrics` - Performance metrics
+- `session_{run_id}_mcp_server_logs` - MCP tool execution logs
+
+### Part B: Memory Artifact (Persistent - ./chroma_data/)
+
+Downloadable artifact for state tracking across agents.
+
+```bash
+python scripts/session_memory.py --serve --serve-port 8002
+```
+
+**Collections**:
+
+- `memory_code_index` - Semantic code search
+- `memory_environment_state` - Environment configuration
+- `memory_agent_context` - Agent interaction history
+
+### Embedding Dimensions
+
+- **768** (default) - Standard semantic search
+- **1536** - Higher fidelity
+- **3072** - Maximum precision
+
+**Configuration**: See [docs/CHROMADB_INDEXING.md](../docs/CHROMADB_INDEXING.md)
+
+---
+
+## MCP Server Integration
+
+### GitHub MCP Server (User-Level)
+
+**Configuration**: `%APPDATA%\Code\User\mcp.json` (Windows) or `~/.config/Code/User/mcp.json` (Unix)
+
+```json
+{
+  "servers": {
+    "github": {
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "-e",
+        "GITHUB_DYNAMIC_TOOLSETS=1",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+**Dynamic Toolsets**: Enable on-demand (repos, issues, pull_requests, actions, code_security, etc.)
+
+**Setup Scripts**:
+
+- `scripts/add_github_mcp.ps1` - Auto-configure GitHub MCP
+- `scripts/verify_github_mcp.ps1` - Verify configuration
+- `scripts/check_github_mcp_alignment.ps1` - Alignment check
+
+### Custom MCP Servers
+
+Place starter scripts in `.copilot/mcp-servers/`:
+
+- `.ps1` (PowerShell)
+- `.sh` (Bash)
+- `.bat`/`.cmd` (Batch)
+
+**Auto-start**: Task `Start MCP servers if stopped` runs on workspace open
+
+**Logs**: `.logs/mcp-<scriptname>.log`
+
+**Available Servers**:
+
+- `start-everything.{ps1,sh}` - MCP reference implementation (all protocol features)
+- `start-agent.{ps1,bat}` - Custom Python agent
+
+See [docs/MCP_EVERYTHING_SERVER.md](../docs/MCP_EVERYTHING_SERVER.md)
+
+---
+
+## Toolset Management System
+
+### Overview
+
+GitHub MCP-style toolset lifecycle automation with:
+
+- Auto-detection of new tools
+- Schema validation
+- Deprecation with backward-compatible aliases
+- Auto-generated documentation
+
+### Key Files
+
+- `agent/toolsets.json` - Toolset registry (canonical source)
+- `agent/toolset_aliases.json` - Deprecation mappings
+- `agent/toolset-schema.json` - JSON Schema validation
+- `scripts/toolset-management/` - Lifecycle automation scripts
+
+### Workflows
+
+```bash
+# Detect new/changed toolsets
+npm run detect:changes
+
+# Validate against schema
+npm run validate:toolsets
+
+# Test deprecation aliases
+npm run test:aliases
+
+# Generate documentation
+npm run docs:all              # Full doc generation
+npm run docs:sync             # Sync JSON ↔ Markdown
+npm run docs:diagram:svg      # Generate relationship diagram
+```
+
+### Adding a New Toolset
+
+1. Define tool function in `agent/main.py`
+2. Run `npm run detect:changes` (auto-detects)
+3. Validate: `npm run validate:toolsets`
+4. Generate docs: `npm run docs:all`
+5. Commit changes (JSON + generated markdown)
+
+See [TOOLSET_README.md](../TOOLSET_README.md) and [docs/TOOLSET_MANAGEMENT.md](../docs/TOOLSET_MANAGEMENT.md)
+
+---
+
+## Critical Dependencies
 
 - **Node.js**: 22.9.0+ required (earlier versions cause EBADENGINE errors)
   - Use `nvm` or `nvm-windows` to manage versions
@@ -248,7 +326,6 @@ npm run check                # Lint + format combined
 ### Adding New Components
 
 1. **Create React Component** in [src/components/registry/](../src/components/registry/)
-
    - Export named component (e.g., `export function MyWidget({ ...props })`)
    - Keep props simple and JSON-serializable
 
@@ -637,6 +714,139 @@ if type not in ALLOWED_TYPES:
     return {"status": "error", "message": f"Unknown type: {type}"}
 ```
 
+---
+
+## Knowledge Management & Agent Skills
+
+### Agent Skills Integration
+
+**Location**: `agent/skills_ref/` (Python library)
+
+**Purpose**: Validate and manage reusable agent skills following the [Agent Skills Specification](https://github.com/agentskills/skills-ref).
+
+```python
+from agent.skills_ref import validate, read_properties, to_prompt
+
+# Validate skill directory
+errors = validate(Path("agent-generator/src/skills/my-skill"))
+
+# Read metadata
+props = read_properties(Path("agent-generator/src/skills/my-skill"))
+
+# Generate XML prompt
+xml = to_prompt([Path("agent-generator/src/skills/my-skill")])
+```
+
+**CLI**:
+
+```bash
+cd agent
+uv run python -m skills_ref.cli validate ../agent-generator/src/skills/my-skill
+uv run python -m skills_ref.cli to-prompt ../agent-generator/src/skills/
+```
+
+**Available Skills**: 13+ skills in `agent-generator/src/skills/` including:
+
+- pdf, docx, xlsx, pptx (document manipulation)
+- mcp-builder (MCP server scaffolding)
+- web-artifacts-builder (Next.js + shadcn/ui projects)
+- algorithmic-art, theme-factory, skill-creator
+
+See [AGENT_SKILLS_IMPLEMENTATION.md](../AGENT_SKILLS_IMPLEMENTATION.md) and [docs/ANTHROPIC_SKILLS_INTEGRATION.md](../docs/ANTHROPIC_SKILLS_INTEGRATION.md)
+
+### Schema Crawler Tool
+
+**Location**: `agent/tools/schema_crawler_tool.py`
+
+**Purpose**: Convert JSON Schema → Zod validation schemas + TypeScript types
+
+```python
+from agent.tools.schema_crawler_tool import generate_zod_module
+
+result = generate_zod_module(
+    tool_context,
+    tool_name="getWeather",
+    input_schema={
+        "type": "object",
+        "properties": {
+            "city": {"type": "string", "minLength": 2},
+            "units": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+        },
+        "required": ["city"]
+    },
+    output_path="src/schemas/getWeather.schema.ts"
+)
+```
+
+**Integration**: See [agent-generator/SCHEMA_CRAWLER_README.md](../agent-generator/SCHEMA_CRAWLER_README.md) (3,800 lines)
+
+---
+
+## Shell Integration & Aliases
+
+### Project-Specific Commands
+
+**Location**: `.config/bash/bashrc` and `.config/powershell/Microsoft.PowerShell_profile.ps1`
+
+**Bash/PowerShell aliases**:
+
+```bash
+dev        # npm run dev
+ui         # npm run dev:ui
+agent      # npm run dev:agent
+mcp        # Start MCP servers
+validate   # npm run validate:toolsets
+docs       # npm run docs:all
+venv       # Activate Python venv
+help       # Show available commands
+```
+
+**Setup**: Sourced automatically by `scripts/setup.sh` or `scripts/setup.ps1`
+
+---
+
+## Debugging & Troubleshooting
+
+### Check Agent State
+
+```bash
+curl http://localhost:8000/health  # Basic health check
+curl http://localhost:8000/ready   # Readiness + toolset info
+```
+
+### Common Issues
+
+| Issue                 | Solution                                                       |
+| --------------------- | -------------------------------------------------------------- |
+| Element not rendering | Verify `type` string matches switch case in `src/app/page.tsx` |
+| Props not showing     | Check JSON serialization - no functions, no circular refs      |
+| State not updating    | Ensure tool returns `{"status": "success"}` dict               |
+| Type errors           | State contract must match between Python dict and TS interface |
+| Node version errors   | Run `node --version` → should be v22.9.0+ (use nvm)            |
+| Python import errors  | Activate venv: `source agent/.venv/bin/activate`               |
+
+### Debugging Checklist
+
+```bash
+# 1. Check services
+curl http://localhost:8000/health    # Agent healthy?
+curl http://localhost:3000           # UI loads?
+
+# 2. Check environment
+cat .env | grep GOOGLE_API_KEY       # Must be set
+node --version                       # v22.9.0+?
+python --version                     # 3.12+?
+
+# 3. Validate state contract
+# Compare agent/main.py state writes with src/lib/types.ts
+
+# 4. Check logs
+# Agent logs: terminal running npm run dev:agent
+# UI logs: browser DevTools console
+```
+
+---
+
 ## External Documentation
 
 - **CopilotKit Docs**: https://docs.copilotkit.ai/
@@ -645,8 +855,12 @@ if type not in ALLOWED_TYPES:
 - **Generative UI Architecture**: [Project_Overview.md](../Project_Overview.md)
 - **Refactoring Patterns**: [docs/REFACTORING_PATTERNS.md](../docs/REFACTORING_PATTERNS.md)
 - **Schema Crawler Tool**: [agent-generator/SCHEMA_CRAWLER_README.md](../agent-generator/SCHEMA_CRAWLER_README.md)
-- **Node.js Version**: 22.9.0+ required (use nvm for version management)
-- **Python Environment**: 3.12+ with uv or pip for dependency management
+- **ChromaDB Integration**: [docs/CHROMADB_INDEXING.md](../docs/CHROMADB_INDEXING.md)
+- **MCP Everything Server**: [docs/MCP_EVERYTHING_SERVER.md](../docs/MCP_EVERYTHING_SERVER.md)
+- **Toolset Management**: [TOOLSET_README.md](../TOOLSET_README.md), [docs/TOOLSET_MANAGEMENT.md](../docs/TOOLSET_MANAGEMENT.md)
+- **Codebase Index**: [CODEBASE_INDEX.md](../CODEBASE_INDEX.md) - Complete file inventory
+
+---
 
 ## Testing & Validation
 
