@@ -70,5 +70,37 @@ agent/.venv/
 # data directory (local client data)
 /data/
 
+# ChromaDB & vector storage
+chroma_data/
+output_chunks/
+
+# Memory & local state
+.vault/
+.logs/
+.memory/
+*.db
+*.sqlite
+*.sqlite3
+artifacts.db
+
+# Large auto-generated docs (prefer source)
+*_SUMMARY.md
+*_IMPLEMENTATION.md
+SESSION_SUMMARY_*.md
+REFACTORING_APPLIED_*.md
+CONVERSION_SUMMARY_*.md
+
+# Log files
+*.log
+lint_errors*.log
+validation_errors.log
+docs_error.log
+
+# Test outputs
+test-mcp-validation/
+
+# Agent generator output
+agent-generator/output/
+
 # DevContainer
 .devcontainer/.env

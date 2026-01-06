@@ -108,7 +108,8 @@
     "git.ignoreLimitWarning": true,
     "terminal.integrated.defaultProfile.linux": "bash",
     "terminal.integrated.defaultProfile.osx": "zsh",
-    "terminal.integrated.defaultProfile.windows": "PowerShell"
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "powershell.cwd": "🎨 Root (GenUI Workspace)"
   },
   "extensions": {
     "recommendations": [
