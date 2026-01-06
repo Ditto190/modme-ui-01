@@ -1,0 +1,4 @@
+Starting MCP Everything Server...
+This is a reference implementation demonstrating all MCP protocol features.
+/workspaces/modme-ui-01/.copilot/mcp-servers/start-everything.sh: line 14:  4137 Hangup                  npx -y @modelcontextprotocol/server-everything stdio
+Failed to start everything server
