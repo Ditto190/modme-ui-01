@@ -17,11 +17,13 @@
 **Size**: ~631 MB (776k objects)
 
 **What It Is**:
+
 - MCP Toolbox for Databases (formerly "Gen AI Toolbox")
 - Production-grade MCP server for database access
 - Built-in connection pooling, auth, observability
 
 **Key Features**:
+
 - Simplified tool development for agents
 - Database query tools (SQL, natural language)
 - OpenTelemetry integration
@@ -29,12 +31,14 @@
 - Support for multiple databases
 
 **Relevant Directories**:
+
 - `internal/embeddingmodels/` - Embedding model integrations
 - `internal/tools/` - 42 pre-built tools
 - `internal/sources/` - 40+ data sources
 - `internal/server/` - MCP server implementation
 
 **Use Case**:
+
 - Reference implementation for production MCP servers
 - Embedding model patterns for database queries
 - Tool architecture patterns
@@ -49,17 +53,20 @@
 **Size**: ~22 KB (66 objects)
 
 **What It Is**:
+
 - Minimal functional coding agent (803 bytes minified!)
 - Self-optimized by Claude Code
 - Demonstrates bare-minimum agent architecture
 
 **Key Files**:
+
 - `src/agent.ts` - Original Claude Code implementation (2,298 bytes)
 - `src/smallest-agent.js` - Minified version (803 bytes)
 - `src/smallest-agent.commented.js` - Readable annotated version (2,480 bytes)
 - `HACKING-TRANSCRIPT.md` - 20-minute self-optimization session
 
 **Dependencies**:
+
 ```json
 {
   "dependencies": {
@@ -68,12 +75,14 @@
 }
 ```
 
-**⚠️ Warning**: 
+**⚠️ Warning**:
+
 - Unrestricted bash access
 - Can execute any command
 - Experimental - use in sandboxed environments only
 
 **Use Case**:
+
 - Study minimal agent patterns
 - Lightweight runner for embedding experiments
 - Template for custom micro-agents
@@ -87,6 +96,7 @@
 **Goal**: Add semantic code search to smallest-agent using our journal-based embeddings
 
 **Approach**:
+
 1. **Copy smallest-agent template** to `experiments/embedded-agent/`
 2. **Add embedding tools**:
    - Import `scripts/knowledge-management/embeddings/embeddings.ts`
@@ -106,12 +116,14 @@
 **Goal**: Learn from production MCP server architecture
 
 **Study Areas**:
+
 1. `internal/embeddingmodels/` - How they integrate embedding models
 2. `internal/tools/` - Tool registration and orchestration
 3. `internal/server/` - MCP server lifecycle management
 4. Authentication patterns for secure tool access
 
 **Apply To**:
+
 - Our `agent/main.py` tool registration
 - Toolset management system
 - MCP VT Code integration patterns
@@ -202,12 +214,14 @@ npm install @anthropic-ai/sdk @xenova/transformers
 ## 📖 Resources
 
 ### genai-toolbox
+
 - **Docs**: https://googleapis.github.io/genai-toolbox/
 - **Discord**: https://discord.gg/Dmm69peqjh
 - **Medium**: https://medium.com/@mcp_toolbox
 - **GitHub**: https://github.com/googleapis/genai-toolbox
 
 ### smallest-agent
+
 - **GitHub**: https://github.com/obra/smallest-agent
 - **Author**: @obra
 - **Hacking Transcript**: See `HACKING-TRANSCRIPT.md` for self-optimization story
@@ -215,6 +229,7 @@ npm install @anthropic-ai/sdk @xenova/transformers
 ---
 
 **Next Steps**:
+
 1. Study `smallest-agent/src/agent.ts` architecture
 2. Review `genai-toolbox/internal/embeddingmodels/` patterns
 3. Create proof-of-concept: smallest-agent + semantic code search
@@ -225,4 +240,3 @@ npm install @anthropic-ai/sdk @xenova/transformers
 
 **Maintained by**: ModMe GenUI Team  
 **Last Updated**: January 7, 2026
-

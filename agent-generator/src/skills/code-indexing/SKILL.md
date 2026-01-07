@@ -384,4 +384,3 @@ describe("Code Indexing Skill", () => {
 **Maintained by**: ModMe GenUI Team  
 **Last Updated**: January 7, 2026  
 **License**: MIT
-

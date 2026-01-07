@@ -355,4 +355,3 @@ await index.save(`${journalPath}/faiss.index`);
 **Maintained by**: ModMe GenUI Team  
 **License**: MIT  
 **Last Updated**: January 7, 2026
-
