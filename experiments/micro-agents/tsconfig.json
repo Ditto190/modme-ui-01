@@ -15,13 +15,6 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": [
-    "base/**/*",
-    "helpers/**/*",
-    "evaluation/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["base/**/*", "helpers/**/*", "evaluation/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
