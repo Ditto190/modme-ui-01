@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
+import atexit
 import json
 import os
-import atexit
-from typing import Dict, Optional, Any
+from datetime import datetime
+from typing import Any, Dict, Optional
 
 from ag_ui_adk import ADKAgent, add_adk_fastapi_endpoint
 from dotenv import load_dotenv
-from datetime import datetime
 from fastapi import FastAPI, status
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from google.adk.agents import LlmAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.models.llm_request import LlmRequest
@@ -20,15 +20,16 @@ from google.adk.models.llm_response import LlmResponse
 from google.adk.tools import ToolContext
 from google.genai import types
 
+from mcp_vtcode import get_vtcode_client
+
 # Import VT Code integration
 from tools.code_tools import (
-    edit_component,
     analyze_component_props,
     create_new_component,
+    edit_component,
     run_build_check,
 )
 from tools.journal_adapter import process_feelings
-from mcp_vtcode import get_vtcode_client
 
 load_dotenv()
 

@@ -1,0 +1,348 @@
+name: Journal-Style Code Indexing
+
+# Purpose: Generate semantic embeddings for code using local transformers
+# Storage: Journal-style dated directories for versioning and auditability
+# Privacy: 100% local processing, no external APIs required
+
+on:
+  push:
+    branches: [main, "feature/**"]
+    paths:
+      - "src/**"
+      - "agent/**"
+      - "scripts/**"
+      - "*.py"
+      - "*.ts"
+      - "*.tsx"
+  workflow_dispatch:
+    inputs:
+      paths:
+        description: "Comma-separated paths to index (e.g., src/,agent/)"
+        required: false
+        default: "src/,agent/,scripts/"
+      incremental:
+        description: "Incremental indexing (skip unchanged files)"
+        required: false
+        default: true
+        type: boolean
+      chunk_size:
+        description: "Chunk size in tokens"
+        required: false
+        default: "512"
+      model:
+        description: "Embedding model"
+        required: false
+        default: "Xenova/all-MiniLM-L6-v2"
+  schedule:
+    # Full reindex weekly
+    - cron: "0 3 * * 0"
+
+env:
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "22"
+  JOURNAL_PATH: ./.code-index-journal
+
+jobs:
+  # ============================================================
+  # Job 1: Chunk codebase with pykomodo
+  # ============================================================
+  chunk-codebase:
+    name: 📦 Chunk Codebase
+    runs-on: ubuntu-latest
+    outputs:
+      chunk_count: ${{ steps.chunk.outputs.count }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install pykomodo
+        run: pip install pykomodo
+
+      - name: Chunk codebase
+        id: chunk
+        run: |
+          mkdir -p output_chunks
+
+          PATHS="${{ github.event.inputs.paths || 'src/,agent/,scripts/' }}"
+          CHUNK_SIZE="${{ github.event.inputs.chunk_size || '512' }}"
+
+          echo "🔍 Chunking paths: $PATHS"
+
+          pykomodo chunk \
+            --input-dir "$PATHS" \
+            --output-dir output_chunks/ \
+            --chunk-size "$CHUNK_SIZE" \
+            --overlap 50 \
+            --format jsonl \
+            --exclude "node_modules,dist,build,.git"
+
+          CHUNK_COUNT=$(wc -l < output_chunks/chunks.jsonl || echo "0")
+          echo "count=$CHUNK_COUNT" >> $GITHUB_OUTPUT
+          echo "✅ Generated $CHUNK_COUNT chunks"
+
+      - name: Upload chunks artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-chunks-${{ github.sha }}
+          path: output_chunks/
+          retention-days: 7
+
+  # ============================================================
+  # Job 2: Generate embeddings with transformers.js
+  # ============================================================
+  generate-embeddings:
+    name: 🧠 Generate Embeddings
+    runs-on: ubuntu-latest
+    needs: chunk-codebase
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: scripts/knowledge-management/package.json
+
+      - name: Install dependencies
+        working-directory: scripts/knowledge-management
+        run: |
+          npm install
+          npm install @xenova/transformers
+
+      - name: Download chunks
+        uses: actions/download-artifact@v4
+        with:
+          name: code-chunks-${{ github.sha }}
+          path: output_chunks/
+
+      - name: Generate embeddings
+        working-directory: scripts/knowledge-management
+        run: |
+          node << 'EOF'
+          const fs = require('fs');
+          const path = require('path');
+          const { EmbeddingService } = require('./embeddings/embeddings.ts');
+
+          async function main() {
+            console.log('🧠 Initializing embedding service...');
+            const service = EmbeddingService.getInstance();
+            await service.initialize();
+            
+            const journalPath = process.env.JOURNAL_PATH || './.code-index-journal';
+            const today = new Date().toISOString().split('T')[0];
+            const dayPath = path.join(journalPath, today);
+            
+            fs.mkdirSync(dayPath, { recursive: true });
+            
+            console.log('📖 Processing chunks...');
+            const chunks = fs.readFileSync('../../output_chunks/chunks.jsonl', 'utf8')
+              .split('\n')
+              .filter(line => line.trim())
+              .map(line => JSON.parse(line));
+            
+            let processed = 0;
+            for (const chunk of chunks) {
+              const embedding = await service.generateEmbedding(chunk.text);
+              
+              const embeddingData = {
+                embedding,
+                text: chunk.text,
+                sections: chunk.sections || [],
+                timestamp: Date.now(),
+                path: chunk.file_path || 'unknown',
+                chunk_id: chunk.id
+              };
+              
+              const filename = `${Date.now()}-${processed}.embedding`;
+              const filepath = path.join(dayPath, filename);
+              
+              fs.writeFileSync(filepath, JSON.stringify(embeddingData, null, 2));
+              processed++;
+              
+              if (processed % 10 === 0) {
+                console.log(`  ✓ Processed ${processed}/${chunks.length} chunks`);
+              }
+            }
+            
+            // Create index manifest
+            const manifest = {
+              created_at: new Date().toISOString(),
+              chunk_count: chunks.length,
+              embedding_count: processed,
+              model: 'Xenova/all-MiniLM-L6-v2',
+              version: '1.0.0'
+            };
+            
+            fs.writeFileSync(
+              path.join(dayPath, 'index.json'),
+              JSON.stringify(manifest, null, 2)
+            );
+            
+            console.log(`✅ Generated ${processed} embeddings`);
+            console.log(`📂 Stored in: ${dayPath}`);
+          }
+
+          main().catch(console.error);
+          EOF
+
+      - name: Create global manifest
+        run: |
+          cat > ${{ env.JOURNAL_PATH }}/manifest.json << EOF
+          {
+            "created_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "commit": "${{ github.sha }}",
+            "branch": "${{ github.ref_name }}",
+            "chunk_count": ${{ needs.chunk-codebase.outputs.chunk_count }},
+            "model": "${{ github.event.inputs.model || 'Xenova/all-MiniLM-L6-v2' }}",
+            "paths": "${{ github.event.inputs.paths || 'src/,agent/,scripts/' }}",
+            "incremental": ${{ github.event.inputs.incremental || true }},
+            "workflow_run": "${{ github.run_id }}"
+          }
+          EOF
+
+      - name: Upload index artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-index-journal-${{ github.sha }}
+          path: ${{ env.JOURNAL_PATH }}/
+          retention-days: 30
+
+      - name: Commit index to repository (optional)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add ${{ env.JOURNAL_PATH }}/
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update code index journal [skip ci]"
+            git push
+          fi
+
+  # ============================================================
+  # Job 3: Test search functionality
+  # ============================================================
+  test-search:
+    name: 🔍 Test Search
+    runs-on: ubuntu-latest
+    needs: generate-embeddings
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        working-directory: scripts/knowledge-management
+        run: |
+          npm install
+          npm install @xenova/transformers
+
+      - name: Download index
+        uses: actions/download-artifact@v4
+        with:
+          name: code-index-journal-${{ github.sha }}
+          path: ${{ env.JOURNAL_PATH }}/
+
+      - name: Test semantic search
+        working-directory: scripts/knowledge-management
+        run: |
+          node << 'EOF'
+          const fs = require('fs');
+          const path = require('path');
+          const { EmbeddingService } = require('./embeddings/embeddings.ts');
+
+          async function searchTest() {
+            const service = EmbeddingService.getInstance();
+            await service.initialize();
+            
+            const queries = [
+              'authentication middleware',
+              'database connection',
+              'API route handler'
+            ];
+            
+            console.log('🔍 Testing search functionality...\n');
+            
+            for (const query of queries) {
+              console.log(`Query: "${query}"`);
+              const queryEmbedding = await service.generateEmbedding(query);
+              
+              // Load embeddings from journal
+              const journalPath = process.env.JOURNAL_PATH || './.code-index-journal';
+              const today = new Date().toISOString().split('T')[0];
+              const dayPath = path.join(journalPath, today);
+              
+              const files = fs.readdirSync(dayPath)
+                .filter(f => f.endsWith('.embedding'));
+              
+              let topResults = [];
+              for (const file of files.slice(0, 100)) {  // Sample first 100
+                const data = JSON.parse(
+                  fs.readFileSync(path.join(dayPath, file), 'utf8')
+                );
+                
+                const similarity = service.cosineSimilarity(
+                  queryEmbedding,
+                  data.embedding
+                );
+                
+                topResults.push({ ...data, similarity, file });
+              }
+              
+              topResults.sort((a, b) => b.similarity - a.similarity);
+              
+              console.log(`  Top 3 results:`);
+              for (let i = 0; i < Math.min(3, topResults.length); i++) {
+                const result = topResults[i];
+                console.log(`    ${i + 1}. ${result.path} (${result.similarity.toFixed(3)})`);
+                console.log(`       "${result.text.substring(0, 80)}..."`);
+              }
+              console.log('');
+            }
+          }
+
+          searchTest().catch(console.error);
+          EOF
+
+  # ============================================================
+  # Job 4: Summary
+  # ============================================================
+  summary:
+    name: 📋 Summary
+    runs-on: ubuntu-latest
+    needs: [chunk-codebase, generate-embeddings, test-search]
+    if: always()
+
+    steps:
+      - name: Generate summary
+        run: |
+          echo "## 📊 Code Index Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Chunks**: ${{ needs.chunk-codebase.outputs.chunk_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Model**: ${{ github.event.inputs.model || 'Xenova/all-MiniLM-L6-v2' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Storage**: Journal-style dated directories" >> $GITHUB_STEP_SUMMARY
+          echo "- **Privacy**: 100% local processing" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Status" >> $GITHUB_STEP_SUMMARY
+          echo "- Chunking: ${{ needs.chunk-codebase.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Embeddings: ${{ needs.generate-embeddings.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Search Test: ${{ needs.test-search.result }}" >> $GITHUB_STEP_SUMMARY
