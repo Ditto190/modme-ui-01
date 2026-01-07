@@ -1,0 +1,8 @@
+id: test-validation
+name: Test Validation Collection
+description: This should pass all validation rules
+items:
+- path: agents/test.agent.md
+  kind: agent
+tags:
+- test

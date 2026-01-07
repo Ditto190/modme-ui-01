@@ -3,7 +3,7 @@
  * Test transformers.js installation and model loading
  *
  * Usage:
- *   npm run test:models
+ *   npm run test:modelsnpm run dets:run derts
  *   node test-models.js
  */
 

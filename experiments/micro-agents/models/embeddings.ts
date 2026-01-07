@@ -13,7 +13,7 @@
 
 import { FeatureExtractionPipeline, pipeline } from "@huggingface/transformers";
 import * as fs from "fs/promises";
-import * as path from "path";
+import { greptimeClient, GreptimeEmbeddingRecord } from "./greptimedb_client";
 
 // Re-export types from knowledge-management
 export interface EmbeddingData {
@@ -267,56 +267,26 @@ export class UnifiedEmbeddingService {
     modelKey: string,
     topK: number = 5
   ): Promise<SearchResult[]> {
-    // Find latest journal directory
-    const journalDirs = await fs.readdir(indexPath);
-    const latestDir = journalDirs
-      .filter((dir) => /^\d{4}-\d{2}-\d{2}$/.test(dir))
-      .sort()
-      .pop();
+    // Query GreptimeDB for top-K similar embeddings.
+    // We use the Greptime client to fetch candidates and compute similarity client-side.
+    try {
+      const candidates = await greptimeClient.searchTopK(
+        queryEmbedding,
+        topK,
+        2000
+      );
+      const results: SearchResult[] = candidates.map((c) => ({
+        path: c.path,
+        text: c.text,
+        similarity: this.cosineSimilarity(queryEmbedding, c.embedding),
+        sections: c.sections,
+      }));
 
-    if (!latestDir) {
-      console.error("No journal directories found in", indexPath);
+      return results;
+    } catch (error) {
+      console.error("GreptimeDB search error:", error);
       return [];
     }
-
-    const embeddingsDir = path.join(indexPath, latestDir);
-    const files = await fs.readdir(embeddingsDir);
-    const embeddingFiles = files.filter((f) => f.endsWith(".embedding"));
-
-    const results: SearchResult[] = [];
-
-    for (const file of embeddingFiles) {
-      try {
-        const filePath = path.join(embeddingsDir, file);
-        const content = await fs.readFile(filePath, "utf8");
-        const data: EmbeddingData = JSON.parse(content);
-
-        // Skip if embedding dimension doesn't match
-        const expectedDim = MODELS[modelKey].dimension;
-        if (data.embedding.length !== expectedDim) {
-          continue;
-        }
-
-        const similarity = this.cosineSimilarity(
-          queryEmbedding,
-          data.embedding
-        );
-
-        results.push({
-          path: data.path,
-          text: data.text,
-          similarity,
-          sections: data.sections,
-        });
-      } catch (error) {
-        console.error(`Error reading embedding file ${file}:`, error);
-      }
-    }
-
-    // Sort by similarity descending
-    results.sort((a, b) => b.similarity - a.similarity);
-
-    return results.slice(0, topK);
   }
 
   /**
@@ -332,6 +302,25 @@ export class UnifiedEmbeddingService {
       JSON.stringify(embeddingData, null, 2),
       "utf8"
     );
+
+    // Also upsert into GreptimeDB for full-observability and fast vector queries
+    try {
+      const id = `${embeddingData.path}:${embeddingData.timestamp}`;
+      const record: GreptimeEmbeddingRecord = {
+        id,
+        path: embeddingData.path,
+        text: embeddingData.text,
+        embedding: embeddingData.embedding,
+        sections: embeddingData.sections,
+        timestamp: embeddingData.timestamp,
+        modelId: embeddingData.modelId,
+        dimension: embeddingData.dimension,
+      };
+
+      await greptimeClient.upsertEmbedding(record);
+    } catch (err) {
+      console.error("Failed to upsert embedding to GreptimeDB:", err);
+    }
   }
 
   /**

@@ -59,6 +59,8 @@ models/
 {
   "@huggingface/transformers": "^3.8.1",
   "chromadb": "^1.9.2",
+  "pg": "^8.11.0",
+  "@types/pg": "^8.6.6",
   "zod": "^3.23.8"
 }
 ```
@@ -490,7 +492,7 @@ bash verify-install.sh
 ✅ Node.js version: v22.9.0
 ✅ NPM packages: 55 packages installed
 ✅ @huggingface/transformers: 3.8.1
-✅ chromadb: 1.9.2
+✅ GreptimeDB (Postgres/pg): available at Postgres-compatible endpoint (e.g. port 4003)
 ✅ zod: 3.23.8
 ✅ Type definitions: 2 files
 ✅ Documentation: 6 files
@@ -506,7 +508,7 @@ bash verify-install.sh
 ```
 embeddingService (embeddings.ts)
 ├─> @huggingface/transformers        # ML models
-├─> chromadb                          # Vector database
+├─> greptime (Postgres-compatible)     # Observability + vector store
 ├─> zod                               # Runtime validation
 └─> types/gemma3n-config.ts          # Type definitions
     └─> zod                           # Schema validation
@@ -518,13 +520,13 @@ types/index.ts
 
 ### External Dependencies
 
-| Package                     | Version | Size | Purpose                   |
-| --------------------------- | ------- | ---- | ------------------------- |
-| `@huggingface/transformers` | 3.8.1   | 40MB | ML model runtime          |
-| `chromadb`                  | 1.9.2   | 5MB  | Vector database client    |
-| `zod`                       | 3.23.8  | 1MB  | Runtime schema validation |
-| `@types/node`               | 22.0.0  | 2MB  | Node.js type definitions  |
-| `typescript`                | 5.6.3   | 10MB | TypeScript compiler       |
+| Package                     | Version | Size  | Purpose                        |
+| --------------------------- | ------- | ----- | ------------------------------ |
+| `@huggingface/transformers` | 3.8.1   | 40MB  | ML model runtime               |
+| `pg` (GreptimeDB)           | ^8.11.0 | 1.2MB | Postgres client for GreptimeDB |
+| `zod`                       | 3.23.8  | 1MB   | Runtime schema validation      |
+| `@types/node`               | 22.0.0  | 2MB   | Node.js type definitions       |
+| `typescript`                | 5.6.3   | 10MB  | TypeScript compiler            |
 
 **Total Size**: ~48MB (excluding node_modules overhead)
 
@@ -828,26 +830,17 @@ class EmbeddingAgent {
 
 ---
 
-### With ChromaDB
+### With GreptimeDB (Postgres-compatible)
 
-**Purpose**: Vector database for persistent embedding storage
+**Purpose**: GreptimeDB serves as the full observability store (metrics, logs, traces) and also persists embeddings for semantic search via its Postgres-compatible interface.
 
-**Integration**:
+**Integration (Node.js)**:
 
 ```typescript
-import ChromaDB from "chromadb";
+// Use the greptime client wrapper or `pg` to connect to GreptimeDB's Postgres endpoint
+import { greptimeClient } from "./greptimedb_client";
 
-// HTTP client for session storage
-const client = new ChromaDB.HttpClient({
-  host: "localhost",
-  port: 8001,
-});
-
-// Store embeddings
-const collection = await client.getOrCreateCollection({
-  name: "code_index",
-  metadata: { model: "minilm", dimensions: 384 },
-});
+await greptimeClient.init();
 
 const texts = ["function foo() {}", "class Bar {}"];
 const embeddings = await embeddingService.generateBatchEmbeddings(
@@ -855,18 +848,27 @@ const embeddings = await embeddingService.generateBatchEmbeddings(
   "minilm"
 );
 
-await collection.add({
-  ids: ["func1", "class1"],
-  embeddings,
-  documents: texts,
-});
+await Promise.all(
+  embeddings.map(async (emb, i) => {
+    await greptimeClient.upsertEmbedding({
+      id: `chunk-${i}`,
+      path: `example-${i}.ts`,
+      text: texts[i],
+      embedding: emb,
+      sections: [],
+      timestamp: Date.now(),
+      modelId: "minilm",
+      dimension: emb.length,
+    });
+  })
+);
 ```
 
 **Storage Layers**:
 
-1. **Session Storage**: HTTP server at port 8001
-2. **Persistent Storage**: Exported artifacts
-3. **Journal Storage**: `.code-index-journal/` directory
+1. **Session/Persistent Storage**: GreptimeDB Postgres endpoint (single binary or cluster)
+2. **Artifact Export**: Back up embeddings to Parquet/CSV for long-term archival
+3. **Journal Storage**: `.code-index-journal/` directory for local snapshots and debugging
 
 ---
 

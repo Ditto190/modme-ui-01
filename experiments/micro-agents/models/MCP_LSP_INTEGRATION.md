@@ -4,7 +4,7 @@
 
 **Created**: January 7, 2026  
 **Version**: 1.0.0  
-**Tech Stack**: MCP Protocol, LSP, TypeScript, Python, ChromaDB
+**Tech Stack**: MCP Protocol, LSP, TypeScript, Python, GreptimeDB
 
 ---
 
@@ -33,10 +33,10 @@
         ┌───────────────────┼───────────────────┐
         │                   │                   │
         ▼                   ▼                   ▼
-┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│ Models Index │    │  MCP Server  │    │  LSP Server  │
-│   (ChromaDB) │    │   (FastAPI)  │    │ (TypeScript) │
-└──────────────┘    └──────────────┘    └──────────────┘
+      ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+      │ Models Index │    │  MCP Server  │    │  LSP Server  │
+      │  (GreptimeDB)│    │   (FastAPI)  │    │ (TypeScript) │
+      └──────────────┘    └──────────────┘    └──────────────┘
         │                   │                   │
         └───────────────────┼───────────────────┘
                             │
@@ -571,32 +571,29 @@ async function ingestCodeRepository(config: IngestionConfig): Promise<void> {
     10 // Batch size
   );
 
-  // 5. Store in ChromaDB
-  const chroma = new ChromaDB.HttpClient({
-    host: "localhost",
-    port: 8001,
-  });
+  // 5. Store in GreptimeDB (Postgres-compatible ingestion)
+  // Example using the greptime client wrapper (Node.js) or direct `pg` client
+  import { greptimeClient } from "./greptimedb_client";
 
-  const collection = await chroma.getOrCreateCollection({
-    name: config.chromaCollection,
-    metadata: {
-      source: `${config.githubOwner}/${config.githubRepo}`,
-      model: config.modelKey || "minilm",
-      dimensions: embeddings[0]?.length || 0,
-    },
-  });
+  // Ensure GreptimeDB client is initialized
+  await greptimeClient.init();
 
-  await collection.add({
-    ids: chunks.map((_, i) => `chunk-${i}`),
-    embeddings,
-    documents: chunks.map((c) => c.content),
-    metadatas: chunks.map((c) => ({
-      file: c.file,
-      startLine: c.startLine,
-      endLine: c.endLine,
-      language: c.language,
-    })),
-  });
+  // Upsert each chunk as a record (id is unique per chunk)
+  await Promise.all(
+    chunks.map(async (c, i) => {
+      const id = `chunk-${i}`;
+      await greptimeClient.upsertEmbedding({
+        id,
+        path: c.file,
+        text: c.content,
+        embedding: embeddings[i],
+        sections: [],
+        timestamp: Date.now(),
+        modelId: config.modelKey || "minilm",
+        dimension: embeddings[i]?.length || null,
+      });
+    })
+  );
 
   console.log(`✅ Ingested ${chunks.length} chunks from ${config.githubRepo}`);
 }
@@ -826,34 +823,33 @@ Following [spec.md](../../../.copilot/templates/spec/spec.md) template format:
 
 ### Multi-Layer Storage Architecture
 
-#### Layer 1: Session Storage (ChromaDB HTTP)
+#### Layer 1: Session Storage (GreptimeDB Postgres endpoint)
 
 ```python
 # session_storage.py
-import chromadb
-from chromadb.config import Settings
+import psycopg2
 
-# HTTP client for session-scoped storage
-session_client = chromadb.HttpClient(
-    host="localhost",
-    port=8001,
-    settings=Settings(
-        anonymized_telemetry=False,
-        allow_reset=True
-    )
-)
+# Connect to GreptimeDB's Postgres-compatible endpoint
+conn = psycopg2.connect("host=localhost port=4003 user=greptime password=greptime dbname=postgres")
+cur = conn.cursor()
 
-# Create session collection
-session_id = f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-collection = session_client.get_or_create_collection(
-    name=f"{session_id}_code_index",
-    metadata={
-        "session_id": session_id,
-        "created_at": datetime.now().isoformat(),
-        "model": "minilm",
-        "purpose": "code_ingestion"
-    }
-)
+# Create a session-scoped table (if you prefer per-session tables, include session id prefix)
+cur.execute('''
+CREATE TABLE IF NOT EXISTS code_index (
+  id TEXT PRIMARY KEY,
+  path TEXT,
+  text TEXT,
+  embedding DOUBLE PRECISION[],
+  sections TEXT[],
+  timestamp BIGINT,
+  modelId TEXT,
+  dimension INT
+);
+''')
+conn.commit()
+
+# Insert example
+# cur.execute("INSERT INTO code_index(id, path, text, embedding, timestamp) VALUES(%s,%s,%s,%s,%s)", (id, path, text, embedding, ts))
 ```
 
 #### Layer 2: Persistent Storage (Artifact Export)

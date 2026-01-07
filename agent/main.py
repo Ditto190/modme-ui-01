@@ -29,6 +29,11 @@ from tools.code_tools import (
     edit_component,
     run_build_check,
 )
+from tools.collection_manager import (
+    create_collection,
+    create_mcp_server_collection,
+    scan_repository_for_collection_items,
+)
 from tools.journal_adapter import process_feelings
 
 load_dotenv()
@@ -221,6 +226,11 @@ workbench_agent = LlmAgent(
     - analyze_component_props: Inspect TypeScript interfaces
     - create_new_component: Generate new components from scratch
     - run_build_check: Verify TypeScript compilation
+    
+    Collection Management Tools:
+    - create_collection: Create agent collection YAML files
+    - scan_repository_for_collection_items: Auto-discover collection items
+    - create_mcp_server_collection: Group agents by MCP server dependency
     """,
     tools=[
         upsert_ui_element,
@@ -234,6 +244,10 @@ workbench_agent = LlmAgent(
         run_build_check,
         # Journalling tool (private journal adapter)
         process_feelings,
+        # Collection management tools
+        create_collection,
+        scan_repository_for_collection_items,
+        create_mcp_server_collection,
     ],
     before_agent_callback=on_before_agent,
     before_model_callback=before_model_modifier,
