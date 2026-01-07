@@ -27,6 +27,7 @@ from tools.code_tools import (
     create_new_component,
     run_build_check,
 )
+from tools.journal_adapter import process_feelings
 from mcp_vtcode import get_vtcode_client
 
 load_dotenv()
@@ -230,6 +231,8 @@ workbench_agent = LlmAgent(
         analyze_component_props,
         create_new_component,
         run_build_check,
+        # Journalling tool (private journal adapter)
+        process_feelings,
     ],
     before_agent_callback=on_before_agent,
     before_model_callback=before_model_modifier,
