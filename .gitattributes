@@ -26,6 +26,10 @@ Dockerfile text eol=lf
 # Git files
 .gitignore text eol=lf
 .gitattributes text eol=lf
+# Ensure hooks use LF and preserve expected line endings
+scripts/hooks/session-start text eol=lf
+scripts/hooks/session-start.mc text eol=lf
+scripts/hooks/session-start.cmd text eol=crlf
 
 # Binary files
 *.png binary
