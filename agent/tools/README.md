@@ -60,6 +60,7 @@ def my_tool(tool_context: ToolContext, param: str) -> Dict[str, Any]:
 ### Return Value Convention
 
 All tools return dictionaries with:
+
 - **status**: `"success"`, `"error"`, or `"warning"`
 - **message**: Human-readable status message
 - Additional keys for tool-specific data
@@ -77,6 +78,7 @@ All tools return dictionaries with:
 **Source**: Converted from [agent-generator/src/scripts/generate.ts](../../agent-generator/src/scripts/generate.ts)
 
 **Usage**:
+
 ```python
 from agent.tools.generate_schemas import generate_tool_schemas
 
@@ -95,6 +97,7 @@ result = generate_tool_schemas(
 ```
 
 **Configuration** (genai-toolbox/tools.yaml):
+
 ```yaml
 generate_tool_schemas:
   kind: python
@@ -119,6 +122,7 @@ generate_tool_schemas:
 **Source**: Converted from [agent-generator/src/scripts/generate.ts](../../agent-generator/src/scripts/generate.ts)
 
 **Usage**:
+
 ```python
 from agent.tools.generate_schemas import generate_agent_prompt
 
@@ -138,6 +142,7 @@ result = generate_agent_prompt(
 ```
 
 **Output Format**:
+
 ```markdown
 # AI Agent System Prompt
 
@@ -169,6 +174,7 @@ You are a helpful AI assistant equipped with specific skills and tools.
 **Purpose**: Generate both tool schemas and agent prompt in one operation
 
 **Usage**:
+
 ```python
 from agent.tools.generate_schemas import generate_all
 
@@ -197,6 +203,7 @@ result = generate_all(
 **Documentation**: See [agent-generator/SCHEMA_CRAWLER_README.md](../../agent-generator/SCHEMA_CRAWLER_README.md)
 
 **Usage**:
+
 ```python
 from agent.tools.schema_crawler_tool import generate_zod_from_json_schema
 
@@ -222,6 +229,7 @@ result = generate_zod_from_json_schema(
 **Purpose**: Generate complete Zod module for MCP tool with input/output schemas
 
 **Usage**:
+
 ```python
 from agent.tools.schema_crawler_tool import generate_zod_module
 
@@ -374,7 +382,7 @@ def my_new_tool(
         }
 ```
 
-2. **Register in GenAI Toolbox**
+1. **Register in GenAI Toolbox**
 
 ```yaml
 # genai-toolbox/tools.yaml
@@ -395,7 +403,7 @@ tools:
         required: false
 ```
 
-3. **Add Tests**
+1. **Add Tests**
 
 ```python
 # tests/test_my_new_tool.py
@@ -492,6 +500,7 @@ pytest --cov=agent.tools tests/
 ## Support
 
 For issues or questions:
+
 1. Check tool docstrings for usage details
 2. Review [REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md) for patterns
 3. Run tool with `--help` flag (if CLI entry point exists)

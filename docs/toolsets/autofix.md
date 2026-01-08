@@ -1,0 +1,20 @@
+name: autofix.ci # needed to securely identify the workflow
+
+on: { pull_request: {}, push: { branches: ["main"] } }
+
+permissions: { contents: read }
+
+## @Copilot Autofix Configuration based on my codebase and preferences
+
+jobs:
+  autofix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: corepack enable
+      - uses: actions/setup-node@v6
+        with: { node-version: lts/*, cache: "pnpm" }
+      - run: pnpm install
+      - run: pnpm run lint:fix
+      - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27
+        with: { commit-message: "chore: apply automated updates" }

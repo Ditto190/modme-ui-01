@@ -62,11 +62,13 @@ skills-ref validate path/to/my-skill
 ```
 
 **Output (valid skill)**:
+
 ```
 Valid skill: path/to/my-skill
 ```
 
 **Output (invalid skill)**:
+
 ```
 Validation failed for path/to/my-skill:
   - Directory name 'my_skill' must match skill name 'my-skill'
@@ -82,6 +84,7 @@ python -m agent.skills_ref.cli read-properties path/to/my-skill
 ```
 
 **Output (JSON)**:
+
 ```json
 {
   "name": "pdf-reader",
@@ -104,6 +107,7 @@ python -m agent.skills_ref.cli to-prompt path/to/skill-a path/to/skill-b
 ```
 
 **Output (XML)**:
+
 ```xml
 <available_skills>
 <skill>
@@ -328,6 +332,7 @@ Use this skill when the user needs to work with PDF files...
 | **Purpose** | Client-specific properties |
 
 **Example**:
+
 ```yaml
 metadata:
   author: ModMe Team
@@ -510,6 +515,7 @@ uv add strictyaml
 ### Issue: `ValidationError: Missing required field: name`
 
 **Solution**: Add `name` field to SKILL.md frontmatter:
+
 ```yaml
 ---
 name: my-skill
@@ -524,6 +530,7 @@ description: My skill description
 **Error**: `Directory name 'my_skill' must match skill name 'my-skill'`
 
 **Solution**: Rename directory to match skill name exactly:
+
 ```bash
 mv my_skill my-skill
 ```
@@ -532,10 +539,10 @@ mv my_skill my-skill
 
 ## References
 
-- **Agent Skills Specification**: https://agentskills.io/specification
-- **agentskills/skills-ref**: https://github.com/agentskills/agentskills/tree/main/skills-ref
-- **Example Skills**: https://github.com/anthropics/skills
-- **Integration Guide**: https://agentskills.io/integrate-skills
+- **Agent Skills Specification**: <https://agentskills.io/specification>
+- **agentskills/skills-ref**: <https://github.com/agentskills/agentskills/tree/main/skills-ref>
+- **Example Skills**: <https://github.com/anthropics/skills>
+- **Integration Guide**: <https://agentskills.io/integrate-skills>
 
 ---
 
@@ -559,4 +566,3 @@ To extend this library:
 **Last Updated**: January 3, 2026  
 **Maintained By**: ModMe GenUI Team  
 **Based On**: agentskills/agentskills/skills-ref v0.1.0
-

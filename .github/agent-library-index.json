@@ -1,0 +1,21 @@
+{
+  "generated": "2026-01-08T03:51:50.200720",
+  "version": "1.0.0",
+  "library": {
+    "agents": 10,
+    "prompts": 10,
+    "skills": 10
+  },
+  "integration": {
+    "awesome_copilot": true,
+    "mcp_tools": true,
+    "genai_toolbox": true,
+    "gh_aw": true
+  },
+  "locations": {
+    "agents": ".github\\agents",
+    "prompts": ".github\\prompts",
+    "skills": ".github\\skills",
+    "awesome_copilot": "agent-library"
+  }
+}

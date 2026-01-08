@@ -49,6 +49,18 @@ else
     echo "⚠️  No agent/pyproject.toml found"
 fi
 
+# Install CodeQL CLI inside the container (if not present)
+if command -v codeql &> /dev/null; then
+    echo "✅ CodeQL already available in container"
+else
+    if [ -f ".devcontainer/install-codeql.sh" ]; then
+        echo "📥 Installing CodeQL via .devcontainer/install-codeql.sh"
+        bash .devcontainer/install-codeql.sh
+    else
+        echo "⚠️  No .devcontainer/install-codeql.sh found — skipping CodeQL install"
+    fi
+fi
+
 # Create data directory if it doesn't exist (for local client data)
 echo "📁 Creating data directory..."
 mkdir -p data
