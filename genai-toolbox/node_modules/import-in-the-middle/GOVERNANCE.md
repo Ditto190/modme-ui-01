@@ -6,7 +6,7 @@
 [nodejs/import-in-the-middle](https://github.com/nodejs/import-in-the-middle)
 GitHub repository.
 The GitHub team for `import-in-the-middle` core collaborators is
-[@nodejs/import-in-the-middle-maintainers](https://github.com/orgs/nodejs/teams/import-in-the-middle-maintainers). 
+[@nodejs/import-in-the-middle-maintainers](https://github.com/orgs/nodejs/teams/import-in-the-middle-maintainers).
 Collaborators have commit access to the
 [nodejs/import-in-the-middle](https://github.com/nodejs/import-in-the-middle)
 repository.
@@ -21,8 +21,8 @@ Two collaborators must approve a pull request before the pull request can land.
 Approving a pull request indicates that the collaborator accepts responsibility
 for the change. Approval must be from collaborators who are not authors of the
 change and at least one approval must be from a collaborator outside the authors
-direct team. 
+direct team.
 
 If a collaborator opposes a proposed change, then the change cannot land. Often,
 discussions or further changes result in collaborators removing their
-opposition. 
+opposition.

@@ -395,6 +395,7 @@ your-project/
 - 📊 **ChromaDB Indexing**: Code search & RAG
 - 🚀 **14 Deploy Platforms**: Vercel, Cloudflare, AWS, etc.
 EOF
+
 ```
 
 ### Step 5.3: Validate Integration

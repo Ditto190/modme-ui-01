@@ -68,7 +68,7 @@ const otlpEndpoint =
 ✅ **Production-Ready**: Battle-tested by Google  
 ✅ **Comprehensive**: 30+ database connectors  
 ✅ **Maintained**: Active development, versioned releases  
-✅ **Documented**: Full docs at https://googleapis.github.io/genai-toolbox/  
+✅ **Documented**: Full docs at <https://googleapis.github.io/genai-toolbox/>  
 ✅ **MCP-Native**: Designed for Model Context Protocol  
 ✅ **Extensible**: Gemini CLI extension system  
 ✅ **Go-Based**: Better performance for database operations
@@ -550,11 +550,11 @@ grep -r "genai-toolbox" --include="*.md" --include="*.json" --include="*.yaml"
 
 ## 📚 Resources
 
-- **GenAI Toolbox Docs**: https://googleapis.github.io/genai-toolbox/
-- **GitHub Repository**: https://github.com/googleapis/genai-toolbox
-- **MCP Protocol**: https://modelcontextprotocol.io/
-- **GreptimeDB Docs**: https://docs.greptime.com/
-- **OpenTelemetry Go**: https://opentelemetry.io/docs/languages/go/
+- **GenAI Toolbox Docs**: <https://googleapis.github.io/genai-toolbox/>
+- **GitHub Repository**: <https://github.com/googleapis/genai-toolbox>
+- **MCP Protocol**: <https://modelcontextprotocol.io/>
+- **GreptimeDB Docs**: <https://docs.greptime.com/>
+- **OpenTelemetry Go**: <https://opentelemetry.io/docs/languages/go/>
 
 ---
 

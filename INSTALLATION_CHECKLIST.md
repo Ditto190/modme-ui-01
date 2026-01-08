@@ -7,11 +7,13 @@ Use this checklist to ensure the toolset management system is fully operational.
 ## Phase 1: Prerequisites ✅
 
 ### Node.js Dependencies
+
 - [ ] Install `ajv`: `npm install ajv --save-dev`
 - [ ] Install `ajv-formats`: `npm install ajv-formats --save-dev`
 - [ ] Verify installation: `npm list ajv ajv-formats`
 
 ### Verify Environment
+
 - [ ] Node.js 22.9.0+ installed: `node --version`
 - [ ] Python 3.12+ installed: `python --version`
 - [ ] Git repository initialized
@@ -22,6 +24,7 @@ Use this checklist to ensure the toolset management system is fully operational.
 ## Phase 2: Configuration ✅
 
 ### Review Configuration Files
+
 - [ ] Review [agent/toolsets.json](agent/toolsets.json)
   - [ ] Verify current toolsets are correct
   - [ ] Add any missing toolsets
@@ -35,6 +38,7 @@ Use this checklist to ensure the toolset management system is fully operational.
   - [ ] Confirm empty initially (or populated if migrating)
 
 ### Customize Workflows
+
 - [ ] Review [.github/workflows/toolset-update.yml](.github/workflows/toolset-update.yml)
   - [ ] Set `AUTO_COMMIT` preference (true/false)
   - [ ] Configure notification settings
@@ -60,6 +64,7 @@ Use this checklist to ensure the toolset management system is fully operational.
 ## Phase 3: Testing ✅
 
 ### Validate Current State
+
 - [ ] Run validation: `npm run validate:toolsets`
   - [ ] All checks pass (schema, naming, references)
   - [ ] No errors reported
@@ -71,6 +76,7 @@ Use this checklist to ensure the toolset management system is fully operational.
   - [ ] Check for any unexpected changes
 
 ### Test Scripts Individually
+
 - [ ] Test detection: `node scripts/toolset-management/detect-toolset-changes.js`
   - [ ] Output JSON is valid
   - [ ] new_toolsets array accurate
@@ -82,7 +88,8 @@ Use this checklist to ensure the toolset management system is fully operational.
   - [ ] Tool references verified
 
 ### Test Workflows Locally
-- [ ] Install actionlint: https://github.com/rhysd/actionlint
+
+- [ ] Install actionlint: <https://github.com/rhysd/actionlint>
 - [ ] Lint workflows: `actionlint .github/workflows/toolset-*.yml`
   - [ ] No syntax errors
   - [ ] No undefined variables
@@ -93,6 +100,7 @@ Use this checklist to ensure the toolset management system is fully operational.
 ## Phase 4: Integration ✅
 
 ### Python Agent Integration
+
 - [ ] Review [agent/INTEGRATION_EXAMPLE.py](agent/INTEGRATION_EXAMPLE.py)
 
 - [ ] Update [agent/main.py](agent/main.py):
@@ -102,15 +110,18 @@ Use this checklist to ensure the toolset management system is fully operational.
   - [ ] Test deprecation warning logging
 
 - [ ] Test Python integration:
+
   ```bash
   cd agent
   python toolset_manager.py
   ```
+
   - [ ] Toolsets load successfully
   - [ ] Aliases resolve correctly
   - [ ] Deprecation warnings log to stderr
 
 ### Verify End-to-End Flow
+
 - [ ] Make small change to agent/main.py
 - [ ] Commit and push to main
 - [ ] Check GitHub Actions:
@@ -124,7 +135,9 @@ Use this checklist to ensure the toolset management system is fully operational.
 ## Phase 5: Create Test Deprecation ✅
 
 ### Manual Deprecation Test
+
 - [ ] Create test toolsets in toolsets.json:
+
   ```json
   {
     "id": "test_old_feature",
@@ -141,6 +154,7 @@ Use this checklist to ensure the toolset management system is fully operational.
   ```
 
 - [ ] Trigger deprecation workflow:
+
   ```bash
   gh workflow run toolset-deprecate.yml \
     -f old_toolset=test_old_feature \
@@ -156,6 +170,7 @@ Use this checklist to ensure the toolset management system is fully operational.
   - [ ] Documentation updated
 
 - [ ] Test alias resolution:
+
   ```python
   from toolset_manager import resolve_toolset
   canonical = resolve_toolset("test_old_feature")
@@ -172,6 +187,7 @@ Use this checklist to ensure the toolset management system is fully operational.
 ## Phase 6: Documentation ✅
 
 ### Review Documentation
+
 - [ ] Read [docs/TOOLSET_MANAGEMENT.md](docs/TOOLSET_MANAGEMENT.md)
   - [ ] Understand architecture
   - [ ] Review workflow descriptions
@@ -188,6 +204,7 @@ Use this checklist to ensure the toolset management system is fully operational.
   - [ ] Review next steps
 
 ### Update Project Documentation
+
 - [ ] Add link to toolset docs in main README
 - [ ] Update CONTRIBUTING.md with toolset procedures
 - [ ] Add section to Project_Overview.md if applicable
@@ -197,6 +214,7 @@ Use this checklist to ensure the toolset management system is fully operational.
 ## Phase 7: Team Setup ✅
 
 ### GitHub Repository Settings
+
 - [ ] Enable GitHub Actions
 - [ ] Configure branch protection rules:
   - [ ] Require status checks (toolset-validate)
@@ -213,12 +231,14 @@ Use this checklist to ensure the toolset management system is fully operational.
   - [ ] Configure custom domain if needed
 
 ### Team Training
+
 - [ ] Share documentation with team
 - [ ] Demonstrate deprecation workflow
 - [ ] Establish review procedures
 - [ ] Define who can approve deprecations
 
 ### Establish Procedures
+
 - [ ] Document toolset naming conventions
 - [ ] Define deprecation approval process
 - [ ] Set up regular toolset audits
@@ -229,18 +249,21 @@ Use this checklist to ensure the toolset management system is fully operational.
 ## Phase 8: Ongoing Maintenance ✅
 
 ### Regular Tasks
+
 - [ ] Schedule weekly toolset reviews
 - [ ] Monitor deprecation tracking issues
 - [ ] Update migration guide examples
 - [ ] Audit unused toolsets quarterly
 
 ### Monitoring
+
 - [ ] Set up alerts for workflow failures
 - [ ] Track toolset adoption metrics
 - [ ] Monitor deprecation warning frequency
 - [ ] Review user feedback and issues
 
 ### Continuous Improvement
+
 - [ ] Collect team feedback on workflows
 - [ ] Refine validation rules as needed
 - [ ] Update documentation based on questions
@@ -250,7 +273,8 @@ Use this checklist to ensure the toolset management system is fully operational.
 
 ## 🎉 Completion Criteria
 
-### System is Production-Ready When:
+### System is Production-Ready When
+
 - [x] All Node.js dependencies installed
 - [x] All workflows lint without errors
 - [x] Validation passes for current toolsets
@@ -267,27 +291,32 @@ Use this checklist to ensure the toolset management system is fully operational.
 ### Common Issues
 
 **Issue: npm ERR! code ENOENT when running scripts**
+
 - **Solution:** Ensure you're in project root: `cd c:\Users\dylan\modme-ui-01`
 
 **Issue: Workflow fails with "permission denied"**
-- **Solution:** 
+
+- **Solution:**
   - Check Actions are enabled in repository settings
   - Verify workflows have write permissions
   - Check branch protection rules
 
 **Issue: Validation fails with "tool not found"**
+
 - **Solution:**
   - Ensure tool function exists in agent/main.py
   - Check function name matches exactly
   - Verify function has ToolContext parameter
 
 **Issue: Python import error for toolset_manager**
+
 - **Solution:**
   - Ensure toolset_manager.py is in agent/ directory
   - Check Python path includes agent directory
   - Verify no syntax errors in toolset_manager.py
 
 **Issue: Deprecation warning not showing**
+
 - **Solution:**
   - Check stderr output (warnings go to stderr, not stdout)
   - Verify alias exists in toolset_aliases.json

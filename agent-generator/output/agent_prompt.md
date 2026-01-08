@@ -10,7 +10,7 @@ You are a helpful AI assistant equipped with specific skills and tools.
     </description>
     <instructions>
       # Weather Skill
-      
+
       This skill allows the agent to retrieve current weather conditions and forecasts.
       
       ## Capabilities
@@ -28,6 +28,7 @@ You are a helpful AI assistant equipped with specific skills and tools.
 </available_skills>
 
 ## Instructions
+
 1. Review the <available_skills> to understand what you can do.
 2. If a user request matches a skill's capabilities, follow the instructions in that skill.
 3. Use the provided tools when necessary to fulfill requests.

@@ -121,6 +121,7 @@ npm test
 ```
 
 **Dependencies**:
+
 ```json
 {
   "@types/node": "^20.10.0",
@@ -129,11 +130,13 @@ npm test
 ```
 
 **Customization Points**:
+
 - `KNOWLEDGE_BASE` constant (line 35-238 in issue-context-mapper.ts)
 - Label suggestion logic (line 276-290)
 - Test cases (test-kb-mapper.js)
 
 **Benefits for Target Repo**:
+
 - Automatic issue tagging
 - Context-aware issue comments
 - File/doc linking
@@ -166,6 +169,7 @@ import { StatCard } from '@/components/registry/StatCard';
 ```
 
 **Dependencies**:
+
 ```json
 {
   "react": "^19.0.0",
@@ -175,11 +179,13 @@ import { StatCard } from '@/components/registry/StatCard';
 ```
 
 **Components Available**:
+
 - `StatCard.tsx` - Metric cards with trends
 - `DataTable.tsx` - Data grids
 - `ChartCard.tsx` - Chart wrappers
 
 **Customization**:
+
 - Styling (Tailwind/MUI classes)
 - Validation schemas (Zod)
 - Prop interfaces
@@ -213,12 +219,14 @@ node sync-docs.js
 ```
 
 **Benefits**:
+
 - Tool versioning and deprecation
 - Backward-compatible aliases
 - Automatic documentation generation
 - JSON schema validation
 
 **Workflows Included**:
+
 - `toolset-validate.yml` - Validation on PR
 - `toolset-deprecate.yml` - Deprecation workflow
 - `toolset-update.yml` - Auto-detect new tools
@@ -247,6 +255,7 @@ const zodSchema = generateZodFromJSONSchema(myJsonSchema, "MyType");
 ```
 
 **Use Cases**:
+
 - MCP tool type safety
 - API validation
 - Form validation
@@ -275,6 +284,7 @@ vim /target/project/config/tools.yaml
 ```
 
 **Format**:
+
 ```yaml
 tools:
   - name: my_tool
@@ -316,6 +326,7 @@ python scripts/ingest_chunks.py --mode persistent \
 ```
 
 **Use Cases**:
+
 - Semantic code search
 - RAG for codebase Q&A
 - Code recommendation systems
@@ -329,6 +340,7 @@ python scripts/ingest_chunks.py --mode persistent \
 **Target**: Any GitHub repo with issues
 
 **Steps**:
+
 1. Copy `scripts/knowledge-management/` directory
 2. Update `KNOWLEDGE_BASE` constant with repo-specific concepts
 3. Add workflow step to `.github/workflows/`
@@ -344,12 +356,14 @@ python scripts/ingest_chunks.py --mode persistent \
 **Target**: React app with custom state management (Redux, MobX, etc.)
 
 **Steps**:
+
 1. Copy `src/components/registry/` directory
 2. Adapt props interfaces to your state shape
 3. Remove CopilotKit-specific props if not using
 4. Use components with your state management
 
 **Example**:
+
 ```typescript
 // Original (CopilotKit)
 const { state } = useCoAgent<AgentState>({ name: "WorkbenchAgent" });
@@ -365,12 +379,14 @@ const elements = useSelector(state => state.canvas.elements);
 **Target**: MCP server project with multiple tools
 
 **Steps**:
+
 1. Copy `agent/toolsets.json` structure
 2. Define your MCP tools as toolsets
 3. Use validation scripts for CI/CD
 4. Generate documentation with sync scripts
 
 **Example Toolset**:
+
 ```json
 {
   "id": "weather_tools",
@@ -390,12 +406,14 @@ const elements = useSelector(state => state.canvas.elements);
 **Target**: TypeScript API client with runtime validation
 
 **Steps**:
+
 1. Copy `schema-crawler.ts`
 2. Generate Zod schemas from OpenAPI/JSON Schema
 3. Use in API client for request/response validation
 4. Export TypeScript types for consumers
 
 **Example**:
+
 ```typescript
 // 1. Generate schema
 const weatherSchema = generateZodFromJSONSchema(openApiSchema, "WeatherResponse");
@@ -524,12 +542,14 @@ scripts/
 **Challenge**: Large codebase with many concepts, custom CI/CD
 
 **Solution**:
+
 1. Expand `KNOWLEDGE_BASE` to 20+ concepts
 2. Create hierarchical concept structure (parent/child relationships)
 3. Integrate with existing CI/CD (Jenkins, GitLab CI, etc.)
 4. Use KB JSON output for external systems (Jira, Slack, etc.)
 
 **Customizations**:
+
 ```typescript
 // Add hierarchical concepts
 const KNOWLEDGE_BASE = {
@@ -551,12 +571,14 @@ const KNOWLEDGE_BASE = {
 **Challenge**: Need branded components with Storybook integration
 
 **Solution**:
+
 1. Copy registry components
 2. Wrap with design system theme provider
 3. Add Storybook stories
 4. Export as NPM package
 
 **Example**:
+
 ```typescript
 // packages/design-system/src/StatCard.tsx
 import { StatCard as BaseStatCard } from './registry/StatCard';
@@ -576,12 +598,14 @@ export const StatCard = (props) => (
 **Challenge**: Batch processing, scheduled updates, multiple collections
 
 **Solution**:
+
 1. Copy `ingest_chunks.py`
 2. Add batch processing logic
 3. Integrate with Airflow/Prefect
 4. Create multiple collections for different purposes
 
 **Example**:
+
 ```python
 # airflow_dag.py
 from airflow import DAG
@@ -602,12 +626,14 @@ ingest_task = PythonOperator(task_id="ingest", python_callable=ingest_code_chunk
 **Challenge**: Multiple MCP tools, versioning, backward compatibility
 
 **Solution**:
+
 1. Copy toolset management system
 2. Map MCP tools to toolsets
 3. Use aliases for deprecated tools
 4. Generate MCP-compatible JSON from toolsets
 
 **Example**:
+
 ```python
 # mcp_server.py
 from toolset_manager import initialize_toolsets, get_toolset
@@ -676,6 +702,7 @@ const KNOWLEDGE_BASE: Record<string, ConceptMapping> = {
 ## 🆘 Support
 
 For porting questions:
+
 1. Check [CODEBASE_INDEX.md](CODEBASE_INDEX.md) for component details
 2. Review component-specific README files
 3. See [docs/](docs/) for architecture documentation
@@ -688,6 +715,7 @@ For porting questions:
 All portable components maintain original project license (see [LICENSE](LICENSE)).
 
 When porting:
+
 - ✅ Copy license file
 - ✅ Preserve copyright notices
 - ✅ Attribute original authors

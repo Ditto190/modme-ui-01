@@ -12,13 +12,11 @@
 
 Manage canvas UI elements (StatCards, DataTables, ChartCards)
 
-
 ## Tools
 
 - `upsert_ui_element`
 - `remove_ui_element`
 - `clear_canvas`
-
 
 ## Related Toolsets
 

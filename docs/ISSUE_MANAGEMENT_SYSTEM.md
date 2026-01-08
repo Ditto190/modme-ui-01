@@ -14,12 +14,14 @@ Successfully implemented a comprehensive, project-specific issue management syst
 ### 1. Issue Templates (`.github/ISSUE_TEMPLATE/`)
 
 #### **Bug Report Template** (`bug-report.yml`)
+
 - **Component-specific dropdowns**: Python Agent, React Frontend, State Sync, Component Registry, Theme System, Toolset Management
 - **Runtime environment selection**: Agent (8000), UI (3000), Both, CI/CD
 - **Structured sections**: Description, Reproduction Steps, Expected/Actual Behavior, Logs, Environment
 - **Pre-submission checklist**: Search duplicates, reproduction steps, error logs
 
 #### **Feature Request Template** (`feature-request.yml`)
+
 - **Category selection**: New Component, Agent Tool, UI/UX, State Management, Performance, Security, Documentation
 - **Affected layer tracking**: Maps to architecture (Agent, Frontend, Registry, State Contract, etc.)
 - **Detailed proposal structure**: Problem statement, solution, alternatives, use cases
@@ -27,6 +29,7 @@ Successfully implemented a comprehensive, project-specific issue management syst
 - **Acceptance criteria**: Implementation-ready definitions
 
 #### **Toolset Management Template** (`toolset-management.yml`)
+
 - **Issue type selection**: New Registration, Deprecation, Metadata Update, Validation, Alias Resolution
 - **Toolset identification**: Required toolset ID field
 - **Deprecation workflow**: Breaking changes, migration path, grace period (180 days)
@@ -34,11 +37,13 @@ Successfully implemented a comprehensive, project-specific issue management syst
 - **Related files checklist**: Tracks toolsets.json, aliases, docs, agent code
 
 #### **Question Template** (`question.yml`)
+
 - **Category-based organization**: Getting Started, Architecture, Python/React Development, Testing, Contributing
 - **Pre-submission guidance**: Links to README, docs, discussions
 - **Code snippet support**: Optional code sharing
 
 #### **Configuration** (`config.yml`)
+
 - **Blank issues disabled**: Forces template usage
 - **Contact links**: Discussions, Documentation, Toolset Management Guide
 
@@ -49,6 +54,7 @@ Successfully implemented a comprehensive, project-specific issue management syst
 #### **Label Detection Logic**
 
 **Component Labels** (auto-applied from bug reports/features):
+
 - `agent` - Python agent backend
 - `frontend` - React UI
 - `state-sync` - State synchronization
@@ -60,12 +66,14 @@ Successfully implemented a comprehensive, project-specific issue management syst
 - `build-system` - npm/uv/Docker
 
 **Priority Labels** (from feature requests):
+
 - `priority:critical` - Blocking
 - `priority:high` - Significant impact
 - `priority:medium` - Nice to have
 - `priority:low` - Future enhancement
 
 **Toolset-Specific Labels**:
+
 - `toolset:new` - New toolset registration
 - `toolset:deprecation` - Deprecation request
 - `toolset:validation` - Validation failure
@@ -73,6 +81,7 @@ Successfully implemented a comprehensive, project-specific issue management syst
 - `toolset:migration` - Migration guide issue
 
 **Status Labels**:
+
 - `status:triage` - Replaces `needs-triage`
 - `status:needs-info` - More info required
 - `status:in-progress` - Active work
@@ -87,6 +96,7 @@ Successfully implemented a comprehensive, project-specific issue management syst
 5. **GitHub Script integration**: Uses `actions/github-script@v7` for dynamic parsing
 
 **Example Auto-Response for Toolset Issues**:
+
 ```markdown
 👋 Thanks for reporting a toolset-related issue!
 
@@ -108,6 +118,7 @@ Successfully implemented a comprehensive, project-specific issue management syst
 Updated configuration to match ModMe GenUI architecture:
 
 **File Path Patterns**:
+
 ```yaml
 agent:
   - 'agent/**/*.py'
@@ -134,6 +145,7 @@ documentation:
 ```
 
 **Benefits**:
+
 - PRs auto-labeled based on changed files
 - Consistent labeling between issues and PRs
 - Easy filtering by component/layer
@@ -143,6 +155,7 @@ documentation:
 ### 4. Contributor Documentation (`CONTRIBUTING.md`)
 
 **Enhanced with**:
+
 - **Issue template guide**: When to use each template
 - **Label reference**: Complete label taxonomy
 - **Issue lifecycle**: 7-step process from opened → resolved
@@ -151,6 +164,7 @@ documentation:
 - **Key documentation links**: Quick access to guides
 
 **Structure**:
+
 1. Issue Templates & Reporting
 2. Automatic Labeling
 3. Issue Lifecycle
@@ -168,16 +182,19 @@ documentation:
 ### Dual-Runtime Architecture Support
 
 **Python Agent (localhost:8000)**:
+
 - Bug reports include agent-specific fields
 - Logs section references terminal output
 - Health endpoint checks mentioned
 
 **React UI (localhost:3000)**:
+
 - Frontend-specific component tracking
 - Browser console log instructions
 - React DevTools integration
 
 **State Synchronization**:
+
 - Dedicated state-sync label
 - One-way data flow awareness (Python → React)
 - `tool_context.state` references
@@ -187,12 +204,14 @@ documentation:
 Seamlessly integrated with existing toolset management system:
 
 **Workflows Connected**:
+
 1. **Issue opened** → `issue-labeler.yml` applies labels
 2. **Validation requested** → `toolset-validate.yml` runs checks
 3. **Deprecation approved** → `toolset-deprecate.yml` executes workflow
 4. **Documentation updated** → `toolset-docs.yml` regenerates
 
 **Developer Commands**:
+
 ```bash
 npm run validate:toolsets    # Before opening issue
 npm run detect:changes       # Find new toolsets
@@ -205,6 +224,7 @@ npm run docs:all             # Sync documentation
 ## 📊 Benefits vs Original Configuration
 
 ### ❌ Original Policy Config (Rejected)
+
 ```yaml
 policy:
   - template: ['bug-report.yml', 'feature-request.yml', 'question.yml']
@@ -216,6 +236,7 @@ policy:
 ```
 
 **Problems**:
+
 - Generic version-based labeling (v2, v3, v4)
 - Doesn't match ModMe architecture
 - No component/layer awareness
@@ -225,6 +246,7 @@ policy:
 ### ✅ Custom Implementation (Implemented)
 
 **Advantages**:
+
 1. **Architecture-aware**: Understands Python Agent + React UI
 2. **Component-specific**: Maps to actual codebase structure
 3. **Toolset-integrated**: GitHub MCP-style lifecycle automation
@@ -240,17 +262,20 @@ policy:
 ### Example 1: Bug Report - Component Not Rendering
 
 **User fills template**:
+
 - Component: `⚛️ React Frontend`
 - Runtime: `React UI (localhost:3000)`
 - Description: "ChartCard doesn't render"
 
 **Auto-applied labels**:
+
 - `bug`
 - `frontend`
 - `component-registry`
 - `status:triage`
 
 **Maintainer sees**:
+
 - Clear component identification
 - Environment details
 - Reproduction steps
@@ -261,17 +286,20 @@ policy:
 ### Example 2: Feature Request - New Component
 
 **User fills template**:
+
 - Category: `📦 New Component (Registry)`
 - Component: `📦 Component Registry`
 - Priority: `🟠 High - Significant improvement`
 
 **Auto-applied labels**:
+
 - `enhancement`
 - `component-registry`
 - `priority:high`
 - `status:triage`
 
 **Maintainer sees**:
+
 - Problem statement
 - Proposed solution with code examples
 - Use cases
@@ -282,15 +310,18 @@ policy:
 ### Example 3: Toolset Deprecation
 
 **User fills template**:
+
 - Issue Type: `⚠️ Toolset Deprecation Request`
 - Toolset ID: `old_ui_elements`
 
 **Auto-applied labels**:
+
 - `toolset`
 - `toolset:deprecation`
 - `status:triage`
 
 **Auto-response posted**:
+
 ```markdown
 👋 Thanks for reporting a toolset-related issue!
 
@@ -303,6 +334,7 @@ policy:
 ```
 
 **Maintainer workflow**:
+
 1. Review 180-day grace period
 2. Create alias mapping
 3. Generate migration guide
@@ -315,6 +347,7 @@ policy:
 ### Adding New Labels
 
 **In `issue-labeler.yml`**:
+
 ```javascript
 const newLabelPatterns = {
   'new-label': /Pattern to match/i
@@ -328,6 +361,7 @@ for (const [label, pattern] of Object.entries(newLabelPatterns)) {
 ```
 
 **In `labeler.yml` (for PRs)**:
+
 ```yaml
 new-label:
   - 'path/to/files/**/*'
@@ -345,6 +379,7 @@ new-label:
 ### Modifying Auto-Responses
 
 **In `issue-labeler.yml` → "Add comment" step**:
+
 ```javascript
 const body = `
 👋 Custom message here
@@ -364,18 +399,21 @@ const body = `
 ### Recommended Tracking
 
 **GitHub Insights**:
+
 - Issues by label (see component distribution)
 - Time to triage (measure 48-hour SLA)
 - Issues closed without PR (identify duplicates)
 - Label usage trends
 
 **Toolset-Specific**:
+
 - Deprecation requests per quarter
 - Validation failure rate
 - Alias resolution issues
 - Migration completion time
 
 **Quality Metrics**:
+
 - Template usage rate (vs blank issues)
 - Duplicate issue rate
 - Time to first response
@@ -396,6 +434,7 @@ const body = `
 ### Responding to Issues
 
 **Bug Reports**:
+
 ```markdown
 Thanks for the detailed report! I've reproduced this locally.
 
@@ -409,6 +448,7 @@ Tracking in #123
 ```
 
 **Feature Requests**:
+
 ```markdown
 Great idea! This aligns with our GenUI roadmap.
 
@@ -426,6 +466,7 @@ Adding to roadmap for Q2 2026.
 ```
 
 **Toolset Issues**:
+
 ```markdown
 Confirmed validation failure. Running diagnostics:
 
@@ -484,9 +525,11 @@ Should be resolved within 24 hours.
 1. **Merge to main**: All files committed
 2. **Enable workflows**: Ensure Actions enabled in repo settings
 3. **Create labels**: Manually create labels in repo (one-time setup)
+
    ```
    Settings → Labels → New Label
    ```
+
    - `agent`, `frontend`, `state-sync`, `component-registry`, etc.
    - `priority:critical`, `priority:high`, `priority:medium`, `priority:low`
    - `status:triage`, `status:needs-info`, `status:in-progress`, `status:blocked`

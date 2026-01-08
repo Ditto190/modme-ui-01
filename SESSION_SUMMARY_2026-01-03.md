@@ -5,25 +5,28 @@
 **Default Branch**: feature/genui-workbench-refactor
 
 ---policy:
-  - template: ['bug-report.yml', 'feature-request.yml', 'question.yml']
+
+- template: ['bug-report.yml', 'feature-request.yml', 'question.yml']
     section:
-      - id: ['package']
+  - id: ['package']
         block-list: []
         label:
-          - name: 'v4'
+    - name: 'v4'
             keys: ['v4.x']
-          - name: 'v3'
+    - name: 'v3'
             keys: ['v3.x']
-          - name: 'v2'
+    - name: 'v2'
             keys: ['v2.x']
 
 ## 📋 Deliverables Created
 
 ### 1. Refactoring Patterns Documentation
+
 **File**: `docs/REFACTORING_PATTERNS.md` (520+ lines)  
 **Status**: ✅ Complete
 
 **Contents**:
+
 - 13 comprehensive refactoring patterns for Python + TypeScript GenUI stack
 - **Python Backend Patterns**:
   - Pattern 1: Type-safe tool functions with validation
@@ -47,6 +50,7 @@
   - ❌ Async tool functions without await
 
 **Key Features**:
+
 - Every pattern has ✅ GOOD and ❌ BAD examples
 - Refactoring checklists for each pattern
 - Real code examples from the project
@@ -55,10 +59,12 @@
 ---
 
 ### 2. Schema Crawler Tool Documentation
+
 **File**: `agent-generator/SCHEMA_CRAWLER_README.md` (540+ lines)  
 **Status**: ✅ Complete
 
 **Contents**:
+
 - Complete guide to `schema-crawler.ts` tool
 - **What it does**: Automates JSON Schema → Zod validation + TypeScript types
 - **Core Functions**:
@@ -81,6 +87,7 @@
   - Refactoring safety
 
 **Key Features**:
+
 - Step-by-step usage examples
 - Type mapping reference table
 - Comparison with alternative tools
@@ -90,10 +97,12 @@
 ---
 
 ### 3. Updated AI Agent Instructions
+
 **File**: `.github/copilot-instructions.md`  
 **Status**: ✅ Updated
 
 **Changes**:
+
 - Added reference to `docs/REFACTORING_PATTERNS.md`
 - Added reference to `agent-generator/SCHEMA_CRAWLER_README.md`
 - Both now in "External Documentation" section
@@ -103,10 +112,12 @@
 ## 📦 MCP Collections Loaded
 
 ### 1. frontend-web-dev Collection
+
 **Source**: awesome-copilot MCP  
 **Date Loaded**: January 3, 2026
 
 **Contents**:
+
 - **Agents**:
   - Expert React Frontend Engineer
   - Electron Angular Native
@@ -127,10 +138,12 @@
 ---
 
 ### 2. python-mcp-development Collection
+
 **Source**: awesome-copilot MCP  
 **Date Loaded**: January 3, 2026
 
 **Contents**:
+
 - **Instructions**:
   - `python-mcp-server.instructions.md` - Comprehensive FastMCP best practices
 - **Key Topics**:
@@ -152,10 +165,12 @@
 ---
 
 ### 3. testing-automation Collection
+
 **Source**: awesome-copilot MCP  
 **Date Loaded**: January 3, 2026
 
 **Contents**:
+
 - **Agents**:
   - TDD Red (write failing tests)
   - TDD Green (make tests pass)
@@ -177,9 +192,11 @@
 ## 🏗️ Architecture Patterns Documented
 
 ### 1. Dual-Runtime Architecture
+
 **Description**: Python ADK agent + React Next.js frontend with one-way state sync
 
 **Key Components**:
+
 - **Python Agent** (localhost:8000):
   - Google ADK + FastMCP
   - Model: gemini-2.5-flash
@@ -195,15 +212,18 @@
   - React reads via useCoAgent (read-only)
 
 **Documented In**:
+
 - `.github/copilot-instructions.md` - Architecture Overview section
 - `docs/REFACTORING_PATTERNS.md` - Architecture Overview section
 
 ---
 
 ### 2. State Contract Pattern
+
 **Description**: Synchronized type definitions across Python and TypeScript
 
 **Python Side** (`agent/main.py`):
+
 ```python
 tool_context.state["elements"] = [
     {"id": "revenue", "type": "StatCard", "props": {"title": "MRR", "value": 120000}},
@@ -212,6 +232,7 @@ tool_context.state["elements"] = [
 ```
 
 **TypeScript Side** (`src/lib/types.ts`):
+
 ```typescript
 export type AgentState = {
   elements: UIElement[];
@@ -225,20 +246,24 @@ export type UIElement = {
 ```
 
 **Critical Rules**:
+
 - Keys must match exactly (Python "id" = TypeScript "id")
 - Props must be JSON-serializable (no functions, no circular refs)
 - One-way flow: Python writes, React reads
 
 **Documented In**:
+
 - `docs/REFACTORING_PATTERNS.md` - Pattern 7 (State Contract Refactoring)
 - `.github/copilot-instructions.md` - State Contract section
 
 ---
 
 ### 3. Component Registry Pattern
+
 **Description**: Safe UI rendering via curated component vocabulary
 
 **Components**:
+
 - **StatCard** (`src/components/registry/StatCard.tsx`)
   - Props: title, value, trend, trendDirection
   - Use: Metric cards, KPI displays
@@ -256,6 +281,7 @@ export type UIElement = {
 **Fallback**: Unknown types render error UI with debugging info
 
 **Documented In**:
+
 - `docs/REFACTORING_PATTERNS.md` - Pattern 5 (Component Registry) and Pattern 8 (Prop Validation)
 - `.github/copilot-instructions.md` - Component Registry Conventions section
 
@@ -264,11 +290,13 @@ export type UIElement = {
 ## 🔧 Tools & Scripts
 
 ### schema-crawler.ts
+
 **Location**: `agent-generator/src/mcp-registry/schema-crawler.ts` (354 lines)
 
 **Purpose**: Transform MCP tool JSON Schemas into Zod validation + TypeScript types
 
 **Functions**:
+
 1. `generateZodFromJSONSchema(jsonSchema, schemaName)` → { zodCode, typeDefinition, validatorCode }
 2. `generateZodModule(toolName, inputSchema, outputSchema)` → Complete TypeScript module
 3. `generateZodModulesBatch(tools)` → Map<toolName, moduleCode>
@@ -276,11 +304,13 @@ export type UIElement = {
 5. `generateBarrelExport(toolNames)` → Barrel export file
 
 **Supports**:
+
 - Types: string, number, integer, boolean, array, object, null
 - Constraints: minLength, maxLength, pattern, minimum, maximum, enum
 - Nested structures
 
 **Limitations**:
+
 - Limited $ref support
 - No oneOf/anyOf/allOf (manual workaround needed)
 
@@ -301,6 +331,7 @@ export type UIElement = {
 ## 🎯 Key Takeaways
 
 ### For AI Agents
+
 - All refactoring patterns now documented with examples and checklists
 - Schema validation workflow documented end-to-end
 - Architecture constraints clearly explained (one-way state flow)
@@ -308,6 +339,7 @@ export type UIElement = {
 - Testing patterns included for Python and TypeScript
 
 ### For Developers
+
 - Practical refactoring guides with ✅ GOOD vs ❌ BAD examples
 - Automated schema validation reduces manual TypeScript type writing
 - MCP collection standards integrated into project patterns
@@ -315,6 +347,7 @@ export type UIElement = {
 - Performance patterns documented (selective memoization)
 
 ### For Code Quality
+
 - Type safety enforced across Python ↔ TypeScript boundary
 - Runtime validation prevents bad data from reaching components
 - Anti-patterns documented to avoid common mistakes
@@ -326,6 +359,7 @@ export type UIElement = {
 ## 🔗 Cross-References
 
 ### Documentation Links
+
 - **Main Guide**: `.github/copilot-instructions.md`
 - **Refactoring**: `docs/REFACTORING_PATTERNS.md`
 - **Schema Tool**: `agent-generator/SCHEMA_CRAWLER_README.md`
@@ -333,6 +367,7 @@ export type UIElement = {
 - **Toolsets**: `docs/TOOLSET_MANAGEMENT.md`
 
 ### Code Locations
+
 - **Python Agent**: `agent/main.py`
 - **State Contract**: `src/lib/types.ts`
 - **Component Registry**: `src/components/registry/*.tsx`
@@ -345,16 +380,19 @@ export type UIElement = {
 ## 📝 Next Steps Recommendations
 
 ### Immediate
+
 1. Review refactoring patterns and apply to existing code
 2. Experiment with schema-crawler on MCP tool schemas
 3. Update existing components to use Zod validation
 
 ### Short-Term
+
 1. Generate schema files for all existing tools
 2. Add integration tests for agent tools (Pattern 10)
 3. Add component tests (Pattern 11)
 
 ### Long-Term
+
 1. Create automated refactoring scripts
 2. Set up CI/CD validation for schema contracts
 3. Implement security scanning based on Pattern 13

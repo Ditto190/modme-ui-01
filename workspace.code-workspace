@@ -143,6 +143,42 @@
         "skipFiles": ["<node_internals>/**"],
         "console": "integratedTerminal"
       },
+      /*
+      kubectl config load error — quick reference
+
+      Error:
+        Kubectl command failed: error loading config file "c:\Users\dylan\.claude-worktrees\modme-ui-01\relaxed-hugle\workspace.code-workspace":
+        json: cannot unmarshal object into Go struct field Config.extensions of type []v1.NamedExtension
+
+      Cause:
+        kubectl attempted to read a file that is not a kubeconfig (VS Code workspace JSON). The file contains an "extensions" object, but kubeconfig expects "extensions" to be an array ([]v1.NamedExtension). This usually happens when the workspace file was accidentally included in KUBECONFIG or passed as --kubeconfig.
+
+      Steps to diagnose:
+        - Check KUBECONFIG environment variable:
+            PowerShell:  $env:KUBECONFIG
+            CMD:         echo %KUBECONFIG%
+            Bash/WSL:    echo $KUBECONFIG
+        - If KUBECONFIG is empty, kubectl uses the default:
+            Windows: %USERPROFILE%\.kube\config
+            Unix:    ~/.kube/config
+        - See what kubectl is reading:
+            kubectl config view --raw
+            kubectl config view --kubeconfig "path\to\candidate-file"
+        - Test a specific file:
+            kubectl --kubeconfig "c:\path\to\file" config view
+
+      Fixes:
+        - Remove the VS Code workspace file from KUBECONFIG or from any kubeconfig list (split/clean the KUBECONFIG value).
+        - Move/rename workspace.code-workspace so it is not treated as a kubeconfig.
+        - If a real kubeconfig file has an "extensions" key with an object value, edit it to be an array of NamedExtension entries or remove the invalid key.
+        - Revalidate after fixes:
+            kubectl --kubeconfig "C:\Users\<you>\.kube\config" config view
+            kubectl version --short
+
+      Notes:
+        - VS Code .code-workspace files are JSON but are not kubeconfigs; do not include them in KUBECONFIG.
+        - Use the --kubeconfig flag to force kubectl to use a known-good file while troubleshooting.
+      */
       {
         "name": "🤖 Python: Debug Agent",
         "type": "python",

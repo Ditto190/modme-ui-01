@@ -72,6 +72,7 @@ console.log(result.validatorCode);
 ```
 
 **Returns**: `ZodSchemaOutput` with:
+
 - `zodCode`: Raw Zod schema as string
 - `typeDefinition`: TypeScript interface
 - `validatorCode`: Validation functions
@@ -647,6 +648,7 @@ const extendedSchema = getWeatherInputSchema.extend({
 | **ts-json-schema-generator** | ✅ Full | ✅ Full | ❌ None | High |
 
 **Why schema-crawler?**
+
 - Optimized for MCP tool schemas
 - Generates both types AND runtime validators
 - Simple API, minimal dependencies
@@ -707,9 +709,9 @@ pattern: "^[A-Z]"    →  z.string().regex(/^[A-Z]/) →  string
 
 ## Related Resources
 
-- **Zod Documentation**: https://zod.dev/
-- **JSON Schema Spec**: https://json-schema.org/
-- **MCP Protocol**: https://modelcontextprotocol.io/
+- **Zod Documentation**: <https://zod.dev/>
+- **JSON Schema Spec**: <https://json-schema.org/>
+- **MCP Protocol**: <https://modelcontextprotocol.io/>
 - **ModMe GenUI Docs**: [../docs/](../docs/)
 
 ---

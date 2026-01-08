@@ -85,11 +85,13 @@ Add to your user `mcp.json`:
 Use the provided starter scripts in `.copilot/mcp-servers/`:
 
 **PowerShell** (Windows):
+
 ```powershell
 pwsh -NoProfile -ExecutionPolicy Bypass -File .copilot\mcp-servers\start-everything.ps1
 ```
 
 **Bash** (Linux/macOS):
+
 ```bash
 bash .copilot/mcp-servers/start-everything.sh
 ```
@@ -230,11 +232,11 @@ Use the everything server as a template to build custom MCP servers for this pro
 
 ## References
 
-- **Official README**: https://github.com/modelcontextprotocol/servers/blob/main/src/everything/README.md
-- **Architecture**: https://github.com/modelcontextprotocol/servers/blob/main/src/everything/docs/architecture.md
-- **Features**: https://github.com/modelcontextprotocol/servers/blob/main/src/everything/docs/features.md
-- **MCP Specification**: https://modelcontextprotocol.io
-- **TypeScript MCP SDK**: https://github.com/modelcontextprotocol/typescript-sdk
+- **Official README**: <https://github.com/modelcontextprotocol/servers/blob/main/src/everything/README.md>
+- **Architecture**: <https://github.com/modelcontextprotocol/servers/blob/main/src/everything/docs/architecture.md>
+- **Features**: <https://github.com/modelcontextprotocol/servers/blob/main/src/everything/docs/features.md>
+- **MCP Specification**: <https://modelcontextprotocol.io>
+- **TypeScript MCP SDK**: <https://github.com/modelcontextprotocol/typescript-sdk>
 
 ## Next Steps
 

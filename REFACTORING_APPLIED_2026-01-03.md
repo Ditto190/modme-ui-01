@@ -13,11 +13,13 @@ Applied 13 refactoring patterns from `docs/REFACTORING_PATTERNS.md` to improve c
 #### ✅ Pattern 1: Type-Safe Tool Functions with Validation
 
 **Added validation constants:**
+
 ```python
 ALLOWED_TYPES = {"StatCard", "DataTable", "ChartCard"}
 ```
 
 **Enhanced `upsert_ui_element` function:**
+
 - ✅ Input validation for `id`, `type`, and `props`
 - ✅ Type checking for all parameters
 - ✅ Whitelist validation for component types
@@ -26,6 +28,7 @@ ALLOWED_TYPES = {"StatCard", "DataTable", "ChartCard"}
 - ✅ Better docstring with Args/Returns documentation
 
 **Before:**
+
 ```python
 def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict[str, Any]) -> Dict[str, str]:
     elements = tool_context.state.get("elements", [])
@@ -35,6 +38,7 @@ def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict
 ```
 
 **After:**
+
 ```python
 def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict[str, Any]) -> Dict[str, str]:
     # Validate inputs
@@ -51,6 +55,7 @@ def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict
 ```
 
 **Enhanced `remove_ui_element` function:**
+
 - ✅ Input validation for `id`
 - ✅ Check if element was actually removed
 - ✅ Return warning status if element not found
@@ -59,6 +64,7 @@ def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict
 #### ✅ Pattern 3: Comprehensive Health Endpoints
 
 **Added imports:**
+
 ```python
 from datetime import datetime
 from fastapi import FastAPI, status
@@ -66,12 +72,14 @@ from fastapi.responses import JSONResponse
 ```
 
 **Enhanced `/health` endpoint:**
+
 - ✅ Liveness probe with comprehensive metadata
 - ✅ Proper HTTP status codes (200 OK)
 - ✅ UTC timestamp for monitoring
 - ✅ Model information included
 
 **Before:**
+
 ```python
 @app.get("/health")
 async def health_check():
@@ -83,6 +91,7 @@ async def health_check():
 ```
 
 **After:**
+
 ```python
 @app.get("/health")
 async def health_check():
@@ -99,6 +108,7 @@ async def health_check():
 ```
 
 **Enhanced `/ready` endpoint:**
+
 - ✅ Readiness probe with dependency checks
 - ✅ Returns 503 SERVICE_UNAVAILABLE if not ready
 - ✅ Returns 200 OK if all dependencies loaded
@@ -134,6 +144,7 @@ async def health_check():
 **Example transformation:**
 
 **Before:**
+
 ```typescript
 interface StatCardProps {
     title: string;
@@ -149,6 +160,7 @@ export const StatCard: React.FC<StatCardProps> = ({ title, value, trend, trendDi
 ```
 
 **After:**
+
 ```typescript
 const StatCardPropsSchema = z.object({
     title: z.string().min(1, "Title is required"),
@@ -182,6 +194,7 @@ export const StatCard: React.FC<StatCardProps> = (rawProps) => {
 #### ✅ Pattern 6: Frontend Tool Validation
 
 **Enhanced `setThemeColor` tool in page.tsx:**
+
 - ✅ Added Zod schema for hex color validation
 - ✅ Regex pattern `/^#[0-9A-Fa-f]{6}$/` for hex colors
 - ✅ Try-catch error handling
@@ -189,6 +202,7 @@ export const StatCard: React.FC<StatCardProps> = (rawProps) => {
 - ✅ State update only on successful validation
 
 **Before:**
+
 ```typescript
 useFrontendTool({
     name: "setThemeColor",
@@ -200,6 +214,7 @@ useFrontendTool({
 ```
 
 **After:**
+
 ```typescript
 const ThemeColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color format");
 
@@ -222,6 +237,7 @@ useFrontendTool({
 #### ✅ Pattern 5: Component Registry with Error Handling
 
 **Enhanced `renderElement` function:**
+
 - ✅ Console logging for unknown component types
 - ✅ Improved error UI with:
   - Clear error message
@@ -230,6 +246,7 @@ useFrontendTool({
   - Better styling with Tailwind classes
 
 **Before:**
+
 ```typescript
 default:
     return (
@@ -240,6 +257,7 @@ default:
 ```
 
 **After:**
+
 ```typescript
 default:
     console.error(`Unknown component type: ${el.type}`, el);
@@ -260,11 +278,13 @@ default:
 #### ✅ Pattern 4: Type-Safe State Consumption
 
 **Enhanced `YourMainContent` component:**
+
 - ✅ Safe state access with optional chaining (`state?.elements`)
 - ✅ Fallback to empty array with `|| []`
 - ✅ Improved empty state message (split into two lines)
 
 **Before:**
+
 ```typescript
 const { state } = useCoAgent<AgentState>({ name: "WorkbenchAgent", initialState: { elements: [] } });
 
@@ -276,6 +296,7 @@ const { state } = useCoAgent<AgentState>({ name: "WorkbenchAgent", initialState:
 ```
 
 **After:**
+
 ```typescript
 const { state } = useCoAgent<AgentState>({ name: "WorkbenchAgent", initialState: { elements: [] } });
 
@@ -311,18 +332,21 @@ const elements = state?.elements || [];
 ## Benefits Achieved
 
 ### 🛡️ Type Safety
+
 - ✅ Runtime validation prevents invalid data from reaching components
 - ✅ Zod schemas enforce prop contracts
 - ✅ Python tool validation prevents bad state mutations
 - ✅ Type inference from Zod schemas ensures TypeScript correctness
 
 ### 🐛 Error Handling
+
 - ✅ Clear, actionable error messages in both Python and TypeScript
 - ✅ Fallback UIs prevent blank screens on errors
 - ✅ Console logging for debugging
 - ✅ Structured error responses with status codes
 
 ### 📊 Monitoring & Observability
+
 - ✅ Health endpoints return comprehensive metadata
 - ✅ Timestamps for monitoring
 - ✅ Proper HTTP status codes (200 OK, 503 SERVICE_UNAVAILABLE)
@@ -330,12 +354,14 @@ const elements = state?.elements || [];
 - ✅ Element counts in tool responses
 
 ### 🎯 User Experience
+
 - ✅ Better empty states with clear instructions
 - ✅ Visual validation error feedback
 - ✅ Formatted numbers with commas (e.g., 120,000 instead of 120000)
 - ✅ Expandable debug info for unknown components
 
 ### 🔐 Security
+
 - ✅ Input validation on all tool parameters
 - ✅ Type whitelisting (ALLOWED_TYPES)
 - ✅ Regex validation for colors (prevents injection)
@@ -438,17 +464,20 @@ describe("StatCard", () => {
 ## Next Steps
 
 ### Immediate
+
 1. ✅ Run `npm install` to ensure Zod is available (likely already installed)
 2. ✅ Test the application: `npm run dev` + agent server
 3. ✅ Verify health endpoints: `curl http://localhost:8000/health` and `curl http://localhost:8000/ready`
 
 ### Short-Term
+
 1. **Add unit tests** for all tool functions (Python) and components (React)
 2. **Generate Zod schemas** for tool input/output using `schema-crawler.ts`
 3. **Add integration tests** for the full agent → UI workflow
 4. **Document validation errors** in a troubleshooting guide
 
 ### Long-Term
+
 1. **Apply Pattern 13 (Input Sanitization)** - Add HTML escaping for string props
 2. **Apply Pattern 12 (Memoization)** - Optimize component rendering for large datasets
 3. **Create CI/CD validation** - Run Zod validation tests in GitHub Actions
@@ -469,11 +498,13 @@ describe("StatCard", () => {
 ## Validation Status
 
 ✅ **All files compile without errors**
+
 - Python: No lint errors
 - TypeScript: No type errors
 - React: No JSX errors
 
 ✅ **Patterns Applied:**
+
 - Pattern 1: Type-Safe Tool Functions ✅
 - Pattern 3: Comprehensive Health Endpoints ✅
 - Pattern 4: Type-Safe State Consumption ✅
@@ -482,6 +513,7 @@ describe("StatCard", () => {
 - Pattern 8: Component Prop Validation ✅
 
 ✅ **Code Quality Improvements:**
+
 - Input validation: 100% coverage on tools and frontend actions
 - Error handling: All components have fallback UI
 - Type safety: Runtime validation with Zod

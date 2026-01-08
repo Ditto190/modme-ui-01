@@ -246,10 +246,12 @@ When adding new large directories:
 
 1. Run token audit to identify new heavy contributors
 2. Add to `.gitlensignore`:
+
    ```gitignore
    # New large directory
    new-feature-output/
    ```
+
 3. Restart VS Code
 
 ## Troubleshooting
@@ -292,8 +294,8 @@ python -m pip install tiktoken
 
 ## Related Documentation
 
-- **GitLens Documentation**: https://gitlens.amod.io/
-- **GitKraken AI**: https://www.gitkraken.com/ai
+- **GitLens Documentation**: <https://gitlens.amod.io/>
+- **GitKraken AI**: <https://www.gitkraken.com/ai>
 - **OpenTelemetry Tracing**: Use for monitoring AI tool token usage
 - **AI Toolkit Best Practices**: [../.aitk/instructions/tools.instructions.md](../.aitk/instructions/tools.instructions.md)
 

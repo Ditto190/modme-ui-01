@@ -74,6 +74,7 @@ agent/toolsets.json              # Source of truth (validated JSON)
 ```
 
 **Advantages**:
+
 - Validated against JSON Schema ([agent/toolset-schema.json](../agent/toolset-schema.json))
 - Lightweight (12KB vs 45KB markdown)
 - Machine-readable for programmatic access
@@ -106,6 +107,7 @@ Tools for manipulating UI elements on the canvas.
 ```
 
 **Advantages**:
+
 - Easy to read and edit in GitHub
 - Works with standard markdown tools
 - Can be converted back to JSON automatically
@@ -201,6 +203,7 @@ npm run search:toolset "theme"
 ### Search Patterns
 
 Searches the following directories:
+
 - `agent/**/*.py` (Python agent code)
 - `src/**/*.{ts,tsx}` (TypeScript/React frontend)
 - `scripts/**/*.js` (JavaScript scripts)
@@ -212,6 +215,7 @@ rg --json --glob '*.py' "upsert_ui_element" agent/ | jq -r 'select(.type=="match
 ```
 
 Output:
+
 ```json
 {
   "type": "match",
@@ -309,11 +313,13 @@ The script also prints toolset statistics:
 **File**: `.github/workflows/sync-docs.yml`
 
 **Triggers**:
+
 - Push to `docs/toolsets/**/*.md` → Sync markdown → JSON
 - Push to `agent/toolsets.json` → Sync JSON → markdown
 - Manual dispatch (workflow_dispatch)
 
 **Jobs**:
+
 1. **Validate**: Run Ajv validation on both formats
 2. **Sync MD → JSON**: Convert markdown to JSON (if markdown changed)
 3. **Sync JSON → MD**: Convert JSON to markdown (if JSON changed)
@@ -326,10 +332,12 @@ The script also prints toolset statistics:
 **File**: `.github/workflows/toolset-docs-incremental.yml`
 
 **Triggers**:
+
 - Pull requests modifying `agent/**/*.py`, `src/**/*.{ts,tsx}`, `scripts/**/*.{js,sh}`
 - Manual dispatch
 
 **Jobs**:
+
 1. **Detect Changes**: Use ripgrep to find modified toolsets
 2. **Generate Docs**: Regenerate only affected toolsets
 3. **Validate Docs**: Run schema validation
@@ -346,6 +354,7 @@ The script also prints toolset statistics:
 **File**: `.vscode/tasks.json`
 
 Available tasks:
+
 1. **Search Toolsets** - Interactive ripgrep search
 2. **Validate Toolsets** - Run Ajv validation
 3. **Generate Documentation** - Full sync + diagram
@@ -358,23 +367,27 @@ Available tasks:
 #### Adding a New Toolset
 
 1. **Edit JSON**:
+
    ```bash
    code agent/toolsets.json
    # Add new toolset entry
    ```
 
 2. **Generate Documentation**:
+
    ```bash
    npm run docs:json-to-md
    ```
 
 3. **View Diagram**:
+
    ```bash
    npm run docs:diagram:svg
    # Open docs/toolsets/toolset-relationships.svg
    ```
 
 4. **Commit**:
+
    ```bash
    git add agent/toolsets.json docs/toolsets/
    git commit -m "feat: add new_toolset"
@@ -384,22 +397,26 @@ Available tasks:
 #### Editing Markdown Documentation
 
 1. **Edit Markdown**:
+
    ```bash
    code docs/toolsets/ui_elements.md
    # Make changes
    ```
 
 2. **Sync to JSON**:
+
    ```bash
    npm run docs:md-to-json
    ```
 
 3. **Validate**:
+
    ```bash
    npm run docs:sync -- --validate-only
    ```
 
 4. **Commit**:
+
    ```bash
    git add agent/toolsets.json docs/toolsets/ui_elements.md
    git commit -m "docs: update ui_elements toolset"

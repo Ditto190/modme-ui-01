@@ -152,7 +152,7 @@ docker run -d --name otel-collector `
 
 **Option 2: Local Binary**
 
-Download from: https://opentelemetry.io/docs/collector/getting-started/
+Download from: <https://opentelemetry.io/docs/collector/getting-started/>
 
 ### Environment Variables
 
@@ -178,7 +178,7 @@ docker run -d --name jaeger `
   jaegertracing/all-in-one:latest
 ```
 
-Access UI: http://localhost:16686
+Access UI: <http://localhost:16686>
 
 ---
 
@@ -381,6 +381,7 @@ const response = await server.request({
    ```
 
 4. **Error Handling**: Never expose internal errors to clients
+
    ```typescript
    catch (error) {
      console.error('Internal error:', error);
@@ -392,10 +393,10 @@ const response = await server.request({
 
 ## 📚 Related Documentation
 
-- **OpenTelemetry**: https://opentelemetry.io/docs/
-- **Model Context Protocol**: https://modelcontextprotocol.io/
-- **MCP SDK**: https://github.com/modelcontextprotocol/typescript-sdk
-- **Jaeger**: https://www.jaegertracing.io/
+- **OpenTelemetry**: <https://opentelemetry.io/docs/>
+- **Model Context Protocol**: <https://modelcontextprotocol.io/>
+- **MCP SDK**: <https://github.com/modelcontextprotocol/typescript-sdk>
+- **Jaeger**: <https://www.jaegertracing.io/>
 
 ---
 

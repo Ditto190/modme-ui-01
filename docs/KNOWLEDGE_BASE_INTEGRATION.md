@@ -92,6 +92,7 @@ const KNOWLEDGE_BASE: Record<string, ConceptMapping> = {
 ## Example Output
 
 ### Input Issue
+
 **Title**: "StatCard component not rendering"  
 **Body**: "When I call upsert_ui_element with StatCard type, nothing appears on the canvas..."
 
@@ -127,6 +128,7 @@ This issue appears to be related to:
 ```
 
 ### Labels Auto-Applied
+
 - `component-registry`
 - `agent`
 - `state-sync`
@@ -183,6 +185,7 @@ node dist/issue-context-mapper.js "Test issue title" "Test issue body with keywo
 ### 4. Verify Output
 
 Check JSON output includes:
+
 - `detectedConcepts: ["New Concept"]`
 - `suggestedLabels: ["new-label"]`
 - `comment` with file paths and docs
@@ -194,17 +197,20 @@ Check JSON output includes:
 ### Keeping Knowledge Base Updated
 
 **When adding new components**:
+
 1. Add to KNOWLEDGE_BASE with keywords
 2. Link to component file
 3. Include related files (types, page.tsx)
 4. Reference documentation
 
 **When refactoring files**:
+
 1. Update `path` fields to new locations
 2. Update `relatedPaths` arrays
 3. Verify documentation links still valid
 
 **When adding documentation**:
+
 1. Add to `documentation` arrays
 2. Use relative paths from repo root
 3. Include anchor links (`#section-name`)
@@ -212,11 +218,13 @@ Check JSON output includes:
 ### Monitoring
 
 **GitHub Actions logs show**:
+
 - Detected concepts per issue
 - Suggested labels
 - Whether context comment posted
 
 **Example log output**:
+
 ```
 Knowledge base detected concepts: StatCard, Agent Tools, State Sync
 Added knowledge base context with 3 detected concepts
@@ -232,6 +240,7 @@ Final labels: bug, component-registry, agent, state-sync, status:triage
 **Total workflow time**: ~15-20 seconds
 
 **Optimization considerations**:
+
 - Knowledge base is in-memory (no DB queries)
 - String matching uses simple `includes()` (fast)
 - Deduplication prevents redundant data
@@ -248,6 +257,7 @@ Final labels: bug, component-registry, agent, state-sync, status:triage
 | **Knowledge Base (ours)** | Curated mappings, fast, extensible | Manual maintenance | ✅ **Selected** |
 
 **Why Knowledge Base?**
+
 - **Semantic understanding**: "StatCard" concept encompasses component, types, state contract
 - **Curated quality**: Maintainers control what's linked
 - **Documentation first**: Always points to relevant docs
@@ -292,12 +302,14 @@ Final labels: bug, component-registry, agent, state-sync, status:triage
 ### Issue: Context comment not appearing
 
 **Check**:
+
 1. Workflow logs in Actions tab
 2. TypeScript compilation succeeded
 3. JSON output is valid
 4. `knowledgeContext.comment` is not empty
 
 **Debug**:
+
 ```bash
 cd scripts/knowledge-management
 npm run build
@@ -309,6 +321,7 @@ node dist/issue-context-mapper.js "My title" "My body with StatCard"
 **Cause**: Keywords too broad (e.g., "table" matches both DataTable and database)
 
 **Fix**: Make keywords more specific
+
 ```typescript
 keywords: ["data table", "datatable", "table component"] // More specific
 ```
@@ -318,6 +331,7 @@ keywords: ["data table", "datatable", "table component"] // More specific
 **Cause**: File paths changed after KB update
 
 **Fix**: Run path validator
+
 ```bash
 # Check all paths in knowledge base exist
 node scripts/validate-kb-paths.js
@@ -332,6 +346,7 @@ node scripts/validate-kb-paths.js
 Analyzes issue content and returns detected concepts, files, docs, labels.
 
 **Returns**:
+
 ```typescript
 {
   detectedConcepts: string[];
@@ -353,6 +368,7 @@ Generates formatted markdown comment for issue.
 Converts relative paths to GitHub URLs.
 
 **Example**:
+
 ```typescript
 resolveGitHubPath("src/app/page.tsx", "Ditto190/modme-ui-01", "main")
 // → "https://github.com/Ditto190/modme-ui-01/blob/main/src/app/page.tsx"
@@ -378,6 +394,7 @@ resolveGitHubPath("src/app/page.tsx", "Ditto190/modme-ui-01", "main")
 ## Summary
 
 The Knowledge Base Context Mapper provides **intelligent issue enrichment** by:
+
 - ✅ Detecting relevant concepts from curated knowledge base
 - ✅ Linking to specific files and documentation
 - ✅ Auto-suggesting appropriate labels

@@ -434,6 +434,7 @@ runs tests - all with validated tools
 ## Deployment Scenarios
 
 ### Scenario 1: Local Development
+
 ```
 Developer opens .devcontainer/ in VS Code
 → Container starts
@@ -443,6 +444,7 @@ Developer opens .devcontainer/ in VS Code
 ```
 
 ### Scenario 2: GitHub Codespaces
+
 ```
 Create Codespace from repo
 → devcontainer.json applied
@@ -453,6 +455,7 @@ Create Codespace from repo
 ```
 
 ### Scenario 3: CI/CD Pipeline
+
 ```
 CI job spins up container
 → MCP servers auto-installed

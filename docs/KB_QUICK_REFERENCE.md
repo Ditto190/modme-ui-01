@@ -1,6 +1,7 @@
 # 🚀 Knowledge Base Quick Reference
 
 ## One-Line Summary
+
 **Automatically enriches GitHub issues with relevant files, docs, and labels using curated semantic concept mappings.**
 
 ---
@@ -169,6 +170,7 @@ This issue appears to be related to:
 ## ⚠️ Troubleshooting
 
 ### Comment not appearing?
+
 ```bash
 # Check workflow logs in Actions tab
 # Verify TypeScript compiled
@@ -176,12 +178,14 @@ This issue appears to be related to:
 ```
 
 ### Wrong concepts detected?
+
 ```typescript
 // Make keywords more specific
 keywords: ["data table", "datatable"] // Better than just "table"
 ```
 
 ### Files not found (404)?
+
 ```bash
 # Update file paths in knowledge base
 # Run: npm test

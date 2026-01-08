@@ -71,6 +71,7 @@ agent-generator/src/skills/
 ### Step 1: Download from GitHub
 
 The converter uses the GitHub API to:
+
 1. Fetch SKILL.md with frontmatter and body
 2. Download all files in `scripts/`, `references/`, `assets/`
 3. Preserve directory structure
@@ -78,6 +79,7 @@ The converter uses the GitHub API to:
 ### Step 2: Parse and Validate
 
 Validates against [Agent Skills Specification](https://agentskills.io/specification):
+
 - ✅ Frontmatter format (name, description, license)
 - ✅ Naming conventions (hyphen-case, max 64 chars)
 - ✅ Description completeness (50-1024 chars, includes triggers)
@@ -393,10 +395,10 @@ node -e "const {generateZodFromJSONSchema} = require('./schema-crawler'); \
 
 ## Related Documentation
 
-- **Agent Skills Specification**: https://agentskills.io/specification
-- **Anthropic Skills Repo**: https://github.com/anthropics/skills
+- **Agent Skills Specification**: <https://agentskills.io/specification>
+- **Anthropic Skills Repo**: <https://github.com/anthropics/skills>
 - **Schema Crawler README**: [agent-generator/SCHEMA_CRAWLER_README.md](../agent-generator/SCHEMA_CRAWLER_README.md)
-- **GenAI Toolbox Docs**: https://googleapis.github.io/genai-toolbox/
+- **GenAI Toolbox Docs**: <https://googleapis.github.io/genai-toolbox/>
 
 ## NPM Scripts
 

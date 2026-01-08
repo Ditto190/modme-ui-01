@@ -29,28 +29,33 @@ npm run detect:changes
 ## 📦 What's Included
 
 ### 📋 **Documentation** (3 files, 1,041 lines)
+
 - **[TOOLSET_MANAGEMENT.md](/docs/TOOLSET_MANAGEMENT.md)** - Complete reference guide
 - **[TOOLSET_QUICKSTART.md](/docs/TOOLSET_QUICKSTART.md)** - Developer quick start
 - **[IMPLEMENTATION_SUMMARY.md](/IMPLEMENTATION_SUMMARY.md)** - This implementation
 
 ### 🤖 **GitHub Actions** (4 workflows, 1,123 lines)
+
 - **[toolset-update.yml](/.github/workflows/toolset-update.yml)** - Auto-detect & register
 - **[toolset-deprecate.yml](/.github/workflows/toolset-deprecate.yml)** - Safe deprecation
 - **[toolset-validate.yml](/.github/workflows/toolset-validate.yml)** - 10-job validation
 - **[toolset-docs.yml](/.github/workflows/toolset-docs.yml)** - Doc generation
 
 ### ⚙️ **Configuration** (3 files)
+
 - **[toolsets.json](/agent/toolsets.json)** - Toolset registry
 - **[toolset_aliases.json](/agent/toolset_aliases.json)** - Deprecation aliases
 - **[toolset-schema.json](/agent/toolset-schema.json)** - JSON Schema
 
 ### 🔧 **Scripts** (4 core + many helpers)
+
 - **[detect-toolset-changes.js](/scripts/toolset-management/detect-toolset-changes.js)**
 - **[validate-toolsets.js](/scripts/toolset-management/validate-toolsets.js)**
 - **[create-alias.js](/scripts/toolset-management/create-alias.js)**
 - **[generate-migration-guide.js](/scripts/toolset-management/generate-migration-guide.js)**
 
 ### 🐍 **Python Support** (2 files, 523 lines)
+
 - **[toolset_manager.py](/agent/toolset_manager.py)** - Runtime manager
 - **[INTEGRATION_EXAMPLE.py](/agent/INTEGRATION_EXAMPLE.py)** - Usage examples
 
@@ -275,15 +280,19 @@ npm run detect:changes        # Find new/modified toolsets
 ## 🎓 Key Concepts
 
 ### 📦 **Toolset**
+
 Logical grouping of related tools (functions)
 
 ### 🔄 **Alias**
+
 Mapping from deprecated name to canonical name
 
 ### ⏱️ **Grace Period**
+
 180 days (6 months) for users to migrate
 
 ### 📝 **Migration Guide**
+
 Step-by-step instructions for transitioning
 
 ---
@@ -291,6 +300,7 @@ Step-by-step instructions for transitioning
 ## ⚠️ Important Notes
 
 1. **Dependencies Required:**
+
    ```bash
    npm install ajv ajv-formats --save-dev
    ```
@@ -336,6 +346,7 @@ Step-by-step instructions for transitioning
 ## 🤝 Contributing
 
 See [TOOLSET_MANAGEMENT.md](/docs/TOOLSET_MANAGEMENT.md) for:
+
 - Naming conventions
 - Deprecation procedures
 - Testing requirements
@@ -345,9 +356,9 @@ See [TOOLSET_MANAGEMENT.md](/docs/TOOLSET_MANAGEMENT.md) for:
 
 ## 📖 Reference
 
-- **GitHub MCP Server:** https://github.com/github/github-mcp-server
+- **GitHub MCP Server:** <https://github.com/github/github-mcp-server>
 - **Tool Renaming Guide:** [github-mcp-server/docs/tool-renaming.md](https://github.com/github/github-mcp-server/blob/main/docs/tool-renaming.md)
-- **JSON Schema:** https://json-schema.org/
+- **JSON Schema:** <https://json-schema.org/>
 
 ---
 

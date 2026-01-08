@@ -13,6 +13,7 @@
 You've created a **sophisticated development workflow**:
 
 ### Current State
+
 ```
 modme-ui-01 (GitHub Repo)
 ├── Main worktree: C:\Users\dylan\modme-ui-01
@@ -26,6 +27,7 @@ modme-ui-01 (GitHub Repo)
 ```
 
 ### Future State (Your Intent)
+
 ```
 modme-ui-01 (GitHub Repo) + ONE Devcontainer
 ├── Main worktree: C:\Users\dylan\modme-ui-01
@@ -51,11 +53,13 @@ modme-ui-01 (GitHub Repo) + ONE Devcontainer
 ## 📋 Immediate Issues Before Devcontainer
 
 ### Issue 1: relaxed-hugle Has Uncommitted Work (BLOCKING)
+
 **Status**: 6 commits ahead + staged changes + 100+ untracked files
 **Impact**: Cannot reliably set up devcontainer until committed
 **Why**: Devcontainer rebuild could lose work; unclear what's intentional vs temporary
 
 **Solution**:
+
 ```bash
 # In C:\Users\dylan\.claude-worktrees\modme-ui-01\relaxed-hugle
 git add .
@@ -81,15 +85,18 @@ git push origin relaxed-hugle
 ```
 
 ### Issue 2: Should relaxed-hugle Merge to Main Branch?
+
 **MIGRATION_IMPLEMENTATION_PLAN Context**: This plan outlines eventual migration to Turborepo structure
 **Your Choice**: Keep as separate feature branch or merge?
 
 **Recommendation**: Keep as feature branch initially, then integrate
+
 - Allows parallel work while migration plan is executed
 - Clear history of when UniversalWorkbench integration happened
 - Can be rebased onto Turborepo structure later
 
 **Steps** (after commit):
+
 ```bash
 # In main worktree (C:\Users\dylan\modme-ui-01)
 git fetch origin
@@ -110,11 +117,13 @@ git rebase origin/relaxed-hugle
 ### Design Principle: Workspace-Agnostic
 
 The devcontainer **must work identically** whether you open:
+
 - `C:\Users\dylan\modme-ui-01` (main)
 - `C:\Users\dylan\.claude-worktrees\modme-ui-01\relaxed-hugle` (worktree)
 - Future worktrees (feature/turborepo-migration, etc.)
 
 **This means**:
+
 - Devcontainer config lives in `.devcontainer/` (same for all worktrees)
 - Scripts handle both mono-worktree and multi-worktree setups
 - Port forwarding works regardless of physical location
@@ -449,6 +458,7 @@ modme-ui-01/
 ```
 
 **Each has own VS Code window with own devcontainer, but they all share**:
+
 - Same `.devcontainer/` config
 - Same `package.json` scripts
 - Same Git repository
@@ -459,6 +469,7 @@ modme-ui-01/
 ## 📊 Devcontainer Setup Timeline
 
 ### Phase 1: Prepare (NOW) - 20 minutes
+
 ```bash
 # In relaxed-hugle worktree
 git add .
@@ -467,16 +478,19 @@ git push origin relaxed-hugle
 ```
 
 ### Phase 2: Update Devcontainer Config - 15 minutes
+
 - Update `.devcontainer/devcontainer.json` with multi-worktree awareness
 - Update `.devcontainer/post-create.sh` with worktree detection
 - Test in main worktree
 
 ### Phase 3: Test in Worktrees - 30 minutes
+
 - Test main worktree: `C:\Users\dylan\modme-ui-01` → Reopen in Container
 - Test relaxed-hugle: `C:\Users\dylan\.claude-worktrees\modme-ui-01\relaxed-hugle` → Reopen in Container
 - Verify both work identically
 
 ### Phase 4: Document Workflow - 10 minutes
+
 - Create `.devcontainer/README.md` with worktree workflow
 - Add worktree examples to main README
 - Document devcontainer + worktree best practices
@@ -488,27 +502,34 @@ git push origin relaxed-hugle
 ## ✨ Next Steps (Aligned with MIGRATION_IMPLEMENTATION_PLAN)
 
 ### Immediate (Week 1)
+
 1. ✅ Commit all work in relaxed-hugle
 2. ✅ Finalize devcontainer config
 3. ✅ Test in both main worktree and relaxed-hugle
 4. ✅ Document worktree workflow
 
 ### Phase 1: Turborepo Migration (Week 2-3)
+
 Per MIGRATION_IMPLEMENTATION_PLAN.md Phase 1:
+
 - Bootstrap with ts-fullstack structure
 - Copy AI workflows
 - Configure environment
 - First commit to new Turborepo
 
 ### Phase 2-5: Full Migration (Weeks 4-8)
+
 Execute remaining phases from MIGRATION_IMPLEMENTATION_PLAN.md:
+
 - Python integration
 - TypeScript tools migration
 - Workflows & collaboration setup
 - React Aria + Codespaces configuration
 
 ### During Migration: Absorb UniversalWorkbench
+
 Per PORTING_GUIDE.md:
+
 - Create separate worktree: `feature/universal-workbench-integration`
 - Claude Code agent integrates UniversalWorkbench components
 - Port relevant parts into new Turborepo structure
@@ -519,18 +540,21 @@ Per PORTING_GUIDE.md:
 ## 🎯 Success Criteria
 
 ✅ **Devcontainer Setup**:
+
 - [ ] `.devcontainer/devcontainer.json` handles multi-worktree workspace
 - [ ] `post-create.sh` detects worktree context correctly
 - [ ] Node/Python dependencies install consistently
 - [ ] Ports 3000/8000/8001 forward correctly
 
 ✅ **Worktree Support**:
+
 - [ ] Main worktree (feature/genui-workbench-refactor) works
 - [ ] relaxed-hugle worktree works identically
 - [ ] Can create new worktrees and they work with devcontainer
 - [ ] Simultaneous devcontainers don't conflict
 
 ✅ **Documentation**:
+
 - [ ] `.devcontainer/README.md` explains multi-worktree setup
 - [ ] Workflow documented for human + AI collaboration
 - [ ] Links to MIGRATION_IMPLEMENTATION_PLAN clear
@@ -540,19 +564,23 @@ Per PORTING_GUIDE.md:
 ## 🚨 Important Notes
 
 ### Git Worktree Gotchas
+
 - **Don't delete main worktree** - it's the source of remotes
 - **Use `git worktree list`** to see all worktrees
 - **Cleaning up**: `git worktree remove <path>` then `git worktree prune`
 - **Orphaned worktrees**: `git worktree repair` if devcontainer crashes
 
 ### Devcontainer + Worktrees
+
 - Each worktree should have own `.vscode/settings.json` (optional)
 - Shared `.devcontainer/` = consistent environment
 - Python venv can be shared or per-worktree (current design: shared in root `agent/.venv`)
 - Node modules are not shared (npm install per worktree, or use monorepo hoisting)
 
 ### Future: Turborepo + Worktrees
+
 Once migrated to Turborepo:
+
 - Use `turbo` for cross-package builds
 - `turbo dev` works across all worktrees
 - Workspaces enable shared `node_modules`

@@ -449,7 +449,7 @@ try {
 ### Add GreptimeDB as Data Source
 
 1. **Install Grafana**: `docker run -d -p 3001:3000 grafana/grafana`
-2. **Open Grafana**: http://localhost:3001 (admin/admin)
+2. **Open Grafana**: <http://localhost:3001> (admin/admin)
 3. **Add Data Source**:
    - Type: **Prometheus**
    - URL: `http://localhost:4000/v1/prometheus`
@@ -577,14 +577,14 @@ node -e "require('./greptime-config')"
 
 ## Resources
 
-- **GreptimeDB Docs**: https://docs.greptime.com/
-- **OTLP Integration**: https://docs.greptime.com/user-guide/ingest-data/for-observability/opentelemetry/
-- **OpenTelemetry Python**: https://opentelemetry-python.readthedocs.io/
-- **OpenTelemetry JS**: https://opentelemetry.io/docs/js/
-- **GreptimeCloud**: https://greptime.com/product/cloud
+- **GreptimeDB Docs**: <https://docs.greptime.com/>
+- **OTLP Integration**: <https://docs.greptime.com/user-guide/ingest-data/for-observability/opentelemetry/>
+- **OpenTelemetry Python**: <https://opentelemetry-python.readthedocs.io/>
+- **OpenTelemetry JS**: <https://opentelemetry.io/docs/js/>
+- **GreptimeCloud**: <https://greptime.com/product/cloud>
 - **Example Repos**:
-  - Python: https://github.com/GreptimeCloudStarters/quick-start-python
-  - Node.js: https://github.com/GreptimeCloudStarters/quick-start-node-js
+  - Python: <https://github.com/GreptimeCloudStarters/quick-start-python>
+  - Node.js: <https://github.com/GreptimeCloudStarters/quick-start-node-js>
 
 ---
 

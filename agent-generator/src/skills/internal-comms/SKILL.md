@@ -8,7 +8,9 @@
 ## Usage Instructions
 
 ## When to use this skill
+
 To write internal communications, use this skill for:
+
 - 3P updates (Progress, Plans, Problems)
 - Company newsletters
 - FAQ responses
@@ -32,6 +34,7 @@ To write any internal communication:
 If the communication type doesn't match any existing guideline, ask for clarification or more context about the desired format.
 
 ## Keywords
+
 3P updates, company newsletter, company comms, weekly update, faqs, common questions, updates, internal comms
 
 ---

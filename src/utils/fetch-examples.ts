@@ -39,19 +39,139 @@ export async function getProtectedResource() {
 }
 
 // Example 5: Error handling
+type ApiErrorWithResponse = {
+  response: {
+    status: number;
+    _data: unknown;
+  };
+  request?: unknown;
+  message?: string;
+};
+
+type ApiErrorWithRequest = {
+  request: unknown;
+  message?: string;
+};
+
+type ErrorWithMessage = {
+  message: string;
+};
+
+/**
+ * Checks if the error object has a response property with a status property.
+ * @returns {boolean} True if the error object has a response property with a status property, false otherwise.
+ */
+
+function hasResponse(error: unknown): error is ApiErrorWithResponse {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "response" in error &&
+    typeof (error as { response: unknown }).response === "object" &&
+    (error as { response: { status?: unknown } }).response.status !== undefined
+  );
+}
+
+function hasRequest(error: unknown): error is ApiErrorWithRequest {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "request" in error
+  );
+}
+
+/**
+ * Checks if the error object has a 'message' property with a string value.
+ * @param {unknown} error - Error object to check
+ * @returns {boolean} True if the error object has a 'message' property with a string value, false otherwise.
+ */
+function hasMessage(error: unknown): error is ErrorWithMessage {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    typeof (error as { message: unknown }).message === "string"
+  );
+}
+
 export async function safeApiCall(url: string) {
   try {
     return await $api(url);
-  } catch (error: any) {
-    if (error.response) {
+  } catch (error: unknown) {
+    if (hasResponse(error)) {
       // Server responded with error
       console.error("API error:", error.response.status, error.response._data);
-    } else if (error.request) {
+    } else if (hasRequest(error) && hasMessage(error)) {
       // Request was made but no response
       console.error("Network error:", error.message);
-    } else {
+    } else if (hasMessage(error)) {
       // Something else happened
       console.error("Error:", error.message);
+    } else {
+      // Fallback when error shape is unknown
+      console.error("Unknown error:", error);
+
+type ErrorWithMessage = {
+  message: string;
+};
+
+/**
+ * Checks if the given error has a response property.
+ * This is useful for determining if an error is related to a
+ * specific request.
+ * @param {unknown} error The error to check.
+ * @returns {boolean} Whether the error has a response property.
+ */
+function hasResponse(error: unknown): error is ApiErrorWithResponse {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "response" in error &&
+    typeof (error as { response: unknown }).response === "object" &&
+    (error as { response: { status?: unknown } }).response.status !== undefined
+  );
+}
+
+/**
+ * Checks if the given error has a request property.
+ * This is useful for determining if an error is related to a
+ * specific request.
+ * @param {unknown} error The error to check.
+ * @returns {boolean} Whether the error has a request property.
+ */
+function hasRequest(error: unknown): error is ApiErrorWithRequest {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "request" in error
+  );
+}
+
+function hasMessage(error: unknown): error is ErrorWithMessage {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    typeof (error as { message: unknown }).message === "string"
+  );
+}
+
+export async function safeApiCall(url: string) {
+  try {
+    return await $api(url);
+  } catch (error: unknown) {
+    if (hasResponse(error)) {
+      // Server responded with error
+      console.error("API error:", error.response.status, error.response._data);
+    } else if (hasRequest(error) && hasMessage(error)) {
+      // Request was made but no response
+      console.error("Network error:", error.message);
+    } else if (hasMessage(error)) {
+      // Something else happened
+      console.error("Error:", error.message);
+    } else {
+      // Fallback when error shape is unknown
+      console.error("Unknown error:", error);
     }
     throw error;
   }
@@ -139,8 +259,8 @@ export async function cancellableRequest(url: string) {
     return await $fetch(url, {
       signal: controller.signal,
     });
-  } catch (error: any) {
-    if (error.name === "AbortError") {
+  } catch (error: unknown) {
+    if (error instanceof DOMException && error.name === "AbortError") {
       console.log("Request was cancelled");
     }
     throw error;

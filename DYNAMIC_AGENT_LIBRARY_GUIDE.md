@@ -52,6 +52,7 @@ This guide explains how to use the **Dynamic Agent Library Generator** to create
 **Purpose**: Generate agent.md, prompt.md, and SKILL.md files
 
 **Key Functions**:
+
 - `generate_agent_library()` - Create 50+ specialized agents
 - `generate_prompt_library()` - Create 50+ chat prompts
 - `generate_skill_library()` - Create 50+ reusable skills
@@ -59,6 +60,7 @@ This guide explains how to use the **Dynamic Agent Library Generator** to create
 - `generate_full_library()` - Orchestrate entire generation
 
 **Example Use**:
+
 ```python
 from google.adk.tools import ToolContext
 from agent.tools.agent_library_generator import generate_full_library
@@ -78,6 +80,7 @@ result = generate_full_library(
 **Purpose**: Command-line interface for library generation
 
 **Usage**:
+
 ```bash
 # Generate 50 agents, prompts, and skills
 python scripts/generate_agent_library.py
@@ -93,6 +96,7 @@ python scripts/generate_agent_library.py --project-root /path/to/project
 ```
 
 **Features**:
+
 - ✓ Setup validation
 - ✓ Structured logging
 - ✓ Awesome-copilot integration
@@ -104,6 +108,7 @@ python scripts/generate_agent_library.py --project-root /path/to/project
 #### A. Schema Generation (`agent/tools/generate_schemas.py`)
 
 Generates JSON Schemas from TypeScript interfaces:
+
 ```python
 def generate_tool_schemas(
     tool_context: ToolContext,
@@ -115,6 +120,7 @@ def generate_tool_schemas(
 #### B. Schema Crawler (`agent/tools/schema_crawler_tool.py`)
 
 Converts JSON Schema to Zod validation schemas:
+
 ```python
 def generate_zod_from_json_schema(
     tool_context: ToolContext,
@@ -127,6 +133,7 @@ def generate_zod_from_json_schema(
 #### C. Awesome GitHub Copilot
 
 All generated agents/prompts work with:
+
 - MCP collections (30+ available)
 - GitHub Copilot Chat integration
 - VS Code agent selection
@@ -135,6 +142,7 @@ All generated agents/prompts work with:
 #### D. MCP Toolbox
 
 Tools wired from `agent/toolsets.json`:
+
 - `mcp_awesome-copil_list_collections`
 - `mcp_github2_get_toolset_tools`
 - `mcp_github2_enable_toolset`
@@ -144,6 +152,7 @@ Tools wired from `agent/toolsets.json`:
 ### Agents (`.github/agents/*.agent.md`)
 
 **Structure**:
+
 ```yaml
 ---
 type: agent
@@ -165,6 +174,7 @@ tags:
 ```
 
 **Categories Generated**:
+
 - react-frontend-specialist
 - nextjs-fullstack-specialist
 - data-engineering-specialist
@@ -181,6 +191,7 @@ tags:
 ### Prompts (`.github/prompts/*.prompt.md`)
 
 **Structure**:
+
 ```yaml
 ---
 type: prompt
@@ -200,6 +211,7 @@ tags:
 ```
 
 **Types Generated**:
+
 - code-gen
 - analysis
 - testing
@@ -214,6 +226,7 @@ tags:
 ### Skills (`.github/skills/*/SKILL.md`)
 
 **Structure**:
+
 ```yaml
 ---
 name: component-gen
@@ -231,6 +244,7 @@ tags:
 ```
 
 **Categories Generated**:
+
 - component-gen
 - test-automation
 - data-fetch
@@ -266,6 +280,7 @@ tags:
 ### Summary Document (`.github/AGENT_LIBRARY_SUMMARY.md`)
 
 Auto-generated comprehensive guide with:
+
 - Component counts and locations
 - Integration status
 - Usage instructions
@@ -376,17 +391,20 @@ python scripts/generate_agent_library.py --agents 60 --prompts 60 --skills 60
 ### Next Steps to Reach 200+
 
 1. **Run full generation** (50-60 of each)
+
    ```bash
    python scripts/generate_agent_library.py --agents 60 --prompts 60 --skills 60
    ```
 
 2. **Integrate custom tools** (from GenAI Toolbox)
+
    ```python
    # In agent_library_generator.py:
    # Map toolsets.json tools to agents
    ```
 
 3. **Add domain-specific agents** (your use cases)
+
    ```python
    # ModMe UI specialists
    # GenUI component specialists
@@ -394,6 +412,7 @@ python scripts/generate_agent_library.py --agents 60 --prompts 60 --skills 60
    ```
 
 4. **Create skill variants** (per technology)
+
    ```bash
    # Generate skills for React, Vue, Angular, Svelte
    # Generate skills for Node.js, Python, Go
@@ -402,11 +421,13 @@ python scripts/generate_agent_library.py --agents 60 --prompts 60 --skills 60
 ## Performance
 
 **Generation Time**:
+
 - 10 agents + 10 prompts + 10 skills: < 1 second
 - 50 agents + 50 prompts + 50 skills: < 2 seconds
 - 100 agents + 100 prompts + 100 skills: < 5 seconds
 
 **File Size**:
+
 - Average agent.md: 1.2 KB
 - Average prompt.md: 0.8 KB
 - Average SKILL.md: 0.9 KB
@@ -417,6 +438,7 @@ python scripts/generate_agent_library.py --agents 60 --prompts 60 --skills 60
 ### Issue: "Setup validation failed"
 
 **Solution**: Run with correct project root:
+
 ```bash
 python scripts/generate_agent_library.py --project-root .
 ```
@@ -424,6 +446,7 @@ python scripts/generate_agent_library.py --project-root .
 ### Issue: "ModuleNotFoundError: google.adk.tools"
 
 **Solution**: Tools use mock context for testing. In production:
+
 ```python
 from google.adk.tools import ToolContext
 # Will work with Google ADK environment
@@ -432,6 +455,7 @@ from google.adk.tools import ToolContext
 ### Issue: "Unicode encoding error on Windows"
 
 **Solution**: Already fixed in latest version with UTF-8 encoding:
+
 ```python
 summary_file.write_text(summary, encoding='utf-8')
 ```
@@ -494,6 +518,7 @@ def generate_full_library(
 ```
 
 **Returns**:
+
 ```json
 {
   "status": "success",
@@ -531,6 +556,7 @@ def generate_full_library(
 ## Support
 
 For issues or questions:
+
 1. Check `.github/AWESOME_COPILOT_INTEGRATION.md`
 2. Review `agent-library/README.md`
 3. See this guide's Troubleshooting section

@@ -8,6 +8,7 @@
 ## 🎯 What Was Requested
 
 User asked about integrating knowledge base tagging to enhance the issue labeling system, mentioning:
+
 - ripgrep tool (but noted "regex is not the same")
 - index.ts (indexing approach)
 - tree logger (file tree approach)
@@ -54,7 +55,8 @@ A curated knowledge base that maps concepts to files and documentation, integrat
 ### Why Not ripgrep?
 
 **Pros**: Fast file searching  
-**Cons**: 
+**Cons**:
+
 - Requires file system scanning (slow in CI)
 - Regex patterns don't understand semantic relationships
 - No concept-to-documentation mapping
@@ -63,7 +65,8 @@ A curated knowledge base that maps concepts to files and documentation, integrat
 ### Why Not index.ts?
 
 **Pros**: Centralized type registry  
-**Cons**: 
+**Cons**:
+
 - Would need runtime evaluation
 - Requires maintaining parallel type system
 - Complex integration with GitHub Actions
@@ -72,7 +75,8 @@ A curated knowledge base that maps concepts to files and documentation, integrat
 ### Why Not tree logger?
 
 **Pros**: Shows file relationships  
-**Cons**: 
+**Cons**:
+
 - Static output, no semantic understanding
 - Doesn't map concepts to files
 - No documentation linking
@@ -81,6 +85,7 @@ A curated knowledge base that maps concepts to files and documentation, integrat
 ### ✅ Why Knowledge Base (Selected)
 
 **Pros**:
+
 - ✅ **Semantic understanding**: Maps "StatCard" concept to component, types, state, docs
 - ✅ **Curated quality**: Maintainers control mappings
 - ✅ **Documentation-first**: Always links to relevant guides
@@ -90,6 +95,7 @@ A curated knowledge base that maps concepts to files and documentation, integrat
 - ✅ **Zero runtime dependencies**: Just Node.js + TypeScript
 
 **Cons**:
+
 - ⚠️ Requires manual maintenance (acceptable trade-off)
 - ⚠️ Doesn't auto-discover new files (by design, ensures quality)
 
@@ -128,7 +134,7 @@ A curated knowledge base that maps concepts to files and documentation, integrat
 
 ### Documentation
 
-6. **`docs/KNOWLEDGE_BASE_INTEGRATION.md`** (750 lines)
+1. **`docs/KNOWLEDGE_BASE_INTEGRATION.md`** (750 lines)
    - Complete integration guide
    - Knowledge base structure explanation
    - Example outputs
@@ -137,7 +143,7 @@ A curated knowledge base that maps concepts to files and documentation, integrat
 
 ### Workflow Integration
 
-7. **`.github/workflows/issue-labeler.yml`** (Updated)
+1. **`.github/workflows/issue-labeler.yml`** (Updated)
    - Added Node.js 22 setup step
    - Added TypeScript dependency installation
    - Added knowledge base analysis step
@@ -351,6 +357,7 @@ npm run context "StatCard bug" "upsert_ui_element not working"
 ## 🚀 Deployment Steps
 
 1. **Merge to main**
+
    ```bash
    git add .
    git commit -m "feat: add Knowledge Base Context Mapper for issue enrichment"

@@ -107,16 +107,19 @@ tools:
 ## Next Steps
 
 1. **Install Dependencies**:
+
    ```bash
    npm install @octokit/rest js-yaml
    ```
 
 2. **Set GitHub Token** (for API access):
+
    ```bash
    export GITHUB_TOKEN=ghp_your_token_here
    ```
 
 3. **Test Conversion**:
+
    ```bash
    npm run skills:list
    npm run skills:convert -- skill-creator
@@ -124,6 +127,7 @@ tools:
    ```
 
 4. **Generate Zod Schemas** for existing tools:
+
    ```python
    # In agent/main.py
    from agent.tools.schema_crawler_tool import generate_zod_module

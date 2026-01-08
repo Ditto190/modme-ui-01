@@ -306,9 +306,9 @@ const summary = await $fetch("http://localhost:3001/tools/summarize", {
 
 ## 🔗 References
 
-- **ofetch**: https://github.com/unjs/ofetch
-- **unplugin**: https://github.com/unjs/unplugin
-- **Examples**: https://github.com/unjs/ofetch/tree/main/examples
+- **ofetch**: <https://github.com/unjs/ofetch>
+- **unplugin**: <https://github.com/unjs/unplugin>
+- **Examples**: <https://github.com/unjs/ofetch/tree/main/examples>
 
 ---
 

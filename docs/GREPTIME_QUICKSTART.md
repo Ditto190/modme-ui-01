@@ -15,12 +15,12 @@ docker run -d --name greptimedb \
 
 **Option B: Binary**
 
-- Download: https://github.com/GreptimeTeam/greptimedb/releases
+- Download: <https://github.com/GreptimeTeam/greptimedb/releases>
 - Run: `./greptime standalone start`
 
 **Option C: Use GreptimeCloud**
 
-- Sign up: https://greptime.com/product/cloud
+- Sign up: <https://greptime.com/product/cloud>
 - Get connection details from dashboard
 
 ### 2. Configure Environment
@@ -75,7 +75,7 @@ curl http://localhost:4000/v1/sql \
    docker run -d -p 3001:3000 grafana/grafana
    ```
 
-2. Open: http://localhost:3001 (admin/admin)
+2. Open: <http://localhost:3001> (admin/admin)
 
 3. Add Data Source:
 

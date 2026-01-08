@@ -11,19 +11,23 @@
 ## 🎯 Your Actual Vision (Now Clear)
 
 ### What You Have
+
 - **One GitHub repository**: `modme-ui-01` (modme-ui-01)
 - **One main worktree**: `C:\Users\dylan\modme-ui-01` (human development)
 - **One AI worktree**: `C:\Users\dylan\.claude-worktrees\modme-ui-01\relaxed-hugle` (Claude Code development)
 - **One devcontainer config**: Shared across all worktrees
 
 ### What You Want
+
 - **Multiple worktrees** for parallel development (human + multiple AI agents)
 - **All worktrees** use the **SAME devcontainer** configuration
 - **UniversalWorkbench** components integrated from GenerativeUI_monorepo
 - **Turborepo migration** path (per MIGRATION_IMPLEMENTATION_PLAN.md)
 
 ### Why This Matters
+
 This is a **sophisticated development pattern** enabling:
+
 - ✅ Simultaneous human + AI development on different features
 - ✅ Isolated feature branches (no conflicts)
 - ✅ Shared infrastructure (one devcontainer)
@@ -37,6 +41,7 @@ This is a **sophisticated development pattern** enabling:
 ### relaxed-hugle Has Uncommitted Work
 
 **Current Status**:
+
 - 6 commits ahead of main branch ✅ (valuable work)
 - Staged changes ready to commit ✅ (documentation + setup)
 - 100+ untracked files ⚠️ (mix of useful docs and temporary files)
@@ -46,6 +51,7 @@ This is a **sophisticated development pattern** enabling:
 **Time to Fix**: 10 minutes (one commit + push)
 
 **Commit Message**:
+
 ```
 feat: Agent Skills, token management, and devcontainer readiness
 
@@ -62,6 +68,7 @@ devcontainer-based multi-worktree development for parallel human/AI work.
 ```
 
 **Then push**:
+
 ```bash
 git push origin relaxed-hugle
 ```
@@ -71,9 +78,11 @@ git push origin relaxed-hugle
 ## 📋 Documents Created for You
 
 ### 1. **DEVCONTAINER_WORKTREE_STRATEGY.md** (MAIN DOCUMENT)
+>
 > How to set up devcontainer for your multi-worktree workflow
 
 **Contains**:
+
 - ✅ DevContainer config (`.devcontainer/devcontainer.json`)
 - ✅ Enhanced post-create script (`.devcontainer/post-create.sh`)
 - ✅ Multi-worktree workflow examples
@@ -85,9 +94,11 @@ git push origin relaxed-hugle
 **Implementation Time**: 30-45 minutes
 
 ### 2. **MIGRATION_IMPLEMENTATION_PLAN.md** (ALREADY EXISTS)
+>
 > Your 5-phase Turborepo migration roadmap
 
 **Contains**:
+
 - ✅ Phase 1: Foundation Bootstrap (Week 1)
 - ✅ Phase 2: Python Integration (Week 2)
 - ✅ Phase 3: TypeScript Tools Migration (Week 3)
@@ -97,6 +108,7 @@ git push origin relaxed-hugle
 **Total Effort**: 52-72 hours across 5 weeks
 
 ### 3. **PORTING_GUIDE.md** (ALREADY EXISTS)
+>
 > How to port modme-ui-01 components elsewhere (or absorb UniversalWorkbench)
 
 **Key Section**: "Portable Components" explains which parts can be extracted and reused
@@ -106,6 +118,7 @@ git push origin relaxed-hugle
 ## 🗺️ The Complete Path Forward
 
 ### Today (2-3 hours)
+
 ```
 ✅ Step 1: Commit work in relaxed-hugle (10 min)
    └─ git add . && git commit && git push
@@ -126,6 +139,7 @@ git push origin relaxed-hugle
 **Result**: Production-ready devcontainer for worktree development
 
 ### Week 1-2 (Optional: Execute MIGRATION_IMPLEMENTATION_PLAN Phase 1)
+
 ```
 If you want to start Turborepo migration now:
 - Bootstrap ts-fullstack structure
@@ -136,6 +150,7 @@ Otherwise: Use current devcontainer with relaxed-hugle as feature branch
 ```
 
 ### Week 1-4 (Optional: Integrate UniversalWorkbench)
+
 ```
 If you want UniversalWorkbench components absorbed into modme-ui-01:
 - Create separate worktree: feature/universal-workbench-integration
@@ -148,6 +163,7 @@ If you want UniversalWorkbench components absorbed into modme-ui-01:
 ## 🎓 Understanding Your Repository Landscape
 
 ### Repository 1: modme-ui-01 (YOUR MAIN REPO)
+
 ```
 GitHub: github.com/ditto190/modme-ui-01
 Worktree Locations:
@@ -159,6 +175,7 @@ Status: READY for devcontainer setup after commit
 ```
 
 ### Repository 2: GenerativeUI_monorepo (SECONDARY / BEING ABSORBED)
+
 ```
 GitHub: github.com/Ditto190/GenerativeUI_monorepo
 Worktree Locations:
@@ -176,26 +193,30 @@ Status: ARCHIVED (except UniversalWorkbench extraction)
 ## 🚀 Implementation Checklist
 
 ### Phase 0: Prepare (NOW) - 10 minutes
+
 - [ ] Read DEVCONTAINER_WORKTREE_STRATEGY.md
 - [ ] Commit work in relaxed-hugle
 - [ ] Push relaxed-hugle to GitHub
 - [ ] Verify branch shows on GitHub
 
 ### Phase 1: Setup DevContainer (Today) - 30 minutes
+
 - [ ] Update `.devcontainer/devcontainer.json` (copy from strategy doc)
 - [ ] Update `.devcontainer/post-create.sh` (copy from strategy doc)
 - [ ] Commit changes: `git add .devcontainer && git commit -m "..."`
 - [ ] Push to feature/genui-workbench-refactor
 
 ### Phase 2: Test Main Worktree - 15 minutes
+
 - [ ] Navigate to `C:\Users\dylan\modme-ui-01`
 - [ ] Open in VS Code
 - [ ] "Reopen in Container" (or click notification)
 - [ ] Wait for devcontainer to build and post-create to run
 - [ ] Verify services start: `npm run dev`
-- [ ] Open browser: http://localhost:3000 (UI) and http://localhost:8000 (Agent)
+- [ ] Open browser: <http://localhost:3000> (UI) and <http://localhost:8000> (Agent)
 
 ### Phase 3: Test Worktree - 15 minutes
+
 - [ ] Navigate to `C:\Users\dylan\.claude-worktrees\modme-ui-01\relaxed-hugle`
 - [ ] Open in VS Code
 - [ ] "Reopen in Container"
@@ -203,6 +224,7 @@ Status: ARCHIVED (except UniversalWorkbench extraction)
 - [ ] Verify services start identically
 
 ### Phase 4: Document & Deploy - 20 minutes
+
 - [ ] Create `.devcontainer/README.md` with multi-worktree workflow
 - [ ] Add examples: how to create new worktrees
 - [ ] Add examples: how to work simultaneously
@@ -211,6 +233,7 @@ Status: ARCHIVED (except UniversalWorkbench extraction)
 - [ ] Push to feature/genui-workbench-refactor
 
 ### Phase 5: Optional - Document Workflow
+
 - [ ] Update main README.md with devcontainer instructions
 - [ ] Link to MIGRATION_IMPLEMENTATION_PLAN.md
 - [ ] Link to DEVCONTAINER_WORKTREE_STRATEGY.md
@@ -222,13 +245,17 @@ Status: ARCHIVED (except UniversalWorkbench extraction)
 ## 💡 Key Insights
 
 ### 1. You Don't Need to Choose Between Worktrees and Devcontainer
+
 ✅ Both work together perfectly
+
 - Git worktrees = isolated branches
 - Devcontainer = shared environment
 - Multiple devcontainers = same config, different worktrees
 
 ### 2. Your Workflow Supports Massive Scaling
+
 You can support:
+
 - 1 human + 5 AI agents all working simultaneously
 - Each in their own worktree
 - Each with own VS Code window
@@ -236,13 +263,16 @@ You can support:
 - All checking code into same GitHub repo
 
 ### 3. MIGRATION_IMPLEMENTATION_PLAN is Optional, Not Urgent
+
 You can keep current structure and:
+
 - ✅ Still use devcontainer
 - ✅ Still have parallel worktrees
 - ✅ Still integrate UniversalWorkbench
 - ✅ Still scale to Turborepo later (just needs refactor)
 
 ### 4. Your Documentation is Already Comprehensive
+
 - MIGRATION_IMPLEMENTATION_PLAN.md ✅ (5-week roadmap)
 - PORTING_GUIDE.md ✅ (component portability)
 - CLAUDE.md ✅ (project conventions)
@@ -254,18 +284,21 @@ You can keep current structure and:
 ## 🎯 What Happens Next
 
 ### Immediately After You Commit relaxed-hugle Work
+
 1. You can set up devcontainer (30 min)
 2. Both main and relaxed-hugle worktrees work
 3. You can create additional worktrees as needed
 4. Each worktree can have own devcontainer window
 
 ### When UniversalWorkbench Integration Starts
+
 1. Create new worktree: `git worktree add ../feature-universal-workbench -b feature/universal-workbench-integration`
 2. Claude Code agent ports components (per PORTING_GUIDE.md)
 3. Works in its own isolated environment
 4. Merges back when ready
 
 ### If/When Turborepo Migration Starts
+
 1. Create new worktree: `git worktree add ../feature-turborepo-migration -b feature/turborepo-migration`
 2. Bootstrap ts-fullstack structure (Phase 1 of MIGRATION_IMPLEMENTATION_PLAN)
 3. Migrate all code into monorepo packages/
@@ -297,6 +330,7 @@ Keep as reference. Extract UniversalWorkbench components into modme-ui-01 when r
 **Right now, in this order**:
 
 1. **In relaxed-hugle worktree**:
+
    ```bash
    git add .
    git commit -m "feat: Agent Skills, token management, and devcontainer readiness..."

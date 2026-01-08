@@ -12,11 +12,9 @@
 
 Control application theme colors
 
-
 ## Tools
 
 - `setThemeColor`
-
 
 ## Related Toolsets
 

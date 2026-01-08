@@ -11,7 +11,9 @@ This plan bridges your Generative UI Workspace with the claude-prompts MCP ecosy
 ## Part 1: MCP Registry Indexer
 
 ### Goal
+
 Parse MCP server specs (from `modelcontextprotocol/servers`) and auto-generate:
+
 - Zod schemas for tool parameters
 - TypeScript type definitions
 - "Molecule" wrappers for CopilotKit orchestration
@@ -110,6 +112,7 @@ export function generateAgentInstructions(
 ```
 
 **Output example**:
+
 ```markdown
 # Available Tools
 
@@ -133,7 +136,9 @@ Break complex problems into steps.
 ## Part 2: Devcontainer Integration
 
 ### Goal
+
 Embed MCP server provisioning into `.devcontainer/devcontainer.json` so:
+
 - Local Claude Code Desktop automatically sees all tools
 - GitHub Codespaces has tools pre-installed
 - VS Code Dev Containers work out-of-box
@@ -202,6 +207,7 @@ Update `.devcontainer/devcontainer.json`:
 ```
 
 **Key additions**:
+
 - `mcp-servers/config.json` mount for tool configuration
 - Environment variables for workspace paths
 - `postCreateCommand` to install/start MCP servers
@@ -288,7 +294,9 @@ Create `.devcontainer/mcp-servers/config.json`:
 ## Part 3: Dynamic Schema Reflection
 
 ### Goal
+
 At **parse time** (when user describes a task), dynamically:
+
 1. Extract available tools from active MCP servers
 2. Generate agent instructions that reflect current capabilities
 3. Create specialized prompts for code generation, analysis, etc.
@@ -377,6 +385,7 @@ export function specializeAgent(
 ```
 
 **Output example**:
+
 ```markdown
 # Agent: Code Generator
 
@@ -401,6 +410,7 @@ Generate production-ready TypeScript for user's feature request.
 #### 3.3 Instruction Builder (`instruction-builder.ts`)
 
 Compose final agent prompt from:
+
 - Base agent persona
 - Specialized task template
 - Available tools reflection
@@ -512,18 +522,21 @@ Agent Instructions → Feed into claude-prompts
 ## Deliverables
 
 ### Phase 1: Registry Indexer (Week 1-2)
+
 - [ ] `registry-fetcher.ts` — Parse MCP servers
 - [ ] `schema-crawler.ts` — JSON Schema → Zod
 - [ ] `molecule-generator.ts` — Wrap into higher-level components
 - [ ] `agent-instructions.ts` — Emit dynamic prompts
 
 ### Phase 2: Devcontainer Integration (Week 2)
+
 - [ ] Update `.devcontainer/devcontainer.json`
 - [ ] Create `post-create-command.sh`
 - [ ] Configure `mcp-servers/config.json`
 - [ ] Document setup process
 
 ### Phase 3: Schema Reflection (Week 3)
+
 - [ ] `schema-reflection.ts` — Runtime tool discovery
 - [ ] `agent-specializer.ts` — Task-specific customization
 - [ ] `instruction-builder.ts` — Compose final prompts
@@ -531,6 +544,7 @@ Agent Instructions → Feed into claude-prompts
 - [ ] Test end-to-end with real MCP servers
 
 ### Phase 4: Validation (Week 4)
+
 - [ ] E2E tests with devcontainer
 - [ ] Agent instruction quality checks
 - [ ] Performance profiling

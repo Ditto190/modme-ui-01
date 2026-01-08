@@ -404,7 +404,7 @@ security:
 - **Integration Plan**: [GENAI_TOOLBOX_INTEGRATION_PLAN.md](GENAI_TOOLBOX_INTEGRATION_PLAN.md)
 - **Quick Start**: [agent/genai-toolbox/QUICKSTART.md](agent/genai-toolbox/QUICKSTART.md)
 - **Setup Script**: [agent/genai-toolbox/setup-genai-toolbox.ps1](agent/genai-toolbox/setup-genai-toolbox.ps1)
-- **Official Docs**: https://googleapis.github.io/genai-toolbox/
+- **Official Docs**: <https://googleapis.github.io/genai-toolbox/>
 
 ---
 

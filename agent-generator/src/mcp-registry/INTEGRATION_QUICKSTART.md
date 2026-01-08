@@ -9,14 +9,17 @@
 ## Your Three Immediate Priorities
 
 ### 1. Index MCP Registry in Agent Generator
+
 **Goal**: Auto-discover MCP servers and generate type-safe schemas + Molecules
 
 **Files Created**:
+
 - `registry-fetcher.ts` — Fetch & parse MCP server catalog
 - `schema-crawler.ts` — Transform JSON Schema → Zod + TypeScript
 - `molecule-generator.ts` — Wrap raw tools into semantic components
 
 **What Happens**:
+
 ```
 MCP Servers (filesystem, git, web, postgres, thinking, etc.)
     ↓
@@ -46,6 +49,7 @@ npm test --workspace=packages/agent-generator
 ```
 
 **Key Benefits**:
+
 - ✅ No more hallucinated tools — agents only see what exists
 - ✅ Type-safe tool calls via Zod validation
 - ✅ Semantic "Molecules" instead of raw APIs
@@ -54,9 +58,11 @@ npm test --workspace=packages/agent-generator
 ---
 
 ### 2. Embed MCP Configuration in Devcontainer
+
 **Goal**: Auto-provision MCP servers in devcontainer so Claude Code Desktop sees all tools
 
 **What to Create**:
+
 ```
 .devcontainer/
 ├── devcontainer.json (UPDATED)          ← Add mcp-servers config
@@ -69,6 +75,7 @@ npm test --workspace=packages/agent-generator
 ```
 
 **devcontainer.json Changes**:
+
 ```json
 {
   "remoteEnv": {
@@ -82,6 +89,7 @@ npm test --workspace=packages/agent-generator
 ```
 
 **What Gets Installed**:
+
 - `@modelcontextprotocol/server-filesystem`
 - `@modelcontextprotocol/server-git`
 - `@modelcontextprotocol/server-web`
@@ -90,6 +98,7 @@ npm test --workspace=packages/agent-generator
 - `claude-prompts` (your orchestration layer)
 
 **When Developer Opens Workspace**:
+
 1. Devcontainer initializes
 2. `post-create-command.sh` runs
 3. All MCP servers installed to `~/.mcp-servers`
@@ -97,6 +106,7 @@ npm test --workspace=packages/agent-generator
 5. Claude Code Desktop automatically connects → tools available
 
 **Key Benefits**:
+
 - ✅ Zero-config for developers
 - ✅ Works in GitHub Codespaces, VS Code Dev Containers, local Claude Code
 - ✅ All tools pre-provisioned
@@ -105,9 +115,11 @@ npm test --workspace=packages/agent-generator
 ---
 
 ### 3. Reflect Tool Schemas Dynamically
+
 **Goal**: At parse time, extract available tools and generate specialized agent instructions
 
 **Architecture**:
+
 ```
 User Task
     ↓
@@ -125,6 +137,7 @@ Agent → Executes with knowledge of available tools
 ```
 
 **Files to Create**:
+
 ```
 apps/agent-generator/src/reflection/
 ├── schema-reflection.ts       ← Runtime tool discovery
@@ -167,6 +180,7 @@ const result = await orchestrate({
 ```
 
 **Agent Instructions Generated** (example):
+
 ```markdown
 # Code Refactoring Agent
 
@@ -194,6 +208,7 @@ Refactor the TypeScript component for readability and performance.
 ```
 
 **Key Benefits**:
+
 - ✅ Agent instructions match available capabilities
 - ✅ No tool hallucinations (agent only sees real tools)
 - ✅ Task-specific guidance
@@ -219,6 +234,7 @@ Output → GenUI components + validated results
 ```
 
 **Example**:
+
 ```bash
 # Agent with reflected tools + claude-prompts
 prompt_engine(
@@ -233,6 +249,7 @@ prompt_engine(
 ## Implementation Sequence
 
 ### Week 1: Registry Indexer (Phase 1)
+
 - [ ] Integrate `registry-fetcher.ts` into agent-generator
 - [ ] Implement `schema-crawler.ts` — generate Zod schemas
 - [ ] Create `molecule-generator.ts` — define molecule library
@@ -240,6 +257,7 @@ prompt_engine(
 - [ ] Generate sample agent instructions
 
 ### Week 2: Devcontainer Integration (Phase 2)
+
 - [ ] Update `.devcontainer/devcontainer.json`
 - [ ] Create `post-create-command.sh`
 - [ ] Configure `mcp-servers/config.json`
@@ -247,6 +265,7 @@ prompt_engine(
 - [ ] Document setup process
 
 ### Week 3: Schema Reflection (Phase 3)
+
 - [ ] Implement `schema-reflection.ts`
 - [ ] Build `agent-specializer.ts`
 - [ ] Create `instruction-builder.ts`
@@ -254,6 +273,7 @@ prompt_engine(
 - [ ] Integrate with CopilotKit
 
 ### Week 4: Validation & Polish (Phase 4)
+
 - [ ] E2E testing across all tiers
 - [ ] Performance profiling
 - [ ] Documentation + examples
@@ -324,21 +344,25 @@ apps/agent-generator/
 ## Key Success Metrics
 
 ✅ **By End of Week 1**:
+
 - Registry indexed, Zod schemas generated, 15+ molecules defined
 - Agent instructions mention available tools by name
 - Tests pass for schema validation
 
 ✅ **By End of Week 2**:
+
 - Devcontainer installs MCP servers automatically
 - Claude Code Desktop sees tools without manual setup
 - Environment variables set correctly
 
 ✅ **By End of Week 3**:
+
 - Schema reflection works with running servers
 - Agent instructions dynamically generated per task
 - GenUI tier selection automatic
 
 ✅ **By End of Week 4**:
+
 - Full E2E working: describe task → agent executes with right tools
 - Documentation complete
 - Example projects demonstrate capabilities

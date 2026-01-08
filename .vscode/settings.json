@@ -265,5 +265,6 @@
   "terminal.integrated.defaultProfile.windows": "PowerShell",
   "terminal.integrated.env.windows": {
     "PYTHONPATH": "${workspaceFolder}\\agent"
-  }
+  },
+  "cmake.sourceDirectory": "C:/Users/dylan/.claude-worktrees/modme-ui-01/relaxed-hugle/node_modules/bare-fs"
 }

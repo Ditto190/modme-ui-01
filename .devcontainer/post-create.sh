@@ -31,7 +31,7 @@ fi
 echo "🐍 Setting up Python agent environment..."
 if [ -f "agent/pyproject.toml" ]; then
     cd agent
-    
+
     # Use uv if available, otherwise use pip
     if command -v uv &> /dev/null; then
         echo "Using uv for Python package management..."
@@ -43,7 +43,7 @@ if [ -f "agent/pyproject.toml" ]; then
         pip install --upgrade pip
         pip install -e .
     fi
-    
+
     cd ..
 else
     echo "⚠️  No agent/pyproject.toml found"

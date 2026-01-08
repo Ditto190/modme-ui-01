@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **ModMe GenUI Workspace** is a Generative UI (GenUI) R&D laboratory combining Next.js 16 frontend with Python ADK backend for creating dynamic, AI-generated interfaces. This is a local-first, privacy-focused consulting platform supporting multi-agent workflows, code sandboxing, and component-based UI generation.
 
 Key technologies:
+
 - **Frontend**: Next.js 16, React 19, Tailwind CSS 4, CopilotKit
 - **Backend**: Python ADK (Google), FastAPI, Gemini AI
 - **Data**: Local SQLite + ChromaDB, Git-ignored `data/` directory
@@ -15,6 +16,7 @@ Key technologies:
 ## Development Commands
 
 ### Setup & Installation
+
 ```bash
 # Automated setup (recommended)
 ./scripts/setup.sh              # Linux/macOS
@@ -25,6 +27,7 @@ npm run install:agent           # Also: pnpm/yarn/bun run install:agent
 ```
 
 ### Running Development Servers
+
 ```bash
 npm run dev                     # Start both UI (3000) + agent (8000) concurrently
 npm run dev:ui                  # Start only Next.js UI server
@@ -33,12 +36,14 @@ npm run dev:debug               # Start dev with debug logging (LOG_LEVEL=debug)
 ```
 
 ### Building & Production
+
 ```bash
 npm run build                   # Build Next.js for production
 npm start                       # Start production server
 ```
 
 ### Code Quality
+
 ```bash
 npm run lint                    # Run ESLint + Ruff (Python)
 npm run lint:fix                # Fix linting issues automatically
@@ -47,6 +52,7 @@ npm run check                   # Run lint + format together
 ```
 
 ### Documentation & Knowledge Management
+
 ```bash
 npm run docs:sync               # Sync documentation between formats
 npm run docs:md-to-json         # Convert markdown docs to JSON
@@ -57,6 +63,7 @@ npm run docs:all                # Run all doc sync and diagram generation
 ```
 
 ### Toolset Management
+
 ```bash
 npm run validate:toolsets       # Validate toolset integrity
 npm run validate:naming         # Check naming conventions
@@ -68,6 +75,7 @@ npm run search:toolset          # Search for toolsets in knowledge base
 ## Architecture Overview
 
 ### System Architecture
+
 ```
 User's Browser (localhost:3000)
 ├── Next.js Frontend
@@ -88,6 +96,7 @@ Python ADK Agent (localhost:8000)
 ```
 
 ### Directory Structure
+
 ```
 src/
 ├── app/
@@ -148,6 +157,7 @@ State must always be serializable JSON. Define interfaces in `src/lib/types.ts` 
 ### Agent Tools Pattern
 
 Tools in `agent/main.py` follow this structure:
+
 ```python
 def verb_noun(tool_context: ToolContext, param: str) -> Dict[str, str]:
     """Clear description for LLM understanding."""
@@ -161,12 +171,14 @@ Tool naming: `verb_noun` (e.g., `update_kpi`, `set_layout`, `fetch_data`)
 ### Toolset Management System
 
 **Toolsets** organize reusable agent capabilities:
+
 - Defined in `agent/toolsets.json`
 - References in `agent/tools/` directory
 - Lifecycle tracked in `agent/toolset_manager.py`
 - Schema validation via `agent/toolset-schema.json`
 
 Toolsets support:
+
 - Versioning & deprecation workflows
 - Alias resolution for backward compatibility
 - Automatic naming validation
@@ -177,6 +189,7 @@ Toolsets support:
 **Critical**: Client data NEVER leaves the machine unless explicitly configured.
 
 ### Data Directory
+
 - **Location**: `data/` (Git-ignored)
 - **Never commit**: Client datasets, `.env` files, `artifacts.db`
 - **Subdirectories**:
@@ -185,11 +198,13 @@ Toolsets support:
   - `data/reports/` - Generated analysis outputs
 
 ### Audit Logging
+
 - **Location**: `artifacts.db` (SQLite, Git-ignored)
 - **Tracks**: Document ingestion, pipeline runs, metrics
 - **Access**: Via `src/utils/audit.py` functions
 
 ### Configuration
+
 - **Location**: `.env` (Git-ignored)
 - **Template**: `.env.example` (committed)
 - **Required**: `GOOGLE_API_KEY` for Gemini
@@ -198,6 +213,7 @@ Toolsets support:
 ## Code Organization & Conventions
 
 ### TypeScript/React
+
 - **Style**: Functional components with React 19 hooks
 - **Styling**: Tailwind CSS 4 utility classes
 - **Icons**: Lucide React
@@ -205,6 +221,7 @@ Toolsets support:
 - **Types**: Centralized in `src/lib/types.ts`
 
 ### Python Agent
+
 - **Framework**: Google ADK (Anthropic SDK)
 - **Server**: FastAPI on port 8000
 - **Tools**: Decorated functions with clear docstrings
@@ -212,6 +229,7 @@ Toolsets support:
 - **Memory**: SQLite conversation history (optional via `src/utils/memory.py`)
 
 ### Naming Conventions
+
 - **Files**: kebab-case (e.g., `StatCard.tsx`, `update_kpi.py`)
 - **Components**: PascalCase (React components)
 - **Functions**: camelCase (JavaScript/TypeScript), snake_case (Python)
@@ -236,11 +254,13 @@ Toolsets support:
 ## Testing
 
 ### Frontend Tests
+
 - Location: `tests/` directory
 - Framework: Jest/React Testing Library
 - Run: No dedicated test command exposed (inspect `package.json` for setup)
 
 ### Integration Testing
+
 - Test UI components in isolation
 - Verify agent tools work independently
 - Integration tests for full frontend↔backend flow
@@ -252,40 +272,47 @@ Toolsets support:
 **Python**: 3.12+
 **Package manager**: pnpm, npm, yarn, or bun (lock files Git-ignored to avoid conflicts)
 **API Keys**:
+
 - `GOOGLE_API_KEY` (Gemini/ADK)
 - Others as needed per `.env.example`
 
 ## Critical Patterns & Guardrails
 
 ### 1. LocalFirst by Default
+
 - No hardcoded external API calls without `.env` config
 - Test with `USE_LOCAL_EMBEDDINGS=true` for offline capability
 - Client data stays in `data/` directory (never synced)
 
 ### 2. State Synchronization
+
 - Always define TypeScript types in `src/lib/types.ts` FIRST
 - Python side must match interface exactly (keys, types)
 - Use `callback_context.state` to update, never globals
 
 ### 3. Agent Tool Design
+
 - Keep tools focused (single responsibility)
 - Allow granular state updates (not monolithic objects)
 - Clear docstrings for LLM understanding
 - Return status/success indicators
 
 ### 4. Component Registry
+
 - All new GenUI components go in `src/components/registry/`
 - Export from index for agent access
 - Update agent instructions in `src/prompts/copilot/` when adding components
 - Keep component props simple & serializable
 
 ### 5. Audit Compliance
+
 - Log significant operations to `artifacts.db`
 - Use `src/utils/audit.py` functions
 - Enable in consulting/regulated workflows
 - Never disable for client work
 
 ### 6. Sandboxing
+
 - Use **MicroSandbox** (not Docker) for code execution
 - Configured in workspace root `Sandboxfile`
 - Persistence in `./menv/` directory
@@ -316,21 +343,25 @@ Toolsets support:
 ## References & Documentation
 
 **Architecture & Design**:
+
 - `.copilot/knowledge/architecture.md` - System architecture details
 - `.copilot/instructions/genui-development.md` - GenUI patterns & practices
 - `Project_Overview.md` - Vision & high-level concepts
 
 **Process & Workflow**:
+
 - `CONTRIBUTING.md` - Development workflow, testing, PR process
 - `.devcontainer/` - DevContainer configuration for portable setup
 
 **Advanced Topics**:
+
 - `CODEBASE_INDEX.md` - Complete component catalog
 - `PORTING_GUIDE.md` - How to port components to other projects
 - `docs/TOOLSET_MANAGEMENT.md` - Toolset system details
 - `docs/ISSUE_MANAGEMENT_SYSTEM.md` - Issue handling automation
 
 **External References**:
+
 - [Google ADK Documentation](https://google.github.io/adk-docs/)
 - [CopilotKit Documentation](https://docs.copilotkit.ai)
 - [Next.js Documentation](https://nextjs.org/docs)
@@ -347,4 +378,4 @@ Toolsets support:
 
 ---
 
-For help with Claude Code features, see `/help` or report issues at https://github.com/anthropics/claude-code/issues
+For help with Claude Code features, see `/help` or report issues at <https://github.com/anthropics/claude-code/issues>

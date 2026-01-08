@@ -57,31 +57,38 @@
 ### TypeScript
 
 - [ ] **Type checking passes**
+
   ```bash
   npx tsc --noEmit
   ```
+
   - [ ] No errors in `src/`
   - [ ] No errors in `agent-generator/src/`
   - [ ] No errors in `scripts/knowledge-management/`
 
 - [ ] **ESLint passes**
+
   ```bash
   npm run lint
   ```
+
   - [ ] Fix any ESLint errors
   - [ ] Address any warnings
 
 ### Python
 
 - [ ] **Ruff linting passes**
+
   ```bash
   cd agent
   uv run ruff check .
   ```
+
   - [ ] No linting errors
   - [ ] Format code: `uv run ruff format .`
 
 - [ ] **Python tests pass**
+
   ```bash
   cd agent
   uv run pytest
@@ -90,10 +97,12 @@
 ### Knowledge Base System
 
 - [ ] **KB tests pass**
+
   ```bash
   cd scripts/knowledge-management
   npm test
   ```
+
   - [ ] All 4 test cases pass (StatCard, Toolset, State Sync, ChartCard)
   - [ ] 100% test coverage maintained
 
@@ -104,17 +113,21 @@
 ### Toolset Management
 
 - [ ] **Toolset validation passes**
+
   ```bash
   npm run validate:toolsets
   ```
+
   - [ ] JSON schema validation
   - [ ] No circular dependencies
   - [ ] All referenced tools exist
 
 - [ ] **Documentation sync**
+
   ```bash
   npm run docs:all
   ```
+
   - [ ] Markdown generated from JSON
   - [ ] Diagram generated
   - [ ] No validation errors
@@ -122,16 +135,20 @@
 ### Build Verification
 
 - [ ] **Next.js build succeeds**
+
   ```bash
   npm run build
   ```
+
   - [ ] No build errors
   - [ ] Static export succeeds
 
 - [ ] **Development servers start**
+
   ```bash
   npm run dev
   ```
+
   - [ ] Python agent starts on :8000
   - [ ] Next.js starts on :3000
   - [ ] No startup errors
@@ -172,6 +189,7 @@
 ### Preparation
 
 - [ ] **Generate code chunks**
+
   ```bash
   # Option 1: Use pykomodo (if installed)
   pykomodo generate --input . --output output_chunks/chunks.jsonl
@@ -188,12 +206,14 @@
 ### Ingestion
 
 - [ ] **Set Google API key**
+
   ```bash
   export GOOGLE_API_KEY="your-key-here"
   # or add to .env file
   ```
 
 - [ ] **Run ingestion script**
+
   ```bash
   python scripts/ingest_chunks.py \
     --mode persistent \
@@ -209,6 +229,7 @@
   - [ ] `workflows` collection (optional)
 
 - [ ] **Test semantic search**
+
   ```python
   import chromadb
   client = chromadb.PersistentClient(path="./chroma_data")
@@ -266,6 +287,7 @@
 ### Dependency Audit
 
 - [ ] **npm audit**
+
   ```bash
   npm audit
   # Fix any high/critical vulnerabilities
@@ -273,6 +295,7 @@
   ```
 
 - [ ] **Python dependencies**
+
   ```bash
   cd agent
   uv run pip-audit  # if available
@@ -302,10 +325,10 @@
 
 ### External Links Verified
 
-- [ ] **CopilotKit docs** (https://docs.copilotkit.ai/)
-- [ ] **Google ADK docs** (https://ai.google.dev/adk/docs)
-- [ ] **ChromaDB docs** (https://docs.trychroma.com/)
-- [ ] **Zod docs** (https://zod.dev/)
+- [ ] **CopilotKit docs** (<https://docs.copilotkit.ai/>)
+- [ ] **Google ADK docs** (<https://ai.google.dev/adk/docs>)
+- [ ] **ChromaDB docs** (<https://docs.trychroma.com/>)
+- [ ] **Zod docs** (<https://zod.dev/>)
 
 ---
 
@@ -323,23 +346,26 @@
 
 - [ ] **Remove unused files**
   - [ ] Old test files
-  - [ ] Backup files (*.bak, *.old)
+  - [ ] Backup files (*.bak,*.old)
   - [ ] Temporary scripts
 
 ### Code Formatting
 
 - [ ] **Format TypeScript**
+
   ```bash
   npx prettier --write "**/*.{ts,tsx,js,jsx,json,css,md}"
   ```
 
 - [ ] **Format Python**
+
   ```bash
   cd agent
   uv run ruff format .
   ```
 
 - [ ] **Format Markdown**
+
   ```bash
   npx prettier --write "**/*.md"
   ```
@@ -377,12 +403,14 @@
 ### Git
 
 - [ ] **All changes staged**
+
   ```bash
   git status
   git add .
   ```
 
 - [ ] **Commit message prepared**
+
   ```
   feat: Add Knowledge Base Context Mapper + Codebase Indexing for Porting
   
@@ -409,6 +437,7 @@
   ```
 
 - [ ] **Push to remote**
+
   ```bash
   git push origin feature/part-02-workbench-expansion-save-copilot-20260102-2028
   ```
@@ -422,6 +451,7 @@
 - [ ] **Title**: `feat: Add Knowledge Base Context Mapper + Codebase Indexing for Porting`
 
 - [ ] **Description**:
+
   ```markdown
   ## 🎯 Overview
   
@@ -525,12 +555,14 @@
 ### After PR Merged
 
 - [ ] **Update main branch**
+
   ```bash
   git checkout main
   git pull origin main
   ```
 
 - [ ] **Delete feature branch** (optional)
+
   ```bash
   git branch -d feature/part-02-workbench-expansion-save-copilot-20260102-2028
   git push origin --delete feature/part-02-workbench-expansion-save-copilot-20260102-2028

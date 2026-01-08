@@ -126,6 +126,7 @@ def upsert_ui_element(tool_context, id, type, props):
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Add type hints for all parameters and return values
 - ✅ Validate inputs before state mutations
 - ✅ Check if element exists before deciding append vs update
@@ -197,6 +198,7 @@ def before_model_modifier(callback_context, llm_request):
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Use `.get()` with defaults for state access
 - ✅ Validate instruction structure before mutations
 - ✅ Format state for readability (JSON, counts, summaries)
@@ -289,6 +291,7 @@ async def health_check():
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Separate `/health` (liveness) from `/ready` (readiness)
 - ✅ Check all critical dependencies in readiness probe
 - ✅ Return proper HTTP status codes (200 vs 503)
@@ -351,6 +354,7 @@ function handleAdd() {
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Import `AgentState` type from `src/lib/types.ts`
 - ✅ Use `state?.elements || []` for safe access
 - ✅ Never call `setState` to mutate agent state
@@ -417,6 +421,7 @@ function renderElement(el: UIElement) {
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Include `default` case for unknown types
 - ✅ Log errors to console for debugging
 - ✅ Render fallback UI showing the error
@@ -484,6 +489,7 @@ useFrontendTool({
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Validate all inputs (use Zod schemas)
 - ✅ Add error handling in handler
 - ✅ Log actions for debugging
@@ -540,6 +546,7 @@ type UIElement = {
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Use identical keys in Python dicts and TypeScript interfaces
 - ✅ Document key names in both files
 - ✅ Use `snake_case` for Python, `camelCase` for TypeScript (but matching semantics)
@@ -640,6 +647,7 @@ export function StatCard({ title, value, trend, trendDirection }: any) {
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Define Zod schema for props
 - ✅ Validate props at runtime with `.safeParse()`
 - ✅ Render fallback UI for invalid props
@@ -722,6 +730,7 @@ export const getWeatherTool = {
 4. **Use Validators** before passing data to tools
 
 **Benefits**:
+
 - ✅ Type safety for all MCP tool calls
 - ✅ Runtime validation prevents bad data
 - ✅ Auto-generated code reduces manual errors
@@ -803,6 +812,7 @@ def test_upsert_ui_element_invalid_type():
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Test each tool function in isolation
 - ✅ Mock `ToolContext` to avoid dependencies
 - ✅ Test create, update, and error paths
@@ -853,6 +863,7 @@ describe("StatCard", () => {
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Test valid prop combinations
 - ✅ Test invalid props (validation failures)
 - ✅ Test optional props (present vs absent)
@@ -919,6 +930,7 @@ const count = useMemo(() => state.elements.length, [state.elements]);  // Overki
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Only memoize expensive components (large lists, heavy renders)
 - ✅ Use custom equality checks for complex props
 - ✅ Avoid memoizing cheap computations
@@ -991,6 +1003,7 @@ def upsert_ui_element(tool_context, id, type, props):
 ```
 
 **Refactoring Checklist**:
+
 - ✅ Sanitize all string inputs with regex/escape
 - ✅ Whitelist allowed component types
 - ✅ Validate IDs against safe character sets
@@ -1099,4 +1112,3 @@ async def my_tool(tool_context: ToolContext):
 **Last Updated**: January 2, 2026  
 **Maintained by**: ModMe GenUI Team  
 **Tech Stack**: Python 3.12+, TypeScript 5, React 19, Next.js 16, CopilotKit 1.50.0
-

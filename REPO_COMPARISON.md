@@ -23,7 +23,7 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 
 ### 1. AdaptiveWorX/ts-fullstack ⭐ RECOMMENDED BASE
 
-**URL**: https://github.com/AdaptiveWorX/ts-fullstack
+**URL**: <https://github.com/AdaptiveWorX/ts-fullstack>
 
 | Aspect | Rating | Details |
 |--------|--------|---------|
@@ -36,6 +36,7 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 | **Documentation** | ⭐⭐⭐⭐ | Excellent README, SETUP.md, DEBUG.md |
 
 **Strengths**:
+
 - Modern PERN stack (PostgreSQL, Express/Fastify, React, Node)
 - Turborepo incremental builds with remote caching
 - Biome for 100x faster linting/formatting
@@ -44,6 +45,7 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 - Built for "100% agentic development" with Claude
 
 **Weaknesses**:
+
 - No Python/ADK support
 - No ChromaDB/vector store integration
 - Limited MCP server examples
@@ -54,7 +56,7 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 
 ### 2. Insajin/AutonomusCompany ⭐ AI AUTOMATION
 
-**URL**: https://github.com/Insajin/AutonomusCompany
+**URL**: <https://github.com/Insajin/AutonomusCompany>
 
 | Aspect | Rating | Details |
 |--------|--------|---------|
@@ -67,6 +69,7 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 | **Documentation** | ⭐⭐⭐⭐⭐ | Comprehensive SETUP.md, troubleshooting |
 
 **Strengths**:
+
 - **Claude Code OAuth integration** - Automated 2-minute PR reviews
 - **Weekly AI feature suggestions** - Codebase analysis workflow
 - **14 deployment platform examples**: Vercel, Netlify, Railway, Render, Fly.io, AWS, GCP, Azure
@@ -75,6 +78,7 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 - **GitHub Discussions integration** - AI suggestion refinement
 
 **Key Workflows to Port**:
+
 ```yaml
 # Must-have workflows from AutonomusCompany
 - pr-review.yml           # Claude Code automated review
@@ -85,6 +89,7 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 ```
 
 **Weaknesses**:
+
 - Basic monorepo structure (npm workspaces)
 - No MCP server support
 - No advanced TypeScript features
@@ -95,7 +100,7 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 
 ### 3. giridamodaran/ai-native-ux-template ⭐ MCP PATTERNS
 
-**URL**: https://github.com/giridamodaran/ai-native-ux-template
+**URL**: <https://github.com/giridamodaran/ai-native-ux-template>
 
 | Aspect | Rating | Details |
 |--------|--------|---------|
@@ -108,6 +113,7 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 | **Documentation** | ⭐⭐⭐⭐ | Good architecture docs |
 
 **Strengths**:
+
 - **Native MCP server implementation** (TypeScript)
 - **Dual transport modes**: STDIO (local) + HTTP (cloud)
 - **Claude Desktop .mcpb bundling** - One-click extension packaging
@@ -115,6 +121,7 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 - **Chat backend pattern** - Claude tool-use ↔ MCP
 
 **Key Patterns to Port**:
+
 ```typescript
 // MCP Server transport abstraction
 // packages/mcp-bookings/src/index.ts
@@ -133,6 +140,7 @@ export const server = {
 ```
 
 **Weaknesses**:
+
 - No modern monorepo tooling
 - Minimal component system
 - Docker-only deployment
@@ -143,7 +151,7 @@ export const server = {
 
 ### 4. ThriledLokki983/mono-workspace ⭐ COMPONENT PATTERNS
 
-**URL**: https://github.com/ThriledLokki983/mono-workspace
+**URL**: <https://github.com/ThriledLokki983/mono-workspace>
 
 | Aspect | Rating | Details |
 |--------|--------|---------|
@@ -156,6 +164,7 @@ export const server = {
 | **Documentation** | ⭐⭐⭐⭐⭐ | Excellent README, patterns |
 
 **Strengths**:
+
 - **React Aria integration** - WCAG 2.1 AA compliance
 - **Shared packages architecture**:
   - `@mono/types` - Centralized TypeScript types
@@ -166,6 +175,7 @@ export const server = {
 - **Dependency constraints** - Apps cannot import from other apps
 
 **Key Patterns to Port**:
+
 ```typescript
 // Shared types pattern
 // packages/types/src/ui/button.ts
@@ -186,6 +196,7 @@ export function Button({ variant, size, ...props }: ButtonProps) {
 ```
 
 **Weaknesses**:
+
 - No AI/agent automation
 - No deployment pipelines
 - Yarn-only (not Turborepo)
@@ -196,7 +207,7 @@ export function Button({ variant, size, ...props }: ButtonProps) {
 
 ### 5. zyahav/monorepo-template ⭐ COLLABORATION
 
-**URL**: https://github.com/zyahav/monorepo-template
+**URL**: <https://github.com/zyahav/monorepo-template>
 
 | Aspect | Rating | Details |
 |--------|--------|---------|
@@ -209,12 +220,14 @@ export function Button({ variant, size, ...props }: ButtonProps) {
 | **Documentation** | ⭐⭐⭐⭐ | Clear workflow docs |
 
 **Strengths**:
+
 - **Git Worktree workflow** - Isolated feature branches
 - **Human/AI parallel work** - Clear ownership model
 - **Safe automation scripts** - Prevent common Git mistakes
 - **Agent communication** - mysay voice + Telegram integration
 
 **Key Scripts to Port**:
+
 ```bash
 # scripts/init-workspace.sh - First-time setup
 # scripts/new-feature.sh - Create feature branch + worktree
@@ -227,6 +240,7 @@ export function Button({ variant, size, ...props }: ButtonProps) {
 ```
 
 **Weaknesses**:
+
 - Shell scripts only (no TypeScript)
 - No build system
 - No component library
@@ -237,7 +251,7 @@ export function Button({ variant, size, ...props }: ButtonProps) {
 
 ### 6. adobe/react-spectrum ⭐ COMPONENT LIBRARY
 
-**URL**: https://github.com/adobe/react-spectrum
+**URL**: <https://github.com/adobe/react-spectrum>
 
 | Aspect | Rating | Details |
 |--------|--------|---------|
@@ -250,6 +264,7 @@ export function Button({ variant, size, ...props }: ButtonProps) {
 | **Documentation** | ⭐⭐⭐⭐⭐ | World-class |
 
 **Strengths**:
+
 - **React Aria** - Unstyled accessible hooks/components
 - **React Stately** - Cross-platform state management
 - **Internationalized** - 30+ languages, RTL support
@@ -257,6 +272,7 @@ export function Button({ variant, size, ...props }: ButtonProps) {
 - **14.6k stars, 405 contributors** - Production proven
 
 **Integration Strategy**:
+
 ```bash
 # Use as dependency, not as template
 npm install react-aria-components @react-aria/button @react-aria/focus
@@ -270,7 +286,7 @@ npm install @internationalized/date @internationalized/number
 
 ### 7. TTraX/ts-monorepo
 
-**URL**: https://github.com/TTraX/ts-monorepo (404 - Not Found)
+**URL**: <https://github.com/TTraX/ts-monorepo> (404 - Not Found)
 
 **Status**: Repository not accessible. Likely private or deleted.
 
@@ -356,29 +372,34 @@ npm install @internationalized/date @internationalized/number
 ## 🛠️ Recommended Porting Order
 
 ### Phase 1: Foundation (Week 1)
+
 1. Fork `AdaptiveWorX/ts-fullstack` as new base
 2. Copy `.github/workflows/` from `AutonomusCompany`
 3. Add Claude Code OAuth integration
 4. Configure semantic release
 
 ### Phase 2: Python Integration (Week 2)
+
 1. Create `packages/python-agent/` from modme-ui-01 `agent/`
 2. Add pyproject.toml with uv/pip support
 3. Port `toolset_manager.py` and `toolsets.json`
 4. Create `packages/genai-toolbox/` from `genai-toolbox/`
 
 ### Phase 3: TypeScript Tools (Week 3)
+
 1. Port `schema-crawler.ts` to `packages/schema-crawler/`
 2. Port Knowledge Base Mapper to `packages/knowledge-base/`
 3. Integrate with existing `@adaptiveworx/ui` or create `packages/genui-components/`
 
 ### Phase 4: Workflows & Automation (Week 4)
+
 1. Port `build-code-index.yml` for ChromaDB
 2. Add `issue-labeler.yml` with KB integration
 3. Port Git worktree scripts from `zyahav/monorepo-template`
 4. Add MCP server bundling from `ai-native-ux-template`
 
 ### Phase 5: Documentation & Testing (Week 5)
+
 1. Merge documentation
 2. Port test suites
 3. Create unified CLAUDE.md
@@ -390,13 +411,13 @@ npm install @internationalized/date @internationalized/number
 
 | Repository | URL | Primary Use |
 |------------|-----|-------------|
-| ts-fullstack | https://github.com/AdaptiveWorX/ts-fullstack | Base template |
-| AutonomusCompany | https://github.com/Insajin/AutonomusCompany | AI automation |
-| ai-native-ux-template | https://github.com/giridamodaran/ai-native-ux-template | MCP patterns |
-| mono-workspace | https://github.com/ThriledLokki983/mono-workspace | Component patterns |
-| monorepo-template | https://github.com/zyahav/monorepo-template | Git worktrees |
-| react-spectrum | https://github.com/adobe/react-spectrum | Dependencies |
-| react-aria | https://react-aria.adobe.com/ | Component library |
+| ts-fullstack | <https://github.com/AdaptiveWorX/ts-fullstack> | Base template |
+| AutonomusCompany | <https://github.com/Insajin/AutonomusCompany> | AI automation |
+| ai-native-ux-template | <https://github.com/giridamodaran/ai-native-ux-template> | MCP patterns |
+| mono-workspace | <https://github.com/ThriledLokki983/mono-workspace> | Component patterns |
+| monorepo-template | <https://github.com/zyahav/monorepo-template> | Git worktrees |
+| react-spectrum | <https://github.com/adobe/react-spectrum> | Dependencies |
+| react-aria | <https://react-aria.adobe.com/> | Component library |
 
 ---
 
@@ -416,10 +437,12 @@ npm install @internationalized/date @internationalized/number
 ## 📚 Additional Resources
 
 **MCP Development**:
+
 - [TypeScript MCP Server Instructions](awesome-copilot: typescript-mcp-development)
 - [Python MCP Server Instructions](awesome-copilot: python-mcp-development)
 
 **Collections Loaded**:
+
 - `typescript-mcp-development` - TS MCP server best practices
 - `python-mcp-development` - Python FastMCP best practices
 - `frontend-web-dev` - React, Next.js patterns

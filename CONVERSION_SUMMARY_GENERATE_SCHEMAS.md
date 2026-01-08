@@ -26,18 +26,21 @@ Created [agent/tools/generate_schemas.py](agent/tools/generate_schemas.py) with 
 ### 2. Followed Best Practices
 
 ✅ **FastMCP-Inspired Pattern**:
+
 - All tools accept `ToolContext` parameter
 - Return structured dicts with `status` + `message`
 - Comprehensive error handling
 - Type hints for all parameters
 
 ✅ **Python MCP Development Best Practices** (from awesome-copilot):
+
 - Clear docstrings (become tool descriptions)
 - Descriptive parameter names
 - Pydantic-compatible return types
 - Async-ready (though not required here)
 
 ✅ **Skills Reference Implementation**:
+
 - Validates skill directories
 - Generates `<available_skills>` XML format
 - Compatible with Anthropic skills patterns
@@ -73,6 +76,7 @@ tools:
 ```
 
 **Benefits**:
+
 - Tools discoverable via `genai-toolbox list`
 - Can run via `genai-toolbox run <tool_name>`
 - Integrates with VS Code AI Toolkit
@@ -121,6 +125,7 @@ Created [tests/test_generate_schemas.py](tests/test_generate_schemas.py):
 - ✅ Parametrized tests
 
 **Run Tests**:
+
 ```bash
 pytest tests/test_generate_schemas.py -v
 pytest tests/test_generate_schemas.py::test_generate_agent_prompt_success
@@ -154,6 +159,7 @@ async function generateAgentPrompt() {
 ```
 
 **Issues**:
+
 - Hardcoded paths
 - No error handling
 - Prints to console (not machine-readable)
@@ -207,6 +213,7 @@ def generate_agent_prompt(
 ```
 
 **Improvements**:
+
 - ✅ Configurable paths
 - ✅ Comprehensive error handling
 - ✅ Structured return values
@@ -460,6 +467,7 @@ def tool_name(tool_context: ToolContext, ...) -> Dict[str, Any]:
 ### 2. Skills Reference Implementation
 
 The Python [skills-ref library](https://github.com/anthropics/skills-ref) provides:
+
 - `skills-ref validate <path>` - Validate skill structure
 - `skills-ref to-prompt <path>...` - Generate `<available_skills>` XML
 
@@ -468,6 +476,7 @@ Our implementation follows these patterns but integrates with Google ADK.
 ### 3. GenAI Toolbox Integration
 
 Tools must be registered in `tools.yaml`:
+
 ```yaml
 tools:
   tool_name:

@@ -41,6 +41,7 @@ agent/tools/skills_ref_tools.py
 ### 3. Configuration Updates
 
 **Modified**: `genai-toolbox/tools.yaml`
+
 - Added 3 new tool configurations:
   - `validate_skill`
   - `read_skill_properties`
@@ -86,6 +87,7 @@ else:
 ```
 
 **Validation Rules**:
+
 - ✅ Name: lowercase, hyphens, max 64 chars
 - ✅ Description: non-empty, max 1024 chars
 - ✅ Directory matches name exactly
@@ -274,6 +276,7 @@ pytest tests/test_skills_ref.py -v
 ```
 
 **Test Coverage Needed**:
+
 - ✅ Validation (valid skills, invalid names, missing fields)
 - ✅ Parsing (frontmatter, missing SKILL.md, invalid YAML)
 - ✅ Prompt generation (empty list, single skill, multiple skills)
@@ -332,8 +335,8 @@ jobs:
 
 ## 🔗 References
 
-- **Original Library**: https://github.com/agentskills/agentskills/tree/main/skills-ref
-- **Specification**: https://agentskills.io/specification
+- **Original Library**: <https://github.com/agentskills/agentskills/tree/main/skills-ref>
+- **Specification**: <https://agentskills.io/specification>
 - **Integration Guide**: [docs/AGENT_SKILLS_INTEGRATION.md](docs/AGENT_SKILLS_INTEGRATION.md)
 - **Library README**: [agent/skills_ref/README.md](agent/skills_ref/README.md)
 
@@ -355,6 +358,7 @@ jobs:
 ```
 
 **Modified**:
+
 ```
 ✅ genai-toolbox/tools.yaml                     # Added 3 tool configs
 ```
@@ -374,28 +378,33 @@ jobs:
 ## 🚀 Next Actions
 
 1. **Install Dependencies**:
+
    ```bash
    pip install strictyaml click
    ```
 
 2. **Create Test Skill**:
+
    ```bash
    mkdir -p agent-generator/src/skills/demo-skill
    # Add SKILL.md
    ```
 
 3. **Validate**:
+
    ```bash
    python -m agent.skills_ref.cli validate agent-generator/src/skills/demo-skill
    ```
 
 4. **Write Tests** (pending):
+
    ```bash
    # Create tests/test_skills_ref.py
    pytest tests/test_skills_ref.py -v
    ```
 
 5. **Integrate with Agent**:
+
    ```python
    # Add to agent/main.py
    from agent.skills_ref import to_prompt
@@ -406,6 +415,7 @@ jobs:
 ## 📞 Support
 
 For questions or issues:
+
 1. 📖 Check [agent/skills_ref/README.md](agent/skills_ref/README.md)
 2. 📚 Review [docs/AGENT_SKILLS_INTEGRATION.md](docs/AGENT_SKILLS_INTEGRATION.md)
 3. 🔍 Examine existing skills in `agent-generator/src/skills/`
@@ -441,4 +451,3 @@ from agent.skills_ref import validate, read_properties, to_prompt
 ---
 
 **End of Summary** ✨
-

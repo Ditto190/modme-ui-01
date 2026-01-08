@@ -10,11 +10,13 @@
 ## Entities
 
 ### 1. Knowledge Base Context Mapper
+
 **Type**: System Component  
 **Location**: `scripts/knowledge-management/issue-context-mapper.ts`  
 **Lines**: 420
 
 **Observations**:
+
 - TypeScript-based semantic issue enrichment system for GitHub Actions
 - Analyzes GitHub issue titles and bodies to detect relevant concepts
 - Maps detected concepts to files, documentation, and labels
@@ -27,6 +29,7 @@
 - **Achievement**: 100% test pass rate after expanding Agent Tools keywords from 4 to 8 terms
 
 **Implementation Steps**:
+
 1. Create TypeScript interface types (`FileMapping`, `ConceptMapping`, `IssueContext`)
 2. Define `KNOWLEDGE_BASE` dictionary with 9 concept mappings
 3. Implement `analyzeIssueContent()` with keyword matching algorithm
@@ -35,6 +38,7 @@
 6. Export CommonJS module for Node.js compatibility
 
 **Key Algorithm**:
+
 ```typescript
 // For each concept in KNOWLEDGE_BASE:
 //   Check if any keyword exists in lowercase(title + body)
@@ -44,23 +48,27 @@
 ```
 
 **Example Usage**:
+
 ```bash
 node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
 # Returns: JSON with detectedConcepts: ["StatCard", "Agent Tools"]
 ```
 
 **Production Integration**:
+
 - Integrated into `.github/workflows/issue-labeler.yml` as step 4
 - Named "Analyze issue with Knowledge Base"
 
 ---
 
 ### 2. Concept Mappings Knowledge Base
+
 **Type**: Data Structure  
 **Location**: `scripts/knowledge-management/issue-context-mapper.ts` (lines 15-150)  
 **Structure**: `Record<string, ConceptMapping>`
 
 **Observations**:
+
 - Central knowledge base with 9 concept definitions
 - Total coverage: 30+ keywords, 15+ files, 20+ documentation links
 - Each concept contains: `keywords[]`, `files[]`, `documentation[]`, `relatedConcepts[]`
@@ -119,12 +127,14 @@ node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
    - Label: `testing`
 
 **Design Decisions**:
+
 - Curated quality over auto-discovery - maintainers control mappings
 - Keywords include both specific terms (function names) AND general terms (conversational language)
 - File mappings include primary path + relatedPaths for cross-references
 - Documentation links use relative paths with anchor links
 
 **Maintenance Procedure**:
+
 1. Edit `issue-context-mapper.ts` `KNOWLEDGE_BASE`
 2. Add label suggestion in `analyzeIssueContent()`
 3. Add test case in `test-kb-mapper.js`
@@ -134,22 +144,26 @@ node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
 ---
 
 ### 3. GitHub Actions Issue Labeler Workflow
+
 **Type**: CI/CD Pipeline  
 **Location**: `.github/workflows/issue-labeler.yml`  
 **Trigger**: `on: issues: [opened, edited]`
 
 **Observations**:
+
 - Permissions: `issues: write`, `contents: read`
 - Total execution time: ~15-20 seconds (including TypeScript compilation)
 
 **Workflow Steps**:
 
 1. **Checkout Repository**
+
    ```yaml
    - uses: actions/checkout@v4
    ```
 
 2. **Setup Node.js 22**
+
    ```yaml
    - uses: actions/setup-node@v4
      with:
@@ -157,6 +171,7 @@ node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
    ```
 
 3. **Install TypeScript Dependencies**
+
    ```yaml
    - run: |
        cd scripts/knowledge-management
@@ -164,6 +179,7 @@ node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
    ```
 
 4. **Analyze Issue with Knowledge Base**
+
    ```yaml
    - id: kb_context
      run: |
@@ -178,6 +194,7 @@ node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
    ```
 
 5. **Parse KB Context and Apply Labels**
+
    ```yaml
    - uses: actions/github-script@v7
      with:
@@ -201,6 +218,7 @@ node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
    ```
 
 6. **Post KB Context Comment**
+
    ```yaml
    if (kbContext && kbContext.comment && kbContext.comment.trim()) {
      const comments = await github.rest.issues.listComments({owner, repo, issue_number});
@@ -218,17 +236,20 @@ node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
    ```
 
 **Integration Points**:
+
 - Parses KB context from `${{ steps.kb_context.outputs.context }}`
 - Combines KB-suggested labels with regex pattern labels
 - Posts two types of comments: KB context + toolset-specific
 - Deduplication: Checks if comment already exists before posting
 
 **Error Handling**:
+
 - `try-catch` around KB context parsing
 - Fallback to original regex-based labeling if KB fails
 - Workflow continues even if KB step errors
 
 **Performance**:
+
 - Build step cached within workflow run
 - JSON parsing overhead minimal (<10ms)
 - Total added time: ~5-10 seconds per issue
@@ -236,11 +257,13 @@ node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
 ---
 
 ### 4. KB Test Suite
+
 **Type**: Testing Framework  
 **Location**: `scripts/knowledge-management/test-kb-mapper.js`  
 **Lines**: 140
 
 **Observations**:
+
 - Custom Node.js test runner (not Jest/Mocha)
 - 4 comprehensive test cases
 - **Success metrics**: 100% pass rate (4/4 tests)
@@ -281,19 +304,23 @@ node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
    - **Status**: ✅ PASS
 
 **Test Results Timeline**:
+
 - **Before fix**: 3 passed, 1 failed (75% success rate)
 - **After fix**: 4 passed, 0 failed (100% success rate)
 
 **Validation Logic**:
+
 ```javascript
 const passed = 
   testCase.expectedConcepts.every(c => context.detectedConcepts.includes(c)) &&
   testCase.expectedLabels.every(l => context.suggestedLabels.includes(l));
 ```
+
 - `expectedConcepts.every()` allows extra detections (not strict equality)
 - `expectedLabels.every()` requires exact match for accurate GitHub labeling
 
 **Output Format**:
+
 ```
 🧪 Testing Knowledge Base Context Mapper
 
@@ -310,10 +337,12 @@ const passed =
 ---
 
 ### 5. KB Implementation Documentation
+
 **Type**: Documentation Set  
 **Total Lines**: 1,970+
 
 **Observations**:
+
 - 5 comprehensive documentation files
 - Cross-referenced structure with internal links
 - Covers architecture, implementation, testing, maintenance, troubleshooting
@@ -364,6 +393,7 @@ const passed =
    - Maintenance schedule
 
 **Documentation Maintenance**:
+
 - Update immediately when: new concept added, file paths change, workflow changes, test cases modified
 - Quarterly review: verify links, update metrics, add examples, update roadmap
 - Annual review: version bump if breaking changes, archive deprecated content
@@ -371,10 +401,12 @@ const passed =
 ---
 
 ### 6. TypeScript Build Configuration
+
 **Type**: Build System  
 **Location**: `scripts/knowledge-management/`
 
 **Observations**:
+
 - CommonJS module type for Node.js compatibility
 - Zero runtime dependencies
 - Compilation time: ~5 seconds (first build), faster incremental
@@ -383,6 +415,7 @@ const passed =
 **Configuration Files**:
 
 1. **package.json**
+
    ```json
    {
      "type": "commonjs",
@@ -399,6 +432,7 @@ const passed =
    ```
 
 2. **tsconfig.json**
+
    ```json
    {
      "compilerOptions": {
@@ -415,12 +449,14 @@ const passed =
    ```
 
 **Build Process**:
+
 1. `tsc` reads `issue-context-mapper.ts`
 2. Validates types
 3. Compiles to `issue-context-mapper.js` + `.d.ts` in `dist/`
 4. Preserves function exports and module structure
 
 **Module Export Pattern**:
+
 ```typescript
 module.exports = {
   analyzeIssueContent,
@@ -435,11 +471,13 @@ if (require.main === module) {
 ```
 
 **GitHub Actions Integration**:
+
 - Workflow runs: `cd scripts/knowledge-management && npm install && npm run build`
 - Compiles on-the-fly in CI
 - No pre-built artifacts committed to repo
 
 **Development Workflow**:
+
 1. Edit `.ts` file in VS Code
 2. `npm run build` to compile
 3. `npm test` to validate
@@ -643,12 +681,14 @@ function generateContextComment(context: IssueContext): string {
 ## Implementation Timeline
 
 ### Phase 1: Issue Management System (Completed)
+
 - Created 4 issue templates (bug, feature, toolset, question)
 - Implemented auto-labeling workflow with regex patterns
 - Added priority/status labels
 - Documented in ISSUE_MANAGEMENT_SYSTEM.md
 
 ### Phase 2: Knowledge Base Integration (Completed)
+
 - **Day 1**: Evaluated alternatives (ripgrep, index.ts, tree logger)
 - **Day 1**: Selected Knowledge Base approach for semantic understanding
 - **Day 2**: Implemented TypeScript KB Mapper with 9 concepts
@@ -662,6 +702,7 @@ function generateContextComment(context: IssueContext): string {
 - **Day 3**: Updated main README with KB section
 
 ### Phase 3: Production Deployment (Ready)
+
 - ✅ Code validated (100% test coverage)
 - ✅ Documentation complete
 - ✅ Workflow integration tested
@@ -678,6 +719,7 @@ function generateContextComment(context: IssueContext): string {
 **Issue**: Test Case 3 failed to detect "Agent Tools" concept despite issue mentioning Python agent and tool_context.state.
 
 **Original Agent Tools Keywords** (4 terms):
+
 ```typescript
 keywords: [
   "upsert_ui_element",
@@ -688,18 +730,21 @@ keywords: [
 ```
 
 **Test Case 3 Body**:
+
 ```
 The tool_context.state updates in Python but useCoAgent doesn't reflect changes 
 in React. One-way data flow seems broken.
 ```
 
 **Why It Failed**:
+
 - Body mentioned "Python" and "tool_context.state"
 - But didn't use specific tool function names like "upsert_ui_element"
 - Original keywords were too specific (only exact tool names)
 - Missed general agent discussions using conversational language
 
 **Fix Applied** (expanded to 8 terms):
+
 ```typescript
 keywords: [
   "upsert_ui_element",      // Specific tool functions
@@ -714,11 +759,13 @@ keywords: [
 ```
 
 **Result After Fix**:
+
 - Test Case 3 now detects all 3 expected concepts: State Sync, Agent Tools, Frontend
 - Test success rate improved from 75% to 100%
 - Real-world accuracy improved for issues using conversational language about agents
 
 **Lesson Learned**:
+
 - Keywords need both specific terms (exact function names) AND general terms (conversational language)
 - Test-driven development caught issue before production deployment
 - Semantic understanding requires coverage of both technical and natural language patterns
@@ -728,21 +775,25 @@ keywords: [
 ## Alternative Approaches Considered
 
 ### 1. ripgrep File Scanning
+
 **Pros**: Fast regex search, existing tool  
 **Cons**: Requires file system access, no semantic understanding, no doc linking, GitHub Actions overhead  
 **Decision**: ❌ Rejected - overkill for keyword matching
 
 ### 2. index.ts Type Registry
+
 **Pros**: Centralized types, IDE integration  
 **Cons**: Runtime evaluation complex, TypeScript-only, no documentation mapping  
 **Decision**: ❌ Rejected - too complex for simple concept detection
 
 ### 3. tree-sitter Logger
+
 **Pros**: File relationship visualization  
 **Cons**: Static output, no semantics, no keyword-based detection  
 **Decision**: ❌ Rejected - doesn't solve issue tagging use case
 
 ### 4. Knowledge Base (Selected) ✅
+
 **Pros**: Semantic understanding, doc-first approach, fast in-memory, GitHub Actions friendly, curated quality  
 **Cons**: Manual maintenance (but that's a feature - maintainers control quality)  
 **Decision**: ✅ Selected - best fit for semantic issue enrichment
@@ -762,21 +813,25 @@ keywords: [
 ## Future Enhancements
 
 ### Phase 2: Related Issues Detection
+
 - Use GitHub API to search for similar issues
 - Add `relatedIssues` array to IssueContext
 - Link related discussions in KB comment
 
 ### Phase 3: Code Snippet Extraction
+
 - Implement file reading in workflow
 - Extract relevant code snippets from files
 - Include 5-10 line previews in KB comment
 
 ### Phase 4: Dynamic Priority Scoring
+
 - Analyze keyword combinations for priority hints
 - e.g., "state sync" + "broken" → high priority
 - Automatically suggest priority labels
 
 ### Phase 5: MCP Integration
+
 - Connect to awesome-copilot MCP collections
 - Query frontend-web-dev and python-mcp-development collections
 - Enrich KB comment with MCP-sourced documentation
@@ -786,12 +841,14 @@ keywords: [
 ## Maintenance Schedule
 
 ### Immediate Updates (When Event Occurs)
+
 - New concept added to KNOWLEDGE_BASE
 - File paths change due to refactoring
 - Workflow integration changes
 - Test cases added or modified
 
 ### Quarterly Review (Every 3 Months)
+
 - Verify all documentation links still valid
 - Update performance metrics with real data
 - Add new examples from real issues
@@ -801,6 +858,7 @@ keywords: [
 - Review incorrect detections (false positives)
 
 ### Annual Review (Yearly)
+
 - Major version bump if breaking changes
 - Archive deprecated content
 - Consolidate overlapping documentation sections

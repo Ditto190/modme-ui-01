@@ -40,17 +40,20 @@ The GitHub MCP Server has been successfully installed with **Docker + Dynamic To
 ## 🎯 Dynamic Toolsets Features
 
 ### What It Means
+
 - **Starts minimal:** Only 3 discovery tools available initially
 - **On-demand expansion:** Agent can enable toolsets as needed
 - **Reduces context:** Avoids overwhelming the LLM with all tools at once
 - **Intelligent discovery:** Agent lists and explores toolsets before enabling
 
 ### Initial Tools (Available Immediately)
+
 1. `list_available_toolsets` - Lists all available toolset categories
 2. `get_toolset_tools` - Shows specific tools in a toolset
 3. `enable_toolset` - Enables a toolset at runtime
 
 ### Available Toolsets (Enable on Demand)
+
 - **context** - User and GitHub context (strongly recommended)
 - **repos** - Repository operations
 - **issues** - Issue management  
@@ -74,18 +77,23 @@ The GitHub MCP Server has been successfully installed with **Docker + Dynamic To
 ## 🔑 GitHub Personal Access Token Setup
 
 ### 1. Create a Token
+
 Visit: [https://github.com/settings/tokens/new](https://github.com/settings/tokens/new)
 
 ### 2. Required Scopes
+
 Select these permissions:
+
 - ✅ `repo` - Full control of private repositories
 - ✅ `read:org` - Read org and team membership  
 - ✅ `read:user` - Read user profile data
 
 ### 3. Generate and Copy
+
 Generate the token and save it securely
 
 ### 4. VS Code Will Prompt
+
 When you restart VS Code, it will prompt for `GITHUB_PERSONAL_ACCESS_TOKEN`
 
 ---
@@ -93,10 +101,13 @@ When you restart VS Code, it will prompt for `GITHUB_PERSONAL_ACCESS_TOKEN`
 ## 🚀 Next Steps
 
 ### 1. Restart VS Code
+
 Close and reopen VS Code to load the new MCP configuration
 
 ### 2. Verify MCP Server
+
 Open Copilot Chat and try:
+
 ```
 List available GitHub toolsets
 ```
@@ -104,17 +115,21 @@ List available GitHub toolsets
 The agent should use `list_available_toolsets` tool and show you all available toolsets.
 
 ### 3. Enable a Toolset
+
 Try asking:
+
 ```
 Enable the repos toolset and list my repositories
 ```
 
 The agent should:
+
 1. Call `enable_toolset` with "repos"
 2. Use newly available repo tools
 3. List your repositories
 
 ### 4. Test Other Features
+
 ```
 Enable issues toolset and show my open issues
 Enable pull_requests toolset and list my PRs
@@ -126,10 +141,12 @@ Enable actions toolset and show recent workflow runs
 ## 🐳 Docker Details
 
 ### Image Status
+
 ✅ **Image:** `ghcr.io/github/github-mcp-server:latest`  
 ✅ **Pull Status:** Up to date (pre-downloaded)
 
 ### Docker Requirements
+
 - Docker Desktop must be running
 - Image will auto-start when MCP server is invoked
 - Uses `--rm` flag (container auto-removes after use)
@@ -139,16 +156,19 @@ Enable actions toolset and show recent workflow runs
 ## 🔍 Verification Commands
 
 ### List All MCP Servers
+
 ```powershell
 pwsh -NoProfile -File ./scripts/print_mcp_servers.ps1
 ```
 
 ### Verify GitHub Configuration
+
 ```powershell
 pwsh -NoProfile -File ./scripts/verify_github_mcp.ps1
 ```
 
 ### Pull Latest Image
+
 ```powershell
 docker pull ghcr.io/github/github-mcp-server:latest
 ```
@@ -167,15 +187,18 @@ docker pull ghcr.io/github/github-mcp-server:latest
 ## 🔧 Troubleshooting
 
 ### MCP Server Doesn't Start
+
 1. Verify Docker is running: `docker ps`
 2. Check MCP logs in VS Code Output panel
 3. Verify token has correct scopes
 
 ### Token Prompt Doesn't Appear
+
 1. Restart VS Code completely
 2. Check `mcp.json` syntax with: `Get-Content $env:APPDATA\Code\User\mcp.json | ConvertFrom-Json`
 
 ### Dynamic Toolsets Not Working
+
 Verify the configuration has `-e GITHUB_DYNAMIC_TOOLSETS=1` in the args array
 
 ---
@@ -183,6 +206,7 @@ Verify the configuration has `-e GITHUB_DYNAMIC_TOOLSETS=1` in the args array
 ## ✨ Success Indicators
 
 You'll know it's working when:
+
 1. ✅ VS Code prompts for GitHub PAT on startup
 2. ✅ Copilot Chat can call `list_available_toolsets`
 3. ✅ Agent can dynamically enable toolsets

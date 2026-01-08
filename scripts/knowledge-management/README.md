@@ -18,6 +18,7 @@ Automated tools for enriching GitHub issues with contextual information using a 
 ### Knowledge Base
 
 The `issue-context-mapper.ts` contains a structured knowledge base mapping:
+
 - **Concepts** → **Keywords** → **Files** → **Documentation**
 - Supports semantic detection (e.g., "StatCard", "State Sync", "Toolset")
 - Auto-suggests labels based on detected concepts
@@ -46,6 +47,7 @@ npm test
 ```
 
 Expected output:
+
 ```
 🧪 Testing Knowledge Base Context Mapper
 
@@ -72,6 +74,7 @@ npm run context "Issue title" "Issue body with StatCard and upsert_ui_element"
 ```
 
 Output (JSON):
+
 ```json
 {
   "detectedConcepts": ["StatCard", "Agent Tools"],
@@ -135,6 +138,7 @@ const KNOWLEDGE_BASE: Record<string, ConceptMapping> = {
 Analyzes issue and returns detected context.
 
 **Returns**:
+
 ```typescript
 {
   detectedConcepts: string[];
@@ -149,6 +153,7 @@ Analyzes issue and returns detected context.
 Generates formatted markdown comment.
 
 **Example Output**:
+
 ```markdown
 ## 🔍 Detected Context
 
@@ -186,7 +191,7 @@ const KNOWLEDGE_BASE: Record<string, ConceptMapping> = {
 };
 ```
 
-2. **Update label suggestion logic**:
+1. **Update label suggestion logic**:
 
 ```typescript
 if (concept === "New Concept") {
@@ -194,13 +199,13 @@ if (concept === "New Concept") {
 }
 ```
 
-3. **Test**:
+1. **Test**:
 
 ```bash
 npm test
 ```
 
-4. **Deploy**:
+1. **Deploy**:
 
 ```bash
 npm run build
@@ -220,11 +225,13 @@ When files move:
 ### Monitoring
 
 Check GitHub Actions logs:
+
 - Detected concepts
 - Suggested labels
 - Comment posting status
 
 **Example log**:
+
 ```
 KB detected concepts: StatCard, Agent Tools
 KB suggested labels: component-registry, agent
@@ -259,6 +266,7 @@ const testCases = [
 ```
 
 Run:
+
 ```bash
 npm test
 ```

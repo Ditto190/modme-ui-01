@@ -21,7 +21,16 @@ const defaultOptions: FetchOptions = {
 
   // Error handling
   onRequestError({ request, error }) {
-    console.error("[fetch] Request error:", error);
+    console.error("[fetch] Request error:", {
+      url: request,
+      error,
+    });
+      url: request,
+      error,
+    });
+      url: request,
+      error,
+    });
   },
 
   onResponseError({ request, response }) {

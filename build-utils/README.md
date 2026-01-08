@@ -111,7 +111,7 @@ const created = await $api("/users", {
 });
 ```
 
-2. **With authentication**:
+1. **With authentication**:
 
 ```typescript
 // Already configured in $api instance
@@ -119,7 +119,7 @@ const created = await $api("/users", {
 const data = await $api("/protected-endpoint");
 ```
 
-3. **File uploads**:
+1. **File uploads**:
 
 ```typescript
 import { $upload } from "@/utils/fetch";
@@ -127,7 +127,7 @@ import { $upload } from "@/utils/fetch";
 const result = await $upload("/upload", file);
 ```
 
-4. **Streaming LLM responses**:
+1. **Streaming LLM responses**:
 
 ```typescript
 import { $stream } from "@/utils/fetch";
@@ -156,7 +156,7 @@ export const myPlugin = createUnplugin(() => ({
 }));
 ```
 
-2. **Use in Vite**:
+1. **Use in Vite**:
 
 ```typescript
 // vite.config.ts
@@ -167,7 +167,7 @@ export default defineConfig({
 });
 ```
 
-3. **Use in Next.js (webpack)**:
+1. **Use in Next.js (webpack)**:
 
 ```typescript
 // next.config.ts
@@ -416,10 +416,10 @@ const data = await $api("/slow-endpoint", {
 
 ## 📖 References
 
-- **ofetch GitHub**: https://github.com/unjs/ofetch
-- **ofetch Examples**: https://github.com/unjs/ofetch/tree/main/examples
-- **unplugin GitHub**: https://github.com/unjs/unplugin
-- **unplugin README**: https://github.com/unjs/unplugin/blob/main/README.md
+- **ofetch GitHub**: <https://github.com/unjs/ofetch>
+- **ofetch Examples**: <https://github.com/unjs/ofetch/tree/main/examples>
+- **unplugin GitHub**: <https://github.com/unjs/unplugin>
+- **unplugin README**: <https://github.com/unjs/unplugin/blob/main/README.md>
 
 ## 🤝 Contributing
 

@@ -12,6 +12,7 @@
 This project now includes a complete adaptation of the [agentskills/skills-ref](https://github.com/agentskills/agentskills/tree/main/skills-ref) library for working with Agent Skills in the ModMe UI Workbench.
 
 **What was added**:
+
 - ✅ `agent/skills_ref/` - Complete Python library (7 modules, ~800 lines)
 - ✅ `agent/tools/skills_ref_tools.py` - Agent tool wrappers (~250 lines)
 - ✅ `genai-toolbox/tools.yaml` - Tool configurations (3 new tools)
@@ -560,10 +561,10 @@ mv agent-generator/src/skills/my_skill agent-generator/src/skills/my-skill
 
 ## References
 
-- **Agent Skills Website**: https://agentskills.io
-- **Specification**: https://agentskills.io/specification
-- **Original Library**: https://github.com/agentskills/agentskills/tree/main/skills-ref
-- **Example Skills**: https://github.com/anthropics/skills
+- **Agent Skills Website**: <https://agentskills.io>
+- **Specification**: <https://agentskills.io/specification>
+- **Original Library**: <https://github.com/agentskills/agentskills/tree/main/skills-ref>
+- **Example Skills**: <https://github.com/anthropics/skills>
 - **ModMe Docs**: [Project_Overview.md](../Project_Overview.md)
 
 ---
@@ -571,4 +572,3 @@ mv agent-generator/src/skills/my_skill agent-generator/src/skills/my-skill
 **Last Updated**: January 3, 2026  
 **Status**: ✅ Complete and Ready for Use  
 **Maintained By**: ModMe GenUI Team
-

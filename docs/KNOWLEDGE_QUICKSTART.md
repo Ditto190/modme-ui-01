@@ -17,6 +17,7 @@ npm run docs:sync -- --validate-only
 ```
 
 ✅ Expected output:
+
 ```
 ✓ Schema loaded successfully
 ✓ Toolsets validated: 2 toolsets (ui_elements, theme)
@@ -30,6 +31,7 @@ npm run docs:all
 ```
 
 This will:
+
 1. Validate JSON against schema
 2. Generate markdown files in `docs/toolsets/`
 3. Create Mermaid diagram: `docs/toolsets/toolset-relationships.svg`
@@ -41,6 +43,7 @@ npm run search:toolset "upsert_ui_element"
 ```
 
 Output:
+
 ```
 🔍 Searching for: upsert_ui_element
 
@@ -121,6 +124,7 @@ code docs/toolsets/ui_elements.md
 ```
 
 Make changes:
+
 ```markdown
 # UI Elements
 
@@ -189,10 +193,13 @@ old_tool(id="test")
 ```
 
 **After**:
+
 ```python
 new_tool(id="test", options={"enabled": true})
 ```
+
 EOF
+
 ```
 
 **Step 3**: Regenerate docs
@@ -252,6 +259,7 @@ npm run search:toolset '"category": "generative_ui"'
 ### Automatic Sync on Push
 
 When you push changes to `agent/toolsets.json`, GitHub Actions will:
+
 1. Validate JSON against schema
 2. Generate markdown documentation
 3. Create toolset diagram
@@ -262,6 +270,7 @@ When you push changes to `agent/toolsets.json`, GitHub Actions will:
 ### Incremental Docs on PRs
 
 When you create a PR modifying agent code:
+
 1. GitHub Actions detects changed toolsets using ripgrep
 2. Regenerates only affected documentation
 3. Uploads artifacts for review
@@ -278,6 +287,7 @@ When you create a PR modifying agent code:
 **Error**: `data/toolsets/0 should have required property 'metadata'`
 
 **Fix**: Add missing metadata field to toolset:
+
 ```json
 {
   "id": "my_toolset",
@@ -299,6 +309,7 @@ When you create a PR modifying agent code:
 **Error**: `ripgrep not found`
 
 **Fix**: Install ripgrep:
+
 ```bash
 # macOS
 brew install ripgrep
@@ -315,6 +326,7 @@ choco install ripgrep
 **Error**: `Template not found: templates/toolset-single.md.hbs`
 
 **Fix**: Ensure templates directory exists:
+
 ```bash
 ls templates/
 # Should show: toolset-single.md.hbs, toolset-full.md.hbs

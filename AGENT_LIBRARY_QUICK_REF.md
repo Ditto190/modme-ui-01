@@ -34,6 +34,7 @@ Options:
 ## Agent Categories
 
 Automatically generated specialists:
+
 - `react-frontend-specialist`
 - `nextjs-fullstack-specialist`
 - `data-engineering-specialist`
@@ -50,6 +51,7 @@ Automatically generated specialists:
 ## Prompt Types
 
 Automatically generated prompts:
+
 - `code-gen-guide` - Code generation
 - `analysis-guide` - Code analysis
 - `testing-guide` - Test writing
@@ -64,6 +66,7 @@ Automatically generated prompts:
 ## Skill Categories
 
 Automatically generated skills:
+
 - `component-gen` - UI components
 - `test-automation` - Testing
 - `data-fetch` - Data operations
@@ -120,31 +123,41 @@ Use @security-specialist to review security concerns.
 ## Core Functions
 
 ### `generate_agent_library()`
+
 Create specialized agent files
+
 ```python
 generate_agent_library(tool_context, count=50)
 ```
 
 ### `generate_prompt_library()`
+
 Create prompt files for Copilot chat
+
 ```python
 generate_prompt_library(tool_context, count=50)
 ```
 
 ### `generate_skill_library()`
+
 Create skill folders with SKILL.md
+
 ```python
 generate_skill_library(tool_context, count=50)
 ```
 
 ### `integrate_with_mcp_tools()`
+
 Wire agents with MCP tools
+
 ```python
 integrate_with_mcp_tools(tool_context, agent_ids=[...])
 ```
 
 ### `generate_full_library()`
+
 Orchestrate all generation
+
 ```python
 generate_full_library(tool_context, agent_count=50, integrate_mcp=True)
 ```
@@ -214,24 +227,29 @@ generate_full_library(tool_context, agent_count=50, integrate_mcp=True)
 ## Key Integrations
 
 ✓ **suggest-awesome-github-copilot-agents.prompt.md**
-  - Agent discovery
-  - Recommendation engine
+
+- Agent discovery
+- Recommendation engine
   
 ✓ **generate_schemas.py**
-  - TypeScript → JSON Schema
-  - Tool definitions
+
+- TypeScript → JSON Schema
+- Tool definitions
   
 ✓ **schema_crawler_tool.py**
-  - JSON Schema → Zod
-  - Type validation
+
+- JSON Schema → Zod
+- Type validation
   
 ✓ **MCP Toolbox**
-  - Tool integration
-  - Schema-based tools
+
+- Tool integration
+- Schema-based tools
   
 ✓ **GitHub Agentic Workflows**
-  - Markdown-based automation
-  - Copilot-powered workflows
+
+- Markdown-based automation
+- Copilot-powered workflows
 
 ## Next Steps
 
