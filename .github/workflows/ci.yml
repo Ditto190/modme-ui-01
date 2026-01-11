@@ -30,7 +30,7 @@ jobs:
         run: npm install --ignore-scripts --legacy-peer-deps
 
       - name: Run ESLint
-        run: npm run lint
+        run: npm run lint:ts
 
   type-check-typescript:
     name: Type Check TypeScript
