@@ -96,10 +96,13 @@ function YourMainContent() {
   const renderElement = (el: UIElement) => {
     switch (el.type) {
       case "StatCard":
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return <StatCard key={el.id} {...(el.props as any)} />;
       case "DataTable":
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return <DataTable key={el.id} {...(el.props as any)} />;
       case "ChartCard":
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return <ChartCard key={el.id} {...(el.props as any)} />;
       default:
         // Log unknown types for debugging
