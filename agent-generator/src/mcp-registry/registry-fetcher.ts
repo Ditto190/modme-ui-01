@@ -129,7 +129,7 @@ export async function fetchMCPRegistry(): Promise<MCPRegistry> {
     metadata: {
       totalServers: registry.length,
       totalTools: registry.reduce((sum, s) => sum + s.tools.length, 0),
-      categories: [...new Set(registry.map(s => s.category).filter(Boolean))],
+      categories: [...new Set(registry.map(s => s.category).filter(Boolean))] as string[],
     },
   };
 }
