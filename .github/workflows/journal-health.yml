@@ -8,52 +8,54 @@ on:
   workflow_dispatch:
     inputs:
       journal_entry:
-        description: 'Custom journal entry'
+        description: "Custom journal entry"
         required: false
-        default: 'Manual workflow trigger'
+        default: "Manual workflow trigger"
 
 jobs:
   test-journal-cli:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-      
+          python-version: "3.12"
+
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
+          # Install agent dependencies (journal-cli imports from agent/tools/)
+          pip install -e agent/ || pip install google-generativeai pydantic
           # requests is optional for remote mode
           pip install requests || true
-      
+
       - name: Test local journal write
         run: |
           python scripts/journal/journal-cli.py write \
             "GitHub Actions test run at $(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --journal-path $GITHUB_WORKSPACE/.test-journal
-      
+
       - name: Verify entry was written
         run: |
           python scripts/journal/journal-cli.py read --last \
             --journal-path $GITHUB_WORKSPACE/.test-journal
-      
+
       - name: List all entries
         run: |
           python scripts/journal/journal-cli.py list \
             --journal-path $GITHUB_WORKSPACE/.test-journal
-      
+
       - name: Write workflow input entry
         if: github.event.inputs.journal_entry
         run: |
           python scripts/journal/journal-cli.py write \
             "${{ github.event.inputs.journal_entry }}" \
             --journal-path $GITHUB_WORKSPACE/.test-journal
-      
+
       - name: Upload journal artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -63,29 +65,29 @@ jobs:
 
   test-embedding-integration:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-      
+          node-version: "22"
+
       - name: Install knowledge-management dependencies
         working-directory: scripts/knowledge-management
         run: |
           npm install
           npm install @xenova/transformers
-      
+
       - name: Test embedding setup
         working-directory: scripts/knowledge-management
         run: |
           node -e "console.log('Testing @xenova/transformers import...');\
                    const { pipeline } = require('@xenova/transformers');\
                    console.log('✓ Import successful');"
-      
+
       - name: Run embedding tests (if available)
         working-directory: scripts/knowledge-management
         run: |
