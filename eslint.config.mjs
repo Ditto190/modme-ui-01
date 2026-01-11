@@ -18,6 +18,10 @@ const eslintConfig = [
       "data/**",
       "test_output/**",
       "test-mcp-validation/**",
+      "experiments/**",
+      "modme-ui-copilotkit/**",
+      ".copilot/templates/**",
+      "scripts/knowledge-management/embeddings/**",
     ],
   },
   {
