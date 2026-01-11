@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
+import atexit
 import json
 import os
-import atexit
-from typing import Dict, Optional, Any
+from datetime import datetime
+from typing import Any, Dict, Optional
 
 from ag_ui_adk import ADKAgent, add_adk_fastapi_endpoint
 from dotenv import load_dotenv
-from datetime import datetime
 from fastapi import FastAPI, status
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from google.adk.agents import LlmAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.models.llm_request import LlmRequest
@@ -20,14 +20,21 @@ from google.adk.models.llm_response import LlmResponse
 from google.adk.tools import ToolContext
 from google.genai import types
 
+from mcp_vtcode import get_vtcode_client
+
 # Import VT Code integration
 from tools.code_tools import (
-    edit_component,
     analyze_component_props,
     create_new_component,
+    edit_component,
     run_build_check,
 )
-from mcp_vtcode import get_vtcode_client
+from tools.collection_manager import (
+    create_collection,
+    create_mcp_server_collection,
+    scan_repository_for_collection_items,
+)
+from tools.journal_adapter import process_feelings
 
 load_dotenv()
 
@@ -219,6 +226,11 @@ workbench_agent = LlmAgent(
     - analyze_component_props: Inspect TypeScript interfaces
     - create_new_component: Generate new components from scratch
     - run_build_check: Verify TypeScript compilation
+    
+    Collection Management Tools:
+    - create_collection: Create agent collection YAML files
+    - scan_repository_for_collection_items: Auto-discover collection items
+    - create_mcp_server_collection: Group agents by MCP server dependency
     """,
     tools=[
         upsert_ui_element,
@@ -230,6 +242,12 @@ workbench_agent = LlmAgent(
         analyze_component_props,
         create_new_component,
         run_build_check,
+        # Journalling tool (private journal adapter)
+        process_feelings,
+        # Collection management tools
+        create_collection,
+        scan_repository_for_collection_items,
+        create_mcp_server_collection,
     ],
     before_agent_callback=on_before_agent,
     before_model_callback=before_model_modifier,

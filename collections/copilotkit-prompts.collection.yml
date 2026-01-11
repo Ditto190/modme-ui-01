@@ -1,0 +1,18 @@
+id: copilotkit-prompts
+name: CopilotKit Prompts
+description: CopilotKit-specific prompts for molecule definitions, tools, canvas operations,
+  testing, and refactoring
+items:
+- path: prompts/copilot/01_molecules.md
+  kind: prompt
+  usage: 01_Molecules
+- path: prompts/copilot/02_tools_and_routes.md
+  kind: prompt
+  usage: 02_Tools and Routes
+tags:
+- copilotkit
+- prompts
+- genui
+display:
+  ordering: manual
+  featured: true

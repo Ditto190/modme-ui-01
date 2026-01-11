@@ -1,198 +1,234 @@
 {
-  "folders": [
-    {
-      "name": "🎨 Root (GenUI Workspace)",
-      "path": "."
-    },
-    {
-      "name": "🖥️ Frontend (Next.js)",
-      "path": "./src"
-    },
-    {
-      "name": "🤖 Agent (Python ADK)",
-      "path": "./agent"
-    },
-    {
-      "name": "📜 Scripts",
-      "path": "./scripts"
-    },
-    {
-      "name": "📋 Prompts & Instructions",
-      "path": "./prompts"
-    }
-  ],
-  "settings": {
-    "files.exclude": {
-      "**/.git": true,
-      "**/.DS_Store": true,
-      "**/node_modules": true,
-      "**/.next": true,
-      "**/out": true,
-      "**/__pycache__": true,
-      "**/.venv": true,
-      "**/venv": true,
-      "**/*.pyc": true,
-      ".mastra": true
-    },
-    "search.exclude": {
-      "**/node_modules": true,
-      "**/.next": true,
-      "**/out": true,
-      "**/__pycache__": true,
-      "**/.venv": true,
-      "**/build": true,
-      "**/dist": true,
-      "**/.git": true,
-      "**/package-lock.json": true,
-      "**/yarn.lock": true,
-      "**/pnpm-lock.yaml": true
-    },
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit",
-      "source.organizeImports": "explicit"
-    },
-    "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 1000,
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "typescript.enablePromptUseWorkspaceTsdk": true,
-    "python.defaultInterpreterPath": "${workspaceFolder}/agent/.venv/bin/python",
-    "python.terminal.activateEnvironment": true,
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.formatting.provider": "black",
-    "python.analysis.typeCheckingMode": "basic",
-    "python.analysis.autoImportCompletions": true,
-    "[python]": {
-      "editor.defaultFormatter": "ms-python.python",
-      "editor.formatOnSave": true,
-      "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit"
-      }
-    },
-    "[typescript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescriptreact]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[javascript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[json]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[jsonc]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[markdown]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.wordWrap": "on"
-    },
-    "tailwindCSS.experimental.classRegex": [
-      ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-      ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-    ],
-    "tailwindCSS.includeLanguages": {
-      "typescript": "javascript",
-      "typescriptreact": "javascript"
-    },
-    "eslint.validate": [
-      "javascript",
-      "javascriptreact",
-      "typescript",
-      "typescriptreact"
-    ],
-    "git.ignoreLimitWarning": true,
-    "terminal.integrated.defaultProfile.linux": "bash",
-    "terminal.integrated.defaultProfile.osx": "zsh",
-    "terminal.integrated.defaultProfile.windows": "PowerShell"
-  },
-  "extensions": {
-    "recommendations": [
-      "ms-python.python",
-      "ms-python.vscode-pylance",
-      "dbaeumer.vscode-eslint",
-      "esbenp.prettier-vscode",
-      "bradlc.vscode-tailwindcss",
-      "GitHub.copilot",
-      "GitHub.copilot-chat",
-      "GitHub.vscode-github-actions",
-      "ms-azuretools.vscode-docker",
-      "usernamehw.errorlens",
-      "christian-kohler.path-intellisense",
-      "streetsidesoftware.code-spell-checker",
-      "formulahendry.code-runner",
-      "donjayamanne.githistory",
-      "eamodio.gitlens",
-      "ms-vscode-remote.remote-containers"
-    ]
-  },
-  "launch": {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": "🎨 Next.js: Debug UI",
-        "type": "node",
-        "request": "launch",
-        "runtimeExecutable": "npm",
-        "runtimeArgs": ["run", "dev:ui"],
-        "skipFiles": ["<node_internals>/**"],
-        "console": "integratedTerminal"
-      },
-      {
-        "name": "🤖 Python: Debug Agent",
-        "type": "python",
-        "request": "launch",
-        "program": "${workspaceFolder}/agent/main.py",
-        "console": "integratedTerminal",
-        "justMyCode": true,
-        "env": {
-          "PYTHONPATH": "${workspaceFolder}/agent"
-        }
-      }
-    ],
-    "compounds": [
-      {
-        "name": "🚀 Debug Full Stack",
-        "configurations": ["🎨 Next.js: Debug UI", "🤖 Python: Debug Agent"],
-        "stopAll": true
-      }
-    ]
-  },
-  "tasks": {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Start Development Servers",
-        "type": "shell",
-        "command": "npm run dev",
-        "problemMatcher": [],
-        "presentation": {
-          "reveal": "always",
-          "panel": "new"
-        }
-      },
-      {
-        "label": "Install All Dependencies",
-        "type": "shell",
-        "command": "npm install && npm run install:agent",
-        "problemMatcher": []
-      },
-      {
-        "label": "Lint All Code",
-        "type": "shell",
-        "command": "npm run lint",
-        "problemMatcher": ["$eslint-stylish"]
-      },
-      {
-        "label": "Build Production",
-        "type": "shell",
-        "command": "npm run build",
-        "problemMatcher": []
-      }
-    ]
-  }
+	"folders": [
+		{
+			"name": "🎨 Root (GenUI Workspace)",
+			"path": "."
+		},
+		{
+			"name": "🖥️ Frontend (Next.js)",
+			"path": "./src"
+		},
+		{
+			"name": "🤖 Agent (Python ADK)",
+			"path": "./agent"
+		},
+		{
+			"name": "📜 Scripts",
+			"path": "./scripts"
+		},
+		{
+			"name": "📋 Prompts & Instructions",
+			"path": "./prompts"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.git": true,
+			"**/.DS_Store": true,
+			"**/node_modules": true,
+			"**/.next": true,
+			"**/out": true,
+			"**/__pycache__": true,
+			"**/.venv": true,
+			"**/venv": true,
+			"**/*.pyc": true,
+			".mastra": true
+		},
+		"search.exclude": {
+			"**/node_modules": true,
+			"**/.next": true,
+			"**/out": true,
+			"**/__pycache__": true,
+			"**/.venv": true,
+			"**/build": true,
+			"**/dist": true,
+			"**/.git": true,
+			"**/package-lock.json": true,
+			"**/yarn.lock": true,
+			"**/pnpm-lock.yaml": true
+		},
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.codeActionsOnSave": {
+			"source.fixAll.eslint": "explicit",
+			"source.organizeImports": "explicit"
+		},
+		"files.autoSave": "afterDelay",
+		"files.autoSaveDelay": 1000,
+		"typescript.tsdk": "node_modules/typescript/lib",
+		"typescript.enablePromptUseWorkspaceTsdk": true,
+		"python.defaultInterpreterPath": "${workspaceFolder}/agent/.venv/bin/python",
+		"python.terminal.activateEnvironment": true,
+		"python.linting.enabled": true,
+		"python.linting.pylintEnabled": false,
+		"python.linting.flake8Enabled": true,
+		"python.formatting.provider": "black",
+		"python.analysis.typeCheckingMode": "basic",
+		"python.analysis.autoImportCompletions": true,
+		"[python]": {
+			"editor.defaultFormatter": "ms-python.python",
+			"editor.formatOnSave": true,
+			"editor.codeActionsOnSave": {
+				"source.organizeImports": "explicit"
+			}
+		},
+		"[typescript]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
+		},
+		"[typescriptreact]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
+		},
+		"[javascript]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
+		},
+		"[json]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
+		},
+		"[jsonc]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
+		},
+		"[markdown]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode",
+			"editor.wordWrap": "on"
+		},
+		"tailwindCSS.experimental.classRegex": [
+			[
+				"cva\\(([^)]*)\\)",
+				"[\"'`]([^\"'`]*).*?[\"'`]"
+			],
+			[
+				"cx\\(([^)]*)\\)",
+				"(?:'|\"|`)([^']*)(?:'|\"|`)"
+			]
+		],
+		"tailwindCSS.includeLanguages": {
+			"typescript": "javascript",
+			"typescriptreact": "javascript"
+		},
+		"eslint.validate": [
+			"javascript",
+			"javascriptreact",
+			"typescript",
+			"typescriptreact"
+		],
+		"git.ignoreLimitWarning": true,
+		"terminal.integrated.defaultProfile.linux": "bash",
+		"terminal.integrated.defaultProfile.osx": "zsh",
+		"terminal.integrated.defaultProfile.windows": "PowerShell",
+		"mcp": {
+			"servers": {
+				"code-reasoning": {
+					"command": "npx",
+					"args": [
+						"${input:additionalArgs}",
+						"@mettamatt/code-reasoning@0.8.1"
+					],
+					"env": {},
+					"type": "stdio"
+				}
+			},
+			"inputs": [
+				{
+					"id": "additionalArgs",
+					"type": "promptString",
+					"description": "Additional args (comma-separated). Example: --debug,-y  Leave blank for none."
+				}
+			]
+		}
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-python.python",
+			"ms-python.vscode-pylance",
+			"dbaeumer.vscode-eslint",
+			"esbenp.prettier-vscode",
+			"bradlc.vscode-tailwindcss",
+			"GitHub.copilot",
+			"GitHub.copilot-chat",
+			"GitHub.vscode-github-actions",
+			"ms-azuretools.vscode-docker",
+			"usernamehw.errorlens",
+			"christian-kohler.path-intellisense",
+			"streetsidesoftware.code-spell-checker",
+			"formulahendry.code-runner",
+			"donjayamanne.githistory",
+			"eamodio.gitlens",
+			"ms-vscode-remote.remote-containers"
+		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "🎨 Next.js: Debug UI",
+				"type": "node",
+				"request": "launch",
+				"runtimeExecutable": "npm",
+				"runtimeArgs": [
+					"run",
+					"dev:ui"
+				],
+				"skipFiles": [
+					"<node_internals>/**"
+				],
+				"console": "integratedTerminal"
+			},
+			{
+				"name": "🤖 Python: Debug Agent",
+				"type": "python",
+				"request": "launch",
+				"program": "${workspaceFolder}/agent/main.py",
+				"console": "integratedTerminal",
+				"justMyCode": true,
+				"env": {
+					"PYTHONPATH": "${workspaceFolder}/agent"
+				}
+			}
+		],
+		"compounds": [
+			{
+				"name": "🚀 Debug Full Stack",
+				"configurations": [
+					"🎨 Next.js: Debug UI",
+					"🤖 Python: Debug Agent"
+				],
+				"stopAll": true
+			}
+		]
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Start Development Servers",
+				"type": "shell",
+				"command": "npm run dev",
+				"problemMatcher": [],
+				"presentation": {
+					"reveal": "always",
+					"panel": "new"
+				}
+			},
+			{
+				"label": "Install All Dependencies",
+				"type": "shell",
+				"command": "npm install && npm run install:agent",
+				"problemMatcher": []
+			},
+			{
+				"label": "Lint All Code",
+				"type": "shell",
+				"command": "npm run lint",
+				"problemMatcher": [
+					"$eslint-stylish"
+				]
+			},
+			{
+				"label": "Build Production",
+				"type": "shell",
+				"command": "npm run build",
+				"problemMatcher": []
+			}
+		]
+	}
 }

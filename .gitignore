@@ -73,3 +73,9 @@ agent/.venv/
 
 # DevContainer
 .devcontainer/.env
+
+# Ignore node modules for micro-agent models (built artifact kept in dist/)
+experiments/micro-agents/models/node_modules/
+experiments/**/node_modules/
+agent-generator/node_modules/
+scripts/**/node_modules/
