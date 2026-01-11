@@ -1,5 +1,65 @@
 # Copilot Instructions — ModMe GenUI Workbench
 
+**Updated**: January 11, 2026
+
+Purpose: concise, repo-specific guidance for AI coding agents to become productive quickly.
+
+1) Big picture (what to know first)
+- Dual-runtime: Python ADK agent (FastAPI) at http://localhost:8000 writes a single canonical state object; Next.js + CopilotKit frontend (localhost:3000) reads it via `useCoAgent`.
+- One-way state: Python → React only. Do NOT mutate agent state from React (no bidirectional sync).
+- Canonical state shape: `tool_context.state["elements"] = [{ id, type, props }]`. `id` is snake_case, `type` is PascalCase.
+
+2) Key files to inspect
+- [agent/main.py](agent/main.py): tool implementations, `ALLOWED_TYPES`, lifecycle hooks (`before_model_modifier`, `after_model_modifier`).
+- [src/app/page.tsx](src/app/page.tsx): canvas renderer and `useCoAgent` usage.
+- [src/lib/types.ts](src/lib/types.ts): `UIElement`/`AgentState` contract.
+- [src/app/api/copilotkit/route.ts](src/app/api/copilotkit/route.ts): frontend → agent HTTP bridge.
+- [agent/toolsets.json](agent/toolsets.json) and [agent/toolset_aliases.json](agent/toolset_aliases.json): toolset registry/aliases.
+
+3) Critical patterns & conventions (do not break)
+- Tools are the only writers: use the agent tools to change UI. Key tools: `upsert_ui_element`, `remove_ui_element`, `clear_canvas`, `setThemeColor`.
+- `ALLOWED_TYPES` whitelist in `agent/main.py` must match `switch` cases in `src/app/page.tsx` (e.g., `StatCard`, `DataTable`, `ChartCard`).
+- Props must be JSON-serializable (no functions/circular refs). IDs: snake_case; props: camelCase.
+
+4) Typical tool call (example)
+POST body forwarded to agent (via Copilot runtime):
+```json
+{ "tool": "upsert_ui_element", "params": { "id": "revenue_stat", "type": "StatCard", "props": { "title": "Revenue", "value": 1234 } } }
+```
+Agent-side upsert logic lives in `agent/main.py` and returns structured status (success/error/message).
+
+5) Developer workflows & commands (most-used)
+- Start both runtimes: `npm run dev` (frontend + agent). For only agent: `npm run dev:agent`. For only UI: `npm run dev:ui`.
+- Docs & toolset validation: `npm run docs:all`, `npm run docs:sync`, `npm run validate:toolsets`.
+- Lint / format: `npm run lint`, `npm run lint:fix`, `npm run format`.
+- Generate TypeScript/Zod schemas: `cd agent-generator && npm run generate:schemas`.
+
+6) Testing and debugging tips
+- Health & readiness: `curl http://localhost:8000/health` and `/ready`.
+- Common failure modes:
+  - Unknown `type` → check `ALLOWED_TYPES` and `src/app/page.tsx` renderer.
+  - Invalid props → validate against generated Zod schemas in `schemas/` (use schema-crawler output).
+  - State not updating → ensure agent tool returned `{"status":"success"}` and that `tool_context.state["elements"]` was written.
+
+7) Integration points & extras
+- VT Code MCP tools (edit/analyze/create components) are wired in `agent/main.py` via `tools/code_tools.py` — used for code edits and build checks.
+- Toolset lifecycle is managed via `agent/toolsets.json` and `scripts/toolset-management/` (detection, validation, docs generation).
+- Chroma/embedding utilities and session memory live under `scripts/` and `docs/CHROMADB_INDEXING.md`.
+
+8) How to add a component (quick)
+1. Add `src/components/registry/MyWidget.tsx` (named export matches file).
+2. Add a `case "MyWidget"` to `renderElement` in `src/app/page.tsx`.
+3. Add `MyWidget` to `ALLOWED_TYPES` and agent instruction text in `agent/main.py` (so agent knows it exists).
+4. Run `npm run dev` and test via CopilotSidebar prompts.
+
+9) Where to look for more details
+- Architectural patterns and examples: `docs/REFACTORING_PATTERNS.md`, `Project_Overview.md`.
+- Toolset management: `docs/TOOLSET_MANAGEMENT.md`, `agent/toolsets.json`.
+- Schema generation & runtime validation: `agent-generator/SCHEMA_CRAWLER_README.md`.
+
+If any section is unclear or you want examples expanded (tool signatures, sample prompts, testing harness), say which area and I will iterate.
+# Copilot Instructions — ModMe GenUI Workbench
+
 > **Updated**: January 6, 2026  
 > **Purpose**: Targeted, repo-specific guidance for AI coding agents to become productive quickly in this GenUI R&D laboratory.
 

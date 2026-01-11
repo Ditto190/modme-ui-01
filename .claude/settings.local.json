@@ -6,7 +6,8 @@
       "Bash(gh pr merge:*)",
       "Bash(gh repo edit:*)",
       "Bash(git checkout:*)",
-      "Bash(git fetch:*)"
+      "Bash(git fetch:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
