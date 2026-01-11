@@ -1,11 +1,11 @@
 /**
  * registry-fetcher.ts
- * 
+ *
  * Fetches and parses the MCP servers registry from modelcontextprotocol/servers.
  * Returns structured ServerSpec[] with tools, parameters, and documentation.
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * JSON Schema representation (simplified for MCP tools)
@@ -32,14 +32,21 @@ export type JSONSchema = z.infer<typeof JSONSchemaSchema>;
  */
 export const MCPToolSchema = z.object({
   name: z.string().describe('Tool identifier (e.g., "read_file")'),
-  description: z.string().describe('What this tool does'),
-  inputSchema: JSONSchemaSchema.optional().describe('JSON Schema for tool parameters'),
-  returns: JSONSchemaSchema.optional().describe('JSON Schema for return value'),
-  examples: z.array(z.object({
-    input: z.any(),
-    output: z.any(),
-    description: z.string().optional(),
-  })).optional().describe('Usage examples'),
+  description: z.string().describe("What this tool does"),
+  inputSchema: JSONSchemaSchema.optional().describe(
+    "JSON Schema for tool parameters"
+  ),
+  returns: JSONSchemaSchema.optional().describe("JSON Schema for return value"),
+  examples: z
+    .array(
+      z.object({
+        input: z.any(),
+        output: z.any(),
+        description: z.string().optional(),
+      })
+    )
+    .optional()
+    .describe("Usage examples"),
 });
 
 export type MCPTool = z.infer<typeof MCPToolSchema>;
@@ -48,32 +55,52 @@ export type MCPTool = z.infer<typeof MCPToolSchema>;
  * MCP Server specification - a collection of tools from one server
  */
 export const ServerSpecSchema = z.object({
-  id: z.string().describe('Server identifier (e.g., "filesystem", "git", "postgres")'),
-  name: z.string().describe('Human-readable name'),
-  description: z.string().describe('What this server does'),
-  repository: z.string().url().optional().describe('GitHub/source repository'),
-  category: z.enum([
-    'development',
-    'database',
-    'productivity',
-    'research',
-    'utilities',
-    'experimental'
-  ]).optional(),
-  tools: z.array(MCPToolSchema).describe('Available tools/methods'),
-  transport: z.enum(['stdio', 'sse']).default('stdio').describe('Supported transports'),
-  requirements: z.object({
-    nodeVersion: z.string().optional(),
-    pythonVersion: z.string().optional(),
-    systemDeps: z.array(z.string()).optional(),
-  }).optional().describe('System requirements'),
-  installation: z.object({
-    npm: z.string().optional().describe('NPM package (e.g., @modelcontextprotocol/server-filesystem)'),
-    python: z.string().optional().describe('PyPI package'),
-    docker: z.string().optional().describe('Docker image'),
-  }).optional().describe('How to install'),
-  documentation: z.string().url().optional().describe('Link to docs'),
-  status: z.enum(['stable', 'beta', 'experimental', 'deprecated']).default('stable'),
+  id: z
+    .string()
+    .describe('Server identifier (e.g., "filesystem", "git", "postgres")'),
+  name: z.string().describe("Human-readable name"),
+  description: z.string().describe("What this server does"),
+  repository: z.string().url().optional().describe("GitHub/source repository"),
+  category: z
+    .enum([
+      "development",
+      "database",
+      "productivity",
+      "research",
+      "utilities",
+      "experimental",
+    ])
+    .optional(),
+  tools: z.array(MCPToolSchema).describe("Available tools/methods"),
+  transport: z
+    .enum(["stdio", "sse"])
+    .default("stdio")
+    .describe("Supported transports"),
+  requirements: z
+    .object({
+      nodeVersion: z.string().optional(),
+      pythonVersion: z.string().optional(),
+      systemDeps: z.array(z.string()).optional(),
+    })
+    .optional()
+    .describe("System requirements"),
+  installation: z
+    .object({
+      npm: z
+        .string()
+        .optional()
+        .describe(
+          "NPM package (e.g., @modelcontextprotocol/server-filesystem)"
+        ),
+      python: z.string().optional().describe("PyPI package"),
+      docker: z.string().optional().describe("Docker image"),
+    })
+    .optional()
+    .describe("How to install"),
+  documentation: z.string().url().optional().describe("Link to docs"),
+  status: z
+    .enum(["stable", "beta", "experimental", "deprecated"])
+    .default("stable"),
 });
 
 export type ServerSpec = z.infer<typeof ServerSpecSchema>;
@@ -82,21 +109,23 @@ export type ServerSpec = z.infer<typeof ServerSpecSchema>;
  * Complete registry snapshot
  */
 export const MCPRegistrySchema = z.object({
-  version: z.string().describe('Registry version'),
-  lastUpdated: z.string().datetime().describe('When registry was last updated'),
-  servers: z.array(ServerSpecSchema).describe('All available servers'),
-  metadata: z.object({
-    totalServers: z.number(),
-    totalTools: z.number(),
-    categories: z.array(z.string()),
-  }).optional(),
+  version: z.string().describe("Registry version"),
+  lastUpdated: z.string().datetime().describe("When registry was last updated"),
+  servers: z.array(ServerSpecSchema).describe("All available servers"),
+  metadata: z
+    .object({
+      totalServers: z.number(),
+      totalTools: z.number(),
+      categories: z.array(z.string()),
+    })
+    .optional(),
 });
 
 export type MCPRegistry = z.infer<typeof MCPRegistrySchema>;
 
 /**
  * Fetch and parse the MCP servers registry
- * 
+ *
  * This function:
  * 1. Fetches from modelcontextprotocol/servers (real repo)
  * 2. Parses README and configuration files
@@ -105,31 +134,33 @@ export type MCPRegistry = z.infer<typeof MCPRegistrySchema>;
  */
 export async function fetchMCPRegistry(): Promise<MCPRegistry> {
   // TODO: Implement in phases
-  
+
   // Phase 1: Manual bootstrap
   // - Hardcode canonical MCP servers from modelcontextprotocol/servers
   // - Use GitHub API to fetch server specs
-  
+
   // Phase 2: Dynamic fetching
   // - Parse README.md for server list
   // - Crawl each server's package.json + documentation
   // - Extract tool definitions from source code
-  
+
   // Phase 3: Caching + hot-reload
   // - Cache parsed registry locally
   // - Watch for upstream changes
   // - Notify on new servers/tools
-  
+
   const registry = await bootstrapCanonicalServers();
-  
+
   return {
-    version: '1.0.0',
+    version: "1.0.0",
     lastUpdated: new Date().toISOString(),
     servers: registry,
     metadata: {
       totalServers: registry.length,
       totalTools: registry.reduce((sum, s) => sum + s.tools.length, 0),
-      categories: [...new Set(registry.map(s => s.category).filter(Boolean))] as string[],
+      categories: [
+        ...new Set(registry.map((s) => s.category).filter(Boolean)),
+      ] as string[],
     },
   };
 }
@@ -141,296 +172,296 @@ export async function fetchMCPRegistry(): Promise<MCPRegistry> {
 async function bootstrapCanonicalServers(): Promise<ServerSpec[]> {
   return [
     {
-      id: 'filesystem',
-      name: 'Filesystem',
-      description: 'Read, write, and navigate the file system',
-      category: 'utilities',
+      id: "filesystem",
+      name: "Filesystem",
+      description: "Read, write, and navigate the file system",
+      category: "utilities",
       tools: [
         {
-          name: 'read_file',
-          description: 'Read the complete contents of a file',
+          name: "read_file",
+          description: "Read the complete contents of a file",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               path: {
-                type: 'string',
-                description: 'The file path to read',
+                type: "string",
+                description: "The file path to read",
               },
             },
-            required: ['path'],
+            required: ["path"],
           },
           returns: {
-            type: 'object',
+            type: "object",
             properties: {
               content: {
-                type: 'string',
-                description: 'The file contents',
+                type: "string",
+                description: "The file contents",
               },
             },
           },
           examples: [
             {
-              input: { path: '/path/to/file.txt' },
-              output: { content: 'File contents here...' },
-              description: 'Read a text file',
+              input: { path: "/path/to/file.txt" },
+              output: { content: "File contents here..." },
+              description: "Read a text file",
             },
           ],
         },
         {
-          name: 'write_file',
-          description: 'Write content to a file',
+          name: "write_file",
+          description: "Write content to a file",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               path: {
-                type: 'string',
-                description: 'The file path to write',
+                type: "string",
+                description: "The file path to write",
               },
               content: {
-                type: 'string',
-                description: 'The content to write',
+                type: "string",
+                description: "The content to write",
               },
             },
-            required: ['path', 'content'],
+            required: ["path", "content"],
           },
           returns: {
-            type: 'object',
+            type: "object",
             properties: {
               success: {
-                type: 'boolean',
+                type: "boolean",
               },
             },
           },
         },
         {
-          name: 'list_directory',
-          description: 'List contents of a directory',
+          name: "list_directory",
+          description: "List contents of a directory",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               path: {
-                type: 'string',
-                description: 'The directory path to list',
+                type: "string",
+                description: "The directory path to list",
               },
             },
-            required: ['path'],
+            required: ["path"],
           },
           returns: {
-            type: 'object',
+            type: "object",
             properties: {
               files: {
-                type: 'array',
-                items: { type: 'string' },
+                type: "array",
+                items: { type: "string" },
               },
               directories: {
-                type: 'array',
-                items: { type: 'string' },
+                type: "array",
+                items: { type: "string" },
               },
             },
           },
         },
       ],
-      transport: 'stdio',
+      transport: "stdio",
       installation: {
-        npm: '@modelcontextprotocol/server-filesystem',
+        npm: "@modelcontextprotocol/server-filesystem",
       },
-      status: 'stable',
+      status: "stable",
     },
-    
+
     {
-      id: 'git',
-      name: 'Git',
-      description: 'Interact with Git repositories',
-      category: 'development',
+      id: "git",
+      name: "Git",
+      description: "Interact with Git repositories",
+      category: "development",
       tools: [
         {
-          name: 'git_status',
-          description: 'Get current git status',
+          name: "git_status",
+          description: "Get current git status",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               repository_path: {
-                type: 'string',
-                description: 'Path to git repository',
+                type: "string",
+                description: "Path to git repository",
               },
             },
-            required: ['repository_path'],
+            required: ["repository_path"],
           },
           returns: {
-            type: 'object',
+            type: "object",
             properties: {
-              branch: { type: 'string' },
-              changes: { type: 'array' },
+              branch: { type: "string" },
+              changes: { type: "array" },
             },
           },
         },
         {
-          name: 'git_commit',
-          description: 'Commit changes',
+          name: "git_commit",
+          description: "Commit changes",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
-              repository_path: { type: 'string' },
-              message: { type: 'string' },
+              repository_path: { type: "string" },
+              message: { type: "string" },
               files: {
-                type: 'array',
-                items: { type: 'string' },
+                type: "array",
+                items: { type: "string" },
               },
             },
-            required: ['repository_path', 'message'],
+            required: ["repository_path", "message"],
           },
         },
         {
-          name: 'git_push',
-          description: 'Push changes to remote',
+          name: "git_push",
+          description: "Push changes to remote",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
-              repository_path: { type: 'string' },
-              branch: { type: 'string' },
-              force: { type: 'boolean' },
+              repository_path: { type: "string" },
+              branch: { type: "string" },
+              force: { type: "boolean" },
             },
-            required: ['repository_path'],
+            required: ["repository_path"],
           },
         },
       ],
-      transport: 'stdio',
+      transport: "stdio",
       installation: {
-        npm: '@modelcontextprotocol/server-git',
+        npm: "@modelcontextprotocol/server-git",
       },
-      status: 'stable',
+      status: "stable",
     },
-    
+
     {
-      id: 'web',
-      name: 'Web',
-      description: 'Fetch and interact with web content',
-      category: 'utilities',
+      id: "web",
+      name: "Web",
+      description: "Fetch and interact with web content",
+      category: "utilities",
       tools: [
         {
-          name: 'fetch_url',
-          description: 'Fetch content from a URL',
+          name: "fetch_url",
+          description: "Fetch content from a URL",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               url: {
-                type: 'string',
-                format: 'uri',
-                description: 'The URL to fetch',
+                type: "string",
+                format: "uri",
+                description: "The URL to fetch",
               },
               method: {
-                type: 'string',
-                enum: ['GET', 'POST', 'PUT', 'DELETE'],
-                default: 'GET',
+                type: "string",
+                enum: ["GET", "POST", "PUT", "DELETE"],
+                default: "GET",
               },
               headers: {
-                type: 'object',
-                description: 'Optional HTTP headers',
+                type: "object",
+                description: "Optional HTTP headers",
               },
               body: {
-                type: 'string',
-                description: 'Request body for POST/PUT',
+                type: "string",
+                description: "Request body for POST/PUT",
               },
             },
-            required: ['url'],
+            required: ["url"],
           },
           returns: {
-            type: 'object',
+            type: "object",
             properties: {
-              status: { type: 'number' },
-              headers: { type: 'object' },
-              content: { type: 'string' },
+              status: { type: "number" },
+              headers: { type: "object" },
+              content: { type: "string" },
             },
           },
         },
       ],
-      transport: 'stdio',
+      transport: "stdio",
       installation: {
-        npm: '@modelcontextprotocol/server-web',
+        npm: "@modelcontextprotocol/server-web",
       },
-      status: 'stable',
+      status: "stable",
     },
-    
+
     {
-      id: 'sequential-thinking',
-      name: 'Sequential Thinking',
-      description: 'Break complex problems into sequential steps',
-      category: 'utilities',
+      id: "sequential-thinking",
+      name: "Sequential Thinking",
+      description: "Break complex problems into sequential steps",
+      category: "utilities",
       tools: [
         {
-          name: 'create_thinking_process',
-          description: 'Start a sequential thinking session',
+          name: "create_thinking_process",
+          description: "Start a sequential thinking session",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               problem: {
-                type: 'string',
-                description: 'The problem to solve',
+                type: "string",
+                description: "The problem to solve",
               },
               max_steps: {
-                type: 'number',
-                description: 'Maximum number of steps',
+                type: "number",
+                description: "Maximum number of steps",
                 default: 10,
               },
             },
-            required: ['problem'],
+            required: ["problem"],
           },
         },
         {
-          name: 'add_thinking_step',
-          description: 'Add a thinking step to current process',
+          name: "add_thinking_step",
+          description: "Add a thinking step to current process",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
-              step_number: { type: 'number' },
-              content: { type: 'string' },
-              reasoning: { type: 'string' },
+              step_number: { type: "number" },
+              content: { type: "string" },
+              reasoning: { type: "string" },
             },
-            required: ['step_number', 'content'],
+            required: ["step_number", "content"],
           },
         },
       ],
-      transport: 'stdio',
+      transport: "stdio",
       installation: {
-        npm: '@modelcontextprotocol/server-sequential-thinking',
+        npm: "@modelcontextprotocol/server-sequential-thinking",
       },
-      status: 'stable',
+      status: "stable",
     },
-    
+
     {
-      id: 'postgres',
-      name: 'PostgreSQL',
-      description: 'Query and manipulate PostgreSQL databases',
-      category: 'database',
+      id: "postgres",
+      name: "PostgreSQL",
+      description: "Query and manipulate PostgreSQL databases",
+      category: "database",
       tools: [
         {
-          name: 'query_database',
-          description: 'Execute SQL query',
+          name: "query_database",
+          description: "Execute SQL query",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
-              query: { type: 'string' },
-              params: { type: 'array' },
+              query: { type: "string" },
+              params: { type: "array" },
             },
-            required: ['query'],
+            required: ["query"],
           },
         },
         {
-          name: 'get_schema',
-          description: 'Get database schema information',
+          name: "get_schema",
+          description: "Get database schema information",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
-              table: { type: 'string' },
+              table: { type: "string" },
             },
           },
         },
       ],
-      transport: 'stdio',
+      transport: "stdio",
       installation: {
-        npm: '@modelcontextprotocol/server-postgres',
+        npm: "@modelcontextprotocol/server-postgres",
       },
-      status: 'stable',
+      status: "stable",
     },
   ];
 }
@@ -451,26 +482,29 @@ export function getServersByCategory(
   registry: MCPRegistry,
   category: string
 ): ServerSpec[] {
-  return registry.servers.filter(s => s.category === category);
+  return registry.servers.filter((s) => s.category === category);
 }
 
 /**
  * Utility: Get all tools across all servers
  */
 export function getAllTools(registry: MCPRegistry): MCPTool[] {
-  return registry.servers.flatMap(s => s.tools);
+  return registry.servers.flatMap((s) => s.tools);
 }
 
 /**
  * Utility: Find a specific server
  */
-export function findServer(registry: MCPRegistry, id: string): ServerSpec | undefined {
-  return registry.servers.find(s => s.id === id);
+export function findServer(
+  registry: MCPRegistry,
+  id: string
+): ServerSpec | undefined {
+  return registry.servers.find((s) => s.id === id);
 }
 
 /**
  * Utility: Find all tools matching a name pattern
  */
 export function findTools(registry: MCPRegistry, pattern: RegExp): MCPTool[] {
-  return getAllTools(registry).filter(t => pattern.test(t.name));
+  return getAllTools(registry).filter((t) => pattern.test(t.name));
 }

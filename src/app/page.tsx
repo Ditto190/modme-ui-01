@@ -1,20 +1,19 @@
 "use client";
 
+import { ChartCard } from "@/components/registry/ChartCard";
+import { DataTable } from "@/components/registry/DataTable";
+import { StatCard } from "@/components/registry/StatCard";
 import { AgentState, UIElement } from "@/lib/types";
-import {
-  useCoAgent,
-  useFrontendTool,
-} from "@copilotkit/react-core";
+import { useCoAgent, useFrontendTool } from "@copilotkit/react-core";
 import { CopilotKitCSSProperties, CopilotSidebar } from "@copilotkit/react-ui";
 import { useState } from "react";
 import { z } from "zod";
 import { GenerativeCanvas } from "./canvas/GenerativeCanvas";
-import { StatCard } from "@/components/registry/StatCard";
-import { DataTable } from "@/components/registry/DataTable";
-import { ChartCard } from "@/components/registry/ChartCard";
 
 // Validation schema for theme color
-const ThemeColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color format");
+const ThemeColorSchema = z
+  .string()
+  .regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color format");
 
 export default function CopilotKitPage() {
   const [themeColor, setThemeColor] = useState("#6366f1");
@@ -35,7 +34,7 @@ export default function CopilotKitPage() {
         setThemeColor(themeColor);
         console.info(`Theme color updated to ${themeColor}`);
       } catch (error) {
-        console.error('Invalid theme color:', themeColor, error);
+        console.error("Invalid theme color:", themeColor, error);
         // Don't update state if invalid
       }
     },
@@ -53,16 +52,19 @@ export default function CopilotKitPage() {
         defaultOpen={true}
         labels={{
           title: "Workbench Assistant",
-          initial: "👋 I'm your Workbench Assistant. Tell me what you want to build.",
+          initial:
+            "👋 I'm your Workbench Assistant. Tell me what you want to build.",
         }}
         suggestions={[
           {
             title: "KPI Dashboard",
-            message: "Generate a sales KPI dashboard with revenue, users, and churn status cards.",
+            message:
+              "Generate a sales KPI dashboard with revenue, users, and churn status cards.",
           },
           {
             title: "Customer Table",
-            message: "Show me a table of recent customers with their email and plan.",
+            message:
+              "Show me a table of recent customers with their email and plan.",
           },
           {
             title: "Analytics Chart",
@@ -87,30 +89,34 @@ function YourMainContent() {
       elements: [],
     },
   });
-  
+
   // Safe access with fallback
   const elements = state?.elements || [];
 
   const renderElement = (el: UIElement) => {
     switch (el.type) {
       case "StatCard":
-        return <StatCard key={el.id} {...el.props} />;
+        return <StatCard key={el.id} {...(el.props as any)} />;
       case "DataTable":
-        return <DataTable key={el.id} {...el.props} />;
+        return <DataTable key={el.id} {...(el.props as any)} />;
       case "ChartCard":
-        return <ChartCard key={el.id} {...el.props} />;
+        return <ChartCard key={el.id} {...(el.props as any)} />;
       default:
         // Log unknown types for debugging
         console.error(`Unknown component type: ${el.type}`, el);
         return (
-          <div 
-            key={el.id} 
+          <div
+            key={el.id}
             className="p-4 bg-red-50 text-red-500 rounded-xl border border-red-200"
           >
             <p className="font-semibold">Unknown component type: {el.type}</p>
-            <p className="text-sm mt-1">Expected: StatCard, DataTable, or ChartCard</p>
+            <p className="text-sm mt-1">
+              Expected: StatCard, DataTable, or ChartCard
+            </p>
             <details className="mt-2">
-              <summary className="text-xs cursor-pointer hover:underline">Debug Info</summary>
+              <summary className="text-xs cursor-pointer hover:underline">
+                Debug Info
+              </summary>
               <pre className="text-xs mt-1 overflow-auto bg-white p-2 rounded">
                 {JSON.stringify(el, null, 2)}
               </pre>
@@ -124,7 +130,9 @@ function YourMainContent() {
     <div className="h-screen bg-slate-50 overflow-hidden flex flex-col p-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-slate-800">GenUI Workbench</h1>
-        <p className="text-slate-500 italic">Dynamic surface managed by WorkbenchAgent</p>
+        <p className="text-slate-500 italic">
+          Dynamic surface managed by WorkbenchAgent
+        </p>
       </div>
 
       <GenerativeCanvas>
