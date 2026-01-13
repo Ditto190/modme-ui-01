@@ -18,7 +18,7 @@ This document outlines the phased integration of semantic routing into the ModMe
 - [x] Implement ModMeSemanticRouter class with singleton pattern (agent/routes/router.py)
 - [x] Add routes package initialization (agent/routes/**init**.py)
 - [x] Create comprehensive documentation (agent/routes/README.md)
-- [x] Set up test infrastructure (agent/tests/**init**.py)
+- [x] Set up test infrastructure (`agent/tests/__init__.py`)
 - [x] Implement test suite with >80% coverage (agent/tests/test_semantic_router.py)
 - [x] Update .env.example with semantic router configuration
 - [x] Create this integration roadmap (SEMANTIC_ROUTER_TODO.md)
