@@ -3,6 +3,7 @@
 This repository includes helper scripts and documentation to enable Visual Studio Code "Shell Integration" for several shells (PowerShell, bash, zsh, fish, Git Bash).
 
 Why enable shell integration?
+
 - Improved command detection, decorations, and navigation.
 - Accurate current working directory detection so links open the correct file.
 - Terminal IntelliSense and Quick Fixes for common command failures.
@@ -10,7 +11,8 @@ Why enable shell integration?
 Note: VS Code already attempts automatic injection for supported shells. Use manual installation when automatic injection doesn't work (sub-shells, remote SSH sessions without Remote - SSH, older shells, or complex shell setups).
 
 Quick links:
-- VS Code docs: https://code.visualstudio.com/docs/terminal/shell-integration
+
+- VS Code docs: <https://code.visualstudio.com/docs/terminal/shell-integration>
 - VS Code setting to disable automatic injection: `terminal.integrated.shellIntegration.enabled`
 
 ---
@@ -27,7 +29,7 @@ PowerShell (Windows / pwsh)
 code $Profile
 ```
 
-2. Add this line to the profile (or run the installer script included in `scripts/`):
+1. Add this line to the profile (or run the installer script included in `scripts/`):
 
 ```powershell
 if ($env:TERM_PROGRAM -eq "vscode") { . "$(code --locate-shell-integration-path pwsh)" }
@@ -97,5 +99,6 @@ POSIX (bash / zsh on Windows via WSL or Git Bash / macOS / Linux):
 ---
 
 If you want, I can:
+
 - Add a short README link to this doc.
 - Run the PowerShell installer script locally and show what it would change (I can preview edits).

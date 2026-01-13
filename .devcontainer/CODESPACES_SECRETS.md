@@ -14,11 +14,13 @@ This guide explains how to configure environment variables in GitHub Codespaces 
 ### 1. Add Codespaces Secrets to Repository
 
 Go to your repository settings:
+
 ```
 https://github.com/Ditto190/modme-ui-01/settings/secrets/codespaces
 ```
 
 Or use GitHub CLI:
+
 ```bash
 # Example: add a single secret
 gh secret set GOOGLE_API_KEY --repo Ditto190/modme-ui-01 -b "your_actual_key_here"
@@ -53,11 +55,11 @@ while IFS='=' read -r key value; do
   # Skip comments and empty lines
   [[ "$key" =~ ^#.*$ ]] && continue
   [[ -z "$key" ]] && continue
-  
+
   # Trim whitespace
   key=$(echo "$key" | xargs)
   value=$(echo "$value" | xargs)
-  
+
   gh secret set "$key" --repo Ditto190/modme-ui-01 --body "$value"
   echo "✓ Added $key"
 done < .env
@@ -67,30 +69,32 @@ done < .env
 
 The script automatically loads these variables from Codespaces environment:
 
-| Variable | Description | Required? |
-|----------|-------------|-----------|
-| `GOOGLE_API_KEY` | Google AI API key for ADK agent | ✅ Yes |
-| `COPILOT_CLOUD_API_KEY` | CopilotKit Cloud features | Optional |
-| `GITHUB_PERSONAL_ACCESS_TOKEN` | GitHub MCP server access | Optional |
-| `GITHUB_TOKEN` | Automatically provided by Codespaces | Auto |
-| `VTCODE_MCP_URL` | VT Code MCP integration endpoint | Optional |
-| `DATABASE_URL` | Database connection string | Optional |
-| `OPENAI_API_KEY` | OpenAI API key | Optional |
-| `ANTHROPIC_API_KEY` | Anthropic API key | Optional |
-| `AZURE_OPENAI_API_KEY` | Azure OpenAI key | Optional |
-| `AZURE_OPENAI_ENDPOINT` | Azure OpenAI endpoint | Optional |
-| `SUPABASE_URL` | Supabase project URL | Optional |
-| `SUPABASE_ANON_KEY` | Supabase anonymous key | Optional |
+| Variable                       | Description                          | Required? |
+| ------------------------------ | ------------------------------------ | --------- |
+| `GOOGLE_API_KEY`               | Google AI API key for ADK agent      | ✅ Yes    |
+| `COPILOT_CLOUD_API_KEY`        | CopilotKit Cloud features            | Optional  |
+| `GITHUB_PERSONAL_ACCESS_TOKEN` | GitHub MCP server access             | Optional  |
+| `GITHUB_TOKEN`                 | Automatically provided by Codespaces | Auto      |
+| `VTCODE_MCP_URL`               | VT Code MCP integration endpoint     | Optional  |
+| `DATABASE_URL`                 | Database connection string           | Optional  |
+| `OPENAI_API_KEY`               | OpenAI API key                       | Optional  |
+| `ANTHROPIC_API_KEY`            | Anthropic API key                    | Optional  |
+| `AZURE_OPENAI_API_KEY`         | Azure OpenAI key                     | Optional  |
+| `AZURE_OPENAI_ENDPOINT`        | Azure OpenAI endpoint                | Optional  |
+| `SUPABASE_URL`                 | Supabase project URL                 | Optional  |
+| `SUPABASE_ANON_KEY`            | Supabase anonymous key               | Optional  |
 
 **To add more secrets**: edit `.devcontainer/load-codespaces-secrets.sh` and add to the `SECRETS_TO_LOAD` array.
 
 ### 4. Create a Codespace
 
 Via GitHub UI:
+
 1. Go to https://github.com/Ditto190/modme-ui-01
 2. Click **Code** → **Codespaces** → **Create codespace on feature/genui-workbench-refactor**
 
 Via GitHub CLI:
+
 ```bash
 gh codespace create \
   --repo Ditto190/modme-ui-01 \
@@ -116,6 +120,7 @@ Once the Codespace opens, check the terminal output:
 ```
 
 Then verify `.env` has values:
+
 ```bash
 cat .env | grep GOOGLE_API_KEY
 # Should show: GOOGLE_API_KEY=your_actual_key_here (not placeholder)
@@ -124,12 +129,14 @@ cat .env | grep GOOGLE_API_KEY
 ## 🔐 Security Best Practices
 
 ✅ **Do this:**
+
 - Add secrets via GitHub Settings → Codespaces → Secrets
 - Use Codespaces secrets for all API keys and credentials
 - Commit `.env.example` with placeholder values
 - Keep `.env` in `.gitignore`
 
 ❌ **Don't do this:**
+
 - Never commit `.env` with real secrets
 - Never hardcode API keys in source code
 - Never share secrets in issues/PRs/comments
@@ -153,6 +160,7 @@ This way, all team members get the same secrets when they create Codespaces.
 ## 🔄 Script Details
 
 The automation is handled by:
+
 - `.devcontainer/load-codespaces-secrets.sh` - Reads env vars and updates `.env`
 - `.devcontainer/post-create.sh` - Runs the loader after container creation
 

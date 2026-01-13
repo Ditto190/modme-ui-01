@@ -7,7 +7,6 @@
 ### ✅ Completed
 
 1. **Python Backend Observability** (`agent/observability/`)
-
    - `greptime_config.py`: Complete OpenTelemetry configuration with GreptimeDB OTLP exporter
    - `__init__.py`: Package initialization
    - Metrics: Counter, Gauge, Histogram support
@@ -16,14 +15,12 @@
    - Graceful fallback if observability not configured
 
 2. **TypeScript/Node.js Frontend Observability** (`src/lib/observability/`)
-
    - `greptime-config.ts`: OpenTelemetry configuration for React/Next.js
    - `examples.ts`: Comprehensive usage examples with React hooks
    - `package.json`: Required dependencies
    - `tsconfig.json`: TypeScript configuration
 
 3. **Integration with Agent** (`agent/main.py`)
-
    - Auto-initialization on startup (if `GREPTIME_HOST` is set)
    - Metrics tracking for:
      - HTTP requests (`http_requests_total`)
@@ -32,13 +29,11 @@
    - Graceful degradation if observability disabled
 
 4. **Environment Configuration**
-
    - `.env.greptime.example`: Template for environment variables
    - Support for local development and GreptimeCloud
    - Basic Auth configuration
 
 5. **Documentation**
-
    - `docs/GREPTIME_OBSERVABILITY.md`: Complete 500+ line reference guide
    - `docs/GREPTIME_QUICKSTART.md`: 5-minute setup guide
    - Updated `.github/copilot-instructions.md` with observability references

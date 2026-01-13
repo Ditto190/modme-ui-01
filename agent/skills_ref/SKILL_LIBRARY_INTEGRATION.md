@@ -2,8 +2,8 @@
 
 > **Curated skill library from Ai-Agent-Skills repository integrated into ModMe GenUI Workbench**
 
-**Repository**: https://github.com/skillcreatorai/Ai-Agent-Skills  
-**Specification**: https://agentskills.io/specification  
+**Repository**: <https://github.com/skillcreatorai/Ai-Agent-Skills>  
+**Specification**: <https://agentskills.io/specification>  
 **Status**: ✅ Ready for Use
 
 ---
@@ -508,10 +508,10 @@ python -m agent.skills_ref.skill_library generate-prompt --output agent_skills.x
 
 ## Related Documentation
 
-- **Agent Skills Specification**: https://agentskills.io/specification
-- **Ai-Agent-Skills Repository**: https://github.com/skillcreatorai/Ai-Agent-Skills
+- **Agent Skills Specification**: <https://agentskills.io/specification>
+- **Ai-Agent-Skills Repository**: <https://github.com/skillcreatorai/Ai-Agent-Skills>
 - **Original skills_ref README**: [README.md](./README.md)
-- **Skill Creator Guide**: https://skillcreator.ai/build
+- **Skill Creator Guide**: <https://skillcreator.ai/build>
 
 ---
 

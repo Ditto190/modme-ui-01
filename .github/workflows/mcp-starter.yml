@@ -15,6 +15,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Smart Coding MCP
+        run: |
+          npm install -g smart-coding-mcp
+          npx smart-coding-mcp --version
+
+      - name: Test MCP Server Health
+        continue-on-error: true
+        run: |
+          npx smart-coding-mcp --workspace . --test
+
 
       # Ubuntu runners have PowerShell (pwsh) pre-installed
       - name: Make starter script executable (if present)

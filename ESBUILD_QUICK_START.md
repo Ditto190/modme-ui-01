@@ -46,6 +46,7 @@ npm run build:esbuild
 ```
 
 Expected output:
+
 ```
 Building agentGenerator...
   Entry: agent-generator/src/scripts/generate.ts

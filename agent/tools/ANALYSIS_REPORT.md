@@ -3,6 +3,7 @@
 **Date**: January 6, 2026  
 **Scope**: Testing & Documentation Analysis of `agent/tools/`  
 **Files Analyzed**:
+
 - `agent/tools/README.md`
 - `agent/tools/generate_schemas.py`
 - `agent-generator/src/mcp-registry/schema-crawler.ts`
@@ -14,6 +15,7 @@
 ✅ **Overall Assessment**: The agent tools are well-architected and documented, with strong testing results for both TypeScript and Python implementations. The README is comprehensive but has some gaps in practical usage guidance.
 
 **Key Findings**:
+
 - ✅ schema-crawler.ts: **100% test pass rate** (9/9 tests)
 - ✅ generate_schemas.py: **Validation & error handling working** (needs ADK deps installed)
 - ⚠️ README.md: **Comprehensive but needs updates** (see recommendations below)
@@ -26,17 +28,17 @@
 
 **Test Suite**: 9 comprehensive tests covering all major functions
 
-| Test | Feature | Status | Notes |
-|------|---------|--------|-------|
-| 1 | Simple object schema | ✅ PASS | Correctly generates Zod + TypeScript types |
-| 2 | Enum schema | ✅ PASS | Proper enum type generation |
-| 3 | Array schema | ✅ PASS | Array validation works |
-| 4 | Complete module generation | ✅ PASS | Full MCP tool schema with input/output |
-| 5 | Batch generation | ✅ PASS | Multiple tools processed |
-| 6 | File structure generation | ✅ PASS | Creates 4 files (schemas + barrel + registry) |
-| 7 | Nested object schema | ✅ PASS | Handles nested properties |
-| 8 | String constraints | ✅ PASS | minLength, maxLength, regex preserved |
-| 9 | Number constraints | ✅ PASS | min, max, integer type preserved |
+| Test | Feature                    | Status  | Notes                                         |
+| ---- | -------------------------- | ------- | --------------------------------------------- |
+| 1    | Simple object schema       | ✅ PASS | Correctly generates Zod + TypeScript types    |
+| 2    | Enum schema                | ✅ PASS | Proper enum type generation                   |
+| 3    | Array schema               | ✅ PASS | Array validation works                        |
+| 4    | Complete module generation | ✅ PASS | Full MCP tool schema with input/output        |
+| 5    | Batch generation           | ✅ PASS | Multiple tools processed                      |
+| 6    | File structure generation  | ✅ PASS | Creates 4 files (schemas + barrel + registry) |
+| 7    | Nested object schema       | ✅ PASS | Handles nested properties                     |
+| 8    | String constraints         | ✅ PASS | minLength, maxLength, regex preserved         |
+| 9    | Number constraints         | ✅ PASS | min, max, integer type preserved              |
 
 **Example Output Quality**:
 
@@ -60,6 +62,7 @@ export function validategetWeatherInput(input: unknown): getWeatherInput {
 ```
 
 **Strengths**:
+
 - Clean code generation with proper indentation
 - Preserves all JSON Schema constraints (min/max, patterns, enums)
 - Type-safe interfaces match Zod schemas exactly
@@ -67,6 +70,7 @@ export function validategetWeatherInput(input: unknown): getWeatherInput {
 - File structure generation creates complete module hierarchy
 
 **Minor Issues**:
+
 - No validation for circular references in nested schemas (acceptable limitation)
 - oneOf/anyOf not fully supported (documented in SCHEMA_CRAWLER_README.md)
 
@@ -76,13 +80,13 @@ export function validategetWeatherInput(input: unknown): getWeatherInput {
 
 **Test Suite**: 5 tests covering validation, error handling, and integration
 
-| Test | Feature | Status | Notes |
-|------|---------|--------|-------|
-| 1 | Extract skill description | ✅ PASS | Parses SKILL.md correctly |
-| 2 | Path validation | ✅ PASS | Returns error for invalid paths |
-| 3 | Generate agent prompt | ✅ PASS | Processed 12 skills successfully |
-| 4 | Generate all (integration) | ⚠️ PARTIAL | Schemas failed (missing dir), prompt succeeded |
-| 5 | Error handling | ✅ PASS | Graceful error messages |
+| Test | Feature                    | Status     | Notes                                          |
+| ---- | -------------------------- | ---------- | ---------------------------------------------- |
+| 1    | Extract skill description  | ✅ PASS    | Parses SKILL.md correctly                      |
+| 2    | Path validation            | ✅ PASS    | Returns error for invalid paths                |
+| 3    | Generate agent prompt      | ✅ PASS    | Processed 12 skills successfully               |
+| 4    | Generate all (integration) | ⚠️ PARTIAL | Schemas failed (missing dir), prompt succeeded |
+| 5    | Error handling             | ✅ PASS    | Graceful error messages                        |
 
 **Generated Agent Prompt Quality**:
 
@@ -92,20 +96,20 @@ export function validategetWeatherInput(input: unknown): getWeatherInput {
 You are a helpful AI assistant equipped with specific skills and tools.
 
 <available_skills>
-  <skill>
-    <name>algorithmic-art</name>
-    <description>
-      - Creating algorithmic art using p5.js with seeded randomness...
-    </description>
-    <instructions>
-      [Full SKILL.md content...]
-    </instructions>
-  </skill>
-  ...
+<skill>
+<name>algorithmic-art</name>
+<description> - Creating algorithmic art using p5.js with seeded randomness...
+</description>
+<instructions>
+[Full SKILL.md content...]
+</instructions>
+</skill>
+...
 </available_skills>
 ```
 
 **Skills Processed**: 12 skills detected and compiled:
+
 - algorithmic-art
 - brand-guidelines
 - docx
@@ -120,17 +124,20 @@ You are a helpful AI assistant equipped with specific skills and tools.
 - xlsx
 
 **Strengths**:
+
 - Robust error handling (graceful failures with detailed messages)
 - Path validation prevents silent failures
 - XML structure well-formed and parsable
 - Skills directory traversal works reliably
 
 **Issues Identified**:
+
 1. **Dependency Missing**: `google-adk` not installed in venv (declared in `agent/pyproject.toml` but not installed)
 2. **Path Issue**: `generate_tool_schemas()` tries to write to non-existent directory without creating it first (minor bug)
 3. **Node.js Dependency**: Uses Node.js subprocess to run typescript-json-schema (coupling to Node runtime)
 
 **Recommendations**:
+
 - Run `uv pip install google-adk ag-ui-adk` or `pip install -e agent/` to fix missing deps
 - Add `output_path.parent.mkdir(parents=True, exist_ok=True)` before writing schemas (already done for prompts)
 
@@ -141,6 +148,7 @@ You are a helpful AI assistant equipped with specific skills and tools.
 ### Coverage Assessment
 
 **✅ Well-Covered Areas**:
+
 - Tool architecture and patterns (excellent example code)
 - Return value conventions (consistent across all tools)
 - Tool registration in GenAI Toolbox (YAML examples)
@@ -178,22 +186,24 @@ You are a helpful AI assistant equipped with specific skills and tools.
 
 ### Accuracy Issues
 
-| Section | Issue | Severity | Fix |
-|---------|-------|----------|-----|
-| Usage Examples | `schema_crawler_tool` module doesn't exist | Medium | Remove or implement |
-| Development Guide | Doesn't mention mocking ADK for testing | Low | Add mocking example |
-| Testing | `pytest --cov` assumes pytest-cov installed | Low | Add to dependencies |
-| File Paths | Uses relative imports that may not work | Medium | Show absolute imports |
+| Section           | Issue                                       | Severity | Fix                   |
+| ----------------- | ------------------------------------------- | -------- | --------------------- |
+| Usage Examples    | `schema_crawler_tool` module doesn't exist  | Medium   | Remove or implement   |
+| Development Guide | Doesn't mention mocking ADK for testing     | Low      | Add mocking example   |
+| Testing           | `pytest --cov` assumes pytest-cov installed | Low      | Add to dependencies   |
+| File Paths        | Uses relative imports that may not work     | Medium   | Show absolute imports |
 
 ### Documentation Structure Quality
 
 **Strengths**:
+
 - Clear table of contents
 - Consistent formatting (code blocks, headers)
 - Good use of examples throughout
 - Helpful "DO/DON'T" best practices section
 
 **Weaknesses**:
+
 - Very long (557 lines) — could be split into multiple docs
 - No quick-start section at top for common tasks
 - Examples section buried deep in document
@@ -206,6 +216,7 @@ You are a helpful AI assistant equipped with specific skills and tools.
 ### Priority 1: Critical Fixes
 
 1. **Fix Dependency Installation**
+
    ```bash
    # Add to README.md "Installation" section (new)
    cd agent
@@ -213,6 +224,7 @@ You are a helpful AI assistant equipped with specific skills and tools.
    ```
 
 2. **Fix generate_schemas.py Directory Creation Bug**
+
    ```python
    # In generate_tool_schemas(), before writing schemas:
    output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -224,84 +236,100 @@ You are a helpful AI assistant equipped with specific skills and tools.
 
 ### Priority 2: Documentation Improvements
 
-4. **Add Quick Start Section** (at top of README):
-   ```markdown
+1. **Add Quick Start Section** (at top of README):
+
+   ````markdown
    ## Quick Start
-   
+
    ```bash
    # 1. Install dependencies
    pip install -e agent/
-   
+
    # 2. Generate agent prompt from skills
    python agent/tools/generate_schemas.py prompt
-   
+
    # 3. View output
    cat agent-generator/output/agent_prompt.md
    ```
+   ````
+
    ```
 
-5. **Add Troubleshooting Section**:
+   ```
+
+2. **Add Troubleshooting Section**:
+
    ```markdown
    ## Troubleshooting
-   
+
    ### ModuleNotFoundError: No module named 'google.adk'
+
    Solution: Install agent dependencies: `pip install -e agent/`
-   
+
    ### ENOENT: no such file or directory
+
    Solution: Output directory doesn't exist. Fixed in v0.2.1+
    ```
 
-6. **Split README into Multiple Files**:
+3. **Split README into Multiple Files**:
    - `agent/tools/README.md` — Overview + quick start (100 lines max)
    - `agent/tools/TOOL_REFERENCE.md` — Detailed function docs
    - `agent/tools/DEVELOPMENT_GUIDE.md` — Creating new tools
    - `agent/tools/EXAMPLES.md` — Extended usage examples
 
-7. **Add Tool Status Table**:
+4. **Add Tool Status Table**:
+
    ```markdown
    ## Tool Status
-   
-   | Tool | Status | Version | Notes |
-   |------|--------|---------|-------|
-   | generate_tool_schemas | 🚧 In Progress | 0.2.0 | Requires Node.js + typescript-json-schema |
-   | generate_agent_prompt | ✅ Ready | 0.2.0 | Production ready |
-   | generate_all | 🚧 In Progress | 0.2.0 | Depends on schemas tool |
+
+   | Tool                  | Status         | Version | Notes                                     |
+   | --------------------- | -------------- | ------- | ----------------------------------------- |
+   | generate_tool_schemas | 🚧 In Progress | 0.2.0   | Requires Node.js + typescript-json-schema |
+   | generate_agent_prompt | ✅ Ready       | 0.2.0   | Production ready                          |
+   | generate_all          | 🚧 In Progress | 0.2.0   | Depends on schemas tool                   |
    ```
 
 ### Priority 3: Enhanced Examples
 
-8. **Add Windows-Specific Examples**:
-   ```markdown
+1. **Add Windows-Specific Examples**:
+
+   ````markdown
    ### Windows Users
-   
+
    ```powershell
    # Activate venv
    .\.venv\Scripts\Activate.ps1
-   
+
    # Run tool
    python agent\tools\generate_schemas.py all
    ```
+   ````
+
    ```
 
-9. **Add Complete Integration Example**:
+   ```
+
+2. **Add Complete Integration Example**:
+
    ```markdown
    ## Complete Example: Adding a New Tool
-   
+
    [Show full workflow from tool creation → YAML config → agent integration → testing]
    ```
 
-10. **Add Mocking Examples for Testing**:
-    ```python
-    # Testing tools without ADK dependencies
-    from unittest.mock import MagicMock
-    
-    class MockToolContext:
-        def __init__(self):
-            self.state = {}
-    
-    context = MockToolContext()
-    result = my_tool(context, param="test")
-    ```
+3. **Add Mocking Examples for Testing**:
+
+   ```python
+   # Testing tools without ADK dependencies
+   from unittest.mock import MagicMock
+
+   class MockToolContext:
+       def __init__(self):
+           self.state = {}
+
+   context = MockToolContext()
+   result = my_tool(context, param="test")
+   ```
 
 ---
 
@@ -312,12 +340,14 @@ You are a helpful AI assistant equipped with specific skills and tools.
 **Rating**: 8/10
 
 **Strengths**:
+
 - Clean, readable code with docstrings
 - Consistent error handling patterns
 - Type hints on all functions
 - Good separation of concerns (helper functions)
 
 **Improvements Needed**:
+
 - Add type annotations for `_extract_skill_description` return type
 - Use `pathlib.Path` consistently instead of mixing strings
 - Add logging instead of/in addition to print statements
@@ -328,12 +358,14 @@ You are a helpful AI assistant equipped with specific skills and tools.
 **Rating**: 9/10
 
 **Strengths**:
+
 - Well-structured with clear function separation
 - Comprehensive type annotations
 - Good naming conventions
 - Handles edge cases (empty schemas, missing properties)
 
 **Improvements Needed**:
+
 - Add JSDoc comments to all exported functions
 - Consider memoization for repeated schema generation
 - Add validation for circular references
@@ -345,6 +377,7 @@ You are a helpful AI assistant equipped with specific skills and tools.
 ### End-to-End Workflow Test
 
 Tested complete workflow:
+
 1. ✅ Import skills from `agent-generator/src/skills/`
 2. ✅ Generate agent prompt with 12 skills
 3. ⚠️ Generate tool schemas (failed due to directory creation bug)
@@ -366,24 +399,25 @@ Tested complete workflow:
 
 ### Short-Term (Next Sprint)
 
-6. 📚 Split README into multiple focused documents
-7. 🚀 Add quick-start section to README
-8. 🔧 Add troubleshooting section
-9. 🏷️ Add tool status table
-10. 🪟 Add Windows-specific examples
+1. 📚 Split README into multiple focused documents
+2. 🚀 Add quick-start section to README
+3. 🔧 Add troubleshooting section
+4. 🏷️ Add tool status table
+5. 🪟 Add Windows-specific examples
 
 ### Long-Term (Future)
 
-11. 🔄 Refactor to remove Node.js subprocess dependency
-12. 🧪 Add automated integration tests
-13. 📊 Add performance benchmarks
-14. 🌐 Add GitHub Actions workflow for testing tools
+1. 🔄 Refactor to remove Node.js subprocess dependency
+2. 🧪 Add automated integration tests
+3. 📊 Add performance benchmarks
+4. 🌐 Add GitHub Actions workflow for testing tools
 
 ---
 
 ## Conclusion
 
 The agent tools system is **architecturally sound** with **strong foundations**:
+
 - schema-crawler.ts: Production-ready, comprehensive test coverage
 - generate_schemas.py: Core functionality works, needs minor bug fixes
 - README.md: Comprehensive but needs restructuring for better usability
@@ -397,6 +431,7 @@ The agent tools system is **architecturally sound** with **strong foundations**:
 ---
 
 **Prepared by**: GitHub Copilot  
-**Test Harnesses**: 
+**Test Harnesses**:
+
 - `agent-generator/src/mcp-registry/test-schema-crawler.ts`
 - `agent/tools/test_generate_schemas.py`

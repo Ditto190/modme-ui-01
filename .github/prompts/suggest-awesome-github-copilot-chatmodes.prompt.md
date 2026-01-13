@@ -1,7 +1,21 @@
 ---
-agent: 'agent'
-description: 'Suggest relevant GitHub Copilot Custom Chat Modes files from the awesome-copilot repository based on current repository context and chat history, avoiding duplicates with existing custom chat modes in this repository.'
-tools: ['edit', 'search', 'runCommands', 'runTasks', 'think', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'search']
+agent: "agent"
+description: "Suggest relevant GitHub Copilot Custom Chat Modes files from the awesome-copilot repository based on current repository context and chat history, avoiding duplicates with existing custom chat modes in this repository."
+tools:
+  [
+    "edit",
+    "search",
+    "runCommands",
+    "runTasks",
+    "think",
+    "changes",
+    "testFailure",
+    "openSimpleBrowser",
+    "fetch",
+    "githubRepo",
+    "todos",
+    "search",
+  ]
 ---
 
 # Suggest Awesome GitHub Copilot Custom Chat Modes
@@ -25,12 +39,14 @@ Analyze current repository context and suggest relevant Custom Chat Modes files 
 ## Context Analysis Criteria
 
 🔍 **Repository Patterns**:
+
 - Programming languages used (.cs, .js, .py, etc.)
 - Framework indicators (ASP.NET, React, Azure, etc.)
 - Project types (web apps, APIs, libraries, tools)
 - Documentation needs (README, specs, ADRs)
 
 🗨️ **Chat History Context**:
+
 - Recent discussions and pain points
 - Feature requests or implementation needs
 - Code review patterns
@@ -40,11 +56,11 @@ Analyze current repository context and suggest relevant Custom Chat Modes files 
 
 Display analysis results in structured table comparing awesome-copilot custom chat modes with existing repository custom chat modes:
 
-| Awesome-Copilot Custom Chat Mode | Description | Already Installed | Similar Local Custom Chat Mode | Suggestion Rationale |
-|---------------------------|-------------|-------------------|-------------------------|---------------------|
-| [code-reviewer.agent.md](https://github.com/github/awesome-copilot/blob/main/agents/code-reviewer.agent.md) | Specialized code review custom chat mode | ❌ No | None | Would enhance development workflow with dedicated code review assistance |
-| [architect.agent.md](https://github.com/github/awesome-copilot/blob/main/agents/architect.agent.md) | Software architecture guidance | ✅ Yes | azure_principal_architect.agent.md | Already covered by existing architecture custom chat modes |
-| [debugging-expert.agent.md](https://github.com/github/awesome-copilot/blob/main/agents/debugging-expert.agent.md) | Debug assistance custom chat mode | ❌ No | None | Could improve troubleshooting efficiency for development team |
+| Awesome-Copilot Custom Chat Mode                                                                                  | Description                              | Already Installed | Similar Local Custom Chat Mode     | Suggestion Rationale                                                     |
+| ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ----------------- | ---------------------------------- | ------------------------------------------------------------------------ |
+| [code-reviewer.agent.md](https://github.com/github/awesome-copilot/blob/main/agents/code-reviewer.agent.md)       | Specialized code review custom chat mode | ❌ No             | None                               | Would enhance development workflow with dedicated code review assistance |
+| [architect.agent.md](https://github.com/github/awesome-copilot/blob/main/agents/architect.agent.md)               | Software architecture guidance           | ✅ Yes            | azure_principal_architect.agent.md | Already covered by existing architecture custom chat modes               |
+| [debugging-expert.agent.md](https://github.com/github/awesome-copilot/blob/main/agents/debugging-expert.agent.md) | Debug assistance custom chat mode        | ❌ No             | None                               | Could improve troubleshooting efficiency for development team            |
 
 ## Local Chatmodes Discovery Process
 

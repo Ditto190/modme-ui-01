@@ -305,10 +305,7 @@ async function runBatchEvaluation() {
   }
 
   // Save for evaluation
-  fs.writeFileSync(
-    "evaluation/responses.json",
-    JSON.stringify(results, null, 2)
-  );
+  fs.writeFileSync("evaluation/responses.json", JSON.stringify(results, null, 2));
 }
 ```
 

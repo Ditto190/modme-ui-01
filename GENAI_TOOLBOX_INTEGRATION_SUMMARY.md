@@ -270,18 +270,15 @@ curl http://localhost:8080/health  # GenAI Toolbox
 ### Optional Enhancements
 
 1. **Add More Data Sources** (Optional)
-
    - Edit `tools.yaml` to add BigQuery, Spanner, etc.
    - Configure credentials in `.env`
 
 2. **Create Grafana Dashboards** (Optional)
-
    - Install Grafana: `docker run -d -p 3001:3000 grafana/grafana`
    - Add GreptimeDB as Prometheus data source
    - Create dashboards for query metrics
 
 3. **Implement Go Telemetry** (Advanced)
-
    - Create `internal/telemetry/greptime.go` (code in GENAI_TOOLBOX_INTEGRATION_PLAN.md)
    - Modify `main.go` to call `telemetry.InitializeGreptimeDB()`
    - Test with metrics queries

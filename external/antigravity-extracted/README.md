@@ -18,30 +18,30 @@ Google Antigravity is the first "Agent-first" IDE, powered by Gemini 3. It chang
 
 ## Featured Resources (Teaser)
 
-*This is a preview. For the full, searchable database with "Copy to Clipboard" functionality, visit ​*[*awesome-antigravity.com*](https://www.google.com/url?sa=E&source=gmail&q=https://awesome-antigravity.com/ "null")*.*
+_This is a preview. For the full, searchable database with "Copy to Clipboard" functionality, visit ​_[_awesome-antigravity.com_](https://www.google.com/url?sa=E&source=gmail&q=https://awesome-antigravity.com/ "null")_._
 
 ### Agent Personas
 
 > Copy these into your Agent settings to give them specialized skills.
 
-* ​**The Ruthless Reviewer**​: An agent that doesn't just fix code, but critiques architecture and security vulnerabilities.
-* ​**React Component Specialist**​: Specifically tuned for modern React + Tailwind patterns, avoiding legacy class components.
-* ​**Unit Test Guardian**​: Automatically generates Jest/Vitest cases for every file you touch.
-* [*👉 Get the prompts here...*](https://www.google.com/url?sa=E&source=gmail&q=https://awesome-antigravity.com/ "null")
+- ​**The Ruthless Reviewer**​: An agent that doesn't just fix code, but critiques architecture and security vulnerabilities.
+- ​**React Component Specialist**​: Specifically tuned for modern React + Tailwind patterns, avoiding legacy class components.
+- ​**Unit Test Guardian**​: Automatically generates Jest/Vitest cases for every file you touch.
+- [_👉 Get the prompts here..._](https://www.google.com/url?sa=E&source=gmail&q=https://awesome-antigravity.com/ "null")
 
 ### Mission Control Templates
 
 > "Commander's Intent" instructions to manage complex, multi-step tasks.
 
-* ​**Full-Stack Feature Build**​: A step-by-step instruction set to make an Agent build a backend API endpoint AND the frontend UI in one go.
-* ​**Legacy Refactor**​: How to guide an Agent to refactor old codebases without breaking dependencies.
-* [*👉 Get the templates here...*](https://www.google.com/url?sa=E&source=gmail&q=https://awesome-antigravity.com/ "null")
+- ​**Full-Stack Feature Build**​: A step-by-step instruction set to make an Agent build a backend API endpoint AND the frontend UI in one go.
+- ​**Legacy Refactor**​: How to guide an Agent to refactor old codebases without breaking dependencies.
+- [_👉 Get the templates here..._](https://www.google.com/url?sa=E&source=gmail&q=https://awesome-antigravity.com/ "null")
 
 ### Troubleshooting & Fixes
 
-* ​**Rate Limit Bypass Strategies**​: How to optimize context windows to save credits.
-* ​**"Agent Stuck" Fixes**​: What to do when Mission Control freezes.
-* ​**Extension Compatibility List**​: Which VS Code extensions work perfectly in Antigravity.
+- ​**Rate Limit Bypass Strategies**​: How to optimize context windows to save credits.
+- ​**"Agent Stuck" Fixes**​: What to do when Mission Control freezes.
+- ​**Extension Compatibility List**​: Which VS Code extensions work perfectly in Antigravity.
 
 ## Why use the Website?
 

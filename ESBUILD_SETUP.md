@@ -6,6 +6,7 @@
 ## Overview
 
 This repository uses **esbuild** to bundle:
+
 - **agent-generator** CLI tools (TypeScript → ESM)
 - **Knowledge management** scripts (docs sync, diagram generation)
 - **Toolset management** scripts (validation, change detection)
@@ -38,6 +39,7 @@ export const buildConfigs = {
 ```
 
 Each config defines:
+
 - **entryPoints**: Source file(s) to bundle
 - **outfile**: Output bundle path
 - **external**: Dependencies to NOT bundle (e.g., `ajv`, `glob`)
@@ -52,6 +54,7 @@ node esbuild.config.mjs build
 ```
 
 Outputs:
+
 - `agent-generator/dist/generate.mjs`
 - `scripts/knowledge-management/dist/*.mjs`
 - `scripts/toolset-management/dist/*.mjs`
@@ -149,13 +152,13 @@ npm run watch:esbuild
 
 ```javascript
 const sharedOptions = {
-  bundle: true,                                    // Inline dependencies
-  minify: process.env.NODE_ENV === "production",   // Minify in prod
-  sourcemap: process.env.NODE_ENV !== "production",// Debug maps in dev
-  target: "ES2022",                                // Modern JavaScript
-  platform: "node",                                // Node.js runtime
-  format: "esm",                                   // ES modules
-  external: ["esbuild"],                           // Don't bundle esbuild
+  bundle: true, // Inline dependencies
+  minify: process.env.NODE_ENV === "production", // Minify in prod
+  sourcemap: process.env.NODE_ENV !== "production", // Debug maps in dev
+  target: "ES2022", // Modern JavaScript
+  platform: "node", // Node.js runtime
+  format: "esm", // ES modules
+  external: ["esbuild"], // Don't bundle esbuild
 };
 ```
 
@@ -218,12 +221,13 @@ In GitHub Actions:
 **Cause**: Module is bundled but not installed, or missing from `external` list.
 
 **Solution**:
+
 1. If it's a dev dependency, add to `external`
 2. If it should be bundled, remove from `external`
 3. Ensure the module is listed in `package.json` devDependencies
 
 ```javascript
-external: ["ajv", "ajv-formats", "glob"] // Add missing deps here
+external: ["ajv", "ajv-formats", "glob"]; // Add missing deps here
 ```
 
 ### Error: "ERR_MODULE_NOT_FOUND"
@@ -263,7 +267,7 @@ mkdir -p scripts/toolset-management/dist
 **Solution**: Increase externals to prevent bundling:
 
 ```javascript
-external: ["ajv", "ajv-formats", "marked", "handlebars", "glob", "typescript"]
+external: ["ajv", "ajv-formats", "marked", "handlebars", "glob", "typescript"];
 ```
 
 ## Performance Tips
@@ -273,7 +277,7 @@ external: ["ajv", "ajv-formats", "marked", "handlebars", "glob", "typescript"]
 Don't bundle packages from `node_modules`. They're already installed:
 
 ```javascript
-external: ["ajv", "glob", "marked"] // ✅ Better: smaller bundle
+external: ["ajv", "glob", "marked"]; // ✅ Better: smaller bundle
 ```
 
 ### 2. **Enable minification in production**
@@ -338,17 +342,17 @@ export const buildConfigs = {
 
 ## Comparison with Next.js Build
 
-| Aspect | Next.js | esbuild (this config) |
-|--------|---------|----------------------|
-| **Input** | React + TypeScript | CLI scripts, agent-generator |
-| **Output** | Optimized SPA | Standalone `.mjs` files |
-| **Bundler** | SWC/Turbopack | esbuild |
-| **Target** | Browser + Node.js | Node.js only |
-| **Use Case** | Web application | Build tooling, scripts |
+| Aspect       | Next.js            | esbuild (this config)        |
+| ------------ | ------------------ | ---------------------------- |
+| **Input**    | React + TypeScript | CLI scripts, agent-generator |
+| **Output**   | Optimized SPA      | Standalone `.mjs` files      |
+| **Bundler**  | SWC/Turbopack      | esbuild                      |
+| **Target**   | Browser + Node.js  | Node.js only                 |
+| **Use Case** | Web application    | Build tooling, scripts       |
 
 ## See Also
 
-- **esbuild Docs**: https://esbuild.github.io/
+- **esbuild Docs**: <https://esbuild.github.io/>
 - **TypeScript Support**: esbuild has built-in `.ts` transpilation (no tsc needed)
 - **ESM Format**: ECMAScript modules (native Node.js 22.9.0+)
 

@@ -1,91 +1,91 @@
 #!/usr/bin/env bash
-# ModMe GenUI Workbench - Project bash profile
+#
+# ModMe GenUI Workbench - Project Bash Profile
+#
+# Description:
+#   This file provides VS Code shell integration and project-specific commands
+#   for the ModMe GenUI Workbench. It is designed to be sourced by the user's
+#   ~/.bashrc via the setup script (scripts/setup-shell-integration.sh).
+#
 # Location: .config/bash/bashrc
-# This file is intended to be sourced by the user's ~/.bashrc via
-# the repository setup script (`scripts/setup-shell-integration.sh`).
+# Documentation: https://code.visualstudio.com/docs/terminal/shell-integration
+#
 
+# VS Code Shell Integration
+# Enable shell integration if running in VS Code
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+    SHELL_INTEGRATION_PATH="$(code --locate-shell-integration-path bash 2>/dev/null)"
+    if [[ -n "$SHELL_INTEGRATION_PATH" ]] && [[ -f "$SHELL_INTEGRATION_PATH" ]]; then
+        # shellcheck source=/dev/null
+        . "$SHELL_INTEGRATION_PATH"
+    fi
+fi
+
+# Resolve project root (two levels up from this file)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-PROJECT_ROOT="$(realpath "$SCRIPT_DIR/../..")"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-function show_project_commands() {
-    echo "ModMe GenUI Workbench - Project Commands"
-    echo "  dev       - Start both frontend and agent servers"
-    echo "  ui        - Start Next.js frontend only"
-    echo "  agent     - Start Python agent only"
-    echo "  mcp       - Start MCP servers"
-    echo "  validate  - Validate toolsets configuration"
-    echo "  docs      - Generate all documentation"
-    echo "  venv      - Activate Python virtual environment"
-    echo "  help      - Show this message"
-}
-
+# Project-specific command functions
 dev() {
+    # Start both frontend and agent servers
     (cd "$PROJECT_ROOT" && npm run dev)
 }
 
-ui() {
-    (cd "$PROJECT_ROOT" && npm run dev:ui)
-}
-
 agent() {
+    # Start Python agent server only
     (cd "$PROJECT_ROOT" && npm run dev:agent)
 }
 
+ui() {
+    # Start Next.js frontend server only
+    (cd "$PROJECT_ROOT" && npm run dev:ui)
+}
+
 mcp() {
-    (cd "$PROJECT_ROOT" && bash "$PROJECT_ROOT/scripts/start-mcp-servers.sh" 2>/dev/null || bash "$PROJECT_ROOT/scripts/start-mcp-servers.ps1" 2>/dev/null)
+    # Start MCP servers
+    local mcp_script="$PROJECT_ROOT/scripts/start-mcp-servers.sh"
+    if [[ -f "$mcp_script" ]]; then
+        (cd "$PROJECT_ROOT" && bash "$mcp_script")
+    else
+        echo "MCP start script not found at: $mcp_script"
+    fi
 }
 
 validate() {
-    (cd "$PROJECT_ROOT" && npm run validate:toolsets 2>/dev/null || node "$PROJECT_ROOT/scripts/toolset-management/validate-toolsets.js" 2>/dev/null || echo "Validation script not found")
+    # Validate toolsets configuration
+    (
+        cd "$PROJECT_ROOT"
+        # Try npm script first, fallback to direct node invocation
+        if ! npm run validate:toolsets 2>/dev/null; then
+            local validate_script="$PROJECT_ROOT/scripts/toolset-management/validate-toolsets.js"
+            if [[ -f "$validate_script" ]]; then
+                node "$validate_script"
+            else
+                echo "Validation script not found"
+            fi
+        fi
+    )
 }
 
 docs() {
+    # Generate all documentation
     (cd "$PROJECT_ROOT" && npm run docs:all)
 }
 
 venv() {
-    if [[ -f "$PROJECT_ROOT/agent/.venv/bin/activate" ]]; then
-        source "$PROJECT_ROOT/agent/.venv/bin/activate"
-    elif [[ -f "$PROJECT_ROOT/agent/.venv/Scripts/Activate.ps1" ]]; then
-        echo "Windows venv activation script detected; use PowerShell 'venv' function to activate.";
+    # Activate Python virtual environment
+    local venv_script="$PROJECT_ROOT/agent/.venv/bin/activate"
+    if [[ -f "$venv_script" ]]; then
+        # shellcheck source=/dev/null
+        source "$venv_script"
     else
-        echo "Virtual environment not found at $PROJECT_ROOT/agent/.venv"
+        echo "Virtual environment not found at: $venv_script"
+        echo "Run 'python -m venv agent/.venv' to create it"
     fi
 }
 
-alias help='show_project_commands'
-
-# Display a short welcome when running inside VS Code terminal
-if [[ "$TERM_PROGRAM" == "vscode" ]]; then
-    echo -e "\e[32m✓ VS Code shell integration enabled for ModMe GenUI Workbench\e[0m"
-fi
-# VS Code Shell Integration for Bash (Git Bash)
-# This file is automatically loaded when Bash starts in VS Code
-# Documentation: https://code.visualstudio.com/docs/terminal/shell-integration
-
-# Enable shell integration if running in VS Code
-if [[ "$TERM_PROGRAM" == "vscode" ]]; then
-    SHELL_INTEGRATION_PATH="$(code --locate-shell-integration-path bash 2>/dev/null)"
-    if [[ -f "$SHELL_INTEGRATION_PATH" ]]; then
-        . "$SHELL_INTEGRATION_PATH"
-        echo "✓ VS Code shell integration enabled"
-    fi
-fi
-
-# Navigate to project root
-cd "$(dirname "${BASH_SOURCE[0]}")/../.." || exit
-
-# Project-specific aliases
-alias dev='npm run dev'
-alias agent='npm run dev:agent'
-alias ui='npm run dev:ui'
-alias mcp='pwsh -File scripts/start-mcp-servers.ps1'
-alias validate='node scripts/toolset-management/validate-toolsets.js'
-alias docs='npm run docs:all'
-alias venv='source agent/.venv/Scripts/activate'
-
-# Show available project commands
-function help() {
+help() {
+    # Display available project commands
     echo ""
     echo "📋 ModMe GenUI Workbench - Available Commands:"
     echo "  dev       - Start both frontend and agent servers"
@@ -99,7 +99,9 @@ function help() {
     echo ""
 }
 
-# Welcome message
-echo "🎨 ModMe GenUI Workbench"
-echo "Type 'help' for available commands"
-echo ""
+# Welcome message (only in VS Code)
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+    echo -e "\e[35m🎨 ModMe GenUI Workbench\e[0m"
+    echo -e "\e[90mType 'help' for available commands\e[0m"
+    echo ""
+fi

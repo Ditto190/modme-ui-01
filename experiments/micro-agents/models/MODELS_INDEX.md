@@ -302,8 +302,7 @@ export const MODELS: Record<ModelKey, ModelConfig> = {
     dimensions: 384,
     speed: "~50ms",
     memory: "80MB",
-    description:
-      "Fast, lightweight model for quick queries and baseline comparisons",
+    description: "Fast, lightweight model for quick queries and baseline comparisons",
   },
   gemma3n: {
     name: "Google/gemma-3n",
@@ -378,15 +377,7 @@ const results = await embeddingService.adaptiveRetrieval(query, {
     "verify": "bash verify-install.sh",
     "clean": "rm -rf node_modules package-lock.json"
   },
-  "keywords": [
-    "embeddings",
-    "transformers",
-    "gemma3n",
-    "minilm",
-    "semantic-search",
-    "mcp",
-    "lsp"
-  ],
+  "keywords": ["embeddings", "transformers", "gemma3n", "minilm", "semantic-search", "mcp", "lsp"],
   "dependencies": {
     "@huggingface/transformers": "^3.8.1",
     "chromadb": "^1.9.2",
@@ -427,10 +418,7 @@ await embeddingService.initialize("minilm");
 await embeddingService.initialize("gemma3n");
 
 // Test 2: Single Embedding Generation
-const embedding = await embeddingService.generateEmbedding(
-  "test text",
-  "minilm"
-);
+const embedding = await embeddingService.generateEmbedding("test text", "minilm");
 assert(embedding.length === 384);
 
 // Test 3: Batch Processing
@@ -597,9 +585,7 @@ const results: SearchResult[] = await embeddingService.adaptiveRetrieval(
 **Semantic Search**:
 
 ```typescript
-const queryEmbedding = await embeddingService.generateEmbedding(
-  "error handling"
-);
+const queryEmbedding = await embeddingService.generateEmbedding("error handling");
 const results: SearchResult[] = await embeddingService.searchCodeIndex(
   queryEmbedding,
   "./chroma_data/code_index",
@@ -681,11 +667,7 @@ const config = { ...DEFAULT_GEMMA3N_CONFIG, hidden_size: 2048 };
 import { embeddingService } from "@modme/models-library";
 
 // Import types
-import type {
-  ModelKey,
-  SearchResult,
-  AdaptiveRetrievalContext,
-} from "@modme/models-library/types";
+import type { ModelKey, SearchResult, AdaptiveRetrievalContext } from "@modme/models-library/types";
 
 // Usage
 await embeddingService.initialize("minilm");
@@ -843,10 +825,7 @@ import { greptimeClient } from "./greptimedb_client";
 await greptimeClient.init();
 
 const texts = ["function foo() {}", "class Bar {}"];
-const embeddings = await embeddingService.generateBatchEmbeddings(
-  texts,
-  "minilm"
-);
+const embeddings = await embeddingService.generateBatchEmbeddings(texts, "minilm");
 
 await Promise.all(
   embeddings.map(async (emb, i) => {
@@ -883,9 +862,7 @@ import { embeddingService } from "@modme/models-library";
 await embeddingService.initialize("minilm");
 
 // Generate
-const embedding = await embeddingService.generateEmbedding(
-  "What is the error rate?"
-);
+const embedding = await embeddingService.generateEmbedding("What is the error rate?");
 
 console.log(`Generated ${embedding.length}-dimensional embedding`);
 // Output: Generated 384-dimensional embedding
@@ -915,9 +892,7 @@ console.log(`Generated ${embeddings.length} embeddings`);
 ```typescript
 // Generate query embedding
 await embeddingService.initialize("gemma3n");
-const queryEmbedding = await embeddingService.generateEmbedding(
-  "Find error handling patterns"
-);
+const queryEmbedding = await embeddingService.generateEmbedding("Find error handling patterns");
 
 // Search ChromaDB
 const results = await embeddingService.searchCodeIndex(

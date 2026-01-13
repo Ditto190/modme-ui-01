@@ -12,10 +12,10 @@
 
 The code indexing system creates two ChromaDB configurations:
 
-| Part | Purpose | Lifecycle | Location |
-|------|---------|-----------|----------|
-| **Part A** | Session ChromaDB (HTTP server) | Ephemeral, terminates with codespace | Port 8001 |
-| **Part B** | Memory Artifact (persistent) | Downloadable, portable | `./chroma_data/` |
+| Part       | Purpose                        | Lifecycle                            | Location         |
+| ---------- | ------------------------------ | ------------------------------------ | ---------------- |
+| **Part A** | Session ChromaDB (HTTP server) | Ephemeral, terminates with codespace | Port 8001        |
+| **Part B** | Memory Artifact (persistent)   | Downloadable, portable               | `./chroma_data/` |
 
 Both use **Google Gemini embeddings** (`gemini-embedding-001`) with configurable dimensions.
 
@@ -50,11 +50,11 @@ Both use **Google Gemini embeddings** (`gemini-embedding-001`) with configurable
 
 ### Automatic Triggers
 
-| Trigger | Condition |
-|---------|-----------|
-| **Push** | Branches: `main`, `feature/**` |
-| **Paths** | `src/**`, `agent/**`, `scripts/**`, `*.py`, `*.ts`, `*.tsx` |
-| **Schedule** | Daily at 2:00 AM UTC |
+| Trigger      | Condition                                                   |
+| ------------ | ----------------------------------------------------------- |
+| **Push**     | Branches: `main`, `feature/**`                              |
+| **Paths**    | `src/**`, `agent/**`, `scripts/**`, `*.py`, `*.ts`, `*.tsx` |
+| **Schedule** | Daily at 2:00 AM UTC                                        |
 
 ### Manual Dispatch
 
@@ -68,11 +68,11 @@ gh workflow run build-code-index.yml \
 
 ### Dispatch Options
 
-| Option | Default | Values | Description |
-|--------|---------|--------|-------------|
-| `full_reindex` | `false` | `true`/`false` | Ignore cache, rebuild all |
-| `chroma_mode` | `http` | `http`, `persistent`, `ephemeral` | ChromaDB mode |
-| `embedding_dim` | `768` | `768`, `1536`, `3072` | Embedding dimensions |
+| Option          | Default | Values                            | Description               |
+| --------------- | ------- | --------------------------------- | ------------------------- |
+| `full_reindex`  | `false` | `true`/`false`                    | Ignore cache, rebuild all |
+| `chroma_mode`   | `http`  | `http`, `persistent`, `ephemeral` | ChromaDB mode             |
+| `embedding_dim` | `768`   | `768`, `1536`, `3072`             | Embedding dimensions      |
 
 ---
 
@@ -208,21 +208,21 @@ for i, doc in enumerate(results["documents"][0]):
 
 ### Google Gemini Embeddings
 
-| Dimension | Use Case | Quality |
-|-----------|----------|---------|
-| **768** | Standard semantic search | Good |
-| **1536** | Higher fidelity matching | Better |
-| **3072** | Maximum precision | Best |
+| Dimension | Use Case                 | Quality |
+| --------- | ------------------------ | ------- |
+| **768**   | Standard semantic search | Good    |
+| **1536**  | Higher fidelity matching | Better  |
+| **3072**  | Maximum precision        | Best    |
 
 ### Task Types
 
-| Task Type | When to Use |
-|-----------|-------------|
-| `RETRIEVAL_DOCUMENT` | Indexing documents |
-| `RETRIEVAL_QUERY` | Search queries |
+| Task Type             | When to Use               |
+| --------------------- | ------------------------- |
+| `RETRIEVAL_DOCUMENT`  | Indexing documents        |
+| `RETRIEVAL_QUERY`     | Search queries            |
 | `SEMANTIC_SIMILARITY` | Comparing text similarity |
-| `CLASSIFICATION` | Classification tasks |
-| `CLUSTERING` | Clustering applications |
+| `CLASSIFICATION`      | Classification tasks      |
+| `CLUSTERING`          | Clustering applications   |
 
 ### Example with Task Type
 
@@ -303,11 +303,11 @@ mcp_chroma-core_c_chroma_create_collection(  # Create new collection
 
 ## Artifact Retention
 
-| Artifact | Retention | Purpose |
-|----------|-----------|---------|
-| `code-chunks-*` | 7 days | Raw chunks for debugging |
-| `session-metadata-*` | 7 days | Connection info |
-| `chromadb-memory-*` | 30 days | Portable database |
+| Artifact             | Retention | Purpose                  |
+| -------------------- | --------- | ------------------------ |
+| `code-chunks-*`      | 7 days    | Raw chunks for debugging |
+| `session-metadata-*` | 7 days    | Connection info          |
+| `chromadb-memory-*`  | 30 days   | Portable database        |
 
 ---
 
@@ -411,10 +411,10 @@ client.create_collection('my_collection')
 
 ### Chunking Parameters
 
-| Parameter | Default | Tuning Tips |
-|-----------|---------|-------------|
-| `max-chunk-size` | 1500 | Larger = fewer chunks, less granular |
-| `overlap` | 200 | Higher = better context, more storage |
+| Parameter        | Default | Tuning Tips                           |
+| ---------------- | ------- | ------------------------------------- |
+| `max-chunk-size` | 1500    | Larger = fewer chunks, less granular  |
+| `overlap`        | 200     | Higher = better context, more storage |
 
 ### Embedding Batch Size
 
@@ -444,10 +444,10 @@ for i in range(0, len(chunks), BATCH_SIZE):
 
 ## Secrets Required
 
-| Secret | Purpose | How to Set |
-|--------|---------|------------|
+| Secret           | Purpose           | How to Set                         |
+| ---------------- | ----------------- | ---------------------------------- |
 | `GOOGLE_API_KEY` | Gemini embeddings | Settings → Secrets → Actions → New |
 
 ---
 
-*Generated for modme-ui-01 porting infrastructure*
+_Generated for modme-ui-01 porting infrastructure_

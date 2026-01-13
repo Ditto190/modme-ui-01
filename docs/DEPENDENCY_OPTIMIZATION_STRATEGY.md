@@ -237,10 +237,7 @@ module.exports = function () {
       // Remove console.* statements
       CallExpression(path) {
         const callee = path.node.callee;
-        if (
-          callee.type === "MemberExpression" &&
-          callee.object.name === "console"
-        ) {
+        if (callee.type === "MemberExpression" && callee.object.name === "console") {
           path.remove();
         }
       },
@@ -333,6 +330,7 @@ module.exports = function () {
 3. **Basic Tree Shaking** (esbuild config)
 
 4. **Update `.gitignore`**
+
    ```
    node_modules/
    **/*.map
@@ -359,7 +357,6 @@ module.exports = function () {
    ```
 
 2. **Implement Download Script**
-
    - Create `scripts/download-binaries.js`
    - Add to `postinstall` hook
    - Host binaries on GitHub Releases
@@ -372,6 +369,7 @@ module.exports = function () {
    ```
 
 4. **CI Configuration**
+
    ```yaml
    # .github/workflows/build.yml
    - name: Cache Native Binaries
@@ -394,19 +392,16 @@ module.exports = function () {
 **Goal**: 70-90% total size reduction
 
 1. **WASM Optimization Pipeline**
-
    - Integrate `wasm-opt`
    - Brotli compression
    - Lazy loading for large models
 
 2. **AST Transformations**
-
    - Babel plugin for debug stripping
    - Constant inlining
    - Dead code elimination
 
 3. **Monorepo Setup** (if applicable)
-
    - Turborepo/Nx integration
    - Shared build cache
    - Incremental builds
@@ -628,17 +623,14 @@ If optimization breaks functionality:
 ## Discussion Questions
 
 1. **Should we adopt a monorepo architecture?**
-
    - Pros: Better build caching, shared dependencies
    - Cons: Migration effort, tooling complexity
 
 2. **Git LFS vs Runtime Downloads?**
-
    - Git LFS: Simpler, more reliable
    - Runtime: Smaller repo, platform-specific
 
 3. **Build artifact versioning strategy?**
-
    - Commit optimized bundles?
    - Generate on-demand in CI?
    - Hybrid approach?

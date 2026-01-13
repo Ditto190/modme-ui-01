@@ -41,8 +41,8 @@ npm run dev  # Starts Next.js (:3000) + Python agent (:8000)
 
 **Expected result**:
 
-- Next.js UI at http://localhost:3000
-- Python agent at http://localhost:8000/health
+- Next.js UI at <http://localhost:3000>
+- Python agent at <http://localhost:8000/health>
 
 ---
 
@@ -69,7 +69,7 @@ npm run dev  # Starts Next.js (:3000) + Python agent (:8000)
 ### API Keys Required
 
 - **GOOGLE_API_KEY**: Google Gemini API key for agent LLM
-  - Get from: https://aistudio.google.com/app/apikey
+  - Get from: <https://aistudio.google.com/app/apikey>
   - Used by: Python agent (`agent/main.py`)
 
 ### Verify Prerequisites
@@ -192,7 +192,7 @@ GOOGLE_API_KEY=REPLACE_ME_GOOGLE_API_KEY
 
 **Get Google API Key**:
 
-1. Visit https://aistudio.google.com/app/apikey
+1. Visit <https://aistudio.google.com/app/apikey>
 2. Click "Create API key"
 3. Copy key and paste into `.env`
 
@@ -309,7 +309,7 @@ curl http://localhost:8080/health 2>/dev/null || echo "VT Code not running"
 
 ### Browser Check
 
-1. Open http://localhost:3000
+1. Open <http://localhost:3000>
 2. Should see "GenUI Workbench" page
 3. Click CopilotKit sidebar (right side)
 4. Try prompt: "Generate a sales KPI dashboard"
@@ -618,13 +618,13 @@ After successful installation:
 2. ✅ **Explore Components**: [src/components/registry/](src/components/registry/)
 3. ✅ **Try Agent Tools**: [agent/main.py](agent/main.py)
 4. ✅ **Read Migration Plan**: [MIGRATION_IMPLEMENTATION_PLAN.md](MIGRATION_IMPLEMENTATION_PLAN.md)
-5. ✅ **Experiment with GenUI**: http://localhost:3000
+5. ✅ **Experiment with GenUI**: <http://localhost:3000>
 
 ---
 
 ## 🆘 Support
 
-**Issues**: https://github.com/Ditto190/modme-ui-01/issues  
+**Issues**: <https://github.com/Ditto190/modme-ui-01/issues>  
 **Docs**: [.github/copilot-instructions.md](.github/copilot-instructions.md)  
 **Architecture**: [docs/REFACTORING_PATTERNS.md](docs/REFACTORING_PATTERNS.md)
 

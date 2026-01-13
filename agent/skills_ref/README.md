@@ -62,11 +62,13 @@ skills-ref validate path/to/my-skill
 ```
 
 **Output (valid skill)**:
+
 ```
 Valid skill: path/to/my-skill
 ```
 
 **Output (invalid skill)**:
+
 ```
 Validation failed for path/to/my-skill:
   - Directory name 'my_skill' must match skill name 'my-skill'
@@ -82,6 +84,7 @@ python -m agent.skills_ref.cli read-properties path/to/my-skill
 ```
 
 **Output (JSON)**:
+
 ```json
 {
   "name": "pdf-reader",
@@ -104,6 +107,7 @@ python -m agent.skills_ref.cli to-prompt path/to/skill-a path/to/skill-b
 ```
 
 **Output (XML)**:
+
 ```xml
 <available_skills>
 <skill>
@@ -265,9 +269,11 @@ metadata:
 # PDF Processing
 
 ## When to use this skill
+
 Use this skill when the user needs to work with PDF files...
 
 ## How to extract text
+
 1. Use pdfplumber for text extraction...
 ```
 
@@ -277,12 +283,12 @@ Use this skill when the user needs to work with PDF files...
 
 ### Skill Name
 
-| Rule | Constraint |
-|------|------------|
-| **Format** | Lowercase letters, numbers, hyphens only |
-| **Length** | Max 64 characters |
-| **Hyphens** | Cannot start/end with hyphen, no consecutive hyphens |
-| **Directory** | Directory name must match skill name exactly |
+| Rule          | Constraint                                           |
+| ------------- | ---------------------------------------------------- |
+| **Format**    | Lowercase letters, numbers, hyphens only             |
+| **Length**    | Max 64 characters                                    |
+| **Hyphens**   | Cannot start/end with hyphen, no consecutive hyphens |
+| **Directory** | Directory name must match skill name exactly         |
 
 **Valid Names**: `pdf-reader`, `image-processing`, `data-analyzer`  
 **Invalid Names**: `PDF-Reader` (uppercase), `my_skill` (underscore), `-my-skill` (starts with hyphen)
@@ -291,19 +297,19 @@ Use this skill when the user needs to work with PDF files...
 
 ### Description
 
-| Rule | Constraint |
-|------|------------|
-| **Required** | Yes |
-| **Length** | Max 1024 characters |
-| **Content** | Non-empty string |
+| Rule         | Constraint          |
+| ------------ | ------------------- |
+| **Required** | Yes                 |
+| **Length**   | Max 1024 characters |
+| **Content**  | Non-empty string    |
 
 ---
 
 ### Compatibility (Optional)
 
-| Rule | Constraint |
-|------|------------|
-| **Length** | Max 500 characters |
+| Rule        | Constraint                                             |
+| ----------- | ------------------------------------------------------ |
+| **Length**  | Max 500 characters                                     |
 | **Purpose** | Environment requirements (packages, system deps, etc.) |
 
 **Example**: `Requires Python 3.11+, poppler-utils, network access`
@@ -312,8 +318,8 @@ Use this skill when the user needs to work with PDF files...
 
 ### License (Optional)
 
-| Rule | Constraint |
-|------|------------|
+| Rule       | Constraint                                        |
+| ---------- | ------------------------------------------------- |
 | **Format** | License name or reference to bundled license file |
 
 **Example**: `MIT`, `Apache-2.0`, `See LICENSE.txt`
@@ -322,12 +328,13 @@ Use this skill when the user needs to work with PDF files...
 
 ### Metadata (Optional)
 
-| Rule | Constraint |
-|------|------------|
-| **Format** | Key-value pairs (all strings) |
-| **Purpose** | Client-specific properties |
+| Rule        | Constraint                    |
+| ----------- | ----------------------------- |
+| **Format**  | Key-value pairs (all strings) |
+| **Purpose** | Client-specific properties    |
 
 **Example**:
+
 ```yaml
 metadata:
   author: ModMe Team
@@ -397,16 +404,16 @@ agent-generator/
 
 ## Comparison: Original vs Adapted
 
-| Feature | agentskills/skills-ref | ModMe Adaptation |
-|---------|------------------------|------------------|
-| **Parser** | ✅ StrictYAML | ✅ StrictYAML |
-| **Validator** | ✅ Full spec | ✅ Full spec |
-| **Prompt Gen** | ✅ XML format | ✅ XML format |
-| **CLI** | ✅ Click | ✅ Click |
-| **Agent Tools** | ❌ No | ✅ ToolContext wrappers |
-| **GenAI Toolbox** | ❌ No | ✅ tools.yaml config |
-| **Python 3.12+** | ✅ Yes | ✅ Yes |
-| **License** | Apache 2.0 | Apache 2.0 |
+| Feature           | agentskills/skills-ref | ModMe Adaptation        |
+| ----------------- | ---------------------- | ----------------------- |
+| **Parser**        | ✅ StrictYAML          | ✅ StrictYAML           |
+| **Validator**     | ✅ Full spec           | ✅ Full spec            |
+| **Prompt Gen**    | ✅ XML format          | ✅ XML format           |
+| **CLI**           | ✅ Click               | ✅ Click                |
+| **Agent Tools**   | ❌ No                  | ✅ ToolContext wrappers |
+| **GenAI Toolbox** | ❌ No                  | ✅ tools.yaml config    |
+| **Python 3.12+**  | ✅ Yes                 | ✅ Yes                  |
+| **License**       | Apache 2.0             | Apache 2.0              |
 
 ---
 
@@ -471,9 +478,9 @@ workbench_agent = LlmAgent(
     model="gemini-2.5-flash",
     instruction=f"""
     You are the Workbench Assistant.
-    
+
     {skills_xml}
-    
+
     When a user asks for help, check if any of the available skills can help.
     """
 )
@@ -510,6 +517,7 @@ uv add strictyaml
 ### Issue: `ValidationError: Missing required field: name`
 
 **Solution**: Add `name` field to SKILL.md frontmatter:
+
 ```yaml
 ---
 name: my-skill
@@ -524,6 +532,7 @@ description: My skill description
 **Error**: `Directory name 'my_skill' must match skill name 'my-skill'`
 
 **Solution**: Rename directory to match skill name exactly:
+
 ```bash
 mv my_skill my-skill
 ```
@@ -532,10 +541,10 @@ mv my_skill my-skill
 
 ## References
 
-- **Agent Skills Specification**: https://agentskills.io/specification
-- **agentskills/skills-ref**: https://github.com/agentskills/agentskills/tree/main/skills-ref
-- **Example Skills**: https://github.com/anthropics/skills
-- **Integration Guide**: https://agentskills.io/integrate-skills
+- **Agent Skills Specification**: <https://agentskills.io/specification>
+- **agentskills/skills-ref**: <https://github.com/agentskills/agentskills/tree/main/skills-ref>
+- **Example Skills**: <https://github.com/anthropics/skills>
+- **Integration Guide**: <https://agentskills.io/integrate-skills>
 
 ---
 
@@ -559,4 +568,3 @@ To extend this library:
 **Last Updated**: January 3, 2026  
 **Maintained By**: ModMe GenUI Team  
 **Based On**: agentskills/agentskills/skills-ref v0.1.0
-

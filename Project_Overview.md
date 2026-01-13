@@ -3,7 +3,7 @@ UPDATED: 01/01/2025
 
 **Here is a high-level concept of what I want to achieve (please note - some key conceptual changes have been made to this plan, please ensure the Project Overview below is only considered as a direction/vision rather than a blueprint**
 
-# Generative UI Workspace 🚀  
+# Generative UI Workspace 🚀
 
 **Agentic, multi-surface Generative UI for data & workflows — built on Next.js, CopilotKit, and Material UI.**
 
@@ -115,17 +115,17 @@ In addition, the broader repo (`Ditto190/ag2`) includes:
 
 This workspace is built around a **Hybrid Generative UI Architecture**:
 
-1. **Static GenUI (Component Router)**  
+1. **Static GenUI (Component Router)**
    - Safe, production‑grade UI via a curated component registry (MUI‑style cards, tables, charts).
    - The agent selects components and populates props, not raw DOM.
    - Ideal for dashboards, CRUD tools, reporting views.
 
-2. **Declarative GenUI (Schema → Renderer)**  
+2. **Declarative GenUI (Schema → Renderer)**
    - Agent outputs JSON schemas (layouts, widgets, data bindings).
    - `DashboardRenderer` + `dashboard.ts` turn schemas into React trees.
    - Balances flexibility with control; all layout passes through known primitives.
 
-3. **Open‑Ended GenUI (Sandboxed Canvas)**  
+3. **Open‑Ended GenUI (Sandboxed Canvas)**
    - For prompts that escape the registry / schema (games, fractal explorers, novel visualizations).
    - HTML/CSS/JS generated into an isolated iframe (`SandboxedHTML`), with:
      - sandbox + strict CSP
@@ -143,20 +143,20 @@ All three share a **common state & event model** (AG‑UI style), enabling:
 
 ## 🧩 Key Features
 
-| Area | Feature | Status |
-|------|---------|--------|
-| **Core GenUI** | Agentic chat endpoint (CopilotKit + Next.js API route) | 🧪 In progress |
-| | Chat+ canvas (`GenerativeCanvas`) | 🧪 In progress |
-| **Component Registry** | MUI‑style StatCard, DataTable, ChartCard | 🧪 Prototyping |
-| | Dashboard schema & renderer | 🧪 Prototyping |
-| **Open‑Ended UI** | Sandboxed HTML iframe with strict isolation | 🧪 Design phase |
-| | Prompting for Tailwind‑style HTML/JS generation | 🧪 Design phase |
-| **AI Orchestration** | CopilotKit hooks for tools & readable state | ✅ Patterns defined (see docs) |
-| | AG‑UI style event & state synchronization | 🧪 Design / spec phase |
-| **UX / AI Elements** | Streaming skeletons for generative slots | 🧪 Prototyping (`StreamingSkeleton.tsx`) |
-| | Ghost UI, suggestion chips for next actions | 🧪 Planned |
-| **Evaluation** | PAGEN‑style GenUI benchmark prompts | 🧪 Planned |
-| | Human / LLM‑judge ELO scoring | 🧪 Planned |
+| Area                   | Feature                                                | Status                                   |
+| ---------------------- | ------------------------------------------------------ | ---------------------------------------- |
+| **Core GenUI**         | Agentic chat endpoint (CopilotKit + Next.js API route) | 🧪 In progress                           |
+|                        | Chat+ canvas (`GenerativeCanvas`)                      | 🧪 In progress                           |
+| **Component Registry** | MUI‑style StatCard, DataTable, ChartCard               | 🧪 Prototyping                           |
+|                        | Dashboard schema & renderer                            | 🧪 Prototyping                           |
+| **Open‑Ended UI**      | Sandboxed HTML iframe with strict isolation            | 🧪 Design phase                          |
+|                        | Prompting for Tailwind‑style HTML/JS generation        | 🧪 Design phase                          |
+| **AI Orchestration**   | CopilotKit hooks for tools & readable state            | ✅ Patterns defined (see docs)           |
+|                        | AG‑UI style event & state synchronization              | 🧪 Design / spec phase                   |
+| **UX / AI Elements**   | Streaming skeletons for generative slots               | 🧪 Prototyping (`StreamingSkeleton.tsx`) |
+|                        | Ghost UI, suggestion chips for next actions            | 🧪 Planned                               |
+| **Evaluation**         | PAGEN‑style GenUI benchmark prompts                    | 🧪 Planned                               |
+|                        | Human / LLM‑judge ELO scoring                          | 🧪 Planned                               |
 
 ---
 
@@ -192,7 +192,7 @@ pnpm dev
 1. **Try a GenUI Conversation**
 
 - Open the app.
-- In chat, ask:  
+- In chat, ask:
   > “Create a sales KPI dashboard with three stat cards and a table of top customers.”
 - Watch the agent:
   - Interpret intent
@@ -229,8 +229,8 @@ Use when you want **flexible layouts** from structured definitions.
   "widgets": [
     { "type": "stat", "title": "MRR", "value": 120000 },
     { "type": "chart", "kind": "line", "metric": "Revenue" },
-    { "type": "table", "source": "top_customers" }
-  ]
+    { "type": "table", "source": "top_customers" },
+  ],
 }
 ```
 
@@ -309,19 +309,19 @@ Generative UI has real risks: broken UX, hallucinated data, XSS. This workspace 
 
 ### 🔜 Planned
 
-1. **Registry Expansion**  
+1. **Registry Expansion**
    - Add more molecules (filters, multi‑step wizards, timelines)
    - Harden DataTable and ChartCard for real datasets
 
-2. **State & AG‑UI Integration**  
+2. **State & AG‑UI Integration**
    - Implement `useCopilotReadable` across key components
    - Define a minimal AG‑UI event/state protocol for canvas interactions
 
-3. **Open‑Ended Engine**  
+3. **Open‑Ended Engine**
    - Finalize sandbox runtime (curated libs, CSP, postMessage protocol)
    - Add self‑healing loop for runtime errors in generated code
 
-4. **Evaluation & Benchmarks**  
+4. **Evaluation & Benchmarks**
    - Create a domain‑specific PAGEN‑style prompt suite
    - Establish GenUI ELO scoring with human / LLM judges
 

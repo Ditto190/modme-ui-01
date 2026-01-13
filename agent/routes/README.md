@@ -21,6 +21,7 @@ Agent Execution (Phase 2)
 ### Privacy-First Design
 
 By default, the router operates in **local mode**:
+
 - Uses HuggingFace sentence-transformers locally
 - No external API calls for embeddings
 - Vectors stored in-memory only
@@ -29,9 +30,11 @@ By default, the router operates in **local mode**:
 ## Route Definitions
 
 ### 1. Dashboard Route (`dashboard`)
+
 **Purpose**: Handle requests to create or modify dashboard interfaces
 
 **Examples**:
+
 - "show me a dashboard"
 - "create a KPI view"
 - "build a reporting interface"
@@ -39,9 +42,11 @@ By default, the router operates in **local mode**:
 **Target Agent**: Dashboard generation agent (Phase 2)
 
 ### 2. Data Query Route (`data_query`)
+
 **Purpose**: Process database queries and data retrieval requests
 
 **Examples**:
+
 - "query the database"
 - "fetch data from customers table"
 - "get all records where status is active"
@@ -49,9 +54,11 @@ By default, the router operates in **local mode**:
 **Target Agent**: SQL/data fetching agent (Phase 2)
 
 ### 3. Visualization Route (`visualization`)
+
 **Purpose**: Create charts, graphs, and visual representations
 
 **Examples**:
+
 - "create a bar chart"
 - "plot sales over time"
 - "show me a line graph"
@@ -59,9 +66,11 @@ By default, the router operates in **local mode**:
 **Target Agent**: Chart generation agent (Phase 2)
 
 ### 4. Component Route (`component`)
+
 **Purpose**: Select and configure UI components
 
 **Examples**:
+
 - "add a stat card"
 - "insert a data table component"
 - "show me available components"
@@ -69,9 +78,11 @@ By default, the router operates in **local mode**:
 **Target Agent**: Component registry agent (Phase 2)
 
 ### 5. Analysis Route (`analysis`)
+
 **Purpose**: Perform analytical operations (trends, correlations, statistics)
 
 **Examples**:
+
 - "analyze sales trends"
 - "find correlations in the data"
 - "identify outliers"
@@ -79,9 +90,11 @@ By default, the router operates in **local mode**:
 **Target Agent**: Analytics agent (Phase 2)
 
 ### 6. Audit Route (`audit`)
+
 **Purpose**: Handle compliance logging and audit trail requests
 
 **Examples**:
+
 - "log this action"
 - "show me the audit log"
 - "compliance report for last month"
@@ -89,9 +102,11 @@ By default, the router operates in **local mode**:
 **Target Agent**: Audit logging agent (Phase 2)
 
 ### 7. Multimodal Route (`multimodal`)
+
 **Purpose**: Process images, documents, and other non-text inputs
 
 **Examples**:
+
 - "analyze this image"
 - "extract text from document"
 - "what's in this picture"
@@ -99,9 +114,11 @@ By default, the router operates in **local mode**:
 **Target Agent**: Multimodal processing agent (Phase 2)
 
 ### 8. Chitchat Route (`chitchat`)
+
 **Purpose**: Handle conversational queries and small talk
 
 **Examples**:
+
 - "hello"
 - "what can you do"
 - "thanks"
@@ -192,6 +209,7 @@ router = ModMeSemanticRouter(mode="local")
 ```
 
 **Advantages**:
+
 - No external API calls
 - Complete privacy
 - No API key required
@@ -209,10 +227,12 @@ router = ModMeSemanticRouter(mode="cloud")
 ```
 
 **Advantages**:
+
 - Higher accuracy for complex queries
 - Better handling of domain-specific terminology
 
 **Requirements**:
+
 - OpenAI API key
 - Internet connection
 
@@ -239,13 +259,13 @@ custom_route = Route(
 ALL_ROUTES.append(custom_route)
 ```
 
-2. **Add diverse utterances**:
+1. **Add diverse utterances**:
    - Different phrasings of the same intent
    - Formal and casual language
    - Questions, imperatives, declaratives
    - Domain-specific terminology
 
-3. **Test the new route**:
+2. **Test the new route**:
 
 ```python
 from routes.router import get_router
@@ -266,6 +286,7 @@ Each route should have **5-10 diverse utterances** covering:
 5. **Length Variety**: Short phrases and longer sentences
 
 **Good Example** (data_query route):
+
 ```python
 utterances=[
     "query the database",              # Simple imperative
@@ -276,6 +297,7 @@ utterances=[
 ```
 
 **Poor Example** (too similar):
+
 ```python
 utterances=[
     "query database",

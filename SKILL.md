@@ -504,7 +504,7 @@ This methodology activates when the user says:
 
 ## THE STREAM CODING CONTRACT
 
-### YOU MUST:
+### YOU MUST
 
 **Documentation Audit (if existing docs):**
 
@@ -539,7 +539,7 @@ This methodology activates when the user says:
 - [ ] When code fails: fix spec, regenerate
 - [ ] Never create divergence (update spec with every code change)
 
-### YOU CANNOT:
+### YOU CANNOT
 
 - ❌ Build on existing docs without running Documentation Audit first
 - ❌ Skip to coding without clear docs

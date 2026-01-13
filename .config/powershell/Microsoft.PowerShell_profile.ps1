@@ -1,142 +1,142 @@
 <#
-ModMe GenUI Workbench - Project PowerShell profile
+.SYNOPSIS
+    ModMe GenUI Workbench - Project PowerShell Profile
 
-Location: .config/powershell/Microsoft.PowerShell_profile.ps1
+.DESCRIPTION
+    This file provides VS Code shell integration and project-specific commands
+    for the ModMe GenUI Workbench. It is designed to be sourced by the user's
+    PowerShell profile via the setup script (scripts/setup-shell-integration.ps1).
 
-This file is intended to be sourced by the user's PowerShell profile
-via the repository setup script (`scripts/setup-shell-integration.ps1`).
-
+.NOTES
+    Location: .config/powershell/Microsoft.PowerShell_profile.ps1
+    Documentation: https://code.visualstudio.com/docs/terminal/shell-integration
 #>
 
-# Resolve project root (two levels up from this file)
-try {
-    $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
-    $projectRoot = Resolve-Path -Path (Join-Path $scriptDir "..\..") -ErrorAction Stop
-    $projectRoot = $projectRoot.ProviderPath
-}
-catch {
-    $projectRoot = Get-Location
-}
-
-function Get-ProjectRoot {
-    return $projectRoot
-}
-
-function Show-ProjectCommands {
-    Write-Host "ModMe GenUI Workbench - Project Commands" -ForegroundColor Cyan
-    Write-Host "  dev       - Start both frontend and agent servers"
-    Write-Host "  ui        - Start Next.js frontend only"
-    Write-Host "  agent     - Start Python agent only"
-    Write-Host "  mcp       - Start MCP servers"
-    Write-Host "  validate  - Validate toolsets configuration"
-    Write-Host "  docs      - Generate all documentation"
-    Write-Host "  venv      - Activate Python virtual environment"
-    Write-Host "  help      - Show this message"
-}
-
-function dev {
-    Push-Location $projectRoot
-    npm run dev
-    Pop-Location
-}
-
-function ui {
-    Push-Location $projectRoot
-    npm run dev:ui
-    Pop-Location
-}
-
-function agent {
-    Push-Location $projectRoot
-    npm run dev:agent
-    Pop-Location
-}
-
-function mcp {
-    Push-Location $projectRoot
-    & "$projectRoot\scripts\start-mcp-servers.ps1"
-    Pop-Location
-}
-
-function validate {
-    Push-Location $projectRoot
-    npm run validate:toolsets 2>$null || node "$projectRoot/scripts/toolset-management/validate-toolsets.js" || Write-Host "Validation script not found"
-    Pop-Location
-}
-
-function docs {
-    Push-Location $projectRoot
-    npm run docs:all
-    Pop-Location
-}
-
-function venv {
-    $venv = Join-Path $projectRoot "agent\.venv\Scripts\Activate.ps1"
-    if (Test-Path $venv) { . $venv }
-    else { Write-Host "Virtual environment not found at $venv" -ForegroundColor Yellow }
-}
-
-Set-Alias help Show-ProjectCommands
-
-# Display a short welcome only when running inside VS Code terminal
-if ($env:TERM_PROGRAM -eq "vscode") {
-    Write-Host "✓ VS Code shell integration enabled for ModMe GenUI Workbench" -ForegroundColor Green
-}
-# VS Code Shell Integration for PowerShell
-# This profile is automatically loaded when PowerShell starts in VS Code
-# Documentation: https://code.visualstudio.com/docs/terminal/shell-integration
-
+# VS Code Shell Integration
 # Enable shell integration if running in VS Code
 if ($env:TERM_PROGRAM -eq "vscode") {
-    $shellIntegrationPath = code --locate-shell-integration-path pwsh
-    if (Test-Path $shellIntegrationPath) {
-        . $shellIntegrationPath
-        Write-Host "✓ VS Code shell integration enabled" -ForegroundColor Green
+    try {
+        $shellIntegrationPath = code --locate-shell-integration-path pwsh 2>$null
+        if ($shellIntegrationPath -and (Test-Path $shellIntegrationPath)) {
+            . $shellIntegrationPath
+        }
+    }
+    catch {
+        # Silently continue if shell integration is not available
     }
 }
 
-# Project-specific aliases and functions
-Set-Location $PSScriptRoot\..\..\
-
-# Convenient aliases for the project
-function Start-Dev {
-    npm run dev
+# Resolve project root (two levels up from this file)
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+$projectRoot = Resolve-Path -Path (Join-Path $scriptDir "..\..") -ErrorAction SilentlyContinue
+if ($projectRoot) {
+    $projectRoot = $projectRoot.ProviderPath
 }
-Set-Alias dev Start-Dev
+else {
+    $projectRoot = Get-Location
+}
+
+# Project-specific command functions
+function Start-Dev {
+    <#
+    .SYNOPSIS
+        Starts both the frontend and agent servers
+    #>
+    Push-Location $projectRoot
+    try { npm run dev } finally { Pop-Location }
+}
 
 function Start-Agent {
-    npm run dev:agent
+    <#
+    .SYNOPSIS
+        Starts the Python agent server only
+    #>
+    Push-Location $projectRoot
+    try { npm run dev:agent } finally { Pop-Location }
 }
-Set-Alias agent Start-Agent
 
 function Start-UI {
-    npm run dev:ui
+    <#
+    .SYNOPSIS
+        Starts the Next.js frontend server only
+    #>
+    Push-Location $projectRoot
+    try { npm run dev:ui } finally { Pop-Location }
 }
-Set-Alias ui Start-UI
 
 function Start-MCP {
-    & "$PSScriptRoot\..\..\scripts\start-mcp-servers.ps1"
+    <#
+    .SYNOPSIS
+        Starts MCP servers
+    #>
+    Push-Location $projectRoot
+    try {
+        $mcpScript = Join-Path $projectRoot "scripts\start-mcp-servers.ps1"
+        if (Test-Path $mcpScript) {
+            & $mcpScript
+        }
+        else {
+            Write-Host "MCP start script not found at: $mcpScript" -ForegroundColor Yellow
+        }
+    }
+    finally {
+        Pop-Location
+    }
 }
-Set-Alias mcp Start-MCP
 
-function Validate-Toolsets {
-    node "$PSScriptRoot\..\..\scripts\toolset-management\validate-toolsets.js"
+function Invoke-Validate {
+    <#
+    .SYNOPSIS
+        Validates toolsets configuration
+    #>
+    Push-Location $projectRoot
+    try {
+        # Try npm script first, fallback to direct node invocation
+        $npmResult = npm run validate:toolsets 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            $validateScript = Join-Path $projectRoot "scripts\toolset-management\validate-toolsets.js"
+            if (Test-Path $validateScript) {
+                node $validateScript
+            }
+            else {
+                Write-Host "Validation script not found" -ForegroundColor Yellow
+            }
+        }
+    }
+    finally {
+        Pop-Location
+    }
 }
-Set-Alias validate Validate-Toolsets
 
-function Generate-Docs {
-    npm run docs:all
+function Start-Docs {
+    <#
+    .SYNOPSIS
+        Generates all documentation
+    #>
+    Push-Location $projectRoot
+    try { npm run docs:all } finally { Pop-Location }
 }
-Set-Alias docs Generate-Docs
 
-# Python virtual environment activation
-function Activate-PythonEnv {
-    & "$PSScriptRoot\..\..\agent\.venv\Scripts\Activate.ps1"
+function Enable-Venv {
+    <#
+    .SYNOPSIS
+        Activates the Python virtual environment
+    #>
+    $venvScript = Join-Path $projectRoot "agent\.venv\Scripts\Activate.ps1"
+    if (Test-Path $venvScript) {
+        . $venvScript
+    }
+    else {
+        Write-Host "Virtual environment not found at: $venvScript" -ForegroundColor Yellow
+        Write-Host "Run 'python -m venv agent\.venv' to create it" -ForegroundColor Gray
+    }
 }
-Set-Alias venv Activate-PythonEnv
 
-# Show available project commands
 function Show-ProjectCommands {
+    <#
+    .SYNOPSIS
+        Displays available project commands
+    #>
     Write-Host "`n📋 ModMe GenUI Workbench - Available Commands:" -ForegroundColor Cyan
     Write-Host "  dev       - Start both frontend and agent servers" -ForegroundColor Yellow
     Write-Host "  ui        - Start Next.js frontend only" -ForegroundColor Yellow
@@ -147,8 +147,19 @@ function Show-ProjectCommands {
     Write-Host "  venv      - Activate Python virtual environment" -ForegroundColor Yellow
     Write-Host "  help      - Show this message`n" -ForegroundColor Yellow
 }
-Set-Alias help Show-ProjectCommands
 
-# Welcome message
-Write-Host "🎨 ModMe GenUI Workbench" -ForegroundColor Magenta
-Write-Host "Type 'help' for available commands`n" -ForegroundColor Gray
+# Set up aliases
+Set-Alias -Name dev -Value Start-Dev -Scope Global
+Set-Alias -Name agent -Value Start-Agent -Scope Global
+Set-Alias -Name ui -Value Start-UI -Scope Global
+Set-Alias -Name mcp -Value Start-MCP -Scope Global
+Set-Alias -Name validate -Value Invoke-Validate -Scope Global
+Set-Alias -Name docs -Value Start-Docs -Scope Global
+Set-Alias -Name venv -Value Enable-Venv -Scope Global
+Set-Alias -Name help -Value Show-ProjectCommands -Scope Global
+
+# Welcome message (only in VS Code)
+if ($env:TERM_PROGRAM -eq "vscode") {
+    Write-Host "🎨 ModMe GenUI Workbench" -ForegroundColor Magenta
+    Write-Host "Type 'help' for available commands`n" -ForegroundColor Gray
+}

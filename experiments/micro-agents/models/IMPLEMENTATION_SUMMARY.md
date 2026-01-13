@@ -215,9 +215,7 @@ import { embeddingService } from "./models/embeddings";
 await embeddingService.initialize("minilm");
 
 // Generate embedding
-const embedding = await embeddingService.generateEmbedding(
-  "How do I implement async functions?"
-);
+const embedding = await embeddingService.generateEmbedding("How do I implement async functions?");
 
 console.log(`Embedding dimension: ${embedding.length}`); // 384
 ```
@@ -354,6 +352,7 @@ node test-models.js
    ```
 
 3. **Generate Code Index**
+
    ```bash
    cd experiments/micro-agents
    npm run journal-code-index
@@ -362,19 +361,16 @@ node test-models.js
 ### Future Enhancements (Optional)
 
 1. **Index Model Architectures**
-
    - Run code-indexing on gemma3n source files
    - Create model_architectures collection
    - Enable queries like "How does Gemma3n process audio?"
 
 2. **Add More Models**
-
    - BAAI/bge-small-en-v1.5 (another fast option)
    - sentence-transformers/all-mpnet-base-v2 (higher quality)
    - intfloat/e5-large-v2 (advanced multilingual)
 
 3. **Performance Optimizations**
-
    - Add persistent cache to disk
    - Implement connection pooling
    - Add batch request queueing

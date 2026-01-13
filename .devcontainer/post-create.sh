@@ -158,3 +158,12 @@ echo "   git worktree add ../feature-x -b feature/x → Create new worktree"
 echo "   git worktree remove ../feature-x           → Remove worktree"
 echo ""
 echo "Happy coding! 🎉"
+
+# Install Smart Coding MCP
+echo "📦 Installing Smart Coding MCP..."
+npm install -g smart-coding-mcp
+
+# Verify installation
+npx smart-coding-mcp --version
+
+echo "✅ Smart Coding MCP installed!"

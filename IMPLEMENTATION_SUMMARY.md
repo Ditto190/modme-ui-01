@@ -3,6 +3,7 @@
 ## ✅ What Was Created
 
 ### 📋 Documentation (3 files)
+
 1. **[docs/TOOLSET_MANAGEMENT.md](docs/TOOLSET_MANAGEMENT.md)** (409 lines)
    - Comprehensive guide covering architecture, workflows, and processes
    - Complete troubleshooting section
@@ -19,6 +20,7 @@
    - NPM script reference
 
 ### 🤖 GitHub Actions Workflows (4 files)
+
 1. **[.github/workflows/toolset-update.yml](.github/workflows/toolset-update.yml)** (226 lines)
    - Automated toolset detection
    - Schema validation
@@ -41,6 +43,7 @@
    - GitHub Pages deployment
 
 ### ⚙️ Configuration Files (3 files)
+
 1. **[agent/toolsets.json](agent/toolsets.json)**
    - Toolset definitions registry
    - Initial setup with ui_elements and theme toolsets
@@ -54,6 +57,7 @@
    - Enforces structure and naming conventions
 
 ### 🔧 Utility Scripts (4 files + directory)
+
 1. **[scripts/toolset-management/detect-toolset-changes.js](scripts/toolset-management/detect-toolset-changes.js)** (199 lines)
    - Detects new, modified, and removed toolsets
    - Parses Python agent code
@@ -76,6 +80,7 @@
    - Creates step-by-step guides
 
 ### 🐍 Python Support (1 file)
+
 1. **[agent/toolset_manager.py](agent/toolset_manager.py)** (261 lines)
    - ToolsetManager class
    - Alias resolution
@@ -83,6 +88,7 @@
    - GitHub MCP-compatible pattern
 
 ### 📦 Package Configuration
+
 - **[package.json](package.json)** - Updated with NPM scripts:
   - `npm run validate:toolsets`
   - `npm run validate:naming`
@@ -150,11 +156,13 @@
 ## 🚦 Quick Start
 
 ### 1. Install Node.js Dependencies
+
 ```bash
 npm install ajv ajv-formats --save-dev
 ```
 
 ### 2. Test the System
+
 ```bash
 # Validate existing toolsets
 npm run validate:toolsets
@@ -166,7 +174,9 @@ npm run detect:changes
 ### 3. Add Your First Toolset
 
 **Option A: Automatic (Recommended)**
+
 1. Add tool function to [agent/main.py](agent/main.py):
+
    ```python
    def my_feature_tool(tool_context: ToolContext, param: str):
        """Tool description"""
@@ -174,6 +184,7 @@ npm run detect:changes
    ```
 
 2. Push to main branch:
+
    ```bash
    git add agent/main.py
    git commit -m "feat: add my_feature_tool"
@@ -186,7 +197,9 @@ npm run detect:changes
    - Generates docs
 
 **Option B: Manual**
+
 1. Add to [agent/toolsets.json](agent/toolsets.json):
+
    ```json
    {
      "id": "my_feature",
@@ -197,11 +210,13 @@ npm run detect:changes
    ```
 
 2. Validate:
+
    ```bash
    npm run validate:toolsets
    ```
 
 ### 4. Test Deprecation (Optional)
+
 ```bash
 # Create a test deprecation
 gh workflow run toolset-deprecate.yml \
@@ -218,6 +233,7 @@ gh workflow run toolset-deprecate.yml \
 ### Immediate (Required for Full Functionality)
 
 1. **Install Node.js dependencies:**
+
    ```bash
    npm install ajv ajv-formats --save-dev
    ```
@@ -230,6 +246,7 @@ gh workflow run toolset-deprecate.yml \
 3. **Integrate with agent:**
    - Update [agent/main.py](agent/main.py) to use `toolset_manager.py`
    - Initialize toolsets on startup:
+
      ```python
      from toolset_manager import initialize_toolsets
      initialize_toolsets()
@@ -243,39 +260,39 @@ gh workflow run toolset-deprecate.yml \
 
 ### Short Term (Enhancements)
 
-5. **Set up GitHub Actions secrets:**
+1. **Set up GitHub Actions secrets:**
    - `SLACK_WEBHOOK` (optional, for notifications)
    - `CODECOV_TOKEN` (optional, for coverage reports)
 
-6. **Create example migration guide:**
+2. **Create example migration guide:**
    - Use as template for future deprecations
    - Show real-world examples
 
-7. **Add Python tests:**
+3. **Add Python tests:**
    - `agent/tests/test_toolsets.py` (toolset loading)
    - `agent/tests/test_deprecation.py` (alias resolution)
 
-8. **Configure GitHub Pages** (if desired):
+4. **Configure GitHub Pages** (if desired):
    - Enable in repository settings
    - Set source to gh-pages branch
    - Auto-publish toolset documentation
 
 ### Long Term (Optional)
 
-9. **Monitoring and metrics:**
+1. **Monitoring and metrics:**
    - Track toolset usage
    - Monitor deprecation warnings
    - Analyze migration progress
 
-10. **Team training:**
-    - Share documentation
-    - Establish review processes
-    - Define deprecation procedures
+2. **Team training:**
+   - Share documentation
+   - Establish review processes
+   - Define deprecation procedures
 
-11. **Continuous improvement:**
-    - Collect feedback
-    - Refine workflows
-    - Update examples
+3. **Continuous improvement:**
+   - Collect feedback
+   - Refine workflows
+   - Update examples
 
 ---
 
@@ -320,9 +337,11 @@ docs/
 ## 🎓 Key Concepts
 
 ### Toolset
+
 A logical grouping of related tools (functions) in the agent.
 
 **Example:**
+
 ```json
 {
   "id": "ui_elements",
@@ -332,9 +351,11 @@ A logical grouping of related tools (functions) in the agent.
 ```
 
 ### Deprecation Alias
+
 A mapping from an old toolset name to a new one, allowing backward compatibility.
 
 **Example:**
+
 ```json
 {
   "aliases": {
@@ -344,9 +365,11 @@ A mapping from an old toolset name to a new one, allowing backward compatibility
 ```
 
 ### Deprecation Period
+
 Standard 180 days (6 months) for users to migrate before removal.
 
 ### Workflow Triggers
+
 - **Push to main:** Automatic detection and updates
 - **Pull request:** Validation before merge
 - **Manual dispatch:** On-demand deprecation/docs generation
@@ -399,23 +422,23 @@ When adding new toolsets or deprecating old ones:
 - **Documentation:** [docs/TOOLSET_MANAGEMENT.md](docs/TOOLSET_MANAGEMENT.md)
 - **Quick Start:** [docs/TOOLSET_QUICKSTART.md](docs/TOOLSET_QUICKSTART.md)
 - **Scripts:** [scripts/toolset-management/README.md](scripts/toolset-management/README.md)
-- **GitHub MCP Reference:** https://github.com/github/github-mcp-server
+- **GitHub MCP Reference:** <https://github.com/github/github-mcp-server>
 
 ---
 
 ## 📊 System Status
 
-| Component | Status | Notes |
-|-----------|--------|-------|
-| Documentation | ✅ Complete | 3 comprehensive guides |
-| Workflows | ✅ Complete | 4 GitHub Actions workflows |
-| Config Files | ✅ Complete | JSON schema + initial registry |
-| Core Scripts | ✅ Complete | Detection, validation, aliases |
-| Python Support | ✅ Complete | ToolsetManager class |
-| Node Dependencies | ⚠️ Pending | Run: `npm install ajv ajv-formats --save-dev` |
-| Additional Scripts | ⚠️ Pending | Optional helper scripts |
-| Python Tests | ⚠️ Pending | Test suite for toolset_manager |
-| Integration | ⚠️ Pending | Connect to agent/main.py |
+| Component          | Status      | Notes                                         |
+| ------------------ | ----------- | --------------------------------------------- |
+| Documentation      | ✅ Complete | 3 comprehensive guides                        |
+| Workflows          | ✅ Complete | 4 GitHub Actions workflows                    |
+| Config Files       | ✅ Complete | JSON schema + initial registry                |
+| Core Scripts       | ✅ Complete | Detection, validation, aliases                |
+| Python Support     | ✅ Complete | ToolsetManager class                          |
+| Node Dependencies  | ⚠️ Pending  | Run: `npm install ajv ajv-formats --save-dev` |
+| Additional Scripts | ⚠️ Pending  | Optional helper scripts                       |
+| Python Tests       | ⚠️ Pending  | Test suite for toolset_manager                |
+| Integration        | ⚠️ Pending  | Connect to agent/main.py                      |
 
 ---
 

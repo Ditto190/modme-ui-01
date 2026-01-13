@@ -272,17 +272,12 @@ async function getCachedEmbedding(text: string, model: string) {
 ### 3. Batch Processing
 
 ```typescript
-async function generateBatchEmbeddings(
-  texts: string[],
-  batchSize: number = 32
-) {
+async function generateBatchEmbeddings(texts: string[], batchSize: number = 32) {
   const embeddings: number[][] = [];
 
   for (let i = 0; i < texts.length; i += batchSize) {
     const batch = texts.slice(i, i + batchSize);
-    const batchEmbeddings = await Promise.all(
-      batch.map((text) => generateEmbedding(text))
-    );
+    const batchEmbeddings = await Promise.all(batch.map((text) => generateEmbedding(text)));
     embeddings.push(...batchEmbeddings);
   }
 
@@ -330,10 +325,10 @@ const config = {
 
 ## References
 
-- Transformers.js: https://huggingface.co/docs/transformers.js
-- Gemma3n Model: https://huggingface.co/google/gemma-3n-1b
-- Adaptive Retrieval: https://github.com/huggingface/transformers.js/tree/main/examples/adaptive-retrieval
-- Xenova Models: https://huggingface.co/Xenova
+- Transformers.js: <https://huggingface.co/docs/transformers.js>
+- Gemma3n Model: <https://huggingface.co/google/gemma-3n-1b>
+- Adaptive Retrieval: <https://github.com/huggingface/transformers.js/tree/main/examples/adaptive-retrieval>
+- Xenova Models: <https://huggingface.co/Xenova>
 
 ---
 

@@ -31,7 +31,7 @@ scripts\quick-start.bat  # Windows (coming soon)
 - ✅ Configures environment
 - ✅ Starts both servers (UI + Agent)
 
-**Result**: UI at http://localhost:3000, Agent at http://localhost:8000
+**Result**: UI at <http://localhost:3000>, Agent at <http://localhost:8000>
 
 ---
 
@@ -86,7 +86,7 @@ See [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) for detailed instructions.
 - Node.js 22.9.0+ (required; earlier versions may cause EBADENGINE warnings and compatibility issues)
   - We recommend using [nvm](https://github.com/nvm-sh/nvm) (Unix/macOS) or [nvm-windows](https://github.com/coreybutler/nvm-windows) (Windows) to manage Node.js versions
 - Python 3.12+
-- Google Makersuite API Key (for the ADK agent) (see https://makersuite.google.com/app/apikey)
+- Google Makersuite API Key (for the ADK agent) (see <https://makersuite.google.com/app/apikey>)
 - Any of the following package managers:
   - pnpm (recommended)
   - npm
@@ -225,7 +225,26 @@ This workspace includes a full DevContainer setup for portable, consistent devel
 
 # Manual setup (if needed)
 ./scripts/setup.sh
+
+# Set up VS Code shell integration
+.\scripts\setup-shell-integration.ps1  # PowerShell
+bash scripts/setup-shell-integration.sh  # Bash
 ```
+
+### Shell Integration
+
+VS Code shell integration provides enhanced terminal features:
+
+- ✅ **Command decorations** - Visual indicators for success/failure
+- ✅ **Command navigation** - `Ctrl/Cmd+Up/Down` to navigate between commands
+- ✅ **IntelliSense** - File/folder suggestions in terminal
+- ✅ **Recent commands** - `Ctrl+Alt+R` to search command history
+- ✅ **Sticky scroll** - Commands stick at top when scrolling
+- ✅ **Quick fixes** - Automatic suggestions for common errors
+
+**Quick setup**: Run `.\scripts\setup-shell-integration.ps1` (PowerShell) or `bash scripts/setup-shell-integration.sh` (Bash)
+
+**Documentation**: See [.config/README.md](.config/README.md) and [.config/QUICKSTART.md](.config/QUICKSTART.md)
 
 ### Workspace File
 
@@ -273,6 +292,8 @@ The following scripts can also be run using your preferred package manager:
 
 - **[Refactoring Patterns](docs/REFACTORING_PATTERNS.md)** - Project-specific refactoring guides
 - **[Schema Crawler](agent-generator/SCHEMA_CRAWLER_README.md)** - JSON Schema → Zod + TypeScript generator
+- **[Markdown Automation](docs/MARKDOWN_AUTOMATION.md)** - Automated markdown linting and formatting
+- **[Markdown Quick Reference](docs/MARKDOWN_QUICK_REFERENCE.md)** - Quick commands for markdown fixes
 
 ### External Resources
 
