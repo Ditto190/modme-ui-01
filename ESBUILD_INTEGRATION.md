@@ -67,13 +67,13 @@ chmod +x scripts/setup-esbuild.sh
 }
 ```
 
-5. **First build**:
+1. **First build**:
 
    ```bash
    npm run build:esbuild
    ```
 
-6. **Verify bundles created**:
+2. **Verify bundles created**:
 
    ```bash
    ls -la agent-generator/dist/
