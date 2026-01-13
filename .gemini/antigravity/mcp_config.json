@@ -6,7 +6,7 @@
         "-y",
         "smart-coding-mcp",
         "--workspace",
-        "C:\\Users\\dylan\\modme-ui-01"
+        "."
       ]
     }
   }
