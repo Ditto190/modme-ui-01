@@ -124,7 +124,7 @@ function Enable-Venv {
     #>
     $venvScript = Join-Path $projectRoot "agent\.venv\Scripts\Activate.ps1"
     if (Test-Path $venvScript) {
-        & $venvScript
+        . $venvScript
     }
     else {
         Write-Host "Virtual environment not found at: $venvScript" -ForegroundColor Yellow
