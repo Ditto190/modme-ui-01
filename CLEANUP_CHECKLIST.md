@@ -346,7 +346,7 @@
 
 - [ ] **Remove unused files**
   - [ ] Old test files
-  - [ ] Backup files (_.bak,_.old)
+  - [ ] Backup files (*.bak, *.old)
   - [ ] Temporary scripts
 
 ### Code Formatting
