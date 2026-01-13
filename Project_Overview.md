@@ -229,8 +229,8 @@ Use when you want **flexible layouts** from structured definitions.
   "widgets": [
     { "type": "stat", "title": "MRR", "value": 120000 },
     { "type": "chart", "kind": "line", "metric": "Revenue" },
-    { "type": "table", "source": "top_customers" },
-  ],
+    { "type": "table", "source": "top_customers" }
+  ]
 }
 ```
 
