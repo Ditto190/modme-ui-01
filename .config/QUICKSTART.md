@@ -40,7 +40,7 @@ bash scripts/setup-shell-integration.sh
 
 ## 🎨 Visual Features
 
-### Command decorationsEnabled
+### Command Decorations
 
 - ✅ **Blue circle** = Successful command (exit code 0)
 - ❌ **Red circle with X** = Failed command (non-zero exit code)
