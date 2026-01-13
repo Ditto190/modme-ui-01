@@ -347,7 +347,7 @@ ls -la
 ls -la agent/
 ```
 
-3. **Test Package Installation**
+1. **Test Package Installation**
 
 ```bash
 # Node.js deps should be installed
