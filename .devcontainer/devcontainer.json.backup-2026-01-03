@@ -29,6 +29,8 @@
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
+        "ms-python.flake8",
+        "ms-python.black-formatter",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "bradlc.vscode-tailwindcss",
@@ -50,16 +52,12 @@
         "files.autoSaveDelay": 1000,
         "python.defaultInterpreterPath": "${workspaceFolder}/agent/.venv/bin/python",
         "python.terminal.activateEnvironment": true,
-        "python.linting.enabled": true,
-        "python.linting.pylintEnabled": false,
-        "python.linting.flake8Enabled": true,
-        "python.formatting.provider": "black",
         "tailwindCSS.experimental.classRegex": [
           ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
           ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"]
         ],
         "[python]": {
-          "editor.defaultFormatter": "ms-python.python",
+          "editor.defaultFormatter": "ms-python.black-formatter",
           "editor.formatOnSave": true
         },
         "[typescript]": {
