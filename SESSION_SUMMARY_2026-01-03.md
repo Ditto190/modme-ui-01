@@ -318,11 +318,11 @@ export type UIElement = {
 
 ## 📊 File Changes Summary
 
-| File | Status | Lines | Description |
-|------|--------|-------|-------------|
-| `docs/REFACTORING_PATTERNS.md` | ✅ Created | 520+ | Comprehensive refactoring patterns |
-| `agent-generator/SCHEMA_CRAWLER_README.md` | ✅ Created | 540+ | Complete schema-crawler guide |
-| `.github/copilot-instructions.md` | ✅ Updated | 247 | Added doc references |
+| File                                       | Status     | Lines | Description                        |
+| ------------------------------------------ | ---------- | ----- | ---------------------------------- |
+| `docs/REFACTORING_PATTERNS.md`             | ✅ Created | 520+  | Comprehensive refactoring patterns |
+| `agent-generator/SCHEMA_CRAWLER_README.md` | ✅ Created | 540+  | Complete schema-crawler guide      |
+| `.github/copilot-instructions.md`          | ✅ Updated | 247   | Added doc references               |
 
 **Total New Content**: 1,060+ lines of documentation
 

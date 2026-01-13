@@ -102,10 +102,10 @@ from typing import Dict, Any
 def rotate_pdf(tool_context: ToolContext, **kwargs) -> Dict[str, Any]:
     """
     Execute rotate_pdf.py from pdf-editor skill
-    
+
     Args:
         **kwargs: Parameters for the script
-    
+
     Returns:
         Dictionary with status and result
     """
@@ -126,7 +126,7 @@ tools:
     parameters:
       - name: input
         type: string
-        description: 'Input for the tool'
+        description: "Input for the tool"
 ```
 
 ### Step 5: Add ModMe Metadata
@@ -206,7 +206,7 @@ workbench_agent = LlmAgent(
 def load_skill(skill_name: str):
     """Dynamically load skill and register tools"""
     skill_path = Path(f"agent-generator/src/skills/{skill_name}")
-    
+
     # Load tools.py
     spec = importlib.util.spec_from_file_location(
         f"skills.{skill_name}",
@@ -214,7 +214,7 @@ def load_skill(skill_name: str):
     )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    
+
     # Return all tool functions
     return [
         getattr(module, name)
@@ -266,7 +266,7 @@ tools:
         description: "getWeather"
       - name: input_schema
         type: object
-        description: {...}
+        description: { ... }
 ```
 
 ## Validation
@@ -280,7 +280,7 @@ node scripts/knowledge-management/skill-spec-validator.js \
 
 # Output:
 # ✅ Skill is valid!
-# 
+#
 # 📊 Metrics:
 #    - Body: 347 lines, 2,850 words
 #    - Description: 156 chars, 24 words
@@ -289,11 +289,11 @@ node scripts/knowledge-management/skill-spec-validator.js \
 
 ### Common Validation Errors
 
-| Error | Fix |
-|-------|-----|
-| `Invalid name format` | Use lowercase with hyphens only |
-| `Description too short` | Add more detail + triggers (min 50 chars) |
-| `Body too long` | Split into `references/` files (<500 lines) |
+| Error                         | Fix                                                                            |
+| ----------------------------- | ------------------------------------------------------------------------------ |
+| `Invalid name format`         | Use lowercase with hyphens only                                                |
+| `Description too short`       | Add more detail + triggers (min 50 chars)                                      |
+| `Body too long`               | Split into `references/` files (<500 lines)                                    |
 | `Unexpected frontmatter keys` | Remove invalid keys (only name, description, license, allowed-tools, metadata) |
 
 ## Best Practices
@@ -306,9 +306,11 @@ Keep SKILL.md body concise (<400 lines ideal):
 # PDF Editor
 
 ## Quick Start
+
 [Basic usage...]
 
 ## Advanced Features
+
 - **Form filling**: See [FORMS.md](references/FORMS.md)
 - **API reference**: See [REFERENCE.md](references/REFERENCE.md)
 ```

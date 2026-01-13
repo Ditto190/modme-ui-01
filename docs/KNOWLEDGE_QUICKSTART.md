@@ -178,7 +178,7 @@ git commit -m "docs: update ui_elements description"
 
 **Step 2**: Create migration guide
 
-```bash
+````bash
 cat > docs/migration/old_to_new.md << 'EOF'
 # Migrating from old_toolset to new_toolset
 
@@ -190,7 +190,7 @@ cat > docs/migration/old_to_new.md << 'EOF'
 **Before**:
 ```python
 old_tool(id="test")
-```
+````
 
 **After**:
 
@@ -201,12 +201,13 @@ new_tool(id="test", options={"enabled": true})
 EOF
 
 ```
+````
 
 **Step 3**: Regenerate docs
 
 ```bash
 npm run docs:all
-```
+````
 
 The diagram will now show the toolset with red dashed border and deprecation arrow.
 
@@ -346,26 +347,26 @@ ls templates/
 
 ### NPM Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run docs:sync` | Validate + sync JSON → markdown |
-| `npm run docs:md-to-json` | Convert markdown → JSON |
-| `npm run docs:json-to-md` | Convert JSON → markdown |
-| `npm run docs:diagram` | Generate Mermaid .mmd file |
-| `npm run docs:diagram:svg` | Generate SVG diagram |
-| `npm run docs:all` | Full sync + diagram |
-| `npm run search:toolset "pattern"` | Search with ripgrep |
+| Command                            | Description                     |
+| ---------------------------------- | ------------------------------- |
+| `npm run docs:sync`                | Validate + sync JSON → markdown |
+| `npm run docs:md-to-json`          | Convert markdown → JSON         |
+| `npm run docs:json-to-md`          | Convert JSON → markdown         |
+| `npm run docs:diagram`             | Generate Mermaid .mmd file      |
+| `npm run docs:diagram:svg`         | Generate SVG diagram            |
+| `npm run docs:all`                 | Full sync + diagram             |
+| `npm run search:toolset "pattern"` | Search with ripgrep             |
 
 ### File Locations
 
-| File | Purpose |
-|------|---------|
-| `agent/toolsets.json` | Source of truth (12KB) |
-| `agent/toolset-schema.json` | JSON Schema for validation |
-| `docs/toolsets/*.md` | Generated documentation (45KB) |
-| `docs/toolsets/*.svg` | Toolset relationship diagrams |
-| `templates/*.hbs` | Handlebars templates |
-| `scripts/knowledge-management/` | Sync/search/diagram scripts |
+| File                            | Purpose                        |
+| ------------------------------- | ------------------------------ |
+| `agent/toolsets.json`           | Source of truth (12KB)         |
+| `agent/toolset-schema.json`     | JSON Schema for validation     |
+| `docs/toolsets/*.md`            | Generated documentation (45KB) |
+| `docs/toolsets/*.svg`           | Toolset relationship diagrams  |
+| `templates/*.hbs`               | Handlebars templates           |
+| `scripts/knowledge-management/` | Sync/search/diagram scripts    |
 
 ### Toolset Categories
 

@@ -42,6 +42,7 @@
 ## Component Layers
 
 ### 1. Presentation Layer (Next.js)
+
 - **Location**: `src/`
 - **Responsibility**: UI rendering, user interaction, state display
 - **Technologies**: React 19, Next.js 16, Tailwind CSS 4
@@ -51,6 +52,7 @@
   - `src/lib/types.ts`: TypeScript definitions
 
 ### 2. Orchestration Layer (CopilotKit)
+
 - **Responsibility**: State synchronization, agent communication
 - **Key Hooks**:
   - `useCoAgent`: Syncs state with Python backend
@@ -58,6 +60,7 @@
   - `useCopilotReadable`: Exposes context to agent
 
 ### 3. Agent Layer (Python ADK)
+
 - **Location**: `agent/`
 - **Responsibility**: AI reasoning, tool execution, state management
 - **Technologies**: Google ADK, FastAPI, Gemini AI
@@ -66,6 +69,7 @@
   - `agent/pyproject.toml`: Python dependencies
 
 ### 4. Data Layer
+
 - **Location**: `data/`
 - **Responsibility**: Local-first data storage
 - **Privacy**: Git-ignored, never synced to cloud
@@ -73,6 +77,7 @@
 ## Data Flow
 
 ### Request Flow
+
 1. User interacts with UI (Canvas)
 2. Action sent to CopilotKit
 3. CopilotKit forwards to Python ADK Agent
@@ -82,6 +87,7 @@
 7. UI re-renders with new state
 
 ### State Synchronization
+
 - **Frontend State**: React hooks (useState, useCoAgent)
 - **Backend State**: `callback_context.state` (Python dict)
 - **Sync Mechanism**: WebSocket (CopilotKit bridge)
@@ -90,18 +96,21 @@
 ## GenUI Rendering Pipeline
 
 ### Static GenUI
+
 1. Agent selects component from registry
 2. Returns component name + props
 3. Frontend looks up component
 4. Renders with provided props
 
 ### Declarative GenUI
+
 1. Agent generates JSON schema
 2. Schema sent to DashboardRenderer
 3. Renderer creates layout dynamically
 4. Components instantiated from schema
 
 ### Open-Ended GenUI
+
 1. Agent generates HTML/JS/CSS
 2. Code sent to SandboxedHTML component
 3. Rendered in isolated iframe

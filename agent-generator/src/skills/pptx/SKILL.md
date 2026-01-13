@@ -35,6 +35,7 @@ You need raw XML access for: comments, speaker notes, slide layouts, animations,
 **Note**: The unpack.py script is located at `skills/pptx/ooxml/scripts/unpack.py` relative to the project root. If the script doesn't exist at this path, use `find . -name "unpack.py"` to locate it.
 
 #### Key file structures
+
 - `ppt/presentation.xml` - Main presentation metadata and slide references
 - `ppt/slides/slide{N}.xml` - Individual slide contents (slide1.xml, slide2.xml, etc.)
 - `ppt/notesSlides/notesSlide{N}.xml` - Speaker notes for each slide
@@ -195,6 +196,7 @@ When edit slides in an existing PowerPoint presentation, you need to work with t
 ### Workflow
 
 1. **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~500 lines) completely from start to finish.  **NEVER set any range limits when reading this file.**  Read the full file content for detailed guidance on OOXML structure and editing workflows before any presentation editing.
+1. **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~500 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for detailed guidance on OOXML structure and editing workflows before any presentation editing.
 2. Unpack the presentation: `python ooxml/scripts/unpack.py <office_file> <output_dir>`
 3. Edit the XML files (primarily `ppt/slides/slide{N}.xml` and related files)
 4. **CRITICAL**: Validate immediately after each edit and fix any validation errors before proceeding: `python ooxml/scripts/validate.py <dir> --original <file>`
@@ -218,14 +220,16 @@ When you need to create a presentation that follows an existing template's desig
 
      ```markdown
      # Template Inventory Analysis
+
      **Total Slides: [count]**
      **IMPORTANT: Slides are 0-indexed (first slide = 0, last slide = count-1)**
 
      ## [Category Name]
+
      - Slide 0: [Layout code if available] - Description/purpose
      - Slide 1: [Layout code] - Description/purpose
      - Slide 2: [Layout code] - Description/purpose
-     [... EVERY slide must be listed individually with its index ...]
+       [... EVERY slide must be listed individually with its index ...]
      ```
 
    - **Using the thumbnail grid**: Reference the visual thumbnails to identify:
@@ -266,6 +270,18 @@ When you need to create a presentation that follows an existing template's desig
           54,  # Use slide 54 (F2: Closing + Text)
       ]
       ```
+     ```
+     # Template slides to use (0-based indexing)
+     # WARNING: Verify indices are within range! Template with 73 slides has indices 0-72
+     # Mapping: slide numbers from outline -> template slide indices
+     template_mapping = [
+         0,   # Use slide 0 (Title/Cover)
+         34,  # Use slide 34 (B1: Title and body)
+         34,  # Use slide 34 again (duplicate for second B1)
+         50,  # Use slide 50 (E1: Quote)
+         54,  # Use slide 54 (F2: Closing + Text)
+     ]
+     ```
 
 4. **Duplicate, reorder, and delete slides using `rearrange.py`**:
    - Use the `scripts/rearrange.py` script to create a new presentation with slides in the desired order:
@@ -320,6 +336,37 @@ When you need to create a presentation that follows an existing template's desig
           }
         }
       ```
+     ```json
+     {
+       "slide-0": {
+         "shape-0": {
+           "placeholder_type": "TITLE", // or null for non-placeholders
+           "left": 1.5, // position in inches
+           "top": 2.0,
+           "width": 7.5,
+           "height": 1.2,
+           "paragraphs": [
+             {
+               "text": "Paragraph text",
+               // Optional properties (only included when non-default):
+               "bullet": true, // explicit bullet detected
+               "level": 0, // only included when bullet is true
+               "alignment": "CENTER", // CENTER, RIGHT (not LEFT)
+               "space_before": 10.0, // space before paragraph in points
+               "space_after": 6.0, // space after paragraph in points
+               "line_spacing": 22.4, // line spacing in points
+               "font_name": "Arial", // from first run
+               "font_size": 14.0, // in points
+               "bold": true,
+               "italic": false,
+               "underline": false,
+               "color": "FF0000" // RGB color
+             }
+           ]
+         }
+       }
+     }
+     ```
 
    - Key features:
      - **Slides**: Named as "slide-0", "slide-1", etc.
@@ -347,7 +394,7 @@ When you need to create a presentation that follows an existing template's desig
    - Generate appropriate replacement content for placeholder text
    - Use shape size to determine appropriate content length
    - **CRITICAL**: Include paragraph properties from the original inventory - don't just provide text
-   - **IMPORTANT**: When bullet: true, do NOT include bullet symbols (•, -, *) in text - they're added automatically
+   - **IMPORTANT**: When bullet: true, do NOT include bullet symbols (•, -, \*) in text - they're added automatically
    - **ESSENTIAL FORMATTING RULES**:
      - Headers/titles should typically have `"bold": true`
      - List items should have `"bullet": true, "level": 0` (level is required when bullet is true)

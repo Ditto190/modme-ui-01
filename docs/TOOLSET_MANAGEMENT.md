@@ -59,9 +59,9 @@ All workflows are triggered by:
 
 ```yaml
 env:
-  AUTO_COMMIT: true  # Automatically commit changes to main
+  AUTO_COMMIT: true # Automatically commit changes to main
   TOOLSET_CONFIG_PATH: agent/toolsets.json
-  REQUIRE_APPROVAL: false  # Set to true for manual review
+  REQUIRE_APPROVAL: false # Set to true for manual review
 ```
 
 ### 2. Toolset Deprecation Workflow (`.github/workflows/toolset-deprecate.yml`)
@@ -265,15 +265,15 @@ jobs:
     steps:
       - name: Schema Validation
         run: npm run validate:toolsets
-      
+
       - name: Alias Resolution Test
         run: npm run test:aliases
-      
+
       - name: Integration Test
         run: |
           # Start MCP server with test config
           npm run test:integration
-      
+
       - name: Documentation Validation
         run: npm run validate:docs
 ```
@@ -313,7 +313,7 @@ Post-deployment monitoring includes:
 ```json
 {
   "toolset_a": "toolset_b",
-  "toolset_b": "toolset_a"  // ❌ Circular
+  "toolset_b": "toolset_a" // ❌ Circular
 }
 ```
 
@@ -329,7 +329,7 @@ Error: Circular alias dependency detected: toolset_a → toolset_b → toolset_a
 
 ```json
 {
-  "old_toolset": "nonexistent_toolset"  // ❌ Target doesn't exist
+  "old_toolset": "nonexistent_toolset" // ❌ Target doesn't exist
 }
 ```
 
@@ -362,13 +362,13 @@ gh workflow run toolset-docs.yml
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `TOOLSET_CONFIG_PATH` | Path to toolset definitions | `agent/toolsets.json` |
-| `AUTO_COMMIT` | Auto-commit changes | `true` |
-| `REQUIRE_APPROVAL` | Require manual approval for changes | `false` |
-| `DEPRECATION_PERIOD_DAYS` | Days before toolset removal | `180` |
-| `NOTIFICATION_CHANNEL` | Slack/Teams webhook for notifications | `` |
+| Variable                  | Description                           | Default               |
+| ------------------------- | ------------------------------------- | --------------------- |
+| `TOOLSET_CONFIG_PATH`     | Path to toolset definitions           | `agent/toolsets.json` |
+| `AUTO_COMMIT`             | Auto-commit changes                   | `true`                |
+| `REQUIRE_APPROVAL`        | Require manual approval for changes   | `false`               |
+| `DEPRECATION_PERIOD_DAYS` | Days before toolset removal           | `180`                 |
+| `NOTIFICATION_CHANNEL`    | Slack/Teams webhook for notifications | ``                    |
 
 ### File Structure
 
@@ -444,4 +444,4 @@ For issues with toolset management workflows:
 
 ---
 
-*Last Updated: January 2, 2026*
+_Last Updated: January 2, 2026_

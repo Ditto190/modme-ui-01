@@ -58,17 +58,17 @@ agent/tools/skills_ref_tools.py
 
 ## ✅ Implementation Status
 
-| Task | Status | Details |
-|------|--------|---------|
-| **1. Library Structure** | ✅ Complete | 7 modules following agentskills reference |
-| **2. Data Models** | ✅ Complete | SkillProperties dataclass with all fields |
-| **3. Parser** | ✅ Complete | StrictYAML frontmatter parsing |
-| **4. Validator** | ✅ Complete | Full spec validation (name, desc, dir match) |
-| **5. Prompt Generator** | ✅ Complete | `<available_skills>` XML format |
-| **6. CLI Commands** | ✅ Complete | validate, read-properties, to-prompt |
-| **7. Agent Integration** | ✅ Complete | ToolContext wrappers + tools.yaml |
-| **8. Documentation** | ✅ Complete | README + integration guide |
-| **9. Test Suite** | ⏳ Pending | Unit tests needed |
+| Task                     | Status      | Details                                      |
+| ------------------------ | ----------- | -------------------------------------------- |
+| **1. Library Structure** | ✅ Complete | 7 modules following agentskills reference    |
+| **2. Data Models**       | ✅ Complete | SkillProperties dataclass with all fields    |
+| **3. Parser**            | ✅ Complete | StrictYAML frontmatter parsing               |
+| **4. Validator**         | ✅ Complete | Full spec validation (name, desc, dir match) |
+| **5. Prompt Generator**  | ✅ Complete | `<available_skills>` XML format              |
+| **6. CLI Commands**      | ✅ Complete | validate, read-properties, to-prompt         |
+| **7. Agent Integration** | ✅ Complete | ToolContext wrappers + tools.yaml            |
+| **8. Documentation**     | ✅ Complete | README + integration guide                   |
+| **9. Test Suite**        | ⏳ Pending  | Unit tests needed                            |
 
 ---
 
@@ -180,9 +180,11 @@ metadata:
 # PDF Processing
 
 ## When to use this skill
+
 Use this skill when the user needs to work with PDF files...
 
 ## How to extract text
+
 1. Use pdfplumber for text extraction...
 ```
 
@@ -255,9 +257,9 @@ workbench_agent = LlmAgent(
     name="WorkbenchAgent",
     instruction=f"""
     You are the Workbench Assistant.
-    
+
     {skills_xml}
-    
+
     When a user asks for help, check available skills.
     """,
     tools=[...]
@@ -313,7 +315,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: "3.12"
       - run: pip install -e ".[test]"
       - run: pytest tests/test_skills_ref.py -v
 ```
@@ -322,14 +324,14 @@ jobs:
 
 ## 📊 Code Metrics
 
-| Category | Files | Lines | Status |
-|----------|-------|-------|--------|
-| **Library Core** | 7 | ~800 | ✅ Complete |
-| **Agent Tools** | 1 | ~250 | ✅ Complete |
-| **Documentation** | 2 | ~800 | ✅ Complete |
-| **Configuration** | 1 | ~20 | ✅ Complete |
-| **Tests** | 0 | 0 | ⏳ Pending |
-| **Total** | 11 | ~1,870 | 89% Complete |
+| Category          | Files | Lines  | Status       |
+| ----------------- | ----- | ------ | ------------ |
+| **Library Core**  | 7     | ~800   | ✅ Complete  |
+| **Agent Tools**   | 1     | ~250   | ✅ Complete  |
+| **Documentation** | 2     | ~800   | ✅ Complete  |
+| **Configuration** | 1     | ~20    | ✅ Complete  |
+| **Tests**         | 0     | 0      | ⏳ Pending   |
+| **Total**         | 11    | ~1,870 | 89% Complete |
 
 ---
 

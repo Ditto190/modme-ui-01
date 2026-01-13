@@ -101,11 +101,13 @@ Successfully implemented a comprehensive, project-specific issue management syst
 👋 Thanks for reporting a toolset-related issue!
 
 **Next Steps:**
+
 1. A maintainer will triage this issue within 48 hours
 2. For validation issues, run `npm run validate:toolsets` locally
 3. For deprecations, review the 180-day grace period policy
 
 **Useful Commands:**
+
 - `npm run validate:toolsets` - Full validation suite
 - `npm run detect:changes` - Find new/modified toolsets
 - `npm run test:aliases` - Test alias resolution
@@ -121,27 +123,27 @@ Updated configuration to match ModMe GenUI architecture:
 
 ```yaml
 agent:
-  - 'agent/**/*.py'
-  - 'agent/toolset_manager.py'
+  - "agent/**/*.py"
+  - "agent/toolset_manager.py"
 
 frontend:
-  - 'src/**/*.tsx'
-  - 'src/components/**/*'
+  - "src/**/*.tsx"
+  - "src/components/**/*"
 
 component-registry:
-  - 'src/components/registry/**/*'
+  - "src/components/registry/**/*"
 
 toolset:
-  - 'agent/toolsets.json'
-  - 'agent/toolset_aliases.json'
-  - 'scripts/toolset-management/**/*'
+  - "agent/toolsets.json"
+  - "agent/toolset_aliases.json"
+  - "scripts/toolset-management/**/*"
 
 ci-cd:
-  - '.github/workflows/**/*'
+  - ".github/workflows/**/*"
 
 documentation:
-  - '**/*.md'
-  - 'docs/**/*'
+  - "**/*.md"
+  - "docs/**/*"
 ```
 
 **Benefits**:
@@ -227,12 +229,12 @@ npm run docs:all             # Sync documentation
 
 ```yaml
 policy:
-  - template: ['bug-report.yml', 'feature-request.yml', 'question.yml']
+  - template: ["bug-report.yml", "feature-request.yml", "question.yml"]
     section:
-      - id: ['package']
+      - id: ["package"]
         label:
-          - name: 'v4'
-            keys: ['v4.x']
+          - name: "v4"
+            keys: ["v4.x"]
 ```
 
 **Problems**:
@@ -326,6 +328,7 @@ policy:
 👋 Thanks for reporting a toolset-related issue!
 
 **Useful Commands:**
+
 - `npm run validate:toolsets`
 - `npm run detect:changes`
 - `npm run test:aliases`
@@ -350,7 +353,7 @@ policy:
 
 ```javascript
 const newLabelPatterns = {
-  'new-label': /Pattern to match/i
+  "new-label": /Pattern to match/i,
 };
 
 for (const [label, pattern] of Object.entries(newLabelPatterns)) {
@@ -364,8 +367,8 @@ for (const [label, pattern] of Object.entries(newLabelPatterns)) {
 
 ```yaml
 new-label:
-  - 'path/to/files/**/*'
-  - 'specific/file.ts'
+  - "path/to/files/**/*"
+  - "specific/file.ts"
 ```
 
 ### Adding New Templates
@@ -453,11 +456,13 @@ Tracking in #123
 Great idea! This aligns with our GenUI roadmap.
 
 **Considerations**:
+
 - Breaking change? No
 - Backward compatible? Yes
 - Dependencies? None
 
 **Next Steps**:
+
 1. Spec review by team
 2. Prototype in feature branch
 3. Community feedback
@@ -472,7 +477,9 @@ Confirmed validation failure. Running diagnostics:
 
 \`\`\`bash
 npm run validate:toolsets
+
 # Error: Circular alias dependency ui_elements_v2 → ui_elements → ui_elements_v2
+
 \`\`\`
 
 **Fix**: Will update toolset_aliases.json to break cycle
@@ -486,12 +493,12 @@ Should be resolved within 24 hours.
 
 ## 🔗 Related Documentation
 
-| Document | Purpose |
-|----------|---------|
-| [CONTRIBUTING.md](../CONTRIBUTING.md) | Contributor guide with issue templates |
-| [TOOLSET_MANAGEMENT.md](../docs/TOOLSET_MANAGEMENT.md) | Toolset lifecycle automation |
-| [.github/copilot-instructions.md](../.github/copilot-instructions.md) | AI agent development guide |
-| [docs/REFACTORING_PATTERNS.md](../docs/REFACTORING_PATTERNS.md) | Code quality guidelines |
+| Document                                                              | Purpose                                |
+| --------------------------------------------------------------------- | -------------------------------------- |
+| [CONTRIBUTING.md](../CONTRIBUTING.md)                                 | Contributor guide with issue templates |
+| [TOOLSET_MANAGEMENT.md](../docs/TOOLSET_MANAGEMENT.md)                | Toolset lifecycle automation           |
+| [.github/copilot-instructions.md](../.github/copilot-instructions.md) | AI agent development guide             |
+| [docs/REFACTORING_PATTERNS.md](../docs/REFACTORING_PATTERNS.md)       | Code quality guidelines                |
 
 ---
 

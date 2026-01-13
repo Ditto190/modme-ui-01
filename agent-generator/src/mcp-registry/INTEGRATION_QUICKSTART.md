@@ -156,13 +156,13 @@ apps/agent-generator/src/integration/
 const task = "Refactor this TypeScript component";
 
 // 1. Discover what's available
-const availableTools = await reflectMCPSchema('all');
+const availableTools = await reflectMCPSchema("all");
 // → { filesystem: [...], git: [...], sequential-thinking: [...] }
 
 // 2. Specialize the agent
 const specializedInstructions = await buildAgentInstructions(task, {
   availableTools,
-  constraints: ["Always run tests", "Confirm before pushing"]
+  constraints: ["Always run tests", "Confirm before pushing"],
 });
 
 // 3. Route to appropriate GenUI tier
@@ -175,7 +175,7 @@ const genUIStrategy = selectGenUITier(task, availableTools);
 const result = await orchestrate({
   systemPrompt: specializedInstructions,
   tools: availableTools,
-  strategy: genUIStrategy
+  strategy: genUIStrategy,
 });
 ```
 
@@ -185,15 +185,18 @@ const result = await orchestrate({
 # Code Refactoring Agent
 
 You have access to these tools:
+
 - **Code Editor** (filesystem) — Read/write TypeScript files
 - **Git Workspace** (git) — Check status, diffs, branches
 - **Sequential Analyzer** (thinking) — Plan refactoring steps
 - **Test Runner** (shell) — Run tests
 
 ## Task
+
 Refactor the TypeScript component for readability and performance.
 
 ## Approach
+
 1. Use Sequential Analyzer to plan refactoring steps
 2. Read current code with Code Editor
 3. Make targeted changes
@@ -201,6 +204,7 @@ Refactor the TypeScript component for readability and performance.
 5. Commit with Git if all tests pass
 
 ## Safety Constraints
+
 - Always show diffs before applying changes
 - Run tests after each refactoring step
 - Never delete code without confirmation

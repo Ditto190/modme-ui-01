@@ -6,7 +6,7 @@ This is a **local-first, privacy-focused consulting data science platform** desi
 
 ### Core Design Principles
 
-1. **Local-Only by Default**: No cloud dependencies, remote Git, or external API requirements (unless explicitly configured)
+1. **Local-First by Default**: No cloud dependencies, remote Git, or external API requirements (unless explicitly configured)
 2. **Auditability**: All operations logged to SQLite (`artifacts.db`) for compliance and review
 3. **Reproducibility**: Pinned dependencies, isolated venv, automated VSCode tasks for consistent environments
 4. **Privacy & Security**: Sensitive client data never leaves local machine; MicroSandbox isolation for code execution
@@ -17,7 +17,7 @@ This is a **local-first, privacy-focused consulting data science platform** desi
 This is a **multi-agent data analysis platform** combining AG2 (AutoGen), MicroSandbox, FastAgency, and CopilotKit. The workspace enables:
 
 - Multi-agent Jupyter notebook workflows with persistent memory (SQLite + ChromaDB)
-- Safe code execution in MicroSandbox microVMs (**never use Docker**)
+- Safe code execution in MicroSandbox microVMs (**preferable to Docker for security and speed**)
 - Web-based multi-agent dashboards (FastAgency + Mesop UI)
 - Agent library of 333+ specialized experts (`src/Agents/agent_library_master.json`)
   - **Recent**: Converted 118 Copilot agents + 118 AG2 agents (18 data science focused)

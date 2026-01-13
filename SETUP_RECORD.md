@@ -50,7 +50,7 @@
 - **Requested Action:** Comment out the `com.supabase/mcp` server configuration (lines 33-52)
 - **Reason:** Better Supabase MCP version available; local version may be used later
 - **Status:** Manual edit required (file outside workspace)
-  
+
 **Commented-out configuration for manual application:**
 
 ```jsonc

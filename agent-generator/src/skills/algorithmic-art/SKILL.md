@@ -83,7 +83,7 @@ Algorithmic expression: Vector fields constructed from mathematical functions or
 Philosophy: Random processes crystallizing into ordered structures.
 Algorithmic expression: Randomized circle packing or Voronoi tessellation. Start with random points, let them evolve through relaxation algorithms. Cells push apart until equilibrium. Color based on cell size, neighbor count, or distance from center. The organic tiling that emerges feels both random and inevitable. Every seed produces unique crystalline beauty - the mark of a master-level generative algorithm.
 
-*These are condensed examples. The actual algorithmic philosophy should be 4-6 substantial paragraphs.*
+_These are condensed examples. The actual algorithmic philosophy should be 4-6 substantial paragraphs._
 
 ### ESSENTIAL PRINCIPLES
 
@@ -160,7 +160,7 @@ To establish parameters that emerge naturally from the algorithmic philosophy, c
 
 ```javascript
 let params = {
-  seed: 12345,  // Always include seed for reproducibility
+  seed: 12345, // Always include seed for reproducibility
   // colors
   // Add parameters that control YOUR algorithm:
   // - Quantities (how many?)
@@ -299,27 +299,27 @@ The `templates/viewer.html` file is the foundation. It contains the exact struct
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-  <!-- p5.js from CDN - always available -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
-  <style>
-    /* All styling inline - clean, minimal */
-    /* Canvas on top, controls below */
-  </style>
-</head>
-<body>
-  <div id="canvas-container"></div>
-  <div id="controls">
-    <!-- All parameter controls -->
-  </div>
-  <script>
-    // ALL p5.js code inline here
-    // Parameter objects, classes, functions
-    // setup() and draw()
-    // UI handlers
-    // Everything self-contained
-  </script>
-</body>
+  <head>
+    <!-- p5.js from CDN - always available -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <style>
+      /* All styling inline - clean, minimal */
+      /* Canvas on top, controls below */
+    </style>
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+    <div id="controls">
+      <!-- All parameter controls -->
+    </div>
+    <script>
+      // ALL p5.js code inline here
+      // Parameter objects, classes, functions
+      // setup() and draw()
+      // UI handlers
+      // Everything self-contained
+    </script>
+  </body>
 </html>
 ```
 
@@ -338,9 +338,17 @@ The sidebar structure:
 
 ```html
 <div class="control-group">
-    <label>Parameter Name</label>
-    <input type="range" id="param" min="..." max="..." step="..." value="..." oninput="updateParam('param', this.value)">
-    <span class="value-display" id="param-value">...</span>
+  <label>Parameter Name</label>
+  <input
+    type="range"
+    id="param"
+    min="..."
+    max="..."
+    step="..."
+    value="..."
+    oninput="updateParam('param', this.value)"
+  />
+  <span class="value-display" id="param-value">...</span>
 </div>
 ```
 

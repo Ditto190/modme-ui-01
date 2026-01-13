@@ -41,10 +41,10 @@ npm install -g @biomejs/biome
 
 ### Required API Keys
 
-| Key | Purpose | Source |
-|-----|---------|--------|
+| Key              | Purpose                    | Source                                                |
+| ---------------- | -------------------------- | ----------------------------------------------------- |
 | `GOOGLE_API_KEY` | Gemini models + embeddings | [AI Studio](https://makersuite.google.com/app/apikey) |
-| `GITHUB_TOKEN` | MCP GitHub operations | [GitHub Settings](https://github.com/settings/tokens) |
+| `GITHUB_TOKEN`   | MCP GitHub operations      | [GitHub Settings](https://github.com/settings/tokens) |
 
 ---
 
@@ -350,7 +350,7 @@ cp /path/to/modme-ui-01/COMPONENT_MANIFEST.json docs/reference/
 
 ### Step 5.2: Create Unified README
 
-```bash
+````bash
 # Update root README.md
 cat > README.md << 'EOF'
 # Your Project Name
@@ -369,7 +369,7 @@ turbo dev
 # Or start individually
 turbo dev --filter=web     # Next.js app
 turbo agent:dev            # Python ADK agent
-```
+````
 
 ## Architecture
 
@@ -397,6 +397,9 @@ your-project/
 EOF
 
 ```
+  EOF
+
+````
 
 ### Step 5.3: Validate Integration
 
@@ -414,7 +417,7 @@ pytest
 # Health check
 curl http://localhost:8000/health
 curl http://localhost:8000/ready
-```
+````
 
 ---
 
@@ -527,4 +530,4 @@ turbo build --force
 
 ---
 
-*Generated from modme-ui-01 porting infrastructure*
+_Generated from modme-ui-01 porting infrastructure_

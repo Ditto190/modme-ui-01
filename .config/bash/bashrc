@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+#
+# ModMe GenUI Workbench - Project Bash Profile
+#
+# Description:
+#   This file provides VS Code shell integration and project-specific commands
+#   for the ModMe GenUI Workbench. It is designed to be sourced by the user's
+#   ~/.bashrc via the setup script (scripts/setup-shell-integration.sh).
+#
+# Location: .config/bash/bashrc
+# Documentation: https://code.visualstudio.com/docs/terminal/shell-integration
+#
+
+# VS Code Shell Integration
+# Enable shell integration if running in VS Code
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+    SHELL_INTEGRATION_PATH="$(code --locate-shell-integration-path bash 2>/dev/null)"
+    if [[ -n "$SHELL_INTEGRATION_PATH" ]] && [[ -f "$SHELL_INTEGRATION_PATH" ]]; then
+        # shellcheck source=/dev/null
+        . "$SHELL_INTEGRATION_PATH"
+    fi
+fi
+
+# Resolve project root (two levels up from this file)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+# Project-specific command functions
+dev() {
+    # Start both frontend and agent servers
+    (cd "$PROJECT_ROOT" && npm run dev)
+}
+
+agent() {
+    # Start Python agent server only
+    (cd "$PROJECT_ROOT" && npm run dev:agent)
+}
+
+ui() {
+    # Start Next.js frontend server only
+    (cd "$PROJECT_ROOT" && npm run dev:ui)
+}
+
+mcp() {
+    # Start MCP servers
+    local mcp_script="$PROJECT_ROOT/scripts/start-mcp-servers.sh"
+    if [[ -f "$mcp_script" ]]; then
+        (cd "$PROJECT_ROOT" && bash "$mcp_script")
+    else
+        echo "MCP start script not found at: $mcp_script"
+    fi
+}
+
+validate() {
+    # Validate toolsets configuration
+    (
+        cd "$PROJECT_ROOT"
+        # Try npm script first, fallback to direct node invocation
+        if ! npm run validate:toolsets 2>/dev/null; then
+            local validate_script="$PROJECT_ROOT/scripts/toolset-management/validate-toolsets.js"
+            if [[ -f "$validate_script" ]]; then
+                node "$validate_script"
+            else
+                echo "Validation script not found"
+            fi
+        fi
+    )
+}
+
+docs() {
+    # Generate all documentation
+    (cd "$PROJECT_ROOT" && npm run docs:all)
+}
+
+venv() {
+    # Activate Python virtual environment
+    local venv_script="$PROJECT_ROOT/agent/.venv/bin/activate"
+    if [[ -f "$venv_script" ]]; then
+        # shellcheck source=/dev/null
+        source "$venv_script"
+    else
+        echo "Virtual environment not found at: $venv_script"
+        echo "Run 'python -m venv agent/.venv' to create it"
+    fi
+}
+
+help() {
+    # Display available project commands
+    echo ""
+    echo "📋 ModMe GenUI Workbench - Available Commands:"
+    echo "  dev       - Start both frontend and agent servers"
+    echo "  ui        - Start Next.js frontend only"
+    echo "  agent     - Start Python agent only"
+    echo "  mcp       - Start MCP servers"
+    echo "  validate  - Validate toolsets configuration"
+    echo "  docs      - Generate all documentation"
+    echo "  venv      - Activate Python virtual environment"
+    echo "  help      - Show this message"
+    echo ""
+}
+
+# Welcome message (only in VS Code)
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+    echo -e "\e[35m🎨 ModMe GenUI Workbench\e[0m"
+    echo -e "\e[90mType 'help' for available commands\e[0m"
+    echo ""
+fi

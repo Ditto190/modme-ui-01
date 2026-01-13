@@ -56,7 +56,7 @@ The GitHub MCP Server has been successfully installed with **Docker + Dynamic To
 
 - **context** - User and GitHub context (strongly recommended)
 - **repos** - Repository operations
-- **issues** - Issue management  
+- **issues** - Issue management
 - **pull_requests** - PR operations
 - **actions** - GitHub Actions workflows
 - **code_security** - Code scanning and security
@@ -85,7 +85,7 @@ Visit: [https://github.com/settings/tokens/new](https://github.com/settings/toke
 Select these permissions:
 
 - ✅ `repo` - Full control of private repositories
-- ✅ `read:org` - Read org and team membership  
+- ✅ `read:org` - Read org and team membership
 - ✅ `read:user` - Read user profile data
 
 ### 3. Generate and Copy

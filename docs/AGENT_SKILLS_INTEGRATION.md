@@ -194,9 +194,9 @@ workbench_agent = LlmAgent(
     model="gemini-2.5-flash",
     instruction=f"""
     You are the Workbench Assistant. You help users build dashboards and tools.
-    
+
     {skills_xml}
-    
+
     When a user asks for help, check if any of the available skills can assist.
     If a skill is relevant, mention it and offer to use its instructions.
     """,
@@ -225,12 +225,12 @@ workbench_agent = LlmAgent(
     model="gemini-2.5-flash",
     instruction="""
     You are the Workbench Assistant.
-    
+
     You have access to Agent Skills tools:
     - validate_skill: Check if a skill directory is valid
     - read_skill_properties: Get metadata from a skill
     - generate_skills_prompt: Generate XML for agent prompts
-    
+
     Use these tools to discover and work with available skills.
     """,
     tools=[
@@ -299,9 +299,11 @@ metadata:
 # Skill Title
 
 ## When to use this skill
+
 Describe scenarios where this skill is relevant...
 
 ## Prerequisites
+
 - List any required tools, packages, or knowledge
 - System requirements
 - API keys or credentials needed
@@ -309,29 +311,39 @@ Describe scenarios where this skill is relevant...
 ## Instructions
 
 ### Step 1: Setup
+
 Detailed instructions for initial setup...
 
 ### Step 2: Usage
+
 How to use the skill...
 
 ### Step 3: Troubleshooting
+
 Common issues and solutions...
 
 ## Examples
 
 ### Example 1: Basic Usage
+
 \`\`\`python
+
 # Example code
+
 result = do_something()
 \`\`\`
 
 ### Example 2: Advanced Usage
+
 \`\`\`python
+
 # More complex example
+
 result = advanced_operation()
 \`\`\`
 
 ## References
+
 - [External docs](https://example.com)
 - [API reference](https://api.example.com)
 ```
@@ -371,12 +383,12 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
-      
+          python-version: "3.12"
+
       - name: Install dependencies
         run: |
           pip install strictyaml click
-      
+
       - name: Validate all skills
         run: |
           for skill_dir in agent-generator/src/skills/*/; do
@@ -400,7 +412,7 @@ all_valid = True
 for skill_dir in skills_dir.iterdir():
     if not skill_dir.is_dir():
         continue
-    
+
     errors = validate(skill_dir)
     if errors:
         print(f"❌ {skill_dir.name}")
@@ -436,7 +448,7 @@ description: A test skill
 ---
 Body
 """)
-    
+
     errors = validate(skill_dir)
     assert errors == []
 
@@ -450,7 +462,7 @@ description: A test skill
 ---
 Body
 """)
-    
+
     errors = validate(skill_dir)
     assert any("lowercase" in e for e in errors)
 
@@ -465,7 +477,7 @@ license: MIT
 ---
 Body
 """)
-    
+
     props = read_properties(skill_dir)
     assert props.name == "test-skill"
     assert props.description == "A test skill"
@@ -481,7 +493,7 @@ description: A test skill
 ---
 Body
 """)
-    
+
     xml = to_prompt([skill_dir])
     assert "<available_skills>" in xml
     assert "<name>" in xml

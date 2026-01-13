@@ -190,7 +190,6 @@ description: |
   with specialized knowledge, workflows, or tool integrations.
 license: MIT
 ---
-
 # Skill Creator
 
 This skill provides guidance for creating effective skills.
@@ -276,19 +275,19 @@ node scripts/knowledge-management/fetch-anthropic-skills.js ba8e7042a9d6b788772c
 
 ### Successful Downloads
 
-| # | Skill Name | SKILL.md | Scripts | References | Assets | Total Files |
-|---|------------|----------|---------|------------|--------|-------------|
-| 1 | skill-creator | ✅ | 5+ files | 2+ files | ✅ | 10+ |
-| 2 | pdf | ✅ | 5 files | - | - | 6 |
-| 3 | docx | ✅ | ✅ | - | - | 5+ |
-| 4 | pptx | ✅ | 5 files | - | - | 6 |
-| 5 | xlsx | ✅ | - | - | - | 1 |
-| 6 | mcp-builder | ✅ | 4 files | - | - | 5 |
-| 7 | theme-factory | ✅ | - | - | - | 1 |
-| 8 | web-artifacts-builder | ✅ | 3 files | - | - | 4 |
-| 9 | algorithmic-art | ✅ | - | - | - | 1 |
-| 10 | brand-guidelines | ✅ | - | - | - | 1 |
-| 11 | internal-comms | ✅ | - | - | - | 1 |
+| #   | Skill Name            | SKILL.md | Scripts  | References | Assets | Total Files |
+| --- | --------------------- | -------- | -------- | ---------- | ------ | ----------- |
+| 1   | skill-creator         | ✅       | 5+ files | 2+ files   | ✅     | 10+         |
+| 2   | pdf                   | ✅       | 5 files  | -          | -      | 6           |
+| 3   | docx                  | ✅       | ✅       | -          | -      | 5+          |
+| 4   | pptx                  | ✅       | 5 files  | -          | -      | 6           |
+| 5   | xlsx                  | ✅       | -        | -          | -      | 1           |
+| 6   | mcp-builder           | ✅       | 4 files  | -          | -      | 5           |
+| 7   | theme-factory         | ✅       | -        | -          | -      | 1           |
+| 8   | web-artifacts-builder | ✅       | 3 files  | -          | -      | 4           |
+| 9   | algorithmic-art       | ✅       | -        | -          | -      | 1           |
+| 10  | brand-guidelines      | ✅       | -        | -          | -      | 1           |
+| 11  | internal-comms        | ✅       | -        | -          | -      | 1           |
 
 ---
 
@@ -377,7 +376,7 @@ node scripts/knowledge-management/fetch-anthropic-skills.js ba8e7042a9d6b788772c
 **Evidence**:
 
 ```
-❌ Failed to fetch skill-creator: Not found: 
+❌ Failed to fetch skill-creator: Not found:
 https://raw.githubusercontent.com/anthropics/skills/klazuka/expor/skills/skill-creator/SKILL.md
 ```
 
@@ -463,7 +462,7 @@ agent-generator/src/skills/
 ✅ **Conversion applied correctly** (YAML frontmatter → local format)  
 ✅ **No rate limit errors** (500ms delays effective)  
 ✅ **Clear file organization** (one directory per skill)  
-✅ **Source attribution added** (GitHub links in footers)  
+✅ **Source attribution added** (GitHub links in footers)
 
 ---
 

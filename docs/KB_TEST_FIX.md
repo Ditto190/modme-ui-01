@@ -27,8 +27,8 @@ The "Agent Tools" concept had **overly specific keywords**:
 "Agent Tools": {
   keywords: [
     "upsert_ui_element",      // Specific tool names
-    "remove_ui_element", 
-    "clear_canvas", 
+    "remove_ui_element",
+    "clear_canvas",
     "tool function",
     "tool_context",           // ✅ NEW: Catches tool_context references
     "agent tool",             // ✅ NEW: General agent discussions

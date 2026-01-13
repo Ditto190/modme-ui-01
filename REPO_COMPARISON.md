@@ -34,6 +34,15 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 | **CI/CD** | ⭐⭐⭐⭐ | ci.yml, deploy.yml, multi-env |
 | **Python Support** | ⭐ | None (gap to fill from modme-ui-01) |
 | **Documentation** | ⭐⭐⭐⭐ | Excellent README, SETUP.md, DEBUG.md |
+| Aspect               | Rating     | Details                                             |
+| -------------------- | ---------- | --------------------------------------------------- |
+| **Monorepo Tooling** | ⭐⭐⭐⭐⭐ | Turborepo + Biome (100x faster than ESLint)         |
+| **AI/Agent Support** | ⭐⭐⭐⭐   | `@adaptiveworx/agent` package, MCP-compatible tools |
+| **TypeScript**       | ⭐⭐⭐⭐⭐ | @tsconfig/strictest, ESM-first, NodeNext            |
+| **Component System** | ⭐⭐⭐⭐   | `@adaptiveworx/ui` with Tailwind                    |
+| **CI/CD**            | ⭐⭐⭐⭐   | ci.yml, deploy.yml, multi-env                       |
+| **Python Support**   | ⭐         | None (gap to fill from modme-ui-01)                 |
+| **Documentation**    | ⭐⭐⭐⭐   | Excellent README, SETUP.md, DEBUG.md                |
 
 **Strengths**:
 
@@ -58,15 +67,15 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 
 **URL**: <https://github.com/Insajin/AutonomusCompany>
 
-| Aspect | Rating | Details |
-|--------|--------|---------|
-| **Monorepo Tooling** | ⭐⭐⭐ | npm workspaces (basic) |
-| **AI/Agent Support** | ⭐⭐⭐⭐⭐ | Claude Code OAuth, automated PR review |
-| **TypeScript** | ⭐⭐⭐ | Standard setup |
-| **Component System** | ⭐⭐ | Basic FE/BE split |
-| **CI/CD** | ⭐⭐⭐⭐⭐ | 14+ workflows, 14 deployment platforms |
-| **Python Support** | ⭐ | None |
-| **Documentation** | ⭐⭐⭐⭐⭐ | Comprehensive SETUP.md, troubleshooting |
+| Aspect               | Rating     | Details                                 |
+| -------------------- | ---------- | --------------------------------------- |
+| **Monorepo Tooling** | ⭐⭐⭐     | npm workspaces (basic)                  |
+| **AI/Agent Support** | ⭐⭐⭐⭐⭐ | Claude Code OAuth, automated PR review  |
+| **TypeScript**       | ⭐⭐⭐     | Standard setup                          |
+| **Component System** | ⭐⭐       | Basic FE/BE split                       |
+| **CI/CD**            | ⭐⭐⭐⭐⭐ | 14+ workflows, 14 deployment platforms  |
+| **Python Support**   | ⭐         | None                                    |
+| **Documentation**    | ⭐⭐⭐⭐⭐ | Comprehensive SETUP.md, troubleshooting |
 
 **Strengths**:
 
@@ -81,11 +90,11 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 
 ```yaml
 # Must-have workflows from AutonomusCompany
-- pr-review.yml           # Claude Code automated review
-- weekly-feature-suggestions.yml  # AI codebase analysis
-- implement-approved-feature.yml  # Auto-implementation
-- semantic-release.yml    # Auto versioning
-- deployment-examples/*   # 14 deployment configs
+- pr-review.yml # Claude Code automated review
+- weekly-feature-suggestions.yml # AI codebase analysis
+- implement-approved-feature.yml # Auto-implementation
+- semantic-release.yml # Auto versioning
+- deployment-examples/* # 14 deployment configs
 ```
 
 **Weaknesses**:
@@ -102,15 +111,15 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 
 **URL**: <https://github.com/giridamodaran/ai-native-ux-template>
 
-| Aspect | Rating | Details |
-|--------|--------|---------|
-| **Monorepo Tooling** | ⭐⭐ | Docker-based, no build tool |
+| Aspect               | Rating     | Details                     |
+| -------------------- | ---------- | --------------------------- |
+| **Monorepo Tooling** | ⭐⭐       | Docker-based, no build tool |
 | **AI/Agent Support** | ⭐⭐⭐⭐⭐ | Native MCP, Claude tool-use |
-| **TypeScript** | ⭐⭐⭐ | Basic TypeScript MCP server |
-| **Component System** | ⭐ | Minimal |
-| **CI/CD** | ⭐⭐⭐ | Multi-arch Docker builds |
-| **Python Support** | ⭐ | None |
-| **Documentation** | ⭐⭐⭐⭐ | Good architecture docs |
+| **TypeScript**       | ⭐⭐⭐     | Basic TypeScript MCP server |
+| **Component System** | ⭐         | Minimal                     |
+| **CI/CD**            | ⭐⭐⭐     | Multi-arch Docker builds    |
+| **Python Support**   | ⭐         | None                        |
+| **Documentation**    | ⭐⭐⭐⭐   | Good architecture docs      |
 
 **Strengths**:
 
@@ -153,15 +162,15 @@ export const server = {
 
 **URL**: <https://github.com/ThriledLokki983/mono-workspace>
 
-| Aspect | Rating | Details |
-|--------|--------|---------|
-| **Monorepo Tooling** | ⭐⭐⭐⭐ | Yarn Workspaces + TypeScript Project References |
-| **AI/Agent Support** | ⭐⭐⭐ | CLAUDE.md, .mcp.json |
-| **TypeScript** | ⭐⭐⭐⭐ | Project References, strict |
-| **Component System** | ⭐⭐⭐⭐⭐ | React Aria, @mono/components, @mono/styles |
-| **CI/CD** | ⭐⭐ | Basic |
-| **Python Support** | ⭐ | None |
-| **Documentation** | ⭐⭐⭐⭐⭐ | Excellent README, patterns |
+| Aspect               | Rating     | Details                                         |
+| -------------------- | ---------- | ----------------------------------------------- |
+| **Monorepo Tooling** | ⭐⭐⭐⭐   | Yarn Workspaces + TypeScript Project References |
+| **AI/Agent Support** | ⭐⭐⭐     | CLAUDE.md, .mcp.json                            |
+| **TypeScript**       | ⭐⭐⭐⭐   | Project References, strict                      |
+| **Component System** | ⭐⭐⭐⭐⭐ | React Aria, @mono/components, @mono/styles      |
+| **CI/CD**            | ⭐⭐       | Basic                                           |
+| **Python Support**   | ⭐         | None                                            |
+| **Documentation**    | ⭐⭐⭐⭐⭐ | Excellent README, patterns                      |
 
 **Strengths**:
 
@@ -209,15 +218,15 @@ export function Button({ variant, size, ...props }: ButtonProps) {
 
 **URL**: <https://github.com/zyahav/monorepo-template>
 
-| Aspect | Rating | Details |
-|--------|--------|---------|
-| **Monorepo Tooling** | ⭐⭐ | Git Worktrees (unique approach) |
-| **AI/Agent Support** | ⭐⭐⭐⭐ | CLAUDE.md, mysay communication |
-| **TypeScript** | ⭐ | Shell scripts only |
-| **Component System** | ⭐ | None |
-| **CI/CD** | ⭐ | Minimal |
-| **Python Support** | ⭐ | None |
-| **Documentation** | ⭐⭐⭐⭐ | Clear workflow docs |
+| Aspect               | Rating   | Details                         |
+| -------------------- | -------- | ------------------------------- |
+| **Monorepo Tooling** | ⭐⭐     | Git Worktrees (unique approach) |
+| **AI/Agent Support** | ⭐⭐⭐⭐ | CLAUDE.md, mysay communication  |
+| **TypeScript**       | ⭐       | Shell scripts only              |
+| **Component System** | ⭐       | None                            |
+| **CI/CD**            | ⭐       | Minimal                         |
+| **Python Support**   | ⭐       | None                            |
+| **Documentation**    | ⭐⭐⭐⭐ | Clear workflow docs             |
 
 **Strengths**:
 
@@ -253,15 +262,15 @@ export function Button({ variant, size, ...props }: ButtonProps) {
 
 **URL**: <https://github.com/adobe/react-spectrum>
 
-| Aspect | Rating | Details |
-|--------|--------|---------|
-| **Monorepo Tooling** | ⭐⭐⭐⭐ | Yarn/Lerna, Parcel |
-| **AI/Agent Support** | ⭐ | None |
-| **TypeScript** | ⭐⭐⭐⭐⭐ | Comprehensive types |
+| Aspect               | Rating     | Details                     |
+| -------------------- | ---------- | --------------------------- |
+| **Monorepo Tooling** | ⭐⭐⭐⭐   | Yarn/Lerna, Parcel          |
+| **AI/Agent Support** | ⭐         | None                        |
+| **TypeScript**       | ⭐⭐⭐⭐⭐ | Comprehensive types         |
 | **Component System** | ⭐⭐⭐⭐⭐ | Best-in-class accessibility |
-| **CI/CD** | ⭐⭐⭐⭐⭐ | Enterprise-grade |
-| **Python Support** | ⭐ | None |
-| **Documentation** | ⭐⭐⭐⭐⭐ | World-class |
+| **CI/CD**            | ⭐⭐⭐⭐⭐ | Enterprise-grade            |
+| **Python Support**   | ⭐         | None                        |
+| **Documentation**    | ⭐⭐⭐⭐⭐ | World-class                 |
 
 **Strengths**:
 
@@ -356,16 +365,16 @@ npm install @internationalized/date @internationalized/number
 
 ## 📦 Integration Compatibility Matrix
 
-| Component from modme-ui-01 | ts-fullstack | AutonomusCompany | ai-native-ux |
-|---------------------------|--------------|------------------|--------------|
-| Python ADK Agent | ✅ Add as package | ⚠️ Needs backend mod | ✅ Compatible |
-| Knowledge Base Mapper | ✅ Add to packages/ | ✅ Add to scripts/ | ⚠️ Different structure |
-| Component Registry | ✅ Merge with @adaptiveworx/ui | ⚠️ Create frontend/ | ✅ packages/ |
-| Toolset Management | ✅ Add to packages/ | ✅ Add to .github/ | ✅ Compatible |
-| Schema Crawler | ✅ Add to packages/ | ✅ Add to scripts/ | ✅ Compatible |
-| ChromaDB Workflow | ✅ Add to .github/ | ✅ Add to .github/ | ⚠️ Docker-based |
-| GenAI Toolbox | ✅ Add to packages/ | ✅ Add to backend/ | ✅ Compatible |
-| GitHub Actions | ✅ Merge workflows | ✅ Native support | ⚠️ Basic CI |
+| Component from modme-ui-01 | ts-fullstack                   | AutonomusCompany     | ai-native-ux           |
+| -------------------------- | ------------------------------ | -------------------- | ---------------------- |
+| Python ADK Agent           | ✅ Add as package              | ⚠️ Needs backend mod | ✅ Compatible          |
+| Knowledge Base Mapper      | ✅ Add to packages/            | ✅ Add to scripts/   | ⚠️ Different structure |
+| Component Registry         | ✅ Merge with @adaptiveworx/ui | ⚠️ Create frontend/  | ✅ packages/           |
+| Toolset Management         | ✅ Add to packages/            | ✅ Add to .github/   | ✅ Compatible          |
+| Schema Crawler             | ✅ Add to packages/            | ✅ Add to scripts/   | ✅ Compatible          |
+| ChromaDB Workflow          | ✅ Add to .github/             | ✅ Add to .github/   | ⚠️ Docker-based        |
+| GenAI Toolbox              | ✅ Add to packages/            | ✅ Add to backend/   | ✅ Compatible          |
+| GitHub Actions             | ✅ Merge workflows             | ✅ Native support    | ⚠️ Basic CI            |
 
 ---
 
@@ -418,6 +427,15 @@ npm install @internationalized/date @internationalized/number
 | monorepo-template | <https://github.com/zyahav/monorepo-template> | Git worktrees |
 | react-spectrum | <https://github.com/adobe/react-spectrum> | Dependencies |
 | react-aria | <https://react-aria.adobe.com/> | Component library |
+| Repository            | URL                                                      | Primary Use        |
+| --------------------- | -------------------------------------------------------- | ------------------ |
+| ts-fullstack          | <https://github.com/AdaptiveWorX/ts-fullstack>           | Base template      |
+| AutonomusCompany      | <https://github.com/Insajin/AutonomusCompany>            | AI automation      |
+| ai-native-ux-template | <https://github.com/giridamodaran/ai-native-ux-template> | MCP patterns       |
+| mono-workspace        | <https://github.com/ThriledLokki983/mono-workspace>      | Component patterns |
+| monorepo-template     | <https://github.com/zyahav/monorepo-template>            | Git worktrees      |
+| react-spectrum        | <https://github.com/adobe/react-spectrum>                | Dependencies       |
+| react-aria            | <https://react-aria.adobe.com/>                          | Component library  |
 
 ---
 
@@ -450,5 +468,5 @@ npm install @internationalized/date @internationalized/number
 
 ---
 
-*Generated by GitHub Copilot Agent*  
-*Last Updated: January 3, 2026*
+_Generated by GitHub Copilot Agent_  
+_Last Updated: January 3, 2026_

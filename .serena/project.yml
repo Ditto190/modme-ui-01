@@ -10,11 +10,56 @@
 #   - For JavaScript, use typescript
 # Special requirements:
 #   - csharp: Requires the presence of a .sln file in the project folder.
+#   dart             elixir           elm              erlang           fortran          fsharp
+#   go               groovy           haskell          java             julia            kotlin
+#   lua              markdown         nix              pascal           perl             php
+#   powershell       python           python_jedi      r                rego             ruby
+#   ruby_solargraph  rust             scala            swift            terraform        toml
+#   typescript       typescript_vts   yaml             zig
+# Note:
+#   - For C, use cpp
+#   - For JavaScript, use typescript
+#   - For Free Pascal / Lazarus, use pascal
+# Special requirements:
+#   - csharp: Requires the presence of a .sln file in the project folder.
+#   - pascal: Requires Free Pascal Compiler (fpc) and optionally Lazarus.
 # When using multiple languages, the first language server that supports a given file will be used for that file.
 # The first language is the default language and the respective language server will be used as a fallback.
 # Note that when using the JetBrains backend, language servers are not used and this list is correspondingly ignored.
 languages:
 - typescript
+- python
+- vue
+- typescript
+- bash
+- powershell
+- erlang
+- elixir
+- al
+- ruby
+- kotlin
+- nix
+- scala
+- rust
+- java
+- terraform
+- zig
+- lua
+- php
+- r
+- clojure
+- swift
+- fsharp
+- rego
+- fortran
+- haskell
+- csharp
+- perl
+- elm
+- julia
+- matlab
+- go
+- pascal
 
 # the encoding used by text files in the project
 # For a list of possible encodings, see https://docs.python.org/3.11/library/codecs.html#standard-encodings

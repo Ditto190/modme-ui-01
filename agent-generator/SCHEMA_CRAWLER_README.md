@@ -21,15 +21,15 @@ The **schema-crawler** automates the tedious and error-prone process of:
 
 ## Key Capabilities
 
-| Feature | Description |
-|---------|-------------|
-| **JSON Schema → Zod** | Converts JSON Schema objects into Zod schema code |
-| **TypeScript Types** | Generates matching TypeScript interfaces |
-| **Runtime Validation** | Creates `validate()` and `validateSafe()` functions |
-| **Complex Types** | Handles objects, arrays, enums, nested structures |
-| **Constraints** | Preserves min/max length, regex patterns, numeric bounds |
-| **Batch Processing** | Generates modules for multiple tools at once |
-| **File Structure** | Creates complete directory structure with barrel exports |
+| Feature                | Description                                              |
+| ---------------------- | -------------------------------------------------------- |
+| **JSON Schema → Zod**  | Converts JSON Schema objects into Zod schema code        |
+| **TypeScript Types**   | Generates matching TypeScript interfaces                 |
+| **Runtime Validation** | Creates `validate()` and `validateSafe()` functions      |
+| **Complex Types**      | Handles objects, arrays, enums, nested structures        |
+| **Constraints**        | Preserves min/max length, regex patterns, numeric bounds |
+| **Batch Processing**   | Generates modules for multiple tools at once             |
+| **File Structure**     | Creates complete directory structure with barrel exports |
 
 ---
 
@@ -40,7 +40,7 @@ The **schema-crawler** automates the tedious and error-prone process of:
 **Purpose**: Main entry point - converts JSON Schema to Zod + types
 
 ```typescript
-import { generateZodFromJSONSchema } from './schema-crawler';
+import { generateZodFromJSONSchema } from "./schema-crawler";
 
 const jsonSchema = {
   type: "object",
@@ -84,7 +84,7 @@ console.log(result.validatorCode);
 **Purpose**: Generate complete TypeScript module with imports, types, and validators
 
 ```typescript
-import { generateZodModule } from './schema-crawler';
+import { generateZodModule } from "./schema-crawler";
 
 const inputSchema = {
   type: "object",
@@ -116,7 +116,7 @@ console.log(module);
  * MCP Tool: getWeather
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
 /* ==================== INPUT ==================== */
 
@@ -161,7 +161,7 @@ export function validategetWeatherOutputSafe(input: unknown): Result<getWeatherO
 /* ==================== TOOL DEFINITION ==================== */
 
 export const getWeatherTool = {
-  name: 'getWeather',
+  name: "getWeather",
   inputSchema: getWeatherInputSchema,
   outputSchema: getWeatherOutputSchema,
 } as const;
@@ -174,18 +174,26 @@ export const getWeatherTool = {
 **Purpose**: Process multiple tools at once
 
 ```typescript
-import { generateZodModulesBatch } from './schema-crawler';
+import { generateZodModulesBatch } from "./schema-crawler";
 
 const tools = [
   {
     name: "getWeather",
-    inputSchema: { /* ... */ },
-    outputSchema: { /* ... */ },
+    inputSchema: {
+      /* ... */
+    },
+    outputSchema: {
+      /* ... */
+    },
   },
   {
     name: "translateText",
-    inputSchema: { /* ... */ },
-    outputSchema: { /* ... */ },
+    inputSchema: {
+      /* ... */
+    },
+    outputSchema: {
+      /* ... */
+    },
   },
 ];
 
@@ -207,7 +215,7 @@ modules.forEach((code, toolName) => {
 **Purpose**: Create complete directory structure with barrel exports
 
 ```typescript
-import { generateSchemaFileStructure } from './schema-crawler';
+import { generateSchemaFileStructure } from "./schema-crawler";
 
 const tools = [
   { name: "getWeather", inputSchema: {}, outputSchema: {} },
@@ -242,12 +250,12 @@ weather-mcp/
 ```typescript
 /**
  * weather-mcp - Auto-generated schemas
- * 
+ *
  * This file contains Zod schemas for all tools provided by the weather-mcp MCP server.
  * All types are generated from the server's JSON Schema definitions.
  */
 
-import * as schemas from './index';
+import * as schemas from "./index";
 
 export const weather_mcpTools = {
   getWeather: schemas.getWeatherTool,
@@ -263,15 +271,15 @@ export type weather_mcpToolNames = keyof typeof weather_mcpTools;
 
 ### Basic Types
 
-| JSON Schema Type | Zod Schema |
-|------------------|------------|
-| `string` | `z.string()` |
-| `number` | `z.number()` |
-| `integer` | `z.number().int()` |
-| `boolean` | `z.boolean()` |
-| `array` | `z.array()` |
-| `object` | `z.object()` |
-| `null` | `z.null()` |
+| JSON Schema Type | Zod Schema         |
+| ---------------- | ------------------ |
+| `string`         | `z.string()`       |
+| `number`         | `z.number()`       |
+| `integer`        | `z.number().int()` |
+| `boolean`        | `z.boolean()`      |
+| `array`          | `z.array()`        |
+| `object`         | `z.object()`       |
+| `null`           | `z.null()`         |
 
 ### String Constraints
 
@@ -287,7 +295,10 @@ export type weather_mcpToolNames = keyof typeof weather_mcpTools;
 ↓
 
 ```typescript
-z.string().min(5).max(50).regex(/^[A-Z]/)
+z.string()
+  .min(5)
+  .max(50)
+  .regex(/^[A-Z]/);
 ```
 
 ### Number Constraints
@@ -303,7 +314,7 @@ z.string().min(5).max(50).regex(/^[A-Z]/)
 ↓
 
 ```typescript
-z.number().int().min(0).max(100)
+z.number().int().min(0).max(100);
 ```
 
 ### Enums
@@ -318,7 +329,7 @@ z.number().int().min(0).max(100)
 ↓
 
 ```typescript
-z.enum(["small", "medium", "large"])
+z.enum(["small", "medium", "large"]);
 ```
 
 ### Objects with Required/Optional Fields
@@ -340,7 +351,7 @@ z.enum(["small", "medium", "large"])
 z.object({
   name: z.string(),
   age: z.number().int().optional(),
-})
+});
 ```
 
 ### Arrays
@@ -355,7 +366,7 @@ z.object({
 ↓
 
 ```typescript
-z.array(z.string())
+z.array(z.string());
 ```
 
 ### Nested Objects
@@ -379,11 +390,13 @@ z.array(z.string())
 
 ```typescript
 z.object({
-  user: z.object({
-    name: z.string(),
-    email: z.string(),
-  }).optional(),
-})
+  user: z
+    .object({
+      name: z.string(),
+      email: z.string(),
+    })
+    .optional(),
+});
 ```
 
 ---
@@ -431,8 +444,8 @@ def get_weather(params: WeatherInput) -> dict:
 ### Step 3: Run schema-crawler
 
 ```typescript
-import { generateZodModule } from './schema-crawler';
-import fs from 'fs';
+import { generateZodModule } from "./schema-crawler";
+import fs from "fs";
 
 const inputSchema = {
   type: "object",
@@ -452,19 +465,16 @@ fs.writeFileSync("schemas/getWeather.schema.ts", module);
 
 ```typescript
 // frontend/lib/tools.ts
-import { 
-  getWeatherInputSchema, 
-  validategetWeatherInput 
-} from "@/schemas/getWeather.schema";
+import { getWeatherInputSchema, validategetWeatherInput } from "@/schemas/getWeather.schema";
 
 function callWeatherTool(userInput: unknown) {
   try {
     // Runtime validation
     const validInput = validategetWeatherInput(userInput);
-    
+
     // Now TypeScript knows validInput is { city: string; units?: string }
     console.log(`Fetching weather for ${validInput.city}`);
-    
+
     // Safe to call MCP tool
     return mcpClient.call("getWeather", validInput);
   } catch (error) {
@@ -474,9 +484,9 @@ function callWeatherTool(userInput: unknown) {
 }
 
 // Usage
-callWeatherTool({ city: "London", units: "celsius" });  // ✅ Valid
-callWeatherTool({ city: "L" });                         // ❌ Fails: minLength 2
-callWeatherTool({ city: "Paris", units: "kelvin" });    // ❌ Fails: not in enum
+callWeatherTool({ city: "London", units: "celsius" }); // ✅ Valid
+callWeatherTool({ city: "L" }); // ❌ Fails: minLength 2
+callWeatherTool({ city: "Paris", units: "kelvin" }); // ❌ Fails: not in enum
 ```
 
 ---
@@ -487,14 +497,14 @@ callWeatherTool({ city: "Paris", units: "kelvin" });    // ❌ Fails: not in enu
 
 ```typescript
 // src/app/api/copilotkit/route.ts
-import { 
+import {
   upsertUIElementInputSchema,
-  validateupsertUIElementInput 
+  validateupsertUIElementInput,
 } from "@/schemas/agent-tools.schema";
 
 export async function POST(req: Request) {
   const body = await req.json();
-  
+
   // Validate tool calls before forwarding to Python agent
   if (body.tool === "upsert_ui_element") {
     try {
@@ -521,12 +531,12 @@ import { StatCardPropsSchema } from "@/schemas/StatCard.schema";
 
 export function StatCard(rawProps: unknown) {
   const result = StatCardPropsSchema.safeParse(rawProps);
-  
+
   if (!result.success) {
     console.error("StatCard validation failed:", result.error);
     return <ErrorFallback />;
   }
-  
+
   const { title, value, trend } = result.data;
   // TypeScript knows exact types here
 }
@@ -548,19 +558,19 @@ def my_tool(city: str, units: str) -> WeatherData:
 ```typescript
 // TypeScript gets matching types automatically
 const input: MyToolInput = { city: "Paris", units: "celsius" };
-validateMyToolInput(input);  // Runtime validation
+validateMyToolInput(input); // Runtime validation
 ```
 
 ### 2. Prevents Runtime Errors
 
 ```typescript
 // Without schema-crawler:
-const data = { city: "L" };  // Too short, but no validation
-mcpClient.call("getWeather", data);  // ❌ Fails at runtime in Python
+const data = { city: "L" }; // Too short, but no validation
+mcpClient.call("getWeather", data); // ❌ Fails at runtime in Python
 
 // With schema-crawler:
 const data = { city: "L" };
-validategetWeatherInput(data);  // ✅ Fails immediately with clear error message
+validategetWeatherInput(data); // ✅ Fails immediately with clear error message
 ```
 
 ### 3. Auto-Generated Documentation
@@ -596,7 +606,7 @@ npm run typecheck         # TypeScript catches breaking changes
 const schema1 = getWeatherInputSchema;
 const schema2 = getWeatherInputSchema;
 
-console.log(schema1 === schema2);  // true (referential equality)
+console.log(schema1 === schema2); // true (referential equality)
 ```
 
 ### Structured Error Messages
@@ -629,23 +639,23 @@ const extendedSchema = getWeatherInputSchema.extend({
 
 ## Limitations
 
-| Limitation | Workaround |
-|------------|------------|
-| **$ref (JSON Schema references)** | Limited support - flatten schemas first |
-| **oneOf/anyOf/allOf** | Not fully supported - use union types manually |
-| **Custom formats** | Add manual refinements after generation |
-| **Conditional schemas** | Use Zod's `.refine()` after generation |
+| Limitation                        | Workaround                                     |
+| --------------------------------- | ---------------------------------------------- |
+| **$ref (JSON Schema references)** | Limited support - flatten schemas first        |
+| **oneOf/anyOf/allOf**             | Not fully supported - use union types manually |
+| **Custom formats**                | Add manual refinements after generation        |
+| **Conditional schemas**           | Use Zod's `.refine()` after generation         |
 
 ---
 
 ## Comparison with Alternatives
 
-| Tool | JSON Schema Support | TypeScript Generation | Runtime Validation | Complexity |
-|------|---------------------|----------------------|-------------------|------------|
-| **schema-crawler** | ✅ Good | ✅ Full | ✅ Zod | Simple |
-| **json-schema-to-zod** | ✅ Full | ⚠️ Partial | ✅ Zod | Medium |
-| **quicktype** | ⚠️ Partial | ✅ Full | ❌ None | High |
-| **ts-json-schema-generator** | ✅ Full | ✅ Full | ❌ None | High |
+| Tool                         | JSON Schema Support | TypeScript Generation | Runtime Validation | Complexity |
+| ---------------------------- | ------------------- | --------------------- | ------------------ | ---------- |
+| **schema-crawler**           | ✅ Good             | ✅ Full               | ✅ Zod             | Simple     |
+| **json-schema-to-zod**       | ✅ Full             | ⚠️ Partial            | ✅ Zod             | Medium     |
+| **quicktype**                | ⚠️ Partial          | ✅ Full               | ❌ None            | High       |
+| **ts-json-schema-generator** | ✅ Full             | ✅ Full               | ❌ None            | High       |
 
 **Why schema-crawler?**
 

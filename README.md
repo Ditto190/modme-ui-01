@@ -27,15 +27,76 @@ A **Generative UI (GenUI) R&D laboratory** combining Next.js 16, React 19, and P
 
 ### Option 3: Local Setup
 
-```bash
-# Quick setup script
-./scripts/setup.sh  # Linux/macOS
-# or
-.\scripts\setup.ps1  # Windows
+### The Fastest Way (One Command)
 
-# Start development servers
+```bash
+# Clone repository
+git clone https://github.com/Ditto190/modme-ui-01.git
+cd modme-ui-01
+
+# Run quick start (installs dependencies + starts servers)
+./scripts/quick-start.sh  # Unix/macOS
+# or
+scripts\quick-start.bat  # Windows (coming soon)
+```
+
+**What it does**:
+
+- ✅ Checks prerequisites
+- ✅ Installs Node.js dependencies
+- ✅ Sets up Python agent
+- ✅ Configures environment
+- ✅ Starts both servers (UI + Agent)
+
+**Result**: UI at <http://localhost:3000>, Agent at <http://localhost:8000>
+
+---
+
+### Option 1: Complete Installation
+
+For more control over the installation process:
+
+```bash
+# 1. Install all dependencies
+./scripts/install-all.sh  # Unix/macOS
+# or
+scripts\install-all.bat  # Windows
+
+# 2. Configure environment (add your GOOGLE_API_KEY)
+nano .env  # or vim, code, etc.
+
+# 3. Start development
 npm run dev
 ```
+
+**Available flags**:
+
+- `--check-only` - Only verify prerequisites
+- `--force` - Force reinstall all dependencies
+- `--skip-validation` - Skip validation steps
+
+See [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) for detailed instructions.
+
+---
+
+### Option 2: GitHub Codespaces (Recommended for Cloud)
+
+1. Click **Code** → **Codespaces** → **Create codespace**
+2. Wait for setup to complete (~3-5 minutes)
+3. Add `GOOGLE_API_KEY` to `.env` (or use Codespaces secrets)
+4. Run `npm run dev` to start both servers
+5. Access UI at forwarded port 3000
+
+---
+
+### Option 3: DevContainer (Local)
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+2. Install [VS Code](https://code.visualstudio.com/) with [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+3. Clone and open in VS Code
+4. Click **Reopen in Container** when prompted
+5. Add `GOOGLE_API_KEY` to `.env`
+6. Run `npm run dev` after setup completes
 
 ## 📋 Prerequisites
 
@@ -181,7 +242,26 @@ This workspace includes a full DevContainer setup for portable, consistent devel
 
 # Manual setup (if needed)
 ./scripts/setup.sh
+
+# Set up VS Code shell integration
+.\scripts\setup-shell-integration.ps1  # PowerShell
+bash scripts/setup-shell-integration.sh  # Bash
 ```
+
+### Shell Integration
+
+VS Code shell integration provides enhanced terminal features:
+
+- ✅ **Command decorations** - Visual indicators for success/failure
+- ✅ **Command navigation** - `Ctrl/Cmd+Up/Down` to navigate between commands
+- ✅ **IntelliSense** - File/folder suggestions in terminal
+- ✅ **Recent commands** - `Ctrl+Alt+R` to search command history
+- ✅ **Sticky scroll** - Commands stick at top when scrolling
+- ✅ **Quick fixes** - Automatic suggestions for common errors
+
+**Quick setup**: Run `.\scripts\setup-shell-integration.ps1` (PowerShell) or `bash scripts/setup-shell-integration.sh` (Bash)
+
+**Documentation**: See [.config/README.md](.config/README.md) and [.config/QUICKSTART.md](.config/QUICKSTART.md)
 
 ### Workspace File
 
@@ -210,8 +290,8 @@ The following scripts can also be run using your preferred package manager:
 
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development workflow, issue templates, and guidelines
 - **[Project_Overview.md](Project_Overview.md)** - Generative UI architecture and vision
-- **[Architecture Overview](.copilot/knowledge/architecture.md)** - System architecture *(new in this workspace; may not exist on older branches)*
-- **[GenUI Development](.copilot/instructions/genui-development.md)** - GenUI patterns and practices *(new in this workspace; may not exist on older branches)*
+- **[Architecture Overview](.copilot/knowledge/architecture.md)** - System architecture _(new in this workspace; may not exist on older branches)_
+- **[GenUI Development](.copilot/instructions/genui-development.md)** - GenUI patterns and practices _(new in this workspace; may not exist on older branches)_
 
 ### Issue Management & Automation
 
@@ -229,6 +309,8 @@ The following scripts can also be run using your preferred package manager:
 
 - **[Refactoring Patterns](docs/REFACTORING_PATTERNS.md)** - Project-specific refactoring guides
 - **[Schema Crawler](agent-generator/SCHEMA_CRAWLER_README.md)** - JSON Schema → Zod + TypeScript generator
+- **[Markdown Automation](docs/MARKDOWN_AUTOMATION.md)** - Automated markdown linting and formatting
+- **[Markdown Quick Reference](docs/MARKDOWN_QUICK_REFERENCE.md)** - Quick commands for markdown fixes
 
 ### External Resources
 

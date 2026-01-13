@@ -6,12 +6,12 @@ The schema-crawler tool is now integrated as a Python tool callable from the age
 
 ## Files Created
 
-| File | Purpose | Lines |
-|------|---------|-------|
-| `agent/tools/schema_crawler_tool.py` | Python wrapper for schema-crawler.ts | 250+ |
-| `scripts/knowledge-management/anthropic-skill-converter.js` | Download & convert Anthropic skills | 450+ |
-| `scripts/knowledge-management/skill-spec-validator.js` | Validate against Agent Skills spec | 350+ |
-| `docs/ANTHROPIC_SKILLS_INTEGRATION.md` | Complete integration guide | 450+ |
+| File                                                        | Purpose                              | Lines |
+| ----------------------------------------------------------- | ------------------------------------ | ----- |
+| `agent/tools/schema_crawler_tool.py`                        | Python wrapper for schema-crawler.ts | 250+  |
+| `scripts/knowledge-management/anthropic-skill-converter.js` | Download & convert Anthropic skills  | 450+  |
+| `scripts/knowledge-management/skill-spec-validator.js`      | Validate against Agent Skills spec   | 350+  |
+| `docs/ANTHROPIC_SKILLS_INTEGRATION.md`                      | Complete integration guide           | 450+  |
 
 ## Usage Examples
 
@@ -62,7 +62,7 @@ node scripts/knowledge-management/skill-spec-validator.js \
 
 # Output:
 # ✅ Skill is valid!
-# 
+#
 # 📊 Metrics:
 #    - Body: 380 lines, 3,120 words
 #    - Description: 142 chars, 21 words
@@ -131,7 +131,7 @@ tools:
    ```python
    # In agent/main.py
    from agent.tools.schema_crawler_tool import generate_zod_module
-   
+
    # Generate schema for upsert_ui_element tool
    generate_zod_module(
        tool_context,
@@ -147,7 +147,7 @@ tools:
 ✅ **Dual-Runtime Sync**: Python dict ↔ TypeScript interfaces stay in sync  
 ✅ **Skill Reusability**: Import battle-tested skills from Anthropic repo  
 ✅ **Spec Compliance**: Validator ensures adherence to Agent Skills spec  
-✅ **Auto-Generated Code**: Reduces manual errors, accelerates development  
+✅ **Auto-Generated Code**: Reduces manual errors, accelerates development
 
 ## Related Documentation
 

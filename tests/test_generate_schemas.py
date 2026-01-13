@@ -5,7 +5,6 @@ Tests the conversion of TypeScript generate.ts to Python agent tools.
 """
 
 import pytest
-import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 from agent.tools.generate_schemas import (
@@ -308,7 +307,6 @@ def test_generate_agent_prompt_real_skills(mock_tool_context):
     
     Requires: agent-generator/src/skills to exist
     """
-    from pathlib import Path
     
     skills_dir = Path(__file__).parent.parent.parent / "agent-generator" / "src" / "skills"
     

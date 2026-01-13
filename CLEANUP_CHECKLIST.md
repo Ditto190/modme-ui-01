@@ -193,7 +193,7 @@
   ```bash
   # Option 1: Use pykomodo (if installed)
   pykomodo generate --input . --output output_chunks/chunks.jsonl
-  
+
   # Option 2: Use custom chunking script (to be created)
   python scripts/generate_chunks.py --output output_chunks/chunks.jsonl
   ```
@@ -347,6 +347,7 @@
 - [ ] **Remove unused files**
   - [ ] Old test files
   - [ ] Backup files (*.bak,*.old)
+  - [ ] Backup files (_.bak,_.old)
   - [ ] Temporary scripts
 
 ### Code Formatting
@@ -413,7 +414,7 @@
 
   ```
   feat: Add Knowledge Base Context Mapper + Codebase Indexing for Porting
-  
+
   - Implement KB semantic issue enrichment (9 concepts, 30+ keywords)
   - Add comprehensive porting documentation (PORTING_GUIDE.md, CODEBASE_INDEX.md)
   - Create machine-readable component manifest (COMPONENT_MANIFEST.json)
@@ -423,7 +424,7 @@
   - Document 7 portable components with integration patterns
   - Achieve 100% KB test coverage (4/4 tests pass)
   - Total: ~26,700 LoC across 100+ files
-  
+
   Components ready for porting:
   - Knowledge Base System (standalone)
   - Component Registry (React 19+)
@@ -432,7 +433,7 @@
   - ChromaDB Indexing (semantic search)
   - GenAI Toolbox (YAML config)
   - Python ADK Agent (requires ADK)
-  
+
   See PORTING_GUIDE.md for integration instructions.
   ```
 
@@ -454,34 +455,37 @@
 
   ```markdown
   ## 🎯 Overview
-  
+
   This PR adds comprehensive Knowledge Base system for semantic issue enrichment, plus complete codebase indexing infrastructure for porting components to other projects.
-  
+
   ## ✨ Features Added
-  
+
   ### Knowledge Base Context Mapper
+
   - Semantic issue analysis (9 concepts, 30+ keywords)
   - Automatic label suggestions
   - File/doc linking
   - GitHub Actions integration
   - 100% test coverage (4/4 tests pass)
-  
+
   ### Codebase Indexing & Porting
+
   - PORTING_GUIDE.md - Complete integration guide
   - CODEBASE_INDEX.md - Searchable codebase inventory
   - COMPONENT_MANIFEST.json - Machine-readable registry
   - ChromaDB integration with Gemini embeddings
   - 7 portable components documented
   - 5 integration patterns
-  
+
   ### Toolset Management
+
   - JSON-based tool registry
   - Deprecation aliases
   - Validation workflows
   - Documentation generation
-  
+
   ## 📦 Portable Components
-  
+
   1. **Knowledge Base System** - Standalone (Node.js only)
   2. **Component Registry** - React 19+ components
   3. **Toolset Management** - JSON configuration
@@ -489,30 +493,30 @@
   5. **ChromaDB Indexing** - Semantic code search
   6. **GenAI Toolbox** - YAML tool config
   7. **Python ADK Agent** - Agent tools
-  
+
   ## 🧪 Testing
-  
+
   - All KB tests pass (4/4)
   - TypeScript compiles without errors
   - Python passes linting
   - Toolset validation succeeds
-  
+
   ## 📊 Metrics
-  
+
   - Files: 100+
   - Lines of Code: ~26,700
   - Documentation: ~15,000 LoC
   - Test Coverage: 100% (KB system)
-  
+
   ## 📚 Documentation
-  
+
   - [PORTING_GUIDE.md](PORTING_GUIDE.md) - How to port components
   - [CODEBASE_INDEX.md](CODEBASE_INDEX.md) - Searchable index
   - [COMPONENT_MANIFEST.json](COMPONENT_MANIFEST.json) - Machine-readable registry
   - [docs/KNOWLEDGE_BASE_INTEGRATION.md](docs/KNOWLEDGE_BASE_INTEGRATION.md) - KB integration guide
-  
+
   ## 🔗 Related Issues
-  
+
   Closes #XXX (if applicable)
   ```
 
@@ -587,7 +591,7 @@ This checklist is complete when:
 ✅ PR is created and CI passes  
 ✅ Code is ready for review  
 ✅ Documentation is comprehensive  
-✅ Components are portable and documented  
+✅ Components are portable and documented
 
 ---
 

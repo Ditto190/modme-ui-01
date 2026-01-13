@@ -2,7 +2,7 @@
 
 > **Searchable inventory of all code, components, and documentation**
 
-**Generated**: January 3, 2026  
+**Generated**: January 4, 2026  
 **Repository**: modme-ui-01  
 **Purpose**: Enable navigation, chunking, and porting
 
@@ -25,25 +25,25 @@
 
 ### By Category
 
-| Category | Directory | File Count | Lines of Code |
-|----------|-----------|------------|---------------|
-| **Python Agent** | `agent/` | 5 | ~1,200 |
-| **TypeScript Agent Generator** | `agent-generator/` | 15+ | ~2,500 |
-| **React Frontend** | `src/` | 12+ | ~1,800 |
-| **Scripts & Utilities** | `scripts/` | 20+ | ~3,500 |
-| **Documentation** | `docs/` | 12+ | ~8,000 |
-| **GitHub Workflows** | `.github/workflows/` | 8+ | ~1,200 |
-| **Configuration** | Root | 10+ | ~800 |
+| Category                       | Directory            | File Count | Lines of Code |
+| ------------------------------ | -------------------- | ---------- | ------------- |
+| **Python Agent**               | `agent/`             | 5          | ~1,200        |
+| **TypeScript Agent Generator** | `agent-generator/`   | 15+        | ~2,500        |
+| **React Frontend**             | `src/`               | 12+        | ~1,800        |
+| **Scripts & Utilities**        | `scripts/`           | 20+        | ~3,500        |
+| **Documentation**              | `docs/`              | 12+        | ~8,000        |
+| **GitHub Workflows**           | `.github/workflows/` | 8+         | ~1,200        |
+| **Configuration**              | Root                 | 10+        | ~800          |
 
 ### By Technology
 
-| Technology | Primary Directories | Purpose |
-|------------|---------------------|---------|
-| **Python** | `agent/`, `scripts/` | ADK agent, ChromaDB ingestion, tools |
+| Technology     | Primary Directories                                         | Purpose                              |
+| -------------- | ----------------------------------------------------------- | ------------------------------------ |
+| **Python**     | `agent/`, `scripts/`                                        | ADK agent, ChromaDB ingestion, tools |
 | **TypeScript** | `agent-generator/`, `src/`, `scripts/knowledge-management/` | Code generation, frontend, KB system |
-| **React** | `src/app/`, `src/components/` | GenUI interface, component registry |
-| **Next.js** | `src/app/` | App router, API routes |
-| **JSON/YAML** | `agent/`, `genai-toolbox/` | Configuration, toolsets, GenAI tools |
+| **React**      | `src/app/`, `src/components/`                               | GenUI interface, component registry  |
+| **Next.js**    | `src/app/`                                                  | App router, API routes               |
+| **JSON/YAML**  | `agent/`, `genai-toolbox/`                                  | Configuration, toolsets, GenAI tools |
 
 ---
 
@@ -60,6 +60,17 @@ modme-ui-01/
 ├── .github/                    # GitHub Actions workflows
 │   ├── ISSUE_TEMPLATE/        # Issue templates (4 files)
 │   └── workflows/             # CI/CD workflows (8+ files)
+│
+├── .config/                                  # Shell integration profiles
+│   ├── README.md                             # Shell integration comprehensive guide (~210 lines)
+│   ├── QUICKSTART.md                         # Quick reference guide (~150 lines)
+│   ├── powershell/                           # PowerShell project profile
+│   │   └── Microsoft.PowerShell_profile.ps1  # Project PowerShell profile (~170 lines)
+│   └── bash/                                 # Bash project profile
+│       └── bashrc                            # Project bashrc (~115 lines)
+│
+├── .vscode/                                  # VS Code folder settings
+│   └── settings.json                         # VS Code workspace settings (shell integration)
 │
 ├── agent/                      # Python ADK agent runtime
 │   ├── main.py                # Main agent entry point (420 lines)
@@ -161,6 +172,8 @@ modme-ui-01/
 │   ├── run-agent.sh
 │   ├── setup-agent.bat
 │   ├── setup-agent.sh
+│   ├── setup-shell-integration.ps1  # PowerShell shell integration setup (~167 lines)
+│   ├── setup-shell-integration.sh   # Bash shell integration setup (~120 lines)
 │   ├── setup.ps1
 │   ├── setup.sh
 │   ├── start-dev.sh
@@ -380,16 +393,16 @@ python scripts/ingest_chunks.py \
 
 ```typescript
 // Primary exports
-export function generateZodFromJSONSchema(schema, typeName)
-export function generateZodModule(toolName, inputSchema, outputSchema)
-export function generateZodModulesBatch(tools)
-export function generateSchemaFileStructure(serverName, tools)
+export function generateZodFromJSONSchema(schema, typeName);
+export function generateZodModule(toolName, inputSchema, outputSchema);
+export function generateZodModulesBatch(tools);
+export function generateSchemaFileStructure(serverName, tools);
 ```
 
 **Usage**:
 
 ```typescript
-import { generateZodModule } from './schema-crawler';
+import { generateZodModule } from "./schema-crawler";
 
 const module = generateZodModule("getWeather", inputSchema, outputSchema);
 fs.writeFileSync("schemas/getWeather.schema.ts", module);
@@ -411,10 +424,10 @@ fs.writeFileSync("schemas/getWeather.schema.ts", module);
 
 ```typescript
 interface StatCardProps {
-  title: string;              // Card title
-  value: string | number;     // Main metric value
-  trend?: string;             // Trend indicator (e.g., "+12%")
-  trendDirection?: "up" | "down";  // Trend direction
+  title: string; // Card title
+  value: string | number; // Main metric value
+  trend?: string; // Trend indicator (e.g., "+12%")
+  trendDirection?: "up" | "down"; // Trend direction
 }
 ```
 
@@ -426,11 +439,11 @@ interface StatCardProps {
 **Example**:
 
 ```typescript
-<StatCard 
-  title="Revenue" 
-  value={120000} 
-  trend="+12%" 
-  trendDirection="up" 
+<StatCard
+  title="Revenue"
+  value={120000}
+  trend="+12%"
+  trendDirection="up"
 />
 ```
 
@@ -446,10 +459,10 @@ interface StatCardProps {
 
 ```typescript
 interface DataTableProps {
-  columns: string[];          // Column headers
-  data: object[];             // Row data
-  pageSize?: number;          // Rows per page (default: 10)
-  sortable?: boolean;         // Enable sorting (default: true)
+  columns: string[]; // Column headers
+  data: object[]; // Row data
+  pageSize?: number; // Rows per page (default: 10)
+  sortable?: boolean; // Enable sorting (default: true)
 }
 ```
 
@@ -463,7 +476,7 @@ interface DataTableProps {
 **Example**:
 
 ```typescript
-<DataTable 
+<DataTable
   columns={["Name", "Email", "Plan"]}
   data={[
     { name: "Alice", email: "alice@example.com", plan: "Pro" },
@@ -484,11 +497,11 @@ interface DataTableProps {
 
 ```typescript
 interface ChartCardProps {
-  title: string;              // Chart title
-  chartType: "line" | "bar" | "pie";  // Chart type
-  data: object[];             // Chart data
-  xKey?: string;              // X-axis key (default: "x")
-  yKey?: string;              // Y-axis key (default: "y")
+  title: string; // Chart title
+  chartType: "line" | "bar" | "pie"; // Chart type
+  data: object[]; // Chart data
+  xKey?: string; // X-axis key (default: "x")
+  yKey?: string; // Y-axis key (default: "y")
 }
 ```
 
@@ -499,8 +512,8 @@ interface ChartCardProps {
 **Example**:
 
 ```typescript
-<ChartCard 
-  title="Weekly Growth" 
+<ChartCard
+  title="Weekly Growth"
   chartType="line"
   data={[
     { week: "W1", revenue: 1000 },
@@ -523,7 +536,7 @@ interface ChartCardProps {
 
 ```typescript
 interface GenerativeCanvasProps {
-  children: React.ReactNode;  // Rendered elements
+  children: React.ReactNode; // Rendered elements
 }
 ```
 
@@ -627,11 +640,11 @@ def clear_canvas(
 export interface KnowledgeBaseAnalysis {
   concepts: string[];
   labels: string[];
-  relatedFiles: Array<{path: string, description: string}>;
+  relatedFiles: Array<{ path: string; description: string }>;
   relatedDocs: string[];
 }
 
-export function analyzeIssue(issueText: string): KnowledgeBaseAnalysis
+export function analyzeIssue(issueText: string): KnowledgeBaseAnalysis;
 ```
 
 **Usage**:
@@ -655,26 +668,26 @@ const analysis = analyzeIssue("Agent fails to render ChartCard");
 
 ```typescript
 export interface ZodSchemaOutput {
-  zodCode: string;              // Zod schema code
-  typeDefinition: string;       // TypeScript interface
-  validatorCode: string;        // Validator functions
+  zodCode: string; // Zod schema code
+  typeDefinition: string; // TypeScript interface
+  validatorCode: string; // Validator functions
 }
 
-export function generateZodFromJSONSchema(
-  schema: JSONSchema,
-  typeName: string
-): ZodSchemaOutput
+export function generateZodFromJSONSchema(schema: JSONSchema, typeName: string): ZodSchemaOutput;
 ```
 
 **Usage**:
 
 ```typescript
-const result = generateZodFromJSONSchema({
-  type: "object",
-  properties: {
-    city: { type: "string", minLength: 2 }
-  }
-}, "WeatherInput");
+const result = generateZodFromJSONSchema(
+  {
+    type: "object",
+    properties: {
+      city: { type: "string", minLength: 2 },
+    },
+  },
+  "WeatherInput"
+);
 
 console.log(result.zodCode);
 // z.object({ city: z.string().min(2) })
@@ -756,13 +769,13 @@ tool_context.state["elements"] = [
 
 ```typescript
 export type UIElement = {
-  id: string;                // Must match Python "id" key
-  type: string;              // Must match Python "type" key
-  props: any;                // Must match Python "props" key
+  id: string; // Must match Python "id" key
+  type: string; // Must match Python "type" key
+  props: any; // Must match Python "props" key
 };
 
 export type AgentState = {
-  elements: UIElement[];     // Must match Python "elements" key
+  elements: UIElement[]; // Must match Python "elements" key
 };
 ```
 
@@ -806,13 +819,10 @@ export type AgentState = {
   "concepts": ["Agent Tools", "State Sync"],
   "labels": ["agent", "tools", "state-management"],
   "relatedFiles": [
-    {"path": "agent/main.py", "description": "Python ADK agent"},
-    {"path": "src/lib/types.ts", "description": "State contract"}
+    { "path": "agent/main.py", "description": "Python ADK agent" },
+    { "path": "src/lib/types.ts", "description": "State contract" }
   ],
-  "relatedDocs": [
-    "docs/REFACTORING_PATTERNS.md",
-    ".github/copilot-instructions.md"
-  ]
+  "relatedDocs": ["docs/REFACTORING_PATTERNS.md", ".github/copilot-instructions.md"]
 }
 ```
 
@@ -987,28 +997,31 @@ COPILOT_CLOUD_API_KEY=""  # Optional
 
 ### By Topic
 
-| Topic | File | Lines | Purpose |
-|-------|------|-------|---------|
-| **Knowledge Base** | `docs/KNOWLEDGE_BASE_INTEGRATION.md` | 750 | Integration guide |
-| | `docs/KB_IMPLEMENTATION_SUMMARY.md` | 450 | Implementation details |
-| | `docs/KB_QUICK_REFERENCE.md` | 200 | Quick reference |
-| | `docs/KB_MEMORY_GRAPH.md` | 3,000 | Memory graph structure |
-| | `docs/KNOWLEDGE_MANAGEMENT.md` | 800 | System overview |
-| | `docs/KNOWLEDGE_QUICKSTART.md` | 400 | Quick start guide |
-| **Toolset Management** | `docs/TOOLSET_MANAGEMENT.md` | 900 | Complete reference |
-| | `docs/TOOLSET_QUICKSTART.md` | 600 | Quick start |
-| | `TOOLSET_README.md` | 450 | System overview |
-| **Refactoring** | `docs/REFACTORING_PATTERNS.md` | 1,200 | Refactoring guide |
-| **Schema Crawler** | `agent-generator/SCHEMA_CRAWLER_README.md` | 3,800 | Complete guide |
-| **MCP Integration** | `docs/MCP_EVERYTHING_SERVER.md` | 650 | MCP server docs |
-| | `agent-generator/src/mcp-registry/MCP_INTEGRATION_PLAN.md` | 400 | Integration plan |
-| **Setup** | `DEVCONTAINER_SETUP.md` | 300 | Devcontainer guide |
-| | `INSTALLATION_CHECKLIST.md` | 250 | Installation steps |
-| | `SETUP_RECORD.md` | 200 | Setup log |
-| | `GITHUB_MCP_INSTALL.md` | 180 | GitHub MCP setup |
-| **Project** | `Project_Overview.md` | 1,500 | High-level vision |
-| | `README.md` | 400 | Getting started |
-| | `CONTRIBUTING.md` | 350 | Contribution guide |
+| Topic                  | File                                                       | Lines | Purpose                |
+| ---------------------- | ---------------------------------------------------------- | ----- | ---------------------- |
+| **Knowledge Base**     | `docs/KNOWLEDGE_BASE_INTEGRATION.md`                       | 750   | Integration guide      |
+|                        | `docs/KB_IMPLEMENTATION_SUMMARY.md`                        | 450   | Implementation details |
+|                        | `docs/KB_QUICK_REFERENCE.md`                               | 200   | Quick reference        |
+|                        | `docs/KB_MEMORY_GRAPH.md`                                  | 3,000 | Memory graph structure |
+|                        | `docs/KNOWLEDGE_MANAGEMENT.md`                             | 800   | System overview        |
+|                        | `docs/KNOWLEDGE_QUICKSTART.md`                             | 400   | Quick start guide      |
+| **Toolset Management** | `docs/TOOLSET_MANAGEMENT.md`                               | 900   | Complete reference     |
+|                        | `docs/TOOLSET_QUICKSTART.md`                               | 600   | Quick start            |
+|                        | `TOOLSET_README.md`                                        | 450   | System overview        |
+| **Refactoring**        | `docs/REFACTORING_PATTERNS.md`                             | 1,200 | Refactoring guide      |
+| **Schema Crawler**     | `agent-generator/SCHEMA_CRAWLER_README.md`                 | 3,800 | Complete guide         |
+| **MCP Integration**    | `docs/MCP_EVERYTHING_SERVER.md`                            | 650   | MCP server docs        |
+|                        | `agent-generator/src/mcp-registry/MCP_INTEGRATION_PLAN.md` | 400   | Integration plan       |
+| **Shell Integration**  | `.config/README.md`                                        | 210   | Comprehensive guide    |
+|                        | `.config/QUICKSTART.md`                                    | 150   | Quick reference        |
+|                        | `SHELL_INTEGRATION_SUMMARY.md`                             | 400   | Implementation summary |
+| **Setup**              | `DEVCONTAINER_SETUP.md`                                    | 300   | Devcontainer guide     |
+|                        | `INSTALLATION_CHECKLIST.md`                                | 250   | Installation steps     |
+|                        | `SETUP_RECORD.md`                                          | 200   | Setup log              |
+|                        | `GITHUB_MCP_INSTALL.md`                                    | 180   | GitHub MCP setup       |
+| **Project**            | `Project_Overview.md`                                      | 1,500 | High-level vision      |
+|                        | `README.md`                                                | 400   | Getting started        |
+|                        | `CONTRIBUTING.md`                                          | 350   | Contribution guide     |
 
 ### Documentation Categories
 
@@ -1051,44 +1064,98 @@ COPILOT_CLOUD_API_KEY=""  # Optional
 - `scripts/knowledge-management/README.md` - KB scripts
 - `scripts/toolset-management/README.md` - Toolset scripts
 
+#### 7. Shell Integration
+
+- `.config/README.md` - Comprehensive setup guide
+- `.config/QUICKSTART.md` - Quick reference
+- `SHELL_INTEGRATION_SUMMARY.md` - Implementation summary
+- `scripts/setup-shell-integration.ps1` - PowerShell setup script
+- `scripts/setup-shell-integration.sh` - Bash setup script
+- `.config/powershell/Microsoft.PowerShell_profile.ps1` - PowerShell profile
+- `.config/bash/bashrc` - Bash profile
+
 ---
 
 ## 🔍 Search Index
 
 ### By Keyword
 
-| Keyword | Relevant Files |
-|---------|----------------|
-| **Agent** | `agent/main.py`, `agent/toolset_manager.py`, `.github/copilot-instructions.md` |
-| **Component Registry** | `src/components/registry/*.tsx`, `src/app/page.tsx` |
-| **Knowledge Base** | `scripts/knowledge-management/`, `docs/KNOWLEDGE_*.md` |
-| **Toolset** | `agent/toolsets.json`, `scripts/toolset-management/`, `docs/TOOLSET_*.md` |
-| **Schema Crawler** | `agent-generator/src/mcp-registry/schema-crawler.ts`, `agent-generator/SCHEMA_CRAWLER_README.md` |
-| **ChromaDB** | `scripts/ingest_chunks.py`, `scripts/start_chroma_server.py` |
-| **State Sync** | `agent/main.py:before_model_modifier`, `src/lib/types.ts`, `src/app/page.tsx` |
-| **Validation** | `src/components/registry/*.tsx` (Zod), `scripts/toolset-management/validate-toolsets.js` |
-| **Testing** | `scripts/knowledge-management/test-kb-mapper.js`, `docs/KB_TEST_FIX.md` |
-| **Workflows** | `.github/workflows/`, `docs/TOOLSET_MANAGEMENT.md` |
+| Keyword                | Relevant Files                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------------ |
+| **Agent**              | `agent/main.py`, `agent/toolset_manager.py`, `.github/copilot-instructions.md`                   |
+| **Component Registry** | `src/components/registry/*.tsx`, `src/app/page.tsx`                                              |
+| **Knowledge Base**     | `scripts/knowledge-management/`, `docs/KNOWLEDGE_*.md`                                           |
+| **Toolset**            | `agent/toolsets.json`, `scripts/toolset-management/`, `docs/TOOLSET_*.md`                        |
+| **Schema Crawler**     | `agent-generator/src/mcp-registry/schema-crawler.ts`, `agent-generator/SCHEMA_CRAWLER_README.md` |
+| **ChromaDB**           | `scripts/ingest_chunks.py`, `scripts/start_chroma_server.py`                                     |
+| **State Sync**         | `agent/main.py:before_model_modifier`, `src/lib/types.ts`, `src/app/page.tsx`                    |
+| **Validation**         | `src/components/registry/*.tsx` (Zod), `scripts/toolset-management/validate-toolsets.js`         |
+| **Testing**            | `scripts/knowledge-management/test-kb-mapper.js`, `docs/KB_TEST_FIX.md`                          |
+| **Workflows**          | `.github/workflows/`, `docs/TOOLSET_MANAGEMENT.md`                                               |
+| **Shell Integration**  | `.config/`, `scripts/setup-shell-integration.*`, `SHELL_INTEGRATION_SUMMARY.md`                  |
 
 ### By File Extension
 
-| Extension | Count | Purpose | Primary Directories |
-|-----------|-------|---------|---------------------|
-| `.ts` | 15+ | TypeScript source | `agent-generator/src/`, `scripts/knowledge-management/` |
-| `.tsx` | 12+ | React components | `src/app/`, `src/components/` |
-| `.py` | 10+ | Python source | `agent/`, `scripts/` |
-| `.md` | 25+ | Documentation | `docs/`, root, subdirectories |
-| `.json` | 15+ | Configuration | `agent/`, root |
-| `.yaml` / `.yml` | 10+ | Workflows, GenAI config | `.github/workflows/`, `genai-toolbox/` |
-| `.js` | 8+ | Scripts | `scripts/knowledge-management/`, `scripts/toolset-management/` |
+| Extension        | Count | Purpose                 | Primary Directories                                            |
+| ---------------- | ----- | ----------------------- | -------------------------------------------------------------- |
+| `.ts`            | 15+   | TypeScript source       | `agent-generator/src/`, `scripts/knowledge-management/`        |
+| `.tsx`           | 12+   | React components        | `src/app/`, `src/components/`                                  |
+| `.py`            | 10+   | Python source           | `agent/`, `scripts/`                                           |
+| `.md`            | 25+   | Documentation           | `docs/`, root, subdirectories                                  |
+| `.json`          | 15+   | Configuration           | `agent/`, root                                                 |
+| `.yaml` / `.yml` | 10+   | Workflows, GenAI config | `.github/workflows/`, `genai-toolbox/`                         |
+| `.js`            | 8+    | Scripts                 | `scripts/knowledge-management/`, `scripts/toolset-management/` |
 
 ---
 
 ## 🚀 Development Workflows
 
-### 1. Start Development Environment
+### 1. Setup Shell Integration (First Time)
+
+**PowerShell (Windows)**:
+
+```powershell
+# Run automated setup script
+.\scripts\setup-shell-integration.ps1
+
+# Reload VS Code window
+# Ctrl+Shift+P → "Developer: Reload Window"
+
+# Open new terminal - you should see welcome message
+# Type 'help' to see available commands
+```
+
+**Bash (Git Bash, WSL, Linux, macOS)**:
 
 ```bash
+# Run automated setup script
+bash scripts/setup-shell-integration.sh
+
+# Reload shell
+source ~/.bashrc
+
+# Or open new terminal - you should see welcome message
+# Type 'help' to see available commands
+```
+
+**Available Project Commands** (after setup):
+
+- `dev` - Start both frontend and agent servers
+- `ui` - Start Next.js frontend only
+- `agent` - Start Python agent only
+- `mcp` - Start MCP servers
+- `validate` - Validate toolsets configuration
+- `docs` - Generate all documentation
+- `venv` - Activate Python virtual environment
+- `help` - Show available commands
+
+### 2. Start Development Environment
+
+```bash
+# With shell integration (simple aliases)
+dev
+
+# OR traditional method:
 # Terminal 1: Python agent
 cd agent
 uv run uvicorn main:app --reload --port 8000
@@ -1098,7 +1165,7 @@ npm run dev
 # http://localhost:3000
 ```
 
-### 2. Run Tests
+### 3. Run Tests
 
 ```bash
 # Knowledge Base tests
@@ -1113,24 +1180,28 @@ cd agent
 uv run ruff check .
 ```
 
-### 3. Validate Toolsets
+### 4. Validate Toolsets
 
 ```bash
 npm run validate:toolsets
 # or
 node scripts/toolset-management/validate-toolsets.js
+# or with shell integration
+validate
 ```
 
-### 4. Generate Documentation
+### 5. Generate Documentation
 
 ```bash
 npm run docs:all
+# or with shell integration
+docs
 # Generates:
 # - Toolset docs (docs/toolsets/)
 # - Relationship diagram (docs/toolsets/toolset-relationships.mmd)
 ```
 
-### 5. Index Codebase
+### 6. Index Codebase
 
 ```bash
 # 1. Generate chunks (using pykomodo or similar)
@@ -1153,16 +1224,16 @@ python scripts/ingest_chunks.py \
 
 ### Lines of Code Summary
 
-| Category | Files | Approx. LoC | Languages |
-|----------|-------|-------------|-----------|
-| **Python Agent** | 5 | ~1,200 | Python |
-| **TypeScript Agent Generator** | 15+ | ~2,500 | TypeScript |
-| **React Frontend** | 12+ | ~1,800 | TypeScript/TSX |
-| **Scripts** | 20+ | ~3,500 | TypeScript, Python, Shell |
-| **Documentation** | 25+ | ~15,000 | Markdown |
-| **Configuration** | 15+ | ~1,500 | JSON, YAML, TOML |
-| **GitHub Actions** | 8+ | ~1,200 | YAML |
-| **Total** | **100+** | **~26,700** | Multi-language |
+| Category                       | Files    | Approx. LoC | Languages                 |
+| ------------------------------ | -------- | ----------- | ------------------------- |
+| **Python Agent**               | 5        | ~1,200      | Python                    |
+| **TypeScript Agent Generator** | 15+      | ~2,500      | TypeScript                |
+| **React Frontend**             | 12+      | ~1,800      | TypeScript/TSX            |
+| **Scripts**                    | 20+      | ~3,500      | TypeScript, Python, Shell |
+| **Documentation**              | 25+      | ~15,000     | Markdown                  |
+| **Configuration**              | 15+      | ~1,500      | JSON, YAML, TOML          |
+| **GitHub Actions**             | 8+       | ~1,200      | YAML                      |
+| **Total**                      | **100+** | **~26,700** | Multi-language            |
 
 ### File Type Distribution
 

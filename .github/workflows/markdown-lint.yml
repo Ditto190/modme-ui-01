@@ -1,0 +1,44 @@
+name: Markdown Lint
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "**.md"
+  pull_request:
+    branches: ["**"]
+    paths:
+      - "**.md"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          
+      - name: Install markdownlint-cli
+        run: npm install -g markdownlint-cli
+        
+      - name: Run markdownlint
+        run: markdownlint '**/*.md' --ignore node_modules --ignore .venv
+        
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          
+      - name: Install prettier
+        run: npm install -g prettier
+        
+      - name: Check formatting
+        run: prettier --check '**/*.md'

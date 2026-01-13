@@ -293,6 +293,14 @@ gh workflow run toolset-deprecate.yml \
     - Collect feedback
     - Refine workflows
     - Update examples
+   - Share documentation
+   - Establish review processes
+   - Define deprecation procedures
+
+3. **Continuous improvement:**
+   - Collect feedback
+   - Refine workflows
+   - Update examples
 
 ---
 
@@ -428,17 +436,17 @@ When adding new toolsets or deprecating old ones:
 
 ## 📊 System Status
 
-| Component | Status | Notes |
-|-----------|--------|-------|
-| Documentation | ✅ Complete | 3 comprehensive guides |
-| Workflows | ✅ Complete | 4 GitHub Actions workflows |
-| Config Files | ✅ Complete | JSON schema + initial registry |
-| Core Scripts | ✅ Complete | Detection, validation, aliases |
-| Python Support | ✅ Complete | ToolsetManager class |
-| Node Dependencies | ⚠️ Pending | Run: `npm install ajv ajv-formats --save-dev` |
-| Additional Scripts | ⚠️ Pending | Optional helper scripts |
-| Python Tests | ⚠️ Pending | Test suite for toolset_manager |
-| Integration | ⚠️ Pending | Connect to agent/main.py |
+| Component          | Status      | Notes                                         |
+| ------------------ | ----------- | --------------------------------------------- |
+| Documentation      | ✅ Complete | 3 comprehensive guides                        |
+| Workflows          | ✅ Complete | 4 GitHub Actions workflows                    |
+| Config Files       | ✅ Complete | JSON schema + initial registry                |
+| Core Scripts       | ✅ Complete | Detection, validation, aliases                |
+| Python Support     | ✅ Complete | ToolsetManager class                          |
+| Node Dependencies  | ⚠️ Pending  | Run: `npm install ajv ajv-formats --save-dev` |
+| Additional Scripts | ⚠️ Pending  | Optional helper scripts                       |
+| Python Tests       | ⚠️ Pending  | Test suite for toolset_manager                |
+| Integration        | ⚠️ Pending  | Connect to agent/main.py                      |
 
 ---
 

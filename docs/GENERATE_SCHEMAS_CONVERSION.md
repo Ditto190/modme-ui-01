@@ -22,11 +22,11 @@ Converted TypeScript tool generation script to Python agent tools compatible wit
 
 ### Original TypeScript Functions → Python Agent Tools
 
-| TypeScript Function | Python Tool | Status |
-|---------------------|-------------|--------|
-| `generateToolSchemas()` | `generate_tool_schemas()` | ✅ Complete |
-| `generateAgentPrompt()` | `generate_agent_prompt()` | ✅ Complete |
-| - | `generate_all()` | ✅ Added (convenience) |
+| TypeScript Function     | Python Tool               | Status                 |
+| ----------------------- | ------------------------- | ---------------------- |
+| `generateToolSchemas()` | `generate_tool_schemas()` | ✅ Complete            |
+| `generateAgentPrompt()` | `generate_agent_prompt()` | ✅ Complete            |
+| -                       | `generate_all()`          | ✅ Added (convenience) |
 
 ---
 
@@ -98,9 +98,9 @@ return {
 **TypeScript** (hardcoded):
 
 ```typescript
-const TOOLS_DIR = path.join(ROOT_DIR, 'src/tools');
-const SKILLS_DIR = path.join(ROOT_DIR, 'src/skills');
-const OUTPUT_DIR = path.join(ROOT_DIR, 'output');
+const TOOLS_DIR = path.join(ROOT_DIR, "src/tools");
+const SKILLS_DIR = path.join(ROOT_DIR, "src/skills");
+const OUTPUT_DIR = path.join(ROOT_DIR, "output");
 ```
 
 **Python** (configurable with defaults):
@@ -133,7 +133,7 @@ def generate_tool_schemas(
 
 ```typescript
 if (!generator) {
-  console.error('Failed to create schema generator');
+  console.error("Failed to create schema generator");
   return;
 }
 ```
@@ -177,7 +177,7 @@ except Exception as e:
 
 ```typescript
 for (const skillFile of skillFiles) {
-  const content = fs.readFileSync(skillFile, 'utf-8');
+  const content = fs.readFileSync(skillFile, "utf-8");
   skillsXml += `  <skill>\n`;
   skillsXml += `    <name>${skillName}</name>\n`;
   // ...
@@ -229,7 +229,7 @@ def generate_all(
 if __name__ == "__main__":
     # Mock ToolContext for manual testing
     mock_context = MockToolContext()
-    
+
     if sys.argv[1] == "schemas":
         result = generate_tool_schemas(mock_context)
     # ...
@@ -299,24 +299,24 @@ from unittest.mock import MagicMock
 def test_generate_tool_schemas_success():
     context = MagicMock()
     context.state = {}
-    
+
     result = generate_tool_schemas(
         context,
         tools_dir="agent-generator/src/tools"
     )
-    
+
     assert result["status"] == "success"
     assert result["schemas_count"] > 0
     assert "schemas" in result
 
 def test_generate_tool_schemas_invalid_dir():
     context = MagicMock()
-    
+
     result = generate_tool_schemas(
         context,
         tools_dir="/nonexistent/path"
     )
-    
+
     assert result["status"] == "error"
     assert "not found" in result["message"]
 ```
@@ -386,16 +386,16 @@ genai-toolbox run generate_agent_prompt \
 
 ### New Files
 
-| File | Purpose |
-|------|---------|
-| `agent/tools/generate_schemas.py` | Main tool implementation |
-| `agent/tools/README.md` | Complete tool documentation |
-| `docs/GENERATE_SCHEMAS_CONVERSION.md` | This document |
+| File                                  | Purpose                     |
+| ------------------------------------- | --------------------------- |
+| `agent/tools/generate_schemas.py`     | Main tool implementation    |
+| `agent/tools/README.md`               | Complete tool documentation |
+| `docs/GENERATE_SCHEMAS_CONVERSION.md` | This document               |
 
 ### Modified Files
 
-| File | Changes |
-|------|---------|
+| File                       | Changes                   |
+| -------------------------- | ------------------------- |
 | `genai-toolbox/tools.yaml` | Added tool configurations |
 
 ---

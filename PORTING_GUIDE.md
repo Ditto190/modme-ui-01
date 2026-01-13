@@ -26,15 +26,15 @@
 
 This monorepo contains **highly portable components** organized into self-contained modules:
 
-| Component Category | Portability | Dependencies | Lines of Code |
-|-------------------|-------------|--------------|---------------|
-| **Knowledge Base System** | ✅ Standalone | TypeScript, Node.js 22 | ~1,200 |
-| **Component Registry** | ✅ Standalone | React 19, TypeScript | ~800 |
-| **Toolset Management** | ✅ Standalone | Node.js, JSON | ~900 |
-| **Agent Tools** | ⚠️ Requires ADK | Python 3.12+, Google ADK | ~420 |
-| **GenAI Toolbox** | ✅ Standalone | Python, YAML | ~150 |
-| **Schema Crawler** | ✅ Standalone | TypeScript, Zod | ~600 |
-| **ChromaDB Integration** | ⚠️ Requires ChromaDB | Python, ChromaDB, Google AI | ~500 |
+| Component Category        | Portability          | Dependencies                | Lines of Code |
+| ------------------------- | -------------------- | --------------------------- | ------------- |
+| **Knowledge Base System** | ✅ Standalone        | TypeScript, Node.js 22      | ~1,200        |
+| **Component Registry**    | ✅ Standalone        | React 19, TypeScript        | ~800          |
+| **Toolset Management**    | ✅ Standalone        | Node.js, JSON               | ~900          |
+| **Agent Tools**           | ⚠️ Requires ADK      | Python 3.12+, Google ADK    | ~420          |
+| **GenAI Toolbox**         | ✅ Standalone        | Python, YAML                | ~150          |
+| **Schema Crawler**        | ✅ Standalone        | TypeScript, Zod             | ~600          |
+| **ChromaDB Integration**  | ⚠️ Requires ChromaDB | Python, ChromaDB, Google AI | ~500          |
 
 ---
 
@@ -369,7 +369,7 @@ python scripts/ingest_chunks.py --mode persistent \
 const { state } = useCoAgent<AgentState>({ name: "WorkbenchAgent" });
 
 // Your app (Redux)
-const elements = useSelector(state => state.canvas.elements);
+const elements = useSelector((state) => state.canvas.elements);
 ```
 
 ---
@@ -422,7 +422,7 @@ const weatherSchema = generateZodFromJSONSchema(openApiSchema, "WeatherResponse"
 async function getWeather(city: string): Promise<WeatherResponse> {
   const response = await fetch(`/api/weather?city=${city}`);
   const data = await response.json();
-  
+
   // Runtime validation
   return weatherSchema.zodCode.parse(data);
 }
@@ -553,14 +553,14 @@ scripts/
 ```typescript
 // Add hierarchical concepts
 const KNOWLEDGE_BASE = {
-  "Backend": {
+  Backend: {
     keywords: ["api", "server", "backend"],
-    relatedConcepts: ["API Routes", "Database", "Authentication"]
+    relatedConcepts: ["API Routes", "Database", "Authentication"],
   },
   "API Routes": {
     keywords: ["endpoint", "route", "/api/"],
-    parentConcept: "Backend"
-  }
+    parentConcept: "Backend",
+  },
 };
 ```
 
@@ -655,18 +655,18 @@ def my_tool(params):
 ```typescript
 // issue-context-mapper.ts
 const KNOWLEDGE_BASE: Record<string, ConceptMapping> = {
-  "Bug": {
+  Bug: {
     keywords: ["bug", "error", "crash", "broken"],
     files: [{ path: "src/", description: "Source code" }],
     documentation: ["docs/TROUBLESHOOTING.md"],
-    relatedConcepts: []
+    relatedConcepts: [],
   },
-  "Feature": {
+  Feature: {
     keywords: ["feature", "enhancement", "new"],
     files: [{ path: "docs/FEATURES.md", description: "Feature docs" }],
     documentation: ["docs/CONTRIBUTING.md"],
-    relatedConcepts: []
-  }
+    relatedConcepts: [],
+  },
 };
 ```
 
@@ -723,6 +723,6 @@ When porting:
 
 ---
 
-*This guide enables modular porting of ModMe GenUI Workbench components into other projects. Each component is designed for independence and reusability.*
+_This guide enables modular porting of ModMe GenUI Workbench components into other projects. Each component is designed for independence and reusability._
 
 **Version**: 1.0.0 | **Last Updated**: January 3, 2026

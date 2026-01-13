@@ -29,26 +29,26 @@ from typing import Dict, Any
 def my_tool(tool_context: ToolContext, param: str) -> Dict[str, Any]:
     """
     Tool description for agent instructions.
-    
+
     Args:
         param: Description with type info
-    
+
     Returns:
         Dictionary with status and result
     """
     # 1. Validate inputs
     if not param or not isinstance(param, str):
         return {"status": "error", "message": "Invalid param"}
-    
+
     # 2. Get state safely
     state = tool_context.state.get("key", default_value)
-    
+
     # 3. Perform operation
     result = perform_operation(param)
-    
+
     # 4. Update state if needed
     tool_context.state["key"] = result
-    
+
     # 5. Return structured response
     return {
         "status": "success",
@@ -149,19 +149,20 @@ result = generate_agent_prompt(
 You are a helpful AI assistant equipped with specific skills and tools.
 
 <available_skills>
-  <skill>
-    <name>mcp-builder</name>
-    <description>
-      Guide for creating high-quality MCP servers...
-    </description>
-    <instructions>
-      [Full SKILL.md content...]
-    </instructions>
-  </skill>
-  ...
+<skill>
+<name>mcp-builder</name>
+<description>
+Guide for creating high-quality MCP servers...
+</description>
+<instructions>
+[Full SKILL.md content...]
+</instructions>
+</skill>
+...
 </available_skills>
 
 ## Instructions
+
 1. Review the <available_skills> to understand what you can do.
 2. If a user request matches a skill's capabilities, follow those instructions.
 3. Use the provided tools when necessary to fulfill requests.
@@ -267,17 +268,17 @@ from agent.tools.generate_schemas import generate_all
 
 def regenerate_schemas():
     """Regenerate all agent schemas and prompts."""
-    
+
     # Mock ToolContext for script usage
     class MockContext:
         def __init__(self):
             self.state = {}
-    
+
     context = MockContext()
-    
+
     # Generate everything
     result = generate_all(context)
-    
+
     if result["status"] == "success":
         print(f"✅ Generated {result['schemas_result']['schemas_count']} schemas")
         print(f"✅ Generated prompt from {result['prompt_result']['skills_count']} skills")
@@ -351,11 +352,11 @@ def my_new_tool(
 ) -> Dict[str, Any]:
     """
     Tool description for agent.
-    
+
     Args:
         param1: Required parameter description
         param2: Optional parameter (default: 10)
-    
+
     Returns:
         Dictionary with status and result
     """
@@ -363,17 +364,17 @@ def my_new_tool(
         # Validate inputs
         if not param1:
             return {"status": "error", "message": "param1 is required"}
-        
+
         # Perform operation
         result = perform_operation(param1, param2)
-        
+
         # Return success
         return {
             "status": "success",
             "message": f"Completed operation on {param1}",
             "result": result
         }
-    
+
     except Exception as e:
         return {
             "status": "error",
@@ -414,17 +415,17 @@ from unittest.mock import MagicMock
 def test_my_new_tool_success():
     context = MagicMock()
     context.state = {}
-    
+
     result = my_new_tool(context, param1="test", param2=20)
-    
+
     assert result["status"] == "success"
     assert "result" in result
 
 def test_my_new_tool_invalid_input():
     context = MagicMock()
-    
+
     result = my_new_tool(context, param1="")
-    
+
     assert result["status"] == "error"
     assert "required" in result["message"]
 ```

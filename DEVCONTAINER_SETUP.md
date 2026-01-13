@@ -153,6 +153,22 @@ npm run dev
 | CI | 5 (lint, type-check, build, test) | Push, PR |
 | DevContainer Build | 2 (build, health-check) | Push to .devcontainer, PR |
 | AI Maintenance | 3 (dependencies, security, quality) | Weekly, Manual |
+| Feature            | Version/Details                             |
+| ------------------ | ------------------------------------------- |
+| Base Image         | mcr.microsoft.com/devcontainers/base:ubuntu |
+| Node.js            | 22.9.0 via nvm                              |
+| Python             | 3.12                                        |
+| Package Managers   | npm, uv                                     |
+| VS Code Extensions | 13 pre-installed                            |
+| Port Forwarding    | 3000 (UI), 8000 (Agent)                     |
+
+### CI/CD Jobs
+
+| Workflow           | Jobs                                | Trigger                   |
+| ------------------ | ----------------------------------- | ------------------------- |
+| CI                 | 5 (lint, type-check, build, test)   | Push, PR                  |
+| DevContainer Build | 2 (build, health-check)             | Push to .devcontainer, PR |
+| AI Maintenance     | 3 (dependencies, security, quality) | Weekly, Manual            |
 
 ### Environment Variables
 
@@ -204,15 +220,15 @@ gh workflow run ai-assisted-maintenance.yml --field task_type=security-audit
 
 ## 📚 Documentation Structure
 
-| Document | Purpose |
-|----------|---------|
-| `README.md` | Quick start and overview |
-| `CONTRIBUTING.md` | Development workflow and standards |
-| `DEVCONTAINER_SETUP.md` | This file - setup summary |
-| `.devcontainer/README.md` | DevContainer details and troubleshooting |
-| `.github/workflows/README.md` | CI/CD workflows documentation |
-| `.copilot/instructions/genui-development.md` | GenUI development guidelines |
-| `.copilot/knowledge/architecture.md` | System architecture overview |
+| Document                                     | Purpose                                  |
+| -------------------------------------------- | ---------------------------------------- |
+| `README.md`                                  | Quick start and overview                 |
+| `CONTRIBUTING.md`                            | Development workflow and standards       |
+| `DEVCONTAINER_SETUP.md`                      | This file - setup summary                |
+| `.devcontainer/README.md`                    | DevContainer details and troubleshooting |
+| `.github/workflows/README.md`                | CI/CD workflows documentation            |
+| `.copilot/instructions/genui-development.md` | GenUI development guidelines             |
+| `.copilot/knowledge/architecture.md`         | System architecture overview             |
 
 ## 🔐 Security Features
 
@@ -319,14 +335,14 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for complete guidelines.
 
 ## ✅ Acceptance Criteria Status
 
-| Criteria | Status |
-|----------|--------|
-| DevContainer builds in GitHub Codespaces | ⏳ Pending user test |
-| DevContainer works locally with Docker Desktop | ⏳ Pending user test |
-| Both Node.js and Python environments configured | ✅ Complete |
-| CI/CD workflows pass on PR creation | ⏳ Will run on PR |
-| Development scripts work cross-platform | ✅ Complete |
-| Clear documentation for workspace usage | ✅ Complete |
+| Criteria                                        | Status               |
+| ----------------------------------------------- | -------------------- |
+| DevContainer builds in GitHub Codespaces        | ⏳ Pending user test |
+| DevContainer works locally with Docker Desktop  | ⏳ Pending user test |
+| Both Node.js and Python environments configured | ✅ Complete          |
+| CI/CD workflows pass on PR creation             | ⏳ Will run on PR    |
+| Development scripts work cross-platform         | ✅ Complete          |
+| Clear documentation for workspace usage         | ✅ Complete          |
 
 ---
 

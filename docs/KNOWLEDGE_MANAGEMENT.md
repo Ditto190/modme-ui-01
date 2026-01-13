@@ -95,14 +95,17 @@ agent/toolsets.json              # Source of truth (validated JSON)
 **Version**: 1.0.0
 
 ## Description
+
 Tools for manipulating UI elements on the canvas.
 
 ## Tools
+
 - `upsert_ui_element` - Add or update UI element
 - `remove_ui_element` - Remove UI element by ID
 - `clear_canvas` - Clear all elements
 
 ## Related Toolsets
+
 - [theme](theme.md)
 ```
 
@@ -163,7 +166,7 @@ All toolsets are validated against `agent/toolset-schema.json` using **Ajv**:
 
 ```javascript
 const ajv = new Ajv({ allErrors: true });
-require('ajv-formats')(ajv);
+require("ajv-formats")(ajv);
 const validate = ajv.compile(schema);
 
 if (!validate(toolsets)) {
@@ -222,7 +225,9 @@ Output:
   "data": {
     "path": { "text": "agent/main.py" },
     "line_number": 25,
-    "lines": { "text": "def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict[str, Any]):" }
+    "lines": {
+      "text": "def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict[str, Any]):"
+    }
   }
 }
 ```
@@ -242,11 +247,11 @@ graph TD
     ui_elements[UI Elements<br/>🟢 Active]
     theme[Theme<br/>🟢 Active]
     deprecated_set[Old Toolset<br/>🔴 Deprecated]
-    
+
     ui_elements -->|requires| theme
     deprecated_set -.->|superseded_by| ui_elements
     ui_elements -.->|related| theme
-    
+
     style ui_elements fill:#4ade80,stroke:#16a34a,color:#000
     style theme fill:#4ade80,stroke:#16a34a,color:#000
     style deprecated_set fill:#ef4444,stroke:#dc2626,stroke-dasharray: 5 5,color:#fff

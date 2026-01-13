@@ -44,13 +44,13 @@ def upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: Dict
     # Validate inputs
     if not id or not isinstance(id, str):
         return {"status": "error", "message": "Invalid id: must be non-empty string"}
-    
+
     if type not in ALLOWED_TYPES:
         return {"status": "error", "message": f"Unknown type '{type}'. Allowed types: {', '.join(ALLOWED_TYPES)}"}
-    
+
     if not isinstance(props, dict):
         return {"status": "error", "message": "Invalid props: must be a dictionary"}
-    
+
     # ... safe upsert logic with element count in response
 ```
 
@@ -173,7 +173,7 @@ type StatCardProps = z.infer<typeof StatCardPropsSchema>;
 
 export const StatCard: React.FC<StatCardProps> = (rawProps) => {
     const result = StatCardPropsSchema.safeParse(rawProps);
-    
+
     if (!result.success) {
         console.error('StatCard validation failed:', result.error);
         return (
@@ -185,7 +185,7 @@ export const StatCard: React.FC<StatCardProps> = (rawProps) => {
             </div>
         );
     }
-    
+
     const { title, value, trend, trendDirection = 'neutral' } = result.data;
     // ... safe rendering
 };
@@ -205,11 +205,11 @@ export const StatCard: React.FC<StatCardProps> = (rawProps) => {
 
 ```typescript
 useFrontendTool({
-    name: "setThemeColor",
-    parameters: [{ name: "themeColor", description: "The theme color to set.", required: true }],
-    handler({ themeColor }) {
-        setThemeColor(themeColor);  // No validation
-    },
+  name: "setThemeColor",
+  parameters: [{ name: "themeColor", description: "The theme color to set.", required: true }],
+  handler({ themeColor }) {
+    setThemeColor(themeColor); // No validation
+  },
 });
 ```
 
@@ -219,18 +219,20 @@ useFrontendTool({
 const ThemeColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color format");
 
 useFrontendTool({
-    name: "setThemeColor",
-    parameters: [{ name: "themeColor", description: "Hex color code (e.g., #ff6600)", required: true }],
-    handler({ themeColor }) {
-        try {
-            ThemeColorSchema.parse(themeColor);
-            setThemeColor(themeColor);
-            console.info(`Theme color updated to ${themeColor}`);
-        } catch (error) {
-            console.error('Invalid theme color:', themeColor, error);
-            // Don't update state if invalid
-        }
-    },
+  name: "setThemeColor",
+  parameters: [
+    { name: "themeColor", description: "Hex color code (e.g., #ff6600)", required: true },
+  ],
+  handler({ themeColor }) {
+    try {
+      ThemeColorSchema.parse(themeColor);
+      setThemeColor(themeColor);
+      console.info(`Theme color updated to ${themeColor}`);
+    } catch (error) {
+      console.error("Invalid theme color:", themeColor, error);
+      // Don't update state if invalid
+    }
+  },
 });
 ```
 
@@ -317,13 +319,13 @@ const elements = state?.elements || [];
 
 ## Files Modified
 
-| File | Lines Changed | Patterns Applied |
-|------|--------------|------------------|
-| `agent/main.py` | ~60 lines | Pattern 1, Pattern 3 |
-| `src/app/page.tsx` | ~30 lines | Pattern 4, Pattern 5, Pattern 6 |
-| `src/components/registry/StatCard.tsx` | ~25 lines | Pattern 8 |
-| `src/components/registry/DataTable.tsx` | ~20 lines | Pattern 8 |
-| `src/components/registry/ChartCard.tsx` | ~20 lines | Pattern 8 |
+| File                                    | Lines Changed | Patterns Applied                |
+| --------------------------------------- | ------------- | ------------------------------- |
+| `agent/main.py`                         | ~60 lines     | Pattern 1, Pattern 3            |
+| `src/app/page.tsx`                      | ~30 lines     | Pattern 4, Pattern 5, Pattern 6 |
+| `src/components/registry/StatCard.tsx`  | ~25 lines     | Pattern 8                       |
+| `src/components/registry/DataTable.tsx` | ~20 lines     | Pattern 8                       |
+| `src/components/registry/ChartCard.tsx` | ~20 lines     | Pattern 8                       |
 
 **Total: ~155 lines changed across 5 files**
 
@@ -524,6 +526,6 @@ describe("StatCard", () => {
 
 **Refactoring Complete** ✨
 
-*Applied on: January 3, 2026*  
-*By: AI Agent (GitHub Copilot)*  
-*Patterns Source: `docs/REFACTORING_PATTERNS.md`*
+_Applied on: January 3, 2026_  
+_By: AI Agent (GitHub Copilot)_  
+_Patterns Source: `docs/REFACTORING_PATTERNS.md`_

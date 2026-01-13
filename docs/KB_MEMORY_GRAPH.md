@@ -167,7 +167,7 @@ node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
    ```yaml
    - uses: actions/setup-node@v4
      with:
-       node-version: '22'
+       node-version: "22"
    ```
 
 3. **Install TypeScript Dependencies**
@@ -222,7 +222,7 @@ node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
    ```yaml
    if (kbContext && kbContext.comment && kbContext.comment.trim()) {
      const comments = await github.rest.issues.listComments({owner, repo, issue_number});
-     const kbCommentExists = comments.data.find(c => 
+     const kbCommentExists = comments.data.find(c =>
        c.user.type === 'Bot' && c.body.includes('Detected Context')
      );
      if (!kbCommentExists) {
@@ -311,9 +311,9 @@ node dist/issue-context-mapper.js "StatCard bug" "upsert_ui_element not working"
 **Validation Logic**:
 
 ```javascript
-const passed = 
-  testCase.expectedConcepts.every(c => context.detectedConcepts.includes(c)) &&
-  testCase.expectedLabels.every(l => context.suggestedLabels.includes(l));
+const passed =
+  testCase.expectedConcepts.every((c) => context.detectedConcepts.includes(c)) &&
+  testCase.expectedLabels.every((l) => context.suggestedLabels.includes(l));
 ```
 
 - `expectedConcepts.every()` allows extra detections (not strict equality)
@@ -462,7 +462,7 @@ module.exports = {
   analyzeIssueContent,
   generateContextComment,
   resolveGitHubPath,
-  main
+  main,
 };
 
 if (require.main === module) {
@@ -496,7 +496,7 @@ graph TD
     TestSuite[KB Test Suite]
     Documentation[KB Implementation Documentation]
     BuildConfig[TypeScript Build Configuration]
-    
+
     KBMapper -->|integrates with| Workflow
     KBMapper -->|contains| ConceptMappings
     KBMapper -->|validated by| TestSuite
@@ -575,15 +575,33 @@ interface IssueContext {
 
 ```typescript
 const KNOWLEDGE_BASE: Record<string, ConceptMapping> = {
-  "StatCard": { /* ... */ },
-  "DataTable": { /* ... */ },
-  "ChartCard": { /* ... */ },
-  "Agent Tools": { /* ... */ }, // 8 keywords after expansion
-  "State Sync": { /* ... */ },
-  "Toolset": { /* ... */ },
-  "Frontend": { /* ... */ },
-  "CI/CD": { /* ... */ },
-  "Testing": { /* ... */ }
+  StatCard: {
+    /* ... */
+  },
+  DataTable: {
+    /* ... */
+  },
+  ChartCard: {
+    /* ... */
+  },
+  "Agent Tools": {
+    /* ... */
+  }, // 8 keywords after expansion
+  "State Sync": {
+    /* ... */
+  },
+  Toolset: {
+    /* ... */
+  },
+  Frontend: {
+    /* ... */
+  },
+  "CI/CD": {
+    /* ... */
+  },
+  Testing: {
+    /* ... */
+  },
 };
 ```
 
@@ -592,25 +610,25 @@ const KNOWLEDGE_BASE: Record<string, ConceptMapping> = {
 ```typescript
 function analyzeIssueContent(issueBody: string, issueTitle: string): IssueContext {
   const combinedText = (issueTitle + " " + issueBody).toLowerCase();
-  
+
   const detectedConcepts: string[] = [];
   const filesMap = new Map<string, FileMapping>();
   const docsSet = new Set<string>();
   const labelsSet = new Set<string>();
-  
+
   // Check each concept
   for (const [concept, mapping] of Object.entries(KNOWLEDGE_BASE)) {
-    const matched = mapping.keywords.some(kw => combinedText.includes(kw.toLowerCase()));
-    
+    const matched = mapping.keywords.some((kw) => combinedText.includes(kw.toLowerCase()));
+
     if (matched) {
       detectedConcepts.push(concept);
-      
+
       // Collect files
-      mapping.files.forEach(file => filesMap.set(file.path, file));
-      
+      mapping.files.forEach((file) => filesMap.set(file.path, file));
+
       // Collect docs
-      mapping.documentation.forEach(doc => docsSet.add(doc));
-      
+      mapping.documentation.forEach((doc) => docsSet.add(doc));
+
       // Suggest labels
       if (["StatCard", "DataTable", "ChartCard"].includes(concept)) {
         labelsSet.add("component-registry");
@@ -623,12 +641,12 @@ function analyzeIssueContent(issueBody: string, issueTitle: string): IssueContex
       if (concept === "Testing") labelsSet.add("testing");
     }
   }
-  
+
   return {
     detectedConcepts,
     relevantFiles: Array.from(filesMap.values()),
     documentationLinks: Array.from(docsSet),
-    suggestedLabels: Array.from(labelsSet)
+    suggestedLabels: Array.from(labelsSet),
   };
 }
 ```
@@ -640,19 +658,19 @@ function generateContextComment(context: IssueContext): string {
   if (context.detectedConcepts.length === 0) {
     return "";
   }
-  
+
   let comment = "## 🎯 Detected Context\n\n";
   comment += "This issue appears to be related to:\n\n";
-  
+
   // List concepts
-  context.detectedConcepts.forEach(concept => {
+  context.detectedConcepts.forEach((concept) => {
     comment += `- **${concept}**\n`;
   });
-  
+
   // Relevant files
   if (context.relevantFiles.length > 0) {
     comment += "\n### 📁 Relevant Files\n\n";
-    context.relevantFiles.forEach(file => {
+    context.relevantFiles.forEach((file) => {
       comment += `- [${file.path}](${resolveGitHubPath(file.path)})`;
       if (file.description) {
         comment += ` - ${file.description}`;
@@ -660,18 +678,18 @@ function generateContextComment(context: IssueContext): string {
       comment += "\n";
     });
   }
-  
+
   // Documentation
   if (context.documentationLinks.length > 0) {
     comment += "\n### 📚 Documentation\n\n";
-    context.documentationLinks.forEach(doc => {
+    context.documentationLinks.forEach((doc) => {
       comment += `- [${doc}](${resolveGitHubPath(doc)})\n`;
     });
   }
-  
+
   comment += "\n---\n";
   comment += "*This context was automatically generated by the Knowledge Base Context Mapper.*\n";
-  
+
   return comment;
 }
 ```
@@ -721,18 +739,13 @@ function generateContextComment(context: IssueContext): string {
 **Original Agent Tools Keywords** (4 terms):
 
 ```typescript
-keywords: [
-  "upsert_ui_element",
-  "remove_ui_element",
-  "clear_canvas",
-  "tool function"
-]
+keywords: ["upsert_ui_element", "remove_ui_element", "clear_canvas", "tool function"];
 ```
 
 **Test Case 3 Body**:
 
 ```
-The tool_context.state updates in Python but useCoAgent doesn't reflect changes 
+The tool_context.state updates in Python but useCoAgent doesn't reflect changes
 in React. One-way data flow seems broken.
 ```
 
@@ -747,15 +760,15 @@ in React. One-way data flow seems broken.
 
 ```typescript
 keywords: [
-  "upsert_ui_element",      // Specific tool functions
+  "upsert_ui_element", // Specific tool functions
   "remove_ui_element",
   "clear_canvas",
   "tool function",
-  "tool_context",           // ✅ NEW: Catches "tool_context.state" references
-  "agent tool",             // ✅ NEW: General agent discussions
-  "python agent",           // ✅ NEW: Catches "Python" + agent context
-  "adk agent"               // ✅ NEW: Catches ADK-specific terms
-]
+  "tool_context", // ✅ NEW: Catches "tool_context.state" references
+  "agent tool", // ✅ NEW: General agent discussions
+  "python agent", // ✅ NEW: Catches "Python" + agent context
+  "adk agent", // ✅ NEW: Catches ADK-specific terms
+];
 ```
 
 **Result After Fix**:
@@ -886,4 +899,4 @@ keywords: [
 
 ---
 
-*This memory graph document provides a comprehensive reference for the Knowledge Base Context Mapper implementation. It can be used to regenerate the system or train new maintainers.*
+_This memory graph document provides a comprehensive reference for the Knowledge Base Context Mapper implementation. It can be used to regenerate the system or train new maintainers._

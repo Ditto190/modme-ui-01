@@ -8,12 +8,12 @@ Automated tools for enriching GitHub issues with contextual information using a 
 
 ### Core Scripts
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| **issue-context-mapper.ts** | Main knowledge base engine | Called by GitHub Actions |
-| **test-kb-mapper.js** | Test suite for KB mappings | `npm test` |
-| **sync-docs.js** | Sync toolset docs (existing) | `npm run sync` |
-| **generate-diagram.js** | Generate toolset diagrams (existing) | `npm run diagram` |
+| Script                      | Purpose                              | Usage                    |
+| --------------------------- | ------------------------------------ | ------------------------ |
+| **issue-context-mapper.ts** | Main knowledge base engine           | Called by GitHub Actions |
+| **test-kb-mapper.js**       | Test suite for KB mappings           | `npm test`               |
+| **sync-docs.js**            | Sync toolset docs (existing)         | `npm run sync`           |
+| **generate-diagram.js**     | Generate toolset diagrams (existing) | `npm run diagram`        |
 
 ### Knowledge Base
 
@@ -65,26 +65,22 @@ Expected output:
 ✨ Success Rate: 100%
 
 🎉 All tests passed! Knowledge Base is working correctly.
-```
+
+````
 
 ### Manual Testing
 
 ```bash
 npm run context "Issue title" "Issue body with StatCard and upsert_ui_element"
-```
+````
 
 Output (JSON):
 
 ```json
 {
   "detectedConcepts": ["StatCard", "Agent Tools"],
-  "relevantFiles": [
-    "src/components/registry/StatCard.tsx",
-    "agent/main.py"
-  ],
-  "documentationLinks": [
-    "docs/REFACTORING_PATTERNS.md#component-registry-refactoring"
-  ],
+  "relevantFiles": ["src/components/registry/StatCard.tsx", "agent/main.py"],
+  "documentationLinks": ["docs/REFACTORING_PATTERNS.md#component-registry-refactoring"],
   "suggestedLabels": ["component-registry", "agent"],
   "comment": "## 🔍 Detected Context\n\n..."
 }
@@ -109,16 +105,18 @@ graph LR
 
 ```typescript
 const KNOWLEDGE_BASE: Record<string, ConceptMapping> = {
-  "StatCard": {
+  StatCard: {
     keywords: ["statcard", "stat card", "metric card"],
-    files: [{
-      path: "src/components/registry/StatCard.tsx",
-      description: "StatCard component implementation",
-      relatedPaths: ["src/lib/types.ts", "src/app/page.tsx"]
-    }],
+    files: [
+      {
+        path: "src/components/registry/StatCard.tsx",
+        description: "StatCard component implementation",
+        relatedPaths: ["src/lib/types.ts", "src/app/page.tsx"],
+      },
+    ],
     documentation: ["docs/REFACTORING_PATTERNS.md"],
-    relatedConcepts: ["DataTable", "ChartCard"]
-  }
+    relatedConcepts: ["DataTable", "ChartCard"],
+  },
 };
 ```
 
@@ -158,14 +156,17 @@ Generates formatted markdown comment.
 ## 🔍 Detected Context
 
 This issue appears to be related to:
+
 - **StatCard**
 - **Agent Tools**
 
 ### 📁 Relevant Files
+
 - [`src/components/registry/StatCard.tsx`](...)
 - [`agent/main.py`](...)
 
 ### 📚 Documentation
+
 - [docs/REFACTORING_PATTERNS.md](...)
 ```
 
@@ -178,16 +179,18 @@ This issue appears to be related to:
 ```typescript
 const KNOWLEDGE_BASE: Record<string, ConceptMapping> = {
   // ... existing concepts
-  
+
   "New Concept": {
     keywords: ["keyword1", "keyword2"],
-    files: [{
-      path: "path/to/file.ts",
-      description: "File description"
-    }],
+    files: [
+      {
+        path: "path/to/file.ts",
+        description: "File description",
+      },
+    ],
     documentation: ["docs/GUIDE.md"],
-    relatedConcepts: ["Related Concept"]
-  }
+    relatedConcepts: ["Related Concept"],
+  },
 };
 ```
 
@@ -260,8 +263,8 @@ const testCases = [
     title: "New test case",
     body: "Issue body with keywords",
     expectedConcepts: ["Concept1", "Concept2"],
-    expectedLabels: ["label1", "label2"]
-  }
+    expectedLabels: ["label1", "label2"],
+  },
 ];
 ```
 
@@ -273,17 +276,17 @@ npm test
 
 ## 📊 Current Coverage
 
-| Concept | Keywords | Files | Labels |
-|---------|----------|-------|--------|
-| StatCard | statcard, stat card, metric card | 1 file, 3 related | component-registry |
-| DataTable | datatable, data table, table | 1 file, 2 related | component-registry |
-| ChartCard | chartcard, chart card, visualization | 1 file, 2 related | component-registry |
-| Agent Tools | upsert_ui_element, remove_ui_element | 1 file, 2 related | agent |
-| State Sync | state sync, tool_context.state | 2 files, 3 related | state-sync |
-| Toolset | toolset, toolsets.json, deprecation | 2 files, 4 related | toolset |
-| Frontend | react, next.js, copilotkit | 2 files, 3 related | frontend |
-| CI/CD | workflow, github actions | 1 dir, 2 related | ci-cd |
-| Testing | test, pytest, jest | 1 dir, 2 related | testing |
+| Concept     | Keywords                             | Files              | Labels             |
+| ----------- | ------------------------------------ | ------------------ | ------------------ |
+| StatCard    | statcard, stat card, metric card     | 1 file, 3 related  | component-registry |
+| DataTable   | datatable, data table, table         | 1 file, 2 related  | component-registry |
+| ChartCard   | chartcard, chart card, visualization | 1 file, 2 related  | component-registry |
+| Agent Tools | upsert_ui_element, remove_ui_element | 1 file, 2 related  | agent              |
+| State Sync  | state sync, tool_context.state       | 2 files, 3 related | state-sync         |
+| Toolset     | toolset, toolsets.json, deprecation  | 2 files, 4 related | toolset            |
+| Frontend    | react, next.js, copilotkit           | 2 files, 3 related | frontend           |
+| CI/CD       | workflow, github actions             | 1 dir, 2 related   | ci-cd              |
+| Testing     | test, pytest, jest                   | 1 dir, 2 related   | testing            |
 
 **Total**: 9 concepts, 30+ keywords, 15+ files, 9 labels
 

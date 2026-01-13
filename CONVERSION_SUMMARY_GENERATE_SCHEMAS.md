@@ -13,11 +13,11 @@
 
 Created [agent/tools/generate_schemas.py](agent/tools/generate_schemas.py) with three main tools:
 
-| Tool | Purpose | Lines of Code |
-|------|---------|---------------|
-| `generate_tool_schemas()` | Generate JSON Schemas from TypeScript interfaces | ~150 |
-| `generate_agent_prompt()` | Generate agent prompts from SKILL.md files | ~100 |
-| `generate_all()` | Run both operations at once | ~50 |
+| Tool                      | Purpose                                          | Lines of Code |
+| ------------------------- | ------------------------------------------------ | ------------- |
+| `generate_tool_schemas()` | Generate JSON Schemas from TypeScript interfaces | ~150          |
+| `generate_agent_prompt()` | Generate agent prompts from SKILL.md files       | ~100          |
+| `generate_all()`          | Run both operations at once                      | ~50           |
 
 **Total**: ~300 lines of production code + comprehensive docstrings
 
@@ -59,14 +59,14 @@ tools:
     function: generate_tool_schemas
     description: "Generate JSON Schemas from TypeScript interfaces"
     # ... parameters
-  
+
   generate_agent_prompt:
     kind: python
     module: agent.tools.generate_schemas
     function: generate_agent_prompt
     description: "Generate agent system prompt from SKILL.md files"
     # ... parameters
-  
+
   generate_all:
     kind: python
     module: agent.tools.generate_schemas
@@ -85,11 +85,11 @@ tools:
 
 ### 4. Created Comprehensive Documentation
 
-| File | Purpose | Lines |
-|------|---------|-------|
-| [agent/tools/README.md](agent/tools/README.md) | Complete tool usage guide | ~500 |
-| [docs/GENERATE_SCHEMAS_CONVERSION.md](docs/GENERATE_SCHEMAS_CONVERSION.md) | Conversion details & comparison | ~400 |
-| This Summary | Quick reference | ~150 |
+| File                                                                       | Purpose                         | Lines |
+| -------------------------------------------------------------------------- | ------------------------------- | ----- |
+| [agent/tools/README.md](agent/tools/README.md)                             | Complete tool usage guide       | ~500  |
+| [docs/GENERATE_SCHEMAS_CONVERSION.md](docs/GENERATE_SCHEMAS_CONVERSION.md) | Conversion details & comparison | ~400  |
+| This Summary                                                               | Quick reference                 | ~150  |
 
 **Total**: ~1,050 lines of documentation
 
@@ -141,20 +141,17 @@ pytest tests/test_generate_schemas.py -k "integration" --tb=short
 ```typescript
 async function generateAgentPrompt() {
   const skillFiles = await glob(`${SKILLS_DIR}/**/SKILL.md`);
-  let skillsXml = '<available_skills>\n';
-  
+  let skillsXml = "<available_skills>\n";
+
   for (const skillFile of skillFiles) {
-    const content = fs.readFileSync(skillFile, 'utf-8');
+    const content = fs.readFileSync(skillFile, "utf-8");
     const skillName = path.basename(path.dirname(skillFile));
     skillsXml += `  <skill>\n`;
     // ... more string concatenation
   }
-  
-  fs.writeFileSync(
-    path.join(OUTPUT_DIR, 'agent_prompt.md'),
-    basePrompt
-  );
-  console.log('Saved prompt');
+
+  fs.writeFileSync(path.join(OUTPUT_DIR, "agent_prompt.md"), basePrompt);
+  console.log("Saved prompt");
 }
 ```
 
@@ -178,23 +175,23 @@ def generate_agent_prompt(
 ) -> Dict[str, Any]:
     """
     Generate agent system prompt from skill SKILL.md files.
-    
+
     Returns:
         Dictionary with status, skills_count, output_path, prompt
     """
     try:
         skills_path = Path(skills_dir) if skills_dir else SKILLS_DIR
-        
+
         if not skills_path.exists():
             return {
                 "status": "error",
                 "message": f"Skills directory not found: {skills_path}"
             }
-        
+
         skill_files = list(skills_path.glob("**/SKILL.md"))
-        
+
         # ... XML generation logic
-        
+
         return {
             "status": "success",
             "message": f"Generated prompt from {len(skill_files)} skills",
@@ -203,7 +200,7 @@ def generate_agent_prompt(
             "prompt": base_prompt,
             "skills_processed": [f.parent.name for f in skill_files]
         }
-    
+
     except Exception as e:
         return {
             "status": "error",
@@ -427,7 +424,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: "3.12"
       - run: pip install -e ".[test]"
       - run: pytest tests/test_generate_schemas.py -v
 ```
@@ -436,13 +433,13 @@ jobs:
 
 ## 📚 Reference Documentation
 
-| Document | Purpose |
-|----------|---------|
-| [agent/tools/README.md](agent/tools/README.md) | Complete tool usage guide |
+| Document                                                                   | Purpose                                |
+| -------------------------------------------------------------------------- | -------------------------------------- |
+| [agent/tools/README.md](agent/tools/README.md)                             | Complete tool usage guide              |
 | [docs/GENERATE_SCHEMAS_CONVERSION.md](docs/GENERATE_SCHEMAS_CONVERSION.md) | TypeScript → Python conversion details |
-| [docs/REFACTORING_PATTERNS.md](docs/REFACTORING_PATTERNS.md) | Agent tool refactoring patterns |
-| [genai-toolbox/tools.yaml](genai-toolbox/tools.yaml) | Tool configuration |
-| [tests/test_generate_schemas.py](tests/test_generate_schemas.py) | Test suite |
+| [docs/REFACTORING_PATTERNS.md](docs/REFACTORING_PATTERNS.md)               | Agent tool refactoring patterns        |
+| [genai-toolbox/tools.yaml](genai-toolbox/tools.yaml)                       | Tool configuration                     |
+| [tests/test_generate_schemas.py](tests/test_generate_schemas.py)           | Test suite                             |
 
 ---
 

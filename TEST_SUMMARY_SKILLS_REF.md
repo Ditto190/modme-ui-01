@@ -229,15 +229,15 @@ Instead of:
 
 ## 🎯 Test Coverage Summary
 
-| Module | Lines | Covered | % Coverage |
-|--------|-------|---------|------------|
-| **errors.py** | 25 | 25 | 100% |
-| **models.py** | 45 | 45 | 100% |
-| **parser.py** | 120 | 115 | 96% |
-| **validator.py** | 180 | 175 | 97% |
-| **prompt.py** | 60 | 58 | 97% |
-| **cli.py** | 110 | 95 | 86% |
-| **Total** | 540 | 513 | **95%** |
+| Module           | Lines | Covered | % Coverage |
+| ---------------- | ----- | ------- | ---------- |
+| **errors.py**    | 25    | 25      | 100%       |
+| **models.py**    | 45    | 45      | 100%       |
+| **parser.py**    | 120   | 115     | 96%        |
+| **validator.py** | 180   | 175     | 97%        |
+| **prompt.py**    | 60    | 58      | 97%        |
+| **cli.py**       | 110   | 95      | 86%        |
+| **Total**        | 540   | 513     | **95%**    |
 
 **Not Covered**:
 

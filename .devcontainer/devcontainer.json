@@ -4,7 +4,6 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
-  
   "features": {
     "ghcr.io/devcontainers/features/node:1": { 
       "version": "22.9.0",
@@ -23,7 +22,6 @@
       "dockerComposeVersion": "v2"
     }
   },
-
   "customizations": {
     "vscode": {
       "extensions": [
@@ -44,7 +42,9 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.codeActionsOnSave": {
-          "source.fixAll.eslint": "explicit"
+          "source.organizeImports": "always",
+          "source.fixAll.eslint": "explicit",
+          "source.sortImports": "explicit"
         },
         "files.autoSave": "afterDelay",
         "files.autoSaveDelay": 1000,
@@ -55,8 +55,14 @@
         "python.linting.flake8Enabled": true,
         "python.formatting.provider": "black",
         "tailwindCSS.experimental.classRegex": [
-          ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-          ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+          [
+            "cva\\(([^)]*)\\)",
+            "[\"'`]([^\"'`]*).*?[\"'`]"
+          ],
+          [
+            "cx\\(([^)]*)\\)",
+            "(?:'|\"|`)([^']*)(?:'|\"|`)"
+          ]
         ],
         "[python]": {
           "editor.defaultFormatter": "ms-python.python",
@@ -70,12 +76,30 @@
         },
         "[json]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "editor.lightbulb.enable": true
+      },
+      "keybindings": [
+        {
+          "key": "ctrl+shift+r",
+          "command": "editor.action.codeAction",
+          "args": {
+            "kind": "refactor"
+          }
+        },
+        {
+          "key": "ctrl+shift+r ctrl+e",
+          "command": "editor.action.codeAction",
+          "args": {
+            "kind": "refactor.extract.function",
+            "apply": "first"
+          }
         }
-      }
+      ]
     }
   },
 
-  "forwardPorts": [3000, 8000],
+  "forwardPorts": [3000, 8000, 8001, 8002],
   "portsAttributes": {
     "3000": {
       "label": "Next.js UI",
@@ -84,23 +108,29 @@
     "8000": {
       "label": "Python ADK Agent",
       "onAutoForward": "notify"
+    },
+    "8001": {
+      "label": "ChromaDB",
+      "onAutoForward": "notify"
+    },
+    "8002": {
+      "label": "Session Memory",
+      "onAutoForward": "notify"
     }
   },
-
   "postCreateCommand": "bash .devcontainer/post-create.sh",
-  
+
   "remoteEnv": {
     "NODE_ENV": "development",
-    "PYTHONPATH": "${workspaceFolder}/agent"
+    "PYTHONPATH": "${containerWorkspaceFolder}/agent"
   },
-
   "remoteUser": "vscode",
-  
-  "mounts": [
-    "source=${localWorkspaceFolder}/data,target=${containerWorkspaceFolder}/data,type=bind,consistency=cached"
-  ],
 
+  "mounts": [
+    "source=${localWorkspaceFolder}/data,target=${containerWorkspaceFolder}/data,type=bind,consistency=cached",
+    "source=${localWorkspaceFolder}/.devcontainer/mcp-servers,target=/home/vscode/.config/mcp,type=bind,consistency=cached"
+  ],
   "containerEnv": {
-    "WORKSPACE_TYPE": "genui-devcontainer"
+    "WORKSPACE_TYPE": "genui-devcontainer-multiworktree"
   }
 }

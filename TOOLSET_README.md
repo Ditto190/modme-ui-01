@@ -63,16 +63,16 @@ npm run detect:changes
 
 ## 🎯 Features
 
-| Feature | Description | Status |
-|---------|-------------|--------|
-| 🔍 **Auto-Detection** | Scans code for new toolsets | ✅ |
-| ✅ **Validation** | 10-job validation suite | ✅ |
-| 🔄 **Deprecation** | Backward-compatible aliases | ✅ |
-| 📚 **Documentation** | Auto-generated migration guides | ✅ |
-| 🧪 **Testing** | Schema, naming, integration tests | ✅ |
-| 🔐 **Security** | npm audit, secret scanning | ✅ |
-| 📊 **Monitoring** | GitHub issue tracking | ✅ |
-| 🚀 **CI/CD** | Fully automated workflows | ✅ |
+| Feature               | Description                       | Status |
+| --------------------- | --------------------------------- | ------ |
+| 🔍 **Auto-Detection** | Scans code for new toolsets       | ✅     |
+| ✅ **Validation**     | 10-job validation suite           | ✅     |
+| 🔄 **Deprecation**    | Backward-compatible aliases       | ✅     |
+| 📚 **Documentation**  | Auto-generated migration guides   | ✅     |
+| 🧪 **Testing**        | Schema, naming, integration tests | ✅     |
+| 🔐 **Security**       | npm audit, secret scanning        | ✅     |
+| 📊 **Monitoring**     | GitHub issue tracking             | ✅     |
+| 🚀 **CI/CD**          | Fully automated workflows         | ✅     |
 
 ---
 
@@ -159,7 +159,7 @@ toolset = get_toolset("old_ui_elements")  # Resolves to "ui_elements"
               │  toolsets.json     │◄──── Python Agent
               │  (Registry)        │      loads at runtime
               └────────────────────┘
-                        
+
   Need to deprecate? ──┐
                        ▼
               ┌────────────────────┐
@@ -322,14 +322,14 @@ Step-by-step instructions for transitioning
 
 ## 📊 System Status
 
-| Component | Files | Lines | Status |
-|-----------|-------|-------|--------|
-| Documentation | 3 | 1,041 | ✅ Complete |
-| Workflows | 4 | 1,123 | ✅ Complete |
-| Scripts | 4+ | 841+ | ✅ Core done |
-| Config | 3 | 150 | ✅ Complete |
-| Python | 2 | 523 | ✅ Complete |
-| **Total** | **16+** | **3,678+** | **✅ Production-Ready** |
+| Component     | Files   | Lines      | Status                  |
+| ------------- | ------- | ---------- | ----------------------- |
+| Documentation | 3       | 1,041      | ✅ Complete             |
+| Workflows     | 4       | 1,123      | ✅ Complete             |
+| Scripts       | 4+      | 841+       | ✅ Core done            |
+| Config        | 3       | 150        | ✅ Complete             |
+| Python        | 2       | 523        | ✅ Complete             |
+| **Total**     | **16+** | **3,678+** | **✅ Production-Ready** |
 
 ---
 
@@ -375,7 +375,7 @@ See [TOOLSET_MANAGEMENT.md](/docs/TOOLSET_MANAGEMENT.md) for:
 
 **Built with** ❤️ **for the ModMe GenUI Team**
 
-*Inspired by [GitHub MCP Server](https://github.com/github/github-mcp-server)*
+_Inspired by [GitHub MCP Server](https://github.com/github/github-mcp-server)_
 
 **Version 1.0.0** | **2025-01-01**
 

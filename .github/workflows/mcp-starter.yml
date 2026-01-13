@@ -4,21 +4,34 @@ on:
   workflow_dispatch:
     inputs:
       run-script:
-        description: 'Run the starter script on the runner (true/false)'
+        description: "Run the starter script on the runner (true/false)"
         required: false
-        default: 'true'
+        default: "true"
   push:
-    branches: [ main, feature/* ]
+    branches: [main, feature/*]
 
 jobs:
   start-mcp-scripts:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
-      - name: Setup PowerShell
-        uses: PowerShell/PowerShell@v2
+      - name: Install Smart Coding MCP
+        run: |
+          npm install -g smart-coding-mcp
+          npx smart-coding-mcp --version
 
+      - name: Test MCP Server Health
+        continue-on-error: true
+        run: |
+          npx smart-coding-mcp --workspace . --test
+
+
+      # Ubuntu runners have PowerShell (pwsh) pre-installed
       - name: Make starter script executable (if present)
         run: |
           chmod +x ./scripts/start-mcp-servers.ps1 || true

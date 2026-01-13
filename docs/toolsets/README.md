@@ -14,10 +14,11 @@ Complete reference for all available toolsets in the ModifyMe GenUI project.
 
 - **[UI Elements](ui_elements.md)** (`ui_elements`)  
   Manage canvas UI elements (StatCards, DataTables, ChartCards)  
-  *Tools*: 3 | *Category*: generative_ui
+  _Tools_: 3 | _Category_: generative_ui
 - **[Theme Management](theme.md)** (`theme`)  
   Control application theme colors  
   *Tools*: 1 | *Category*: frontend
+  _Tools_: 1 | _Category_: frontend
 
 ---
 
@@ -31,4 +32,4 @@ See [toolset-relationships.svg](toolset-relationships.svg) for visual diagram.
 
 ---
 
-*Auto-generated from [agent/toolsets.json](../../agent/toolsets.json)*
+_Auto-generated from [agent/toolsets.json](../../agent/toolsets.json)_

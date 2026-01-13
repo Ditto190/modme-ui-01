@@ -39,17 +39,17 @@ npm run context "Issue title" "Issue body text"
 
 ## 📝 Current Concepts (9)
 
-| Concept | Keywords | Label | Files |
-|---------|----------|-------|-------|
-| **StatCard** | statcard, stat card, metric card | component-registry | StatCard.tsx |
-| **DataTable** | datatable, data table, table | component-registry | DataTable.tsx |
-| **ChartCard** | chartcard, chart, visualization | component-registry | ChartCard.tsx |
-| **Agent Tools** | upsert_ui_element, tool_context, python agent, adk agent | agent | main.py |
-| **State Sync** | state sync, tool_context.state, useCoAgent | state-sync | main.py, types.ts |
-| **Toolset** | toolset, toolsets.json, deprecation | toolset | toolsets.json |
-| **Frontend** | react, next.js, copilotkit | frontend | page.tsx, route.ts |
-| **CI/CD** | workflow, github actions | ci-cd | .github/workflows/ |
-| **Testing** | test, pytest, jest | testing | tests/ |
+| Concept         | Keywords                                                 | Label              | Files              |
+| --------------- | -------------------------------------------------------- | ------------------ | ------------------ |
+| **StatCard**    | statcard, stat card, metric card                         | component-registry | StatCard.tsx       |
+| **DataTable**   | datatable, data table, table                             | component-registry | DataTable.tsx      |
+| **ChartCard**   | chartcard, chart, visualization                          | component-registry | ChartCard.tsx      |
+| **Agent Tools** | upsert_ui_element, tool_context, python agent, adk agent | agent              | main.py            |
+| **State Sync**  | state sync, tool_context.state, useCoAgent               | state-sync         | main.py, types.ts  |
+| **Toolset**     | toolset, toolsets.json, deprecation                      | toolset            | toolsets.json      |
+| **Frontend**    | react, next.js, copilotkit                               | frontend           | page.tsx, route.ts |
+| **CI/CD**       | workflow, github actions                                 | ci-cd              | .github/workflows/ |
+| **Testing**     | test, pytest, jest                                       | testing            | tests/             |
 
 ---
 
@@ -106,14 +106,17 @@ npm run build
 ## 🔍 Detected Context
 
 This issue appears to be related to:
+
 - **StatCard**
 - **Agent Tools**
 
 ### 📁 Relevant Files
+
 - [`src/components/registry/StatCard.tsx`] - StatCard component
 - [`agent/main.py`] - Agent tool definitions
 
 ### 📚 Documentation
+
 - [docs/REFACTORING_PATTERNS.md#component-registry]
 - [.github/copilot-instructions.md#tool-schema]
 ```
@@ -122,38 +125,38 @@ This issue appears to be related to:
 
 ## 📊 Performance
 
-| Metric | Value |
-|--------|-------|
-| Build Time | ~5 seconds |
-| Analysis Time | <1 second |
-| Total Overhead | +5-10 seconds per issue |
-| Concepts Detected | 1-3 per issue (avg) |
-| Files Linked | 2-5 per issue (avg) |
+| Metric            | Value                   |
+| ----------------- | ----------------------- |
+| Build Time        | ~5 seconds              |
+| Analysis Time     | <1 second               |
+| Total Overhead    | +5-10 seconds per issue |
+| Concepts Detected | 1-3 per issue (avg)     |
+| Files Linked      | 2-5 per issue (avg)     |
 
 ---
 
 ## 🔗 Key Files
 
-| File | Purpose |
-|------|---------|
+| File                                                   | Purpose                    |
+| ------------------------------------------------------ | -------------------------- |
 | `scripts/knowledge-management/issue-context-mapper.ts` | Main KB engine (420 lines) |
-| `scripts/knowledge-management/test-kb-mapper.js` | Test suite (140 lines) |
-| `.github/workflows/issue-labeler.yml` | Workflow integration |
-| `docs/KNOWLEDGE_BASE_INTEGRATION.md` | Full docs (750 lines) |
-| `docs/KB_IMPLEMENTATION_SUMMARY.md` | Implementation summary |
+| `scripts/knowledge-management/test-kb-mapper.js`       | Test suite (140 lines)     |
+| `.github/workflows/issue-labeler.yml`                  | Workflow integration       |
+| `docs/KNOWLEDGE_BASE_INTEGRATION.md`                   | Full docs (750 lines)      |
+| `docs/KB_IMPLEMENTATION_SUMMARY.md`                    | Implementation summary     |
 
 ---
 
 ## 🎯 Key Benefits
 
-| vs | ripgrep | index.ts | tree logger | **KB Mapper** |
-|----|---------|----------|-------------|---------------|
-| **Semantic understanding** | ❌ | ⚠️ | ❌ | ✅ |
-| **Documentation links** | ❌ | ⚠️ | ❌ | ✅ |
-| **Label suggestions** | ❌ | ❌ | ❌ | ✅ |
-| **Fast execution** | ✅ | ⚠️ | ⚠️ | ✅ |
-| **GitHub Actions friendly** | ⚠️ | ✅ | ✅ | ✅ |
-| **Zero dependencies** | ❌ | ❌ | ❌ | ✅ |
+| vs                          | ripgrep | index.ts | tree logger | **KB Mapper** |
+| --------------------------- | ------- | -------- | ----------- | ------------- |
+| **Semantic understanding**  | ❌      | ⚠️       | ❌          | ✅            |
+| **Documentation links**     | ❌      | ⚠️       | ❌          | ✅            |
+| **Label suggestions**       | ❌      | ❌       | ❌          | ✅            |
+| **Fast execution**          | ✅      | ⚠️       | ⚠️          | ✅            |
+| **GitHub Actions friendly** | ⚠️      | ✅       | ✅          | ✅            |
+| **Zero dependencies**       | ❌      | ❌       | ❌          | ✅            |
 
 ---
 
@@ -181,7 +184,7 @@ This issue appears to be related to:
 
 ```typescript
 // Make keywords more specific
-keywords: ["data table", "datatable"] // Better than just "table"
+keywords: ["data table", "datatable"]; // Better than just "table"
 ```
 
 ### Files not found (404)?
