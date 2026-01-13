@@ -350,7 +350,7 @@ cp /path/to/modme-ui-01/COMPONENT_MANIFEST.json docs/reference/
 
 ### Step 5.2: Create Unified README
 
-```bash
+````bash
 # Update root README.md
 cat > README.md << 'EOF'
 # Your Project Name
