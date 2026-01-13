@@ -722,7 +722,7 @@ EOF
 
 #### Step 5.3: Create Unified Documentation
 
-```bash
+````bash
 # Update root README
 cat > README.md << 'EOF'
 # ModMe Monorepo

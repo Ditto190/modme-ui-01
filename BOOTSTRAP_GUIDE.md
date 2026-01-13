@@ -394,7 +394,7 @@ your-project/
 - 🔧 **Toolset Management**: Validation, aliases, deprecation
 - 📊 **ChromaDB Indexing**: Code search & RAG
 - 🚀 **14 Deploy Platforms**: Vercel, Cloudflare, AWS, etc.
-EOF
+  EOF
 
 ````
 
