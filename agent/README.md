@@ -42,21 +42,25 @@ This agent provides the backend orchestration for the ModMe GenUI Workbench, com
 ### Core Components
 
 #### 1. ADK Agent (`main.py`)
+
 - **Framework**: Google Agent Development Kit
 - **Model**: Gemini 2.5 Flash
 - **State Management**: Callback context with shared state
 - **Tools**: UI manipulation functions (upsert, remove, clear)
 
 #### 2. Semantic Router (`routes/`)
+
 - **Purpose**: Intent classification for multi-agent orchestration
-- **Modes**: 
+- **Modes**:
   - `local` (default): HuggingFace sentence-transformers, privacy-first
   - `cloud`: OpenAI embeddings, higher accuracy
 - **Routes**: 8 specialized agent types (dashboard, data_query, visualization, etc.)
 - **Features**: Single routing, ensemble (top-k), continuous learning
 
 #### 3. Agent Functions (`tools/` - Phase 2)
+
 Specialized agents for different capabilities:
+
 - Dashboard generation
 - Data queries and SQL
 - Visualization creation
@@ -99,6 +103,7 @@ agent/
 1. **Install Dependencies**
 
 Using `uv` (recommended):
+
 ```bash
 cd agent
 uv sync
@@ -111,6 +116,7 @@ uv sync --extra test
 ```
 
 Using `pip`:
+
 ```bash
 cd agent
 pip install -e .
@@ -120,9 +126,10 @@ pip install -e ".[local]"
 pip install -e ".[test]"
 ```
 
-2. **Environment Configuration**
+1. **Environment Configuration**
 
 Copy `.env.example` to `.env` and configure:
+
 ```bash
 # Required: Google API key for Gemini
 GOOGLE_API_KEY=your_google_api_key_here
@@ -132,7 +139,7 @@ SEMANTIC_ROUTER_MODE=local  # or "cloud"
 SEMANTIC_ROUTE_THRESHOLD=0.5
 ```
 
-3. **Run the Agent**
+1. **Run the Agent**
 
 ```bash
 # From repository root
@@ -198,10 +205,10 @@ The agent maintains shared state synchronized with the frontend:
 def my_tool(tool_context: ToolContext, arg: str) -> dict:
     # Read state
     elements = tool_context.state.get("elements", [])
-    
+
     # Modify state
     tool_context.state["elements"].append(new_element)
-    
+
     return {"status": "success"}
 ```
 
@@ -217,23 +224,23 @@ Tools are functions registered with the ADK agent:
 def my_new_tool(tool_context: ToolContext, param1: str, param2: int) -> Dict[str, Any]:
     """
     Tool description for the LLM.
-    
+
     Args:
         param1: Description of parameter 1
         param2: Description of parameter 2
-    
+
     Returns:
         Dictionary with operation results
     """
     # Access state
     state = tool_context.state
-    
+
     # Tool logic here
     result = do_something(param1, param2)
-    
+
     # Update state if needed
     state["key"] = result
-    
+
     return {"status": "success", "result": result}
 
 # Register with agent
@@ -257,6 +264,7 @@ agent = LlmAgent(
 ### Current Status (Phase 1)
 
 ✅ Core infrastructure implemented:
+
 - 8 route definitions with diverse utterances
 - Local and cloud mode support
 - Singleton router pattern
@@ -289,14 +297,14 @@ def handle_query(tool_context: ToolContext, query: str) -> dict:
     """Route query to appropriate agent and execute."""
     from routes.router import get_router
     from tools.agent_map import AGENT_MAP
-    
+
     router = get_router()
     route = router.route(query)
-    
+
     if route and route.name in AGENT_MAP:
         agent_func = AGENT_MAP[route.name]
         return agent_func(tool_context, query)
-    
+
     return {"error": "No matching agent"}
 ```
 
@@ -341,6 +349,7 @@ LOG_LEVEL=debug python main.py
 ## Performance Considerations
 
 ### Current Performance
+
 - **Agent Response Time**: 500ms - 2s (depends on model)
 - **State Sync**: <100ms
 - **Tool Execution**: 10-500ms (depends on tool)
@@ -375,6 +384,7 @@ LOG_LEVEL=debug python main.py
 ## Deployment
 
 ### Development
+
 ```bash
 # Run both UI and agent
 npm run dev

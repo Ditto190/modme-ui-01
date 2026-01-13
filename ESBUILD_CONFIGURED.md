@@ -10,24 +10,28 @@
 ✅ **esbuild.config.mjs** created with 6 build targets  
 ✅ **Output directories** created (dist folders ready)  
 ✅ **Setup scripts** provided (PowerShell + Bash)  
-✅ **Documentation** generated (3 guides)  
+✅ **Documentation** generated (3 guides)
 
 ## 📁 Files Created
 
 ### Configuration
+
 - **esbuild.config.mjs** — Main esbuild configuration (ESM format)
 
 ### Documentation
+
 - **ESBUILD_SETUP.md** — Comprehensive configuration reference
 - **ESBUILD_QUICK_START.md** — Quick start guide with examples
 - **ESBUILD_INTEGRATION.md** — Integration patterns & CI/CD setup
 - **ESBUILD_CONFIGURED.md** — This status file
 
 ### Setup Scripts
+
 - **scripts/setup-esbuild.ps1** — Windows PowerShell setup
 - **scripts/setup-esbuild.sh** — Unix/macOS Bash setup
 
 ### Output Directories
+
 - **agent-generator/dist/** — Agent-generator bundles
 - **scripts/knowledge-management/dist/** — Docs tools bundles
 - **scripts/toolset-management/dist/** — Toolset tools bundles
@@ -62,6 +66,7 @@ npm run build:esbuild
 ```
 
 Expected output:
+
 ```
 Building agentGenerator...
   Entry: agent-generator/src/scripts/generate.ts
@@ -104,14 +109,14 @@ node scripts/knowledge-management/dist/sync-docs.mjs --help
 
 ## 📊 Build Targets
 
-| Target | Input | Output |
-|--------|-------|--------|
-| **agentGenerator** | `agent-generator/src/scripts/generate.ts` | `agent-generator/dist/generate.mjs` |
-| **syncDocs** | `scripts/knowledge-management/sync-docs.js` | `scripts/knowledge-management/dist/sync-docs.mjs` |
-| **validateToolsets** | `scripts/toolset-management/validate-toolsets.js` | `scripts/toolset-management/dist/validate-toolsets.mjs` |
-| **detectChanges** | `scripts/toolset-management/detect-toolset-changes.js` | `scripts/toolset-management/dist/detect-toolset-changes.mjs` |
-| **testAliases** | `scripts/toolset-management/test-alias-resolution.js` | `scripts/toolset-management/dist/test-alias-resolution.mjs` |
-| **generateDiagram** | `scripts/knowledge-management/generate-diagram.js` | `scripts/knowledge-management/dist/generate-diagram.mjs` |
+| Target               | Input                                                  | Output                                                       |
+| -------------------- | ------------------------------------------------------ | ------------------------------------------------------------ |
+| **agentGenerator**   | `agent-generator/src/scripts/generate.ts`              | `agent-generator/dist/generate.mjs`                          |
+| **syncDocs**         | `scripts/knowledge-management/sync-docs.js`            | `scripts/knowledge-management/dist/sync-docs.mjs`            |
+| **validateToolsets** | `scripts/toolset-management/validate-toolsets.js`      | `scripts/toolset-management/dist/validate-toolsets.mjs`      |
+| **detectChanges**    | `scripts/toolset-management/detect-toolset-changes.js` | `scripts/toolset-management/dist/detect-toolset-changes.mjs` |
+| **testAliases**      | `scripts/toolset-management/test-alias-resolution.js`  | `scripts/toolset-management/dist/test-alias-resolution.mjs`  |
+| **generateDiagram**  | `scripts/knowledge-management/generate-diagram.js`     | `scripts/knowledge-management/dist/generate-diagram.mjs`     |
 
 ## 🎯 Common Commands
 
@@ -247,9 +252,9 @@ For more troubleshooting, see **ESBUILD_SETUP.md**.
 
 ## 🎓 Learn More
 
-- **esbuild Official**: https://esbuild.github.io/
-- **ESM Modules**: https://nodejs.org/api/esm.html
-- **Node.js 22+ Features**: https://nodejs.org/en/
+- **esbuild Official**: <https://esbuild.github.io/>
+- **ESM Modules**: <https://nodejs.org/api/esm.html>
+- **Node.js 22+ Features**: <https://nodejs.org/en/>
 
 ---
 

@@ -41,10 +41,12 @@ code .
 ### Step 1.3: Trigger DevContainer Build
 
 In VS Code:
+
 - Look for notification: "Folder contains a Dev Container configuration file"
 - Click: "Reopen in Container"
 
 Or use Command Palette:
+
 - Press: `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (macOS)
 - Type: "Dev Containers: Reopen in Container"
 - Press: Enter
@@ -122,6 +124,7 @@ npm run dev
 ```
 
 **Expected Output**:
+
 ```
 ● Building...
   ⚡ Compiled successfully
@@ -130,6 +133,7 @@ npm run dev
 ```
 
 And in another terminal window:
+
 ```bash
 # Check Python agent (opens new terminal in VS Code)
 # Ctrl + Shift + ` to open new terminal
@@ -142,13 +146,15 @@ curl http://localhost:8000/health
 ### Step 1.7: Verify Ports
 
 In VS Code:
+
 - Open Command Palette
 - Type: "Dev Containers: Open in Browser"
-- Should open http://localhost:3000
+- Should open <http://localhost:3000>
 
 **Expected**: Next.js UI loads (or shows dev loading screen)
 
 Check ports forwarded:
+
 - Ports view in VS Code (usually shown in bottom panel)
 - Should see:
   - 3000 (Next.js UI)
@@ -158,6 +164,7 @@ Check ports forwarded:
 ### Step 1.8: Verify File Changes Visible
 
 In VS Code editor:
+
 - Open a source file (e.g., `src/app/page.tsx`)
 - Make a small change (add comment)
 - File should show as modified
@@ -288,12 +295,14 @@ This means 2 VS Code windows, 2 devcontainers, but same Git repo
 ### Step 3.2: Verify No Port Conflicts
 
 Main worktree terminal:
+
 ```bash
 npm run dev
 # Listening on :3000 and :8000
 ```
 
 Feature worktree terminal:
+
 ```bash
 npm run dev
 # Should listen on :3000 and :8000 (or find next available ports)
@@ -303,12 +312,14 @@ npm run dev
 ### Step 3.3: Verify Isolation
 
 In main worktree:
+
 ```bash
 git log --oneline | head -1
 # fc3ea20  (most recent devcontainer commit)
 ```
 
 In feature worktree:
+
 ```bash
 git log --oneline | head -1
 # ff95b47  (older commit on relaxed-hugle)
@@ -319,6 +330,7 @@ git log --oneline | head -1
 ### Step 3.4: Make Changes in Both
 
 Main worktree:
+
 ```bash
 echo "# main change" >> src/app/page.tsx
 git add .
@@ -326,6 +338,7 @@ git commit -m "feat: main worktree change"
 ```
 
 Feature worktree:
+
 ```bash
 echo "# feature change" >> src/app/page.tsx
 git add .
@@ -351,6 +364,7 @@ git log --oneline | head -1
 ### Issue: "Docker daemon not running"
 
 **Solution**:
+
 ```bash
 # Windows: Start Docker Desktop
 # macOS: Start Docker.app
@@ -360,6 +374,7 @@ git log --oneline | head -1
 ### Issue: DevContainer build hangs
 
 **Solution**:
+
 ```bash
 # Cancel the build (Ctrl+C)
 # Rebuild: Dev Containers: Rebuild Container
@@ -371,6 +386,7 @@ docker system prune -a  # Remove old images
 ### Issue: npm install times out
 
 **Solution**:
+
 ```bash
 # Inside container
 npm cache clean --force
@@ -383,6 +399,7 @@ npm install --fetch-timeout=600000
 ### Issue: Python venv not found
 
 **Solution**:
+
 ```bash
 # Inside container
 cd agent
@@ -394,6 +411,7 @@ pip install -e .
 ### Issue: Ports not forwarding
 
 **Solution**:
+
 ```bash
 # Restart devcontainer
 Dev Containers: Reopen in Container
@@ -423,7 +441,7 @@ git worktree add ..relaxed-hugle -b relaxed-hugle
 
 ## Success Criteria
 
-### ✅ Test 1 (Main Worktree) Passes When:
+### ✅ Test 1 (Main Worktree) Passes When
 
 - [ ] DevContainer builds and post-create.sh completes
 - [ ] Branch detected correctly: `feature/genui-workbench-refactor`
@@ -432,7 +450,7 @@ git worktree add ..relaxed-hugle -b relaxed-hugle
 - [ ] Git commands work inside container
 - [ ] File changes visible in local filesystem
 
-### ✅ Test 2 (Feature Worktree) Passes When:
+### ✅ Test 2 (Feature Worktree) Passes When
 
 - [ ] DevContainer builds using same config
 - [ ] Branch detected correctly: `relaxed-hugle`
@@ -441,7 +459,7 @@ git worktree add ..relaxed-hugle -b relaxed-hugle
 - [ ] File changes DO NOT affect main worktree
 - [ ] Git shows separate branch history
 
-### ✅ Test 3 (Simultaneous) Passes When:
+### ✅ Test 3 (Simultaneous) Passes When
 
 - [ ] Both worktrees run devcontainers simultaneously
 - [ ] Ports forward correctly for both
@@ -456,6 +474,7 @@ git worktree add ..relaxed-hugle -b relaxed-hugle
 If all tests pass ✅:
 
 1. **Document Test Results**
+
    ```bash
    echo "## Test Results - $(date)
    - Main worktree: ✅ PASSED
@@ -465,6 +484,7 @@ If all tests pass ✅:
    ```
 
 2. **Push Test Documentation**
+
    ```bash
    git add .
    git commit -m "docs: Record successful devcontainer tests"
@@ -478,6 +498,7 @@ If all tests pass ✅:
    - Scale to multiple AI agents if needed
 
 4. **Optional: Test Additional Worktrees**
+
    ```bash
    # Create new feature worktree
    git worktree add ../feature-universal-workbench -b feature/universal-workbench-integration
@@ -503,15 +524,15 @@ Once testing is complete, share these with team:
 
 ## Estimated Timeline
 
-| Step | Time | Notes |
-|------|------|-------|
-| Test 1 Setup | 5 min | First build slower |
-| Test 1 Run | 10 min | Install deps, test services |
-| Test 2 Setup | 2 min | Second build faster (cached) |
-| Test 2 Run | 10 min | Test isolation, file changes |
-| Test 3 Simultaneous | 5 min | Run both at once |
-| Cleanup & Commit | 3 min | Document results |
-| **TOTAL** | **~35 min** | |
+| Step                | Time        | Notes                        |
+| ------------------- | ----------- | ---------------------------- |
+| Test 1 Setup        | 5 min       | First build slower           |
+| Test 1 Run          | 10 min      | Install deps, test services  |
+| Test 2 Setup        | 2 min       | Second build faster (cached) |
+| Test 2 Run          | 10 min      | Test isolation, file changes |
+| Test 3 Simultaneous | 5 min       | Run both at once             |
+| Cleanup & Commit    | 3 min       | Document results             |
+| **TOTAL**           | **~35 min** |                              |
 
 ---
 

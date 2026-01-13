@@ -56,6 +56,7 @@ This document describes the integration of VT Code as an MCP (Model Context Prot
 ## New Components
 
 ### 1. MCP Client (`agent/mcp_vtcode.py`)
+
 - **Purpose**: HTTP client for communicating with VT Code's MCP server
 - **Key Features**:
   - Async HTTP client using `httpx`
@@ -64,6 +65,7 @@ This document describes the integration of VT Code as an MCP (Model Context Prot
   - Methods for file editing, search, PTY sessions, symbol search
 
 ### 2. Health Check (`agent/health.py`)
+
 - **Purpose**: Verify VT Code server availability
 - **Key Features**:
   - Connection health checks
@@ -71,6 +73,7 @@ This document describes the integration of VT Code as an MCP (Model Context Prot
   - User-friendly status messages
 
 ### 3. Code Tools (`agent/tools/code_tools.py`)
+
 - **Purpose**: High-level tools that delegate to VT Code
 - **Tools Implemented**:
   1. `edit_component` - Semantic editing of GenUI components
@@ -79,6 +82,7 @@ This document describes the integration of VT Code as an MCP (Model Context Prot
   4. `run_build_check` - TypeScript compilation verification
 
 ### 4. Agent Integration (`agent/main.py`)
+
 - **Updates**:
   - Import code tools
   - Register tools with LlmAgent
@@ -137,6 +141,7 @@ Agent returns success message to frontend
 ### Environment Variables
 
 **Root `.env`:**
+
 ```bash
 VTCODE_MCP_URL=http://localhost:8080
 VTCODE_ENABLED=true
@@ -144,6 +149,7 @@ VTCODE_TIMEOUT_SECONDS=30
 ```
 
 **Agent `.env`:**
+
 ```bash
 VTCODE_MCP_URL=http://localhost:8080
 VTCODE_ENABLED=true
@@ -152,6 +158,7 @@ VTCODE_ENABLED=true
 ### Startup Scripts
 
 **Updated `package.json`:**
+
 ```json
 {
   "scripts": {
@@ -179,16 +186,19 @@ VTCODE_ENABLED=true
 ## Error Handling
 
 ### VT Code Not Running
+
 - Tools return error status with descriptive messages
 - Agent can gracefully continue with other tools
 - Frontend displays helpful error to user
 
 ### Connection Timeout
+
 - Configurable timeout (default 30s)
 - Failed requests return error status
 - No cascading failures
 
 ### Parse Errors
+
 - VT Code validates syntax before edits
 - Returns specific error messages
 - Agent can retry or ask for clarification
@@ -205,16 +215,19 @@ VTCODE_ENABLED=true
 ## Testing Strategy
 
 ### Unit Tests (Future)
+
 - Mock VT Code server responses
 - Test error handling
 - Validate data transformations
 
 ### Integration Tests (Future)
+
 - Spin up real VT Code instance
 - Test full workflow
 - Verify file changes
 
 ### CI/CD Integration
+
 - Existing CI workflow (`uv sync`) will install new dependencies
 - Syntax validation runs on every commit
 - Build checks verify no breaking changes
@@ -239,6 +252,7 @@ The integration is designed to be non-invasive and optional.
 ## Dependencies Added
 
 **Python** (`agent/pyproject.toml`):
+
 - `httpx>=0.27.0` - Async HTTP client
 - `pydantic>=2.0.0` - Type validation (upgraded from v1)
 

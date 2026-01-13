@@ -35,11 +35,13 @@ pip install -r requirements.txt
 Before running the code, you need to set your OpenAI API key as an environment variable:
 
 **macOS/Linux:**
+
 ```sh
 export OPENAI_API_KEY="your_openai_api_key"
 ```
 
 **Windows:**
+
 ```sh
 setx OPENAI_API_KEY "your_openai_api_key"
 ```
@@ -56,7 +58,7 @@ uvicorn simple_workflow:app --port 8008 --reload
 
 > The command above starts the simple agent chat workflow. You can explore other workflows available in the `agent-py` directory, try them out, or even create your own. Each workflow file includes the command to run it at the bottom.
 
-The backend server will start at http://localhost:8008.
+The backend server will start at <http://localhost:8008>.
 
 ## Frontend Setup
 
@@ -77,7 +79,7 @@ The command below assumes that you are already inside the `ui` directory. If not
 pnpm run dev
 ```
 
-The frontend application will start at http://localhost:3000.
+The frontend application will start at <http://localhost:3000>.
 
 After starting the frontend, please allow a few moments for the Next.js application to compile fully. Once compilation is complete, you can interact with the chat window to communicate with the AG2 agent.
 

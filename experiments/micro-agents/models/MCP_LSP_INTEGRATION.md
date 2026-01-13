@@ -152,10 +152,7 @@ server.setRequestHandler("tools/call", async (request) => {
 
     try {
       await embeddingService.initialize(modelKey || "minilm");
-      const embedding = await embeddingService.generateEmbedding(
-        text,
-        modelKey
-      );
+      const embedding = await embeddingService.generateEmbedding(text, modelKey);
 
       return {
         content: [
@@ -190,11 +187,7 @@ server.setRequestHandler("tools/call", async (request) => {
 
     try {
       await embeddingService.initialize(modelKey || "minilm");
-      const embeddings = await embeddingService.generateBatchEmbeddings(
-        texts,
-        modelKey,
-        batchSize
-      );
+      const embeddings = await embeddingService.generateBatchEmbeddings(texts, modelKey, batchSize);
 
       return {
         content: [
@@ -229,11 +222,7 @@ server.setRequestHandler("tools/call", async (request) => {
     const { query, context, indexPath } = request.params.arguments;
 
     try {
-      const results = await embeddingService.adaptiveRetrieval(
-        query,
-        context,
-        indexPath
-      );
+      const results = await embeddingService.adaptiveRetrieval(query, context, indexPath);
 
       return {
         content: [
@@ -317,15 +306,9 @@ const batchEmbeddingsSchema = {
 };
 
 // Generate Zod schemas + TypeScript types
-const generateEmbeddingModule = generateZodModule(
-  "generate_embedding",
-  generateEmbeddingSchema
-);
+const generateEmbeddingModule = generateZodModule("generate_embedding", generateEmbeddingSchema);
 
-const batchEmbeddingsModule = generateZodModule(
-  "generate_batch_embeddings",
-  batchEmbeddingsSchema
-);
+const batchEmbeddingsModule = generateZodModule("generate_batch_embeddings", batchEmbeddingsSchema);
 ```
 
 ---
@@ -372,30 +355,28 @@ connection.onInitialize((params: InitializeParams) => {
 });
 
 // Completion: Suggest model keys
-connection.onCompletion(
-  (params: TextDocumentPositionParams): CompletionItem[] => {
-    const document = documents.get(params.textDocument.uri);
-    if (!document) return [];
+connection.onCompletion((params: TextDocumentPositionParams): CompletionItem[] => {
+  const document = documents.get(params.textDocument.uri);
+  if (!document) return [];
 
-    const line = document.getText({
-      start: { line: params.position.line, character: 0 },
-      end: params.position,
-    });
+  const line = document.getText({
+    start: { line: params.position.line, character: 0 },
+    end: params.position,
+  });
 
-    // Detect embedding service usage
-    if (line.includes("embeddingService.") || line.includes("modelKey")) {
-      return Object.keys(MODELS).map((key, index) => ({
-        label: key,
-        kind: CompletionItemKind.Constant,
-        data: index,
-        detail: `${MODELS[key].dimensions}-dim embedding model`,
-        documentation: MODELS[key].description,
-      }));
-    }
-
-    return [];
+  // Detect embedding service usage
+  if (line.includes("embeddingService.") || line.includes("modelKey")) {
+    return Object.keys(MODELS).map((key, index) => ({
+      label: key,
+      kind: CompletionItemKind.Constant,
+      data: index,
+      detail: `${MODELS[key].dimensions}-dim embedding model`,
+      documentation: MODELS[key].description,
+    }));
   }
-);
+
+  return [];
+});
 
 // Hover: Show model information
 connection.onHover((params: TextDocumentPositionParams) => {
@@ -448,9 +429,7 @@ let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
   // Server path
-  const serverModule = context.asAbsolutePath(
-    path.join("out", "server", "lsp-server.js")
-  );
+  const serverModule = context.asAbsolutePath(path.join("out", "server", "lsp-server.js"));
 
   // Server options
   const serverOptions: ServerOptions = {
@@ -712,10 +691,7 @@ interface SkillTemplate {
   implementation: string;
 }
 
-async function generateAgentLibrary(
-  collectionName: string,
-  outputDir: string
-): Promise<void> {
+async function generateAgentLibrary(collectionName: string, outputDir: string): Promise<void> {
   // 1. Query indexed code for patterns
   const queries = [
     "function implementation patterns",
@@ -786,9 +762,7 @@ See [implementation.ts](./implementation.ts)
 `;
 }
 
-async function extractSkillPatterns(
-  searchResults: any[]
-): Promise<SkillTemplate[]> {
+async function extractSkillPatterns(searchResults: any[]): Promise<SkillTemplate[]> {
   // Use LLM to extract reusable patterns from search results
   // This would integrate with the MCP sampling tool
   return [];
@@ -925,10 +899,7 @@ async function searchJournal(
     const files = await fs.readdir(path.join(journalPath, dir));
     for (const file of files) {
       if (file.endsWith(".json")) {
-        const content = await fs.readFile(
-          path.join(journalPath, dir, file),
-          "utf-8"
-        );
+        const content = await fs.readFile(path.join(journalPath, dir, file), "utf-8");
         results.push(JSON.parse(content));
       }
     }
@@ -940,10 +911,7 @@ async function searchJournal(
   return results
     .map((entry) => ({
       ...entry,
-      similarity: embeddingService.cosineSimilarity(
-        queryEmbedding,
-        entry.embedding
-      ),
+      similarity: embeddingService.cosineSimilarity(queryEmbedding, entry.embedding),
     }))
     .sort((a, b) => b.similarity - a.similarity)
     .slice(0, 10);

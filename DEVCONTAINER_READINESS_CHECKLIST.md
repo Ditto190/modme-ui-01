@@ -25,6 +25,7 @@ Your repository **already has a complete DevContainer setup**. This checklist va
 ### Configuration Validation
 
 #### devcontainer.json Features
+
 - [x] Node.js 22.9.0 configured
 - [x] Python 3.12 configured
 - [x] GitHub CLI included
@@ -34,6 +35,7 @@ Your repository **already has a complete DevContainer setup**. This checklist va
 - [x] Post-create command configured
 
 #### Dockerfile Components
+
 - [x] Base image specified (mcr.microsoft.com/devcontainers/base:ubuntu)
 - [x] System dependencies installed
 - [x] uv (Python package manager) installed
@@ -42,6 +44,7 @@ Your repository **already has a complete DevContainer setup**. This checklist va
 - [x] Working directory set
 
 #### post-create.sh Script
+
 - [x] Node.js dependency installation
 - [x] Python agent environment setup
 - [x] Data directory creation
@@ -69,6 +72,7 @@ Check `.env.example` for all required variables:
 ```
 
 **Action Items**:
+
 1. Copy `.env.example` to `.env` (done automatically by post-create.sh)
 2. Add your `GOOGLE_API_KEY`
 3. Add `GITHUB_PERSONAL_ACCESS_TOKEN` if using GitHub MCP features
@@ -82,6 +86,7 @@ Check `.env.example` for all required variables:
 **Current Package Manager**: npm (package-lock.json present)
 
 **Key Dependencies**:
+
 - [x] React 19.2.1
 - [x] Next.js 16.1.1
 - [x] CopilotKit 1.50.0
@@ -93,6 +98,7 @@ Check `.env.example` for all required variables:
 ### Python Dependencies (agent/pyproject.toml)
 
 **Key Dependencies**:
+
 - [x] FastAPI + ADK agent dependencies
 - [x] google-adk
 - [x] ag-ui-adk
@@ -107,11 +113,13 @@ Check `.env.example` for all required variables:
 ### Current MCP Issues (✅ FIXED)
 
 Your MCP configuration had 3 problematic servers causing blocking:
+
 1. ~~`nuxt-ui`~~ - **REMOVED** (HTTP timeout issues)
 2. ~~`io.github.github/github-mcp-server`~~ - **REMOVED** (duplicate)
 3. ~~`pylance mcp server`~~ - Not in config (transient error)
 
 **Remaining Working Servers** (13 total):
+
 - [x] github (Docker-based, reliable)
 - [x] awesome-copilot
 - [x] context7
@@ -126,7 +134,8 @@ Your MCP configuration had 3 problematic servers causing blocking:
 - [x] supabase
 - [x] time
 
-**DevContainer Consideration**: 
+**DevContainer Consideration**:
+
 - Most MCP servers work in DevContainer (Docker ones like GitHub MCP run natively)
 - HTTP-based servers (supabase, mcp-ui Docs, nuxt-ui) may need network configuration
 - stdio servers work fine in DevContainer environment
@@ -146,6 +155,7 @@ The DevContainer mounts `./data` directory for local-first data:
 ```
 
 **Action Items**:
+
 - [x] `data/` directory exists (created by post-create.sh)
 - [ ] Verify no sensitive data in `data/` (should be in .gitignore)
 - [ ] Check `.gitignore` includes `data/`
@@ -155,6 +165,7 @@ The DevContainer mounts `./data` directory for local-first data:
 **Location**: `agent/.venv/`
 
 **Configuration**:
+
 ```json
 "python.defaultInterpreterPath": "${workspaceFolder}/agent/.venv/bin/python"
 ```
@@ -164,6 +175,7 @@ The DevContainer mounts `./data` directory for local-first data:
 ### Build Artifacts
 
 These should be excluded from DevContainer sync (check .dockerignore):
+
 - [ ] `node_modules/`
 - [ ] `.next/`
 - [ ] `agent/.venv/`
@@ -246,6 +258,7 @@ EOF
 #### 2. Verify `.gitignore` completeness
 
 Essential patterns:
+
 ```
 # Environment
 .env
@@ -276,6 +289,7 @@ data/
 Before switching to DevContainer, test critical workflows:
 
 #### 1. Local Installation Test
+
 ```powershell
 # Test setup script
 .\scripts\setup.ps1
@@ -287,6 +301,7 @@ npm --version
 ```
 
 #### 2. Development Servers Test
+
 ```powershell
 # Start both servers
 npm run dev
@@ -298,6 +313,7 @@ npm run dev
 ```
 
 #### 3. Agent Health Check
+
 ```powershell
 # Check agent is running
 curl http://localhost:8000/health
@@ -309,11 +325,13 @@ curl http://localhost:8000/health
 ### DevContainer Testing Plan
 
 #### First DevContainer Launch
+
 1. **Open in DevContainer**
    - VS Code → Command Palette → "Reopen in Container"
    - Wait 5-10 minutes for first build
 
 2. **Verify Environment**
+
 ```bash
 # Check Node.js
 node --version  # 22.9.0
@@ -329,7 +347,8 @@ ls -la
 ls -la agent/
 ```
 
-3. **Test Package Installation**
+1. **Test Package Installation**
+
 ```bash
 # Node.js deps should be installed
 ls node_modules/
@@ -338,14 +357,16 @@ ls node_modules/
 ls agent/.venv/
 ```
 
-4. **Test Development Servers**
+1. **Test Development Servers**
+
 ```bash
 npm run dev
 # Wait for both servers to start
 # Access forwarded ports in VS Code
 ```
 
-5. **Test Agent Connection**
+1. **Test Agent Connection**
+
 ```bash
 curl http://localhost:8000/health
 curl http://localhost:8000/ready
@@ -360,6 +381,7 @@ curl http://localhost:8000/ready
 Current workspace settings are configured in `.devcontainer/devcontainer.json`:
 
 **Verified Settings**:
+
 - [x] Format on save enabled
 - [x] Auto-save after delay
 - [x] ESLint auto-fix on save
@@ -374,9 +396,9 @@ Your `workspace.code-workspace` file provides multi-root organization:
 ```json
 {
   "folders": [
-    {"path": ".", "name": "Root"},
-    {"path": "agent", "name": "Agent"},
-    {"path": "scripts", "name": "Scripts"},
+    { "path": ".", "name": "Root" },
+    { "path": "agent", "name": "Agent" },
+    { "path": "scripts", "name": "Scripts" }
     // ...
   ]
 }
@@ -405,12 +427,14 @@ Add DevContainer setup instructions:
 ## Development Environment
 
 ### Option 1: DevContainer (Recommended)
+
 1. Install Docker Desktop
 2. Install VS Code Dev Containers extension
 3. Open repository in VS Code
 4. Click "Reopen in Container"
 
 ### Option 2: Local Setup
+
 ...existing instructions...
 ```
 
@@ -424,6 +448,7 @@ Add DevContainer setup instructions:
 **Local DevContainer**: Uses local environment
 
 **Action Items**:
+
 - [ ] Never commit `.env` to Git
 - [ ] Document required secrets in `.env.example`
 - [ ] Consider using 1Password CLI or similar for secret injection
@@ -431,6 +456,7 @@ Add DevContainer setup instructions:
 ### Sensitive Files to Exclude
 
 Verify `.gitignore` includes:
+
 ```
 .env
 .env.local
@@ -448,11 +474,13 @@ service-account.json
 ### DevContainer Build Speed
 
 **Current Setup**:
+
 - Base image: Microsoft DevContainers
 - Node.js: Installed via nvm
 - Python: Feature-based installation
 
 **Optimization Opportunities**:
+
 1. Consider pre-built image with Node/Python (speeds up rebuilds)
 2. Use layer caching effectively in Dockerfile
 3. Add `.dockerignore` to exclude unnecessary files (see Phase 6)
@@ -460,6 +488,7 @@ service-account.json
 ### Mount Performance
 
 **Current Mount**:
+
 ```json
 "mounts": [
   "source=${localWorkspaceFolder}/data,target=${containerWorkspaceFolder}/data,type=bind,consistency=cached"
@@ -475,6 +504,7 @@ service-account.json
 ### Step-by-Step DevContainer Switch
 
 #### Preparation (Do Now)
+
 1. [ ] Create `.dockerignore` (see Phase 6)
 2. [ ] Verify `.env.example` is complete
 3. [ ] Update CONTRIBUTING.md with DevContainer instructions
@@ -482,6 +512,7 @@ service-account.json
 5. [ ] Create backup branch: `git branch backup/pre-devcontainer`
 
 #### First DevContainer Launch (Do Next)
+
 1. [ ] Close all local servers (npm run dev)
 2. [ ] Open VS Code Command Palette (Ctrl+Shift+P)
 3. [ ] Select "Dev Containers: Reopen in Container"
@@ -489,6 +520,7 @@ service-account.json
 5. [ ] Review post-create script output in terminal
 
 #### Verification (Do After Launch)
+
 1. [ ] Check environment: `node --version`, `python --version`
 2. [ ] Check installations: `ls node_modules/`, `ls agent/.venv/`
 3. [ ] Set `GOOGLE_API_KEY` in `.env` file
@@ -497,6 +529,7 @@ service-account.json
 6. [ ] Test agent: `curl http://localhost:8000/health`
 
 #### Troubleshooting (If Issues Arise)
+
 - Check post-create.sh output for errors
 - Rebuild container: Command Palette → "Rebuild Container"
 - Check Docker Desktop is running
@@ -508,6 +541,7 @@ service-account.json
 ## 📋 Final Checklist
 
 ### Pre-Transition
+
 - [ ] All local development working
 - [ ] MCP server issues resolved (✅ Done)
 - [ ] Environment variables documented
@@ -516,6 +550,7 @@ service-account.json
 - [ ] All changes committed
 
 ### Post-Transition
+
 - [ ] DevContainer builds successfully
 - [ ] All dependencies installed
 - [ ] Development servers start
@@ -525,7 +560,7 @@ service-account.json
 
 ---
 
-## 🚀 Ready to Switch!
+## 🚀 Ready to Switch
 
 Your repository is **fully prepared** for DevContainer. The existing `.devcontainer/` configuration is comprehensive and well-structured.
 
@@ -557,6 +592,7 @@ Ctrl+Shift+P → "Dev Containers: Reopen in Container"
 ## 🔧 Support
 
 If you encounter issues:
+
 1. Check `.devcontainer/README.md` troubleshooting section
 2. Review Docker Desktop logs
 3. Try "Rebuild Container" command

@@ -319,6 +319,7 @@ def create_skill_collection(
    ```
 
 2. **A2UI Component Collections**
+
    ```python
    # Generate prompt collections for A2UI schemas
    build_a2ui_prompt_collection(
@@ -333,7 +334,7 @@ def create_skill_collection(
 
 ### Primary Sources
 
-- **awesome-copilot**: https://github.com/github/awesome-copilot
+- **awesome-copilot**: <https://github.com/github/awesome-copilot>
   - `collections/` - Example YAML files
   - `eng/yaml-parser.mjs` - TypeScript parsing utilities
   - `.schemas/collection.schema.json` - JSON Schema definition

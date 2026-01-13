@@ -1,6 +1,7 @@
 # esbuild Quick Reference Card
 
 ## Installation Status
+
 ✅ **esbuild** installed and ready
 ✅ **Configuration** files created
 ✅ **Output directories** created
@@ -9,6 +10,7 @@
 ## 📋 What is esbuild?
 
 Fast, minimal JavaScript/TypeScript bundler for:
+
 - CLI tools (agent-generator)
 - Build scripts (knowledge-management, toolset-management)
 - TypeScript transpilation to JavaScript
@@ -40,6 +42,7 @@ npm run build:esbuild
 ### Step 3: Done! ✅
 
 Bundles are now in:
+
 - `agent-generator/dist/generate.mjs`
 - `scripts/knowledge-management/dist/sync-docs.mjs`
 - `scripts/toolset-management/dist/validate-toolsets.mjs`
@@ -47,14 +50,14 @@ Bundles are now in:
 
 ## 🎯 Common Commands
 
-| Command | What It Does |
-|---------|--------------|
-| `npm run build:esbuild` | Build all bundles |
-| `npm run build:esbuild:agent` | Build agent-generator only |
-| `npm run build:esbuild:docs` | Build docs tools only |
+| Command                       | What It Does                 |
+| ----------------------------- | ---------------------------- |
+| `npm run build:esbuild`       | Build all bundles            |
+| `npm run build:esbuild:agent` | Build agent-generator only   |
+| `npm run build:esbuild:docs`  | Build docs tools only        |
 | `npm run watch:esbuild:agent` | Auto-rebuild on file changes |
-| `npm run watch:esbuild:docs` | Auto-rebuild docs tools |
-| `npm run list:esbuild` | List all build targets |
+| `npm run watch:esbuild:docs`  | Auto-rebuild docs tools      |
+| `npm run list:esbuild`        | List all build targets       |
 
 ## 🔧 Direct Commands (without npm)
 
@@ -101,12 +104,12 @@ Now `npm run build` automatically runs esbuild first.
 
 ## 🐛 Quick Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| "Cannot find module" | Ensure output dirs exist: `mkdir -p agent-generator/dist scripts/knowledge-management/dist scripts/toolset-management/dist` |
-| "esbuild not found" | Run: `npm install --save-dev esbuild` |
-| Bundles not created | Ensure parent directory exists, check file paths in esbuild.config.mjs |
-| Watch mode not working | Make sure source files end in `.ts`, `.tsx`, `.js`, or `.mjs` |
+| Problem                | Solution                                                                                                                    |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| "Cannot find module"   | Ensure output dirs exist: `mkdir -p agent-generator/dist scripts/knowledge-management/dist scripts/toolset-management/dist` |
+| "esbuild not found"    | Run: `npm install --save-dev esbuild`                                                                                       |
+| Bundles not created    | Ensure parent directory exists, check file paths in esbuild.config.mjs                                                      |
+| Watch mode not working | Make sure source files end in `.ts`, `.tsx`, `.js`, or `.mjs`                                                               |
 
 ## 📚 Documentation
 
@@ -118,11 +121,13 @@ Now `npm run build` automatically runs esbuild first.
 ## 💡 Tips
 
 1. **Use watch mode during development** for faster iteration
+
    ```bash
    npm run watch:esbuild:agent
    ```
 
 2. **Check bundle sizes** to optimize
+
    ```bash
    du -sh agent-generator/dist/*.mjs
    ```
@@ -137,13 +142,13 @@ Now `npm run build` automatically runs esbuild first.
 
 ## 🎓 Key Files
 
-| File | Purpose |
-|------|---------|
-| `esbuild.config.mjs` | Main configuration file |
-| `scripts/setup-esbuild.ps1` | Windows setup (automated) |
-| `scripts/setup-esbuild.sh` | Unix/macOS setup (automated) |
-| `ESBUILD_SETUP.md` | Detailed reference |
-| `ESBUILD_INTEGRATION.md` | Integration patterns |
+| File                        | Purpose                      |
+| --------------------------- | ---------------------------- |
+| `esbuild.config.mjs`        | Main configuration file      |
+| `scripts/setup-esbuild.ps1` | Windows setup (automated)    |
+| `scripts/setup-esbuild.sh`  | Unix/macOS setup (automated) |
+| `ESBUILD_SETUP.md`          | Detailed reference           |
+| `ESBUILD_INTEGRATION.md`    | Integration patterns         |
 
 ## ✅ Validation
 
@@ -171,7 +176,7 @@ node agent-generator/dist/generate.mjs
 
 - **Next.js build**: Uses its own bundler (SWC/Turbopack)
 - **Python agent**: Separate runtime (FastAPI at port 8000)
-- **esbuild docs**: https://esbuild.github.io/
+- **esbuild docs**: <https://esbuild.github.io/>
 
 ---
 

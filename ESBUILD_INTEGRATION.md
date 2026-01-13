@@ -5,6 +5,7 @@ Complete walkthrough for integrating esbuild into your ModMe GenUI Workbench pro
 ## 📋 What You Get
 
 **esbuild Configuration for**:
+
 - ✅ `agent-generator/` TypeScript CLI tools
 - ✅ `scripts/knowledge-management/` documentation utilities
 - ✅ `scripts/toolset-management/` validation & detection tools
@@ -17,11 +18,13 @@ Complete walkthrough for integrating esbuild into your ModMe GenUI Workbench pro
 ### Option A: Automated Setup (Recommended)
 
 **Windows**:
+
 ```powershell
 .\scripts\setup-esbuild.ps1
 ```
 
 **Unix/macOS**:
+
 ```bash
 chmod +x scripts/setup-esbuild.sh
 ./scripts/setup-esbuild.sh
@@ -30,11 +33,13 @@ chmod +x scripts/setup-esbuild.sh
 ### Option B: Manual Setup
 
 1. **Install esbuild**:
+
    ```bash
    npm install --save-dev esbuild
    ```
 
 2. **Create output directories**:
+
    ```bash
    mkdir -p agent-generator/dist
    mkdir -p scripts/knowledge-management/dist
@@ -62,12 +67,14 @@ chmod +x scripts/setup-esbuild.sh
 }
 ```
 
-5. **First build**:
+1. **First build**:
+
    ```bash
    npm run build:esbuild
    ```
 
-6. **Verify bundles created**:
+2. **Verify bundles created**:
+
    ```bash
    ls -la agent-generator/dist/
    ls -la scripts/knowledge-management/dist/
@@ -77,6 +84,7 @@ chmod +x scripts/setup-esbuild.sh
 ## 📦 Files Created/Modified
 
 ### New Files
+
 - ✅ `esbuild.config.mjs` — Main configuration
 - ✅ `ESBUILD_SETUP.md` — Detailed guide
 - ✅ `ESBUILD_QUICK_START.md` — Quick reference
@@ -85,25 +93,27 @@ chmod +x scripts/setup-esbuild.sh
 - ✅ `scripts/setup-esbuild.sh` — Unix/macOS setup script
 
 ### Directories Created (on first build)
+
 - 📁 `agent-generator/dist/` — Agent generator bundles
 - 📁 `scripts/knowledge-management/dist/` — Docs tools bundles
 - 📁 `scripts/toolset-management/dist/` — Toolset tools bundles
 
 ### Modified Files
+
 - **package.json** — Add npm scripts (optional but recommended)
 
 ## 🛠️ Common Commands
 
-| Command | Purpose |
-|---------|---------|
-| `npm run build:esbuild` | Build all esbuild configs |
-| `npm run build:esbuild:agent` | Build agent-generator only |
-| `npm run build:esbuild:docs` | Build docs tools only |
-| `npm run watch:esbuild:agent` | Watch & rebuild agent on changes |
-| `npm run watch:esbuild:docs` | Watch & rebuild docs on changes |
-| `npm run list:esbuild` | List all available configs |
-| `node esbuild.config.mjs build` | Manual build (no npm script) |
-| `node esbuild.config.mjs watch syncDocs` | Manual watch (no npm script) |
+| Command                                  | Purpose                          |
+| ---------------------------------------- | -------------------------------- |
+| `npm run build:esbuild`                  | Build all esbuild configs        |
+| `npm run build:esbuild:agent`            | Build agent-generator only       |
+| `npm run build:esbuild:docs`             | Build docs tools only            |
+| `npm run watch:esbuild:agent`            | Watch & rebuild agent on changes |
+| `npm run watch:esbuild:docs`             | Watch & rebuild docs on changes  |
+| `npm run list:esbuild`                   | List all available configs       |
+| `node esbuild.config.mjs build`          | Manual build (no npm script)     |
+| `node esbuild.config.mjs watch syncDocs` | Manual watch (no npm script)     |
 
 ## 🔗 Integration Points
 
@@ -127,16 +137,19 @@ Now `npm run build` automatically bundles esbuild configs first.
 Run in **two terminals**:
 
 **Terminal 1** — React frontend:
+
 ```bash
 npm run dev:ui
 ```
 
 **Terminal 2** — Python agent:
+
 ```bash
 npm run dev:agent
 ```
 
 **Terminal 3** (optional) — Auto-rebuild esbuild bundles:
+
 ```bash
 npm run watch:esbuild:agent
 ```
@@ -247,7 +260,7 @@ esbuild.config.mjs
 **Solution**: Add to `external` in config:
 
 ```javascript
-external: ["ajv", "ajv-formats", "glob", "marked"] // Add missing deps
+external: ["ajv", "ajv-formats", "glob", "marked"]; // Add missing deps
 ```
 
 ### Problem: Bundle file not found after build
@@ -273,8 +286,8 @@ Check your `tsconfig.json` target:
 ```json
 {
   "compilerOptions": {
-    "target": "ES2022",  // Should match esbuild target
-    "module": "esnext"   // ESM format
+    "target": "ES2022", // Should match esbuild target
+    "module": "esnext" // ESM format
   }
 }
 ```
@@ -290,8 +303,8 @@ Watch only monitors changed files. Verify the file actually changed (save it aga
 
 ## 📚 Learn More
 
-- **esbuild Official Docs**: https://esbuild.github.io/
-- **ESM in Node.js**: https://nodejs.org/api/esm.html
+- **esbuild Official Docs**: <https://esbuild.github.io/>
+- **ESM in Node.js**: <https://nodejs.org/api/esm.html>
 - **Detailed Setup Guide**: See `ESBUILD_SETUP.md`
 - **Quick Reference**: See `ESBUILD_QUICK_START.md`
 

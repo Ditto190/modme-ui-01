@@ -917,10 +917,7 @@ import path from "path";
 import Ajv from "ajv";
 import { parseCollectionYaml } from "./yaml-parser.mjs";
 
-export async function validateCollections(
-  collectionsDir: string,
-  schemaPath: string
-) {
+export async function validateCollections(collectionsDir: string, schemaPath: string) {
   const ajv = new Ajv({ allErrors: true });
   const schema = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
   const validate = ajv.compile(schema);
@@ -1202,7 +1199,7 @@ def generate_collection_from_mcp_tools(
 
 **References:**
 
-- awesome-copilot: https://github.com/github/awesome-copilot
+- awesome-copilot: <https://github.com/github/awesome-copilot>
 - Collection Schema: .schemas/collection.schema.json
 - YAML Parser: eng/yaml-parser.mjs
 - Validation: eng/validate-collections.mjs

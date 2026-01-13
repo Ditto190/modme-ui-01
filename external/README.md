@@ -215,14 +215,14 @@ npm install @anthropic-ai/sdk @xenova/transformers
 
 ### genai-toolbox
 
-- **Docs**: https://googleapis.github.io/genai-toolbox/
-- **Discord**: https://discord.gg/Dmm69peqjh
-- **Medium**: https://medium.com/@mcp_toolbox
-- **GitHub**: https://github.com/googleapis/genai-toolbox
+- **Docs**: <https://googleapis.github.io/genai-toolbox/>
+- **Discord**: <https://discord.gg/Dmm69peqjh>
+- **Medium**: <https://medium.com/@mcp_toolbox>
+- **GitHub**: <https://github.com/googleapis/genai-toolbox>
 
 ### smallest-agent
 
-- **GitHub**: https://github.com/obra/smallest-agent
+- **GitHub**: <https://github.com/obra/smallest-agent>
 - **Author**: @obra
 - **Hacking Transcript**: See `HACKING-TRANSCRIPT.md` for self-optimization story
 

@@ -21,10 +21,10 @@ This repository supports **multiple concurrent git worktrees** that all share th
 
 ## Current Worktrees
 
-| Worktree | Branch | Path | Purpose |
-|----------|--------|------|---------|
-| **main** | `feature/genui-workbench-refactor` | `C:\Users\dylan\modme-ui-01` | Primary development |
-| **relaxed-hugle** | `relaxed-hugle` | `C:\Users\dylan\.claude-worktrees\modme-ui-01\relaxed-hugle` | Claude Code AI development |
+| Worktree          | Branch                             | Path                                                         | Purpose                    |
+| ----------------- | ---------------------------------- | ------------------------------------------------------------ | -------------------------- |
+| **main**          | `feature/genui-workbench-refactor` | `C:\Users\dylan\modme-ui-01`                                 | Primary development        |
+| **relaxed-hugle** | `relaxed-hugle`                    | `C:\Users\dylan\.claude-worktrees\modme-ui-01\relaxed-hugle` | Claude Code AI development |
 
 ---
 
@@ -55,15 +55,15 @@ fi
 
 ### 3. Shared vs Isolated Resources
 
-| Resource | Shared? | Notes |
-|----------|---------|-------|
-| **Dockerfile** | ✅ Yes | Same container image |
-| **devcontainer.json** | ✅ Yes | Same extensions, ports, settings |
-| **post-create.sh** | ✅ Yes | Same setup script |
-| **node_modules/** | ❌ No | Each worktree has its own |
-| **agent/.venv/** | ❌ No | Each worktree has its own Python venv |
-| **.env** | ❌ No | Each worktree can have different env vars |
-| **Source code** | ❌ No | Each worktree has its own files (branch-specific) |
+| Resource              | Shared? | Notes                                             |
+| --------------------- | ------- | ------------------------------------------------- |
+| **Dockerfile**        | ✅ Yes  | Same container image                              |
+| **devcontainer.json** | ✅ Yes  | Same extensions, ports, settings                  |
+| **post-create.sh**    | ✅ Yes  | Same setup script                                 |
+| **node_modules/**     | ❌ No   | Each worktree has its own                         |
+| **agent/.venv/**      | ❌ No   | Each worktree has its own Python venv             |
+| **.env**              | ❌ No   | Each worktree can have different env vars         |
+| **Source code**       | ❌ No   | Each worktree has its own files (branch-specific) |
 
 ---
 
@@ -98,6 +98,7 @@ git worktree list
 ## Opening a Worktree in DevContainer
 
 1. **Open the worktree folder** in VS Code:
+
    ```bash
    code C:\Users\dylan\.claude-worktrees\modme-ui-01\relaxed-hugle
    ```
@@ -107,6 +108,7 @@ git worktree list
 3. **Wait for build** (uses cached layers from other worktrees)
 
 4. **Run development server**:
+
    ```bash
    npm run dev
    ```
@@ -186,7 +188,8 @@ git merge origin/my-branch
 
 **Cause**: `.devcontainer/` may not be in the worktree if it was added after worktree creation.
 
-**Fix**: 
+**Fix**:
+
 ```bash
 cd /path/to/worktree
 git fetch origin
@@ -198,6 +201,7 @@ git merge origin/main  # Get latest .devcontainer/
 **Cause**: Each DevContainer instance is independent.
 
 **Fix**: All worktrees share the same `Dockerfile`, so rebuild the container:
+
 ```
 Command Palette → "Rebuild Container"
 ```
@@ -207,6 +211,7 @@ Command Palette → "Rebuild Container"
 **Cause**: Same files edited in multiple branches.
 
 **Fix**: Standard git merge conflict resolution:
+
 ```bash
 git checkout main
 git merge feature-branch
@@ -220,6 +225,7 @@ git commit
 ## Integration with Claude Code Worktrees
 
 Claude Code automatically creates worktrees in:
+
 ```
 C:\Users\<user>\.claude-worktrees\<repo>\<worktree-name>\
 ```
@@ -227,6 +233,7 @@ C:\Users\<user>\.claude-worktrees\<repo>\<worktree-name>\
 These worktrees follow the same pattern and share the DevContainer config.
 
 **Workflow**:
+
 1. Claude Code creates worktree with unique branch
 2. AI develops features in isolated branch
 3. Human reviews via PR
@@ -247,12 +254,12 @@ These worktrees follow the same pattern and share the DevContainer config.
 
 ## Summary
 
-| Capability | Status |
-|------------|--------|
-| Multiple worktrees | ✅ Supported |
-| Shared DevContainer | ✅ Configured |
-| Isolated dependencies | ✅ Per-worktree |
-| Port customization | ✅ Via .env |
-| AI agent worktrees | ✅ Claude Code compatible |
+| Capability            | Status                    |
+| --------------------- | ------------------------- |
+| Multiple worktrees    | ✅ Supported              |
+| Shared DevContainer   | ✅ Configured             |
+| Isolated dependencies | ✅ Per-worktree           |
+| Port customization    | ✅ Via .env               |
+| AI agent worktrees    | ✅ Claude Code compatible |
 
 **Key Insight**: Git worktrees + shared DevContainer = parallel, isolated development with consistent tooling.

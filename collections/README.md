@@ -96,6 +96,7 @@ See [scripts/examples/generate_collection_example.py](../scripts/examples/genera
 1. Create `my-collection.collection.yml` in this directory
 2. Follow the schema defined in [.schemas/collection.schema.json](../.schemas/collection.schema.json)
 3. Validate:
+
    ```bash
    npm run validate:collections
    ```
@@ -172,9 +173,9 @@ create_collection(
 
 ## 🔗 Related Resources
 
-- **awesome-copilot Collections**: https://github.com/github/awesome-copilot/tree/main/collections
-- **Collection Schema**: https://github.com/github/awesome-copilot/blob/main/.schemas/collection.schema.json
-- **MCP Protocol**: https://modelcontextprotocol.io/
+- **awesome-copilot Collections**: <https://github.com/github/awesome-copilot/tree/main/collections>
+- **Collection Schema**: <https://github.com/github/awesome-copilot/blob/main/.schemas/collection.schema.json>
+- **MCP Protocol**: <https://modelcontextprotocol.io/>
 
 ---
 

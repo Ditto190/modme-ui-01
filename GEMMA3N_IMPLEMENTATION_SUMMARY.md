@@ -343,7 +343,6 @@ node embedding_service.js
 ### Files
 
 1. **README.md** (480 lines) - Complete guide with:
-
    - Architecture overview
    - Installation instructions
    - API reference (JavaScript & Python)
@@ -352,7 +351,6 @@ node embedding_service.js
    - Comparison with SHA256
 
 2. **CODEBASE_INDEX.md** - Added complete models section:
-
    - Directory structure
    - File inventory
    - API contracts

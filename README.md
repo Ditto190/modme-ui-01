@@ -31,7 +31,7 @@ scripts\quick-start.bat  # Windows (coming soon)
 - ✅ Configures environment
 - ✅ Starts both servers (UI + Agent)
 
-**Result**: UI at http://localhost:3000, Agent at http://localhost:8000
+**Result**: UI at <http://localhost:3000>, Agent at <http://localhost:8000>
 
 ---
 

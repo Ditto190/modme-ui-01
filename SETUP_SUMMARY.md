@@ -176,7 +176,7 @@ curl http://localhost:8000/ready   # Should return {"status":"ready"}
 
 ### 5. Browser Test
 
-1. Open http://localhost:3000
+1. Open <http://localhost:3000>
 2. Should see "GenUI Workbench"
 3. Click CopilotKit sidebar
 4. Try: "Generate a sales dashboard"
@@ -299,11 +299,11 @@ CHROMA_PORT=8001
 
 When you run `npm run dev`:
 
-| Service      | Port | URL                   | Purpose                       |
-| ------------ | ---- | --------------------- | ----------------------------- |
-| Next.js UI   | 3000 | http://localhost:3000 | Frontend interface            |
-| Python Agent | 8000 | http://localhost:8000 | ADK agent backend             |
-| VT Code MCP  | 8080 | http://localhost:8080 | Code editing tools (optional) |
+| Service      | Port | URL                     | Purpose                       |
+| ------------ | ---- | ----------------------- | ----------------------------- |
+| Next.js UI   | 3000 | <http://localhost:3000> | Frontend interface            |
+| Python Agent | 8000 | <http://localhost:8000> | ADK agent backend             |
+| VT Code MCP  | 8080 | <http://localhost:8080> | Code editing tools (optional) |
 
 ---
 
@@ -356,7 +356,7 @@ After successful installation:
 3. ✅ **Explore Components**: [src/components/registry/](src/components/registry/)
 4. ✅ **Try Agent Tools**: [agent/main.py](agent/main.py)
 5. ✅ **Read Migration Plan**: [MIGRATION_IMPLEMENTATION_PLAN.md](MIGRATION_IMPLEMENTATION_PLAN.md)
-6. ✅ **Experiment**: http://localhost:3000
+6. ✅ **Experiment**: <http://localhost:3000>
 
 ---
 
@@ -402,6 +402,6 @@ After successful installation:
 URL For setup
 
 YOUR GENUI WORKBENCH URL:
-https://urban-giggle-v9rg679gv4j25ww-3000.github.dev
+<https://urban-giggle-v9rg679gv4j25ww-3000.github.dev>
 
 👆 CLICK THIS LINK to access your GenUI Workbench!

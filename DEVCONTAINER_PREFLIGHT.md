@@ -85,7 +85,7 @@ git branch --show-current
 # Check .env file status
 if (Test-Path ".env") {
     Write-Host "✅ .env file exists" -ForegroundColor Green
-    
+
     # Check for GOOGLE_API_KEY
     $envContent = Get-Content ".env" -Raw
     if ($envContent -match "GOOGLE_API_KEY=.+") {
@@ -171,13 +171,13 @@ code .env  # Add GOOGLE_API_KEY
 
 ## ⏱️ Time Expectations
 
-| Phase | Duration | What's Happening |
-|-------|----------|------------------|
-| **Prerequisites** | 2-5 minutes | Installing Docker/extension if needed |
-| **Pre-flight checks** | 1-2 minutes | Running this checklist |
-| **First build** | 5-10 minutes | Docker downloads, installs dependencies |
-| **Post-create** | 2-3 minutes | npm install, Python setup, extensions |
-| **Total (first time)** | **10-20 minutes** | ☕ Coffee break recommended |
+| Phase                  | Duration          | What's Happening                        |
+| ---------------------- | ----------------- | --------------------------------------- |
+| **Prerequisites**      | 2-5 minutes       | Installing Docker/extension if needed   |
+| **Pre-flight checks**  | 1-2 minutes       | Running this checklist                  |
+| **First build**        | 5-10 minutes      | Docker downloads, installs dependencies |
+| **Post-create**        | 2-3 minutes       | npm install, Python setup, extensions   |
+| **Total (first time)** | **10-20 minutes** | ☕ Coffee break recommended             |
 
 **Subsequent rebuilds**: 1-2 minutes (Docker caches layers)
 
@@ -206,7 +206,7 @@ curl http://localhost:8000/health  # → {"status":"healthy"}
 
 ### Application Verification
 
-- [ ] http://localhost:3000 loads GenUI Workbench
+- [ ] <http://localhost:3000> loads GenUI Workbench
 - [ ] GitHub Copilot Chat has MCP tools available
 - [ ] No port conflicts or errors in terminal
 
@@ -214,7 +214,7 @@ curl http://localhost:8000/health  # → {"status":"healthy"}
 
 ## 🐛 Quick Troubleshooting
 
-### If build fails:
+### If build fails
 
 ```powershell
 # 1. Check Docker logs
@@ -227,7 +227,7 @@ docker system prune -a
 # Command Palette → "Rebuild Container"
 ```
 
-### If post-create.sh fails:
+### If post-create.sh fails
 
 ```bash
 # Inside container terminal:
@@ -235,7 +235,7 @@ npm clean-install
 cd agent && source .venv/bin/activate && uv sync
 ```
 
-### If ports don't forward:
+### If ports don't forward
 
 1. Check **Ports** tab in VS Code
 2. Manually forward: Right-click → **Forward a Port**
@@ -260,7 +260,7 @@ Before you click "Reopen in Container", verify:
 
 - [ ] Docker Desktop is installed and running
 - [ ] VS Code Dev Containers extension is installed
-- [ ] All 6 DevContainer files exist (.devcontainer/*, .dockerignore)
+- [ ] All 6 DevContainer files exist (.devcontainer/\*, .dockerignore)
 - [ ] Git status is clean (or you've decided to proceed with changes)
 - [ ] Local dev servers are stopped (ports 3000, 8000 free)
 - [ ] At least 10 GB disk space available
@@ -273,14 +273,14 @@ Before you click "Reopen in Container", verify:
 
 ## 🎯 Next Steps
 
-### If Ready Now:
+### If Ready Now
 
 ```powershell
 # Run automated transition
 .\scripts\prepare-devcontainer.ps1
 ```
 
-### If Not Ready:
+### If Not Ready
 
 1. Install missing prerequisites (Docker, VS Code extension)
 2. Free up disk space if needed
@@ -291,7 +291,7 @@ Before you click "Reopen in Container", verify:
 
 ## 🆘 Emergency Contacts
 
-### If Something Goes Wrong:
+### If Something Goes Wrong
 
 ```
 Option 1: Exit container
@@ -306,25 +306,27 @@ Option 3: Nuclear reset
   3. Retry from scratch
 ```
 
-### Documentation:
+### Documentation
 
 - [.devcontainer/README.md](.devcontainer/README.md) - Troubleshooting section
 - [DEVCONTAINER_TRANSITION_SUMMARY.md](DEVCONTAINER_TRANSITION_SUMMARY.md) - Known issues
 
 ---
 
-## 🎉 You're Ready!
+## 🎉 You're Ready
 
 Your repository is **fully prepared** for DevContainer. All checks passed, documentation is comprehensive, and automation is in place.
 
 **Confidence level**: ✅ **HIGH**
 
 **When you're ready**:
+
 ```powershell
 .\scripts\prepare-devcontainer.ps1
 ```
 
 **Or manually**:
+
 ```
 Ctrl+Shift+P → "Reopen in Container"
 ```
@@ -333,4 +335,4 @@ Ctrl+Shift+P → "Reopen in Container"
 
 **Good luck! 🚀**
 
-*Remember: You can always revert to local with "Reopen Folder Locally"*
+_Remember: You can always revert to local with "Reopen Folder Locally"_
