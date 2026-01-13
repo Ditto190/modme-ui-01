@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       run-script:
-        description: 'Run the starter script on the runner (true/false)'
+        description: "Run the starter script on the runner (true/false)"
         required: false
-        default: 'true'
+        default: "true"
   push:
-    branches: [ main, feature/* ]
+    branches: [main, feature/*]
 
 jobs:
   start-mcp-scripts:
@@ -31,9 +31,7 @@ jobs:
           npx smart-coding-mcp --workspace . --test
 
 
-      - name: Setup PowerShell
-        uses: PowerShell/PowerShell@v2
-
+      # Ubuntu runners have PowerShell (pwsh) pre-installed
       - name: Make starter script executable (if present)
         run: |
           chmod +x ./scripts/start-mcp-servers.ps1 || true

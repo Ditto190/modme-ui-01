@@ -66,9 +66,21 @@ agent/.venv/
 **/*.pyo
 **/*.pyd
 .Python
+*.egg-info/
 
 # data directory (local client data)
 /data/
 
 # DevContainer
 .devcontainer/.env
+
+# Ignore node modules for micro-agent models (built artifact kept in dist/)
+experiments/micro-agents/models/node_modules/
+experiments/**/node_modules/
+agent-generator/node_modules/
+agent-library/node_modules/
+scripts/**/node_modules/
+with-a2a-a2ui/node_modules/
+with-a2a-a2ui/.venv/
+with-a2a-a2ui/pnpm-lock.yaml
+with-a2a-a2ui/yarn.lock

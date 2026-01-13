@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node -e \"console.log\\(JSON.stringify\\(require\\(''c:/Users/dylan/.claude/settings.local.json''\\), null, 2\\)\\)\")"
+      "Bash(node -e \"console.log\\(JSON.stringify\\(require\\(''c:/Users/dylan/.claude/settings.local.json''\\), null, 2\\)\\)\")",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh repo edit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git fetch:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

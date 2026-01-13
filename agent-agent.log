@@ -1,0 +1,11 @@
+nohup: ignoring input
+INFO:     Will watch for changes in these directories: ['/workspaces/relaxed-hugle/agent']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [53648] using WatchFiles
+/workspaces/relaxed-hugle/agent/.venv/lib/python3.12/site-packages/ag_ui_adk/adk_agent.py:122: UserWarning: [EXPERIMENTAL] InMemoryCredentialService: This feature is experimental and may change or be removed in future versions without notice. It may introduce breaking changes at any time.
+  self._credential_service = credential_service or InMemoryCredentialService()
+/workspaces/relaxed-hugle/agent/.venv/lib/python3.12/site-packages/google/adk/auth/credential_service/in_memory_credential_service.py:33: UserWarning: [EXPERIMENTAL] BaseCredentialService: This feature is experimental and may change or be removed in future versions without notice. It may introduce breaking changes at any time.
+  super().__init__()
+INFO:     Started server process [53662]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
