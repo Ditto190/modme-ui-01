@@ -161,7 +161,7 @@ import { Button } from "@/components/ui/button";
 
 ```jsx
 import { Calendar } from "@/components/ui/calendar";
-const [date, setDate] = React.useState<Date | undefined>(new Date());
+const [date, setDate] = (React.useState < Date) | (undefined > new Date());
 
 return <Calendar mode="single" selected={date} onSelect={setDate} className="rounded-md border" />;
 ```
