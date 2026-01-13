@@ -26,8 +26,9 @@ jobs:
           npx smart-coding-mcp --version
 
       - name: Test MCP Server Health
+        continue-on-error: true
         run: |
-          npx smart-coding-mcp --workspace . --test || echo "⚠️ Smart Coding MCP test failed"
+          npx smart-coding-mcp --workspace . --test
 
 
       - name: Setup PowerShell
