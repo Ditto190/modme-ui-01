@@ -17,6 +17,7 @@ Complete reference for all available toolsets in the ModifyMe GenUI project.
   _Tools_: 3 | _Category_: generative_ui
 - **[Theme Management](theme.md)** (`theme`)  
   Control application theme colors  
+  *Tools*: 1 | *Category*: frontend
   _Tools_: 1 | _Category_: frontend
 
 ---

@@ -200,6 +200,7 @@ new_tool(id="test", options={"enabled": true})
 
 EOF
 
+```
 ````
 
 **Step 3**: Regenerate docs

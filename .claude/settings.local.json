@@ -2,12 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(node -e \"console.log\\(JSON.stringify\\(require\\(''c:/Users/dylan/.claude/settings.local.json''\\), null, 2\\)\\)\")",
-      "Bash(gh pr list:*)",
-      "Bash(gh pr merge:*)",
-      "Bash(gh repo edit:*)",
-      "Bash(git checkout:*)",
-      "Bash(git fetch:*)",
-      "Bash(git commit:*)"
+      "Bash(claude skills install \"C:\\\\Users\\\\dylan\\\\My Drive\\\\Downloads\\\\Skills\\\\dist\\\\mcp-schema-tools.skill\")",
+      "Bash(claude skills install \"C:\\\\Users\\\\dylan\\\\My Drive\\\\Downloads\\\\Skills\\\\dist\\\\repo-scanner.skill\")",
+      "Bash(unzip:*)",
+      "Bash(where:*)",
+      "Bash(claude skills:*)",
+      "mcp__plugin_serena_serena__read_file",
+      "mcp__plugin_serena_serena__execute_shell_command"
     ]
   }
 }

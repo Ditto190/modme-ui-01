@@ -4,6 +4,20 @@
 **Branch**: feature/part-02-workbench-expansion-save-copilot-20260102-2028  
 **Default Branch**: feature/genui-workbench-refactor
 
+---policy:
+
+- template: ['bug-report.yml', 'feature-request.yml', 'question.yml']
+    section:
+  - id: ['package']
+        block-list: []
+        label:
+    - name: 'v4'
+            keys: ['v4.x']
+    - name: 'v3'
+            keys: ['v3.x']
+    - name: 'v2'
+            keys: ['v2.x']
+
 ## 📋 Deliverables Created
 
 ### 1. Refactoring Patterns Documentation

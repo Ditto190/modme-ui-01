@@ -195,6 +195,7 @@ When edit slides in an existing PowerPoint presentation, you need to work with t
 
 ### Workflow
 
+1. **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~500 lines) completely from start to finish.  **NEVER set any range limits when reading this file.**  Read the full file content for detailed guidance on OOXML structure and editing workflows before any presentation editing.
 1. **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~500 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for detailed guidance on OOXML structure and editing workflows before any presentation editing.
 2. Unpack the presentation: `python ooxml/scripts/unpack.py <office_file> <output_dir>`
 3. Edit the XML files (primarily `ppt/slides/slide{N}.xml` and related files)
@@ -257,6 +258,18 @@ When you need to create a presentation that follows an existing template's desig
    - Save `outline.md` with content AND template mapping that leverages available designs
    - Example template mapping:
 
+      ```
+      # Template slides to use (0-based indexing)
+      # WARNING: Verify indices are within range! Template with 73 slides has indices 0-72
+      # Mapping: slide numbers from outline -> template slide indices
+      template_mapping = [
+          0,   # Use slide 0 (Title/Cover)
+          34,  # Use slide 34 (B1: Title and body)
+          34,  # Use slide 34 again (duplicate for second B1)
+          50,  # Use slide 50 (E1: Quote)
+          54,  # Use slide 54 (F2: Closing + Text)
+      ]
+      ```
      ```
      # Template slides to use (0-based indexing)
      # WARNING: Verify indices are within range! Template with 73 slides has indices 0-72
@@ -292,6 +305,37 @@ When you need to create a presentation that follows an existing template's desig
 
    - The inventory JSON structure:
 
+      ```json
+        {
+          "slide-0": {
+            "shape-0": {
+              "placeholder_type": "TITLE",  // or null for non-placeholders
+              "left": 1.5,                  // position in inches
+              "top": 2.0,
+              "width": 7.5,
+              "height": 1.2,
+              "paragraphs": [
+                {
+                  "text": "Paragraph text",
+                  // Optional properties (only included when non-default):
+                  "bullet": true,           // explicit bullet detected
+                  "level": 0,               // only included when bullet is true
+                  "alignment": "CENTER",    // CENTER, RIGHT (not LEFT)
+                  "space_before": 10.0,     // space before paragraph in points
+                  "space_after": 6.0,       // space after paragraph in points
+                  "line_spacing": 22.4,     // line spacing in points
+                  "font_name": "Arial",     // from first run
+                  "font_size": 14.0,        // in points
+                  "bold": true,
+                  "italic": false,
+                  "underline": false,
+                  "color": "FF0000"         // RGB color
+                }
+              ]
+            }
+          }
+        }
+      ```
      ```json
      {
        "slide-0": {

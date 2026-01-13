@@ -10,6 +10,23 @@ A **Generative UI (GenUI) R&D laboratory** combining Next.js 16, React 19, and P
 
 ## 🚀 Quick Start
 
+### Option 1: GitHub Codespaces (Recommended)
+
+1. Click **Code** → **Codespaces** → **Create codespace**
+2. Wait for setup to complete (~3-5 minutes)
+3. Run `npm run dev` to start both servers
+4. Access UI at forwarded port 3000
+
+### Option 2: DevContainer (Local)
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+2. Install [VS Code](https://code.visualstudio.com/) with [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+3. Clone and open in VS Code
+4. Click **Reopen in Container** when prompted
+5. Run `npm run dev` after setup completes
+
+### Option 3: Local Setup
+
 ### The Fastest Way (One Command)
 
 ```bash

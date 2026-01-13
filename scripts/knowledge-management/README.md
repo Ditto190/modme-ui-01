@@ -48,6 +48,7 @@ npm test
 
 Expected output:
 
+```
 🧪 Testing Knowledge Base Context Mapper
 
 📝 Test Case 1: StatCard component not rendering

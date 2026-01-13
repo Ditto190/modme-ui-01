@@ -58,11 +58,16 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.8",
     "handlebars": "^4.7.8",
+    "markdownlint-rule-github-admonition": "^0.0.1",
+    "markdownlint-rule-search-replace": "^1.2.0",
+    "marked": "^13.0.3",
+    "ofetch": "^1.5.1",
     "markdownlint-cli": "^0.47.0",
     "marked": "^13.0.3",
     "prettier": "^3.7.4",
     "supabase": "^2.70.5",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "unplugin": "^2.3.11"
   }
 }

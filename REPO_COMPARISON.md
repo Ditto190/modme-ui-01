@@ -25,6 +25,15 @@ After analyzing 8 candidate repositories, the **recommended approach** is a **hy
 
 **URL**: <https://github.com/AdaptiveWorX/ts-fullstack>
 
+| Aspect | Rating | Details |
+|--------|--------|---------|
+| **Monorepo Tooling** | ⭐⭐⭐⭐⭐ | Turborepo + Biome (100x faster than ESLint) |
+| **AI/Agent Support** | ⭐⭐⭐⭐ | `@adaptiveworx/agent` package, MCP-compatible tools |
+| **TypeScript** | ⭐⭐⭐⭐⭐ | @tsconfig/strictest, ESM-first, NodeNext |
+| **Component System** | ⭐⭐⭐⭐ | `@adaptiveworx/ui` with Tailwind |
+| **CI/CD** | ⭐⭐⭐⭐ | ci.yml, deploy.yml, multi-env |
+| **Python Support** | ⭐ | None (gap to fill from modme-ui-01) |
+| **Documentation** | ⭐⭐⭐⭐ | Excellent README, SETUP.md, DEBUG.md |
 | Aspect               | Rating     | Details                                             |
 | -------------------- | ---------- | --------------------------------------------------- |
 | **Monorepo Tooling** | ⭐⭐⭐⭐⭐ | Turborepo + Biome (100x faster than ESLint)         |
@@ -409,6 +418,15 @@ npm install @internationalized/date @internationalized/number
 
 ## 🔗 Repository Links
 
+| Repository | URL | Primary Use |
+|------------|-----|-------------|
+| ts-fullstack | <https://github.com/AdaptiveWorX/ts-fullstack> | Base template |
+| AutonomusCompany | <https://github.com/Insajin/AutonomusCompany> | AI automation |
+| ai-native-ux-template | <https://github.com/giridamodaran/ai-native-ux-template> | MCP patterns |
+| mono-workspace | <https://github.com/ThriledLokki983/mono-workspace> | Component patterns |
+| monorepo-template | <https://github.com/zyahav/monorepo-template> | Git worktrees |
+| react-spectrum | <https://github.com/adobe/react-spectrum> | Dependencies |
+| react-aria | <https://react-aria.adobe.com/> | Component library |
 | Repository            | URL                                                      | Primary Use        |
 | --------------------- | -------------------------------------------------------- | ------------------ |
 | ts-fullstack          | <https://github.com/AdaptiveWorX/ts-fullstack>           | Base template      |

@@ -137,6 +137,22 @@ npm run dev
 
 ### DevContainer Specifications
 
+| Feature | Version/Details |
+|---------|----------------|
+| Base Image | mcr.microsoft.com/devcontainers/base:ubuntu |
+| Node.js | 22.9.0 via nvm |
+| Python | 3.12 |
+| Package Managers | npm, uv |
+| VS Code Extensions | 13 pre-installed |
+| Port Forwarding | 3000 (UI), 8000 (Agent) |
+
+### CI/CD Jobs
+
+| Workflow | Jobs | Trigger |
+|----------|------|---------|
+| CI | 5 (lint, type-check, build, test) | Push, PR |
+| DevContainer Build | 2 (build, health-check) | Push to .devcontainer, PR |
+| AI Maintenance | 3 (dependencies, security, quality) | Weekly, Manual |
 | Feature            | Version/Details                             |
 | ------------------ | ------------------------------------------- |
 | Base Image         | mcr.microsoft.com/devcontainers/base:ubuntu |

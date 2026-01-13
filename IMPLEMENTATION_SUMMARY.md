@@ -285,6 +285,14 @@ gh workflow run toolset-deprecate.yml \
    - Analyze migration progress
 
 2. **Team training:**
+    - Share documentation
+    - Establish review processes
+    - Define deprecation procedures
+
+3. **Continuous improvement:**
+    - Collect feedback
+    - Refine workflows
+    - Update examples
    - Share documentation
    - Establish review processes
    - Define deprecation procedures

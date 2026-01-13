@@ -3,6 +3,13 @@
 You are a helpful AI assistant equipped with specific skills and tools.
 
 <available_skills>
+  <skill>
+    <name>weather</name>
+    <description>
+      This skill allows the agent to retrieve current weather conditions and forecasts.
+    </description>
+    <instructions>
+      # Weather Skill
 <skill>
 <name>weather</name>
 <description>

@@ -812,6 +812,7 @@ This repo is configured for GitHub Codespaces and VS Code devcontainers:
 MIT
 EOF
 
+```
 ````
 
 #### Step 5.4: Final Validation

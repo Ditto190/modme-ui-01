@@ -1,5 +1,15 @@
 # list of languages for which language servers are started; choose from:
 #   al               bash             clojure          cpp              csharp           csharp_omnisharp
+#   dart             elixir           elm              erlang           fortran          go
+#   haskell          java             julia            kotlin           lua              markdown
+#   nix              perl             php              python           python_jedi      r
+#   rego             ruby             ruby_solargraph  rust             scala            swift
+#   terraform        typescript       typescript_vts   yaml             zig
+# Note:
+#   - For C, use cpp
+#   - For JavaScript, use typescript
+# Special requirements:
+#   - csharp: Requires the presence of a .sln file in the project folder.
 #   dart             elixir           elm              erlang           fortran          fsharp
 #   go               groovy           haskell          java             julia            kotlin
 #   lua              markdown         nix              pascal           perl             php
@@ -17,6 +27,7 @@
 # The first language is the default language and the respective language server will be used as a fallback.
 # Note that when using the JetBrains backend, language servers are not used and this list is correspondingly ignored.
 languages:
+- typescript
 - python
 - vue
 - typescript

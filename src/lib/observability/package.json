@@ -1,0 +1,20 @@
+{
+  "name": "@modme-genui/observability",
+  "version": "0.1.0",
+  "description": "GreptimeDB observability integration for ModMe GenUI",
+  "main": "greptime-config.ts",
+  "types": "greptime-config.ts",
+  "dependencies": {
+    "@opentelemetry/api": "^1.7.0",
+    "@opentelemetry/sdk-metrics": "^1.19.0",
+    "@opentelemetry/sdk-trace-node": "^1.19.0",
+    "@opentelemetry/exporter-metrics-otlp-proto": "^0.47.0",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.47.0",
+    "@opentelemetry/resources": "^1.19.0",
+    "@opentelemetry/semantic-conventions": "^1.19.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/node": "^20.10.0"
+  }
+}
