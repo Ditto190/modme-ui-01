@@ -1,0 +1,69 @@
+{
+  "id": "data-analysis-001",
+  "name": "Data Analysis Dashboard",
+  "description": "Analyze dataset and create comprehensive dashboard with KPIs and visualizations",
+  "category": "data_analysis",
+  "steps": [
+    {
+      "id": "step_1",
+      "tool_name": "upsert_ui_element",
+      "description": "Create summary statistics card",
+      "parameters": {
+        "id": "summary_stats",
+        "type": "StatCard",
+        "props": {
+          "title": "Total Records",
+          "value": "${record_count}",
+          "trend": "+12%",
+          "trendDirection": "up"
+        }
+      },
+      "on_error": "continue"
+    },
+    {
+      "id": "step_2",
+      "tool_name": "upsert_ui_element",
+      "description": "Create data table for detailed view",
+      "parameters": {
+        "id": "data_table",
+        "type": "DataTable",
+        "props": {
+          "columns": "${table_columns}",
+          "data": "${table_data}"
+        }
+      },
+      "on_error": "continue"
+    },
+    {
+      "id": "step_3",
+      "tool_name": "upsert_ui_element",
+      "description": "Create trend chart",
+      "parameters": {
+        "id": "trend_chart",
+        "type": "ChartCard",
+        "props": {
+          "title": "Trend Analysis",
+          "chartType": "line",
+          "data": "${chart_data}"
+        }
+      },
+      "condition": "previous_success",
+      "on_error": "stop"
+    }
+  ],
+  "metadata": {
+    "required_variables": [
+      "record_count",
+      "table_columns",
+      "table_data",
+      "chart_data"
+    ],
+    "estimated_duration": "30s",
+    "difficulty": "beginner"
+  },
+  "created_at": "2026-01-19T00:00:00Z",
+  "updated_at": "2026-01-19T00:00:00Z",
+  "version": "1.0.0",
+  "author": "modme-team",
+  "tags": ["data", "analysis", "dashboard", "visualization"]
+}

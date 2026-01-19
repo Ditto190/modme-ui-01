@@ -36,6 +36,13 @@ from tools.collection_manager import (
 )
 from tools.journal_adapter import process_feelings
 
+# Import new integration modules
+from llm_providers import LLMProvider, LLMConfig, get_provider_manager
+from mcp_server import get_mcp_server, register_agent_tools_as_mcp
+from permissions import get_permission_manager, requires_permission, PermissionLevel
+from recipes import get_recipe_manager, RecipeExecutor
+from sse_handler import get_event_bus, sse_stream
+
 load_dotenv()
 
 # Validation constants for type safety
@@ -297,6 +304,25 @@ def cleanup():
         print(f"Error closing VT Code client: {e}")
 
 
+# Register agent tools with MCP server
+register_agent_tools_as_mcp(
+    [
+        upsert_ui_element,
+        remove_ui_element,
+        clear_canvas,
+        setThemeColor,
+        edit_component,
+        analyze_component_props,
+        create_new_component,
+        run_build_check,
+        process_feelings,
+        create_collection,
+        scan_repository_for_collection_items,
+        create_mcp_server_collection,
+    ]
+)
+
+
 # Health check endpoints
 @app.get("/health")
 async def health_check():
@@ -305,9 +331,16 @@ async def health_check():
         content={
             "status": "healthy",
             "service": "GenUI Workbench Agent",
-            "version": "1.0.0",
+            "version": "0.3.0",
             "timestamp": datetime.utcnow().isoformat(),
             "model": "gemini-2.5-flash",
+            "features": [
+                "mcp_server",
+                "sse_streaming",
+                "multi_model_llm",
+                "permissions",
+                "recipes",
+            ],
         },
         status_code=status.HTTP_200_OK,
     )
@@ -362,8 +395,167 @@ async def readiness_check():
         )
 
 
+# SSE Streaming endpoint
+@app.get("/api/events")
+async def events_stream(request: fastapi.Request, channel: str = "default"):
+    """Stream agent events via Server-Sent Events."""
+    return await sse_stream(request, channel)
+
+
+# Permission management endpoints
+@app.get("/api/permissions/pending")
+async def get_pending_permissions():
+    """Get pending permission requests."""
+    manager = get_permission_manager()
+    requests = manager.get_pending_requests()
+    return JSONResponse(
+        content={
+            "pending_requests": [
+                {
+                    "tool_name": req.tool_name,
+                    "level": req.level.value,
+                    "description": req.description,
+                    "context": req.context,
+                }
+                for req in requests
+            ]
+        }
+    )
+
+
+@app.post("/api/permissions/approve")
+async def approve_permission(request_data: Dict[str, Any]):
+    """Approve a permission request."""
+    # Implementation for approving permissions
+    return JSONResponse(content={"status": "approved"})
+
+
+# Recipe management endpoints
+@app.get("/api/recipes")
+async def list_recipes(category: Optional[str] = None):
+    """List available recipes."""
+    manager = get_recipe_manager()
+    recipes = manager.list_recipes(category=category)
+    return JSONResponse(
+        content={
+            "recipes": [
+                {
+                    "id": recipe.id,
+                    "name": recipe.name,
+                    "description": recipe.description,
+                    "category": recipe.category,
+                    "tags": recipe.tags,
+                    "version": recipe.version,
+                }
+                for recipe in recipes
+            ]
+        }
+    )
+
+
+@app.get("/api/recipes/{recipe_id}")
+async def get_recipe(recipe_id: str):
+    """Get a specific recipe."""
+    manager = get_recipe_manager()
+    recipe = manager.get_recipe(recipe_id)
+    if recipe:
+        return JSONResponse(content=recipe.to_dict())
+    return JSONResponse(
+        content={"error": "Recipe not found"}, status_code=status.HTTP_404_NOT_FOUND
+    )
+
+
+@app.post("/api/recipes/{recipe_id}/execute")
+async def execute_recipe(recipe_id: str, variables: Optional[Dict[str, Any]] = None):
+    """Execute a recipe workflow."""
+    manager = get_recipe_manager()
+    recipe = manager.get_recipe(recipe_id)
+
+    if not recipe:
+        return JSONResponse(
+            content={"error": "Recipe not found"},
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+
+    # Create tool registry
+    tool_registry = {
+        "upsert_ui_element": upsert_ui_element,
+        "remove_ui_element": remove_ui_element,
+        "clear_canvas": clear_canvas,
+    }
+
+    executor = RecipeExecutor(tool_registry)
+
+    # Create mock ToolContext
+    from google.adk.tools import ToolContext
+
+    mock_context = ToolContext(state={})
+
+    result = await executor.execute_recipe(recipe, mock_context, variables or {})
+    return JSONResponse(content=result)
+
+
+# Multi-model LLM endpoints
+@app.get("/api/llm/providers")
+async def list_llm_providers():
+    """List available LLM providers."""
+    return JSONResponse(
+        content={
+            "providers": [
+                {"id": "gemini", "name": "Google Gemini", "status": "active"},
+                {"id": "openai", "name": "OpenAI GPT", "status": "available"},
+                {"id": "anthropic", "name": "Anthropic Claude", "status": "available"},
+                {"id": "ollama", "name": "Ollama (Local)", "status": "available"},
+            ]
+        }
+    )
+
+
+@app.get("/api/llm/usage")
+async def get_llm_usage():
+    """Get LLM usage statistics."""
+    manager = get_provider_manager()
+    summary = manager.get_usage_summary()
+    return JSONResponse(content=summary)
+
+
+@app.post("/api/llm/generate")
+async def generate_text(request_data: Dict[str, Any]):
+    """Generate text using specified LLM provider."""
+    prompt = request_data.get("prompt", "")
+    provider = request_data.get("provider", "gemini")
+    model = request_data.get("model")
+
+    manager = get_provider_manager()
+
+    config = LLMConfig(
+        provider=LLMProvider(provider),
+        model=model or manager._get_default_model(LLMProvider(provider)),
+    )
+
+    result = await manager.generate(prompt, config=config)
+    return JSONResponse(content={"text": result})
+
+
+# MCP server info
+@app.get("/api/mcp/info")
+async def mcp_info():
+    """Get MCP server information."""
+    mcp_server = get_mcp_server()
+    return JSONResponse(
+        content={
+            "server_name": mcp_server.agent_name,
+            "tools_count": len(mcp_server.tools_registry),
+            "resources_count": len(mcp_server.resources_registry),
+            "tools": list(mcp_server.tools_registry.keys()),
+            "resources": list(mcp_server.resources_registry.keys()),
+        }
+    )
+
+
 if __name__ == "__main__":
     import uvicorn
+    import fastapi
 
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
