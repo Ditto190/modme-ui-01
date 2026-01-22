@@ -1,7 +1,7 @@
 [project]
 name = "modme-ui-agent"
-version = "0.3.0"
-description = "ModifyMe GenUI Workbench Agent with MCP, Multi-Model, and Advanced Features"
+version = "0.3.1"
+description = "ModifyMe GenUI Workbench Agent with FastMCP, Multi-Model, and Advanced Features"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi",
@@ -13,7 +13,8 @@ dependencies = [
     "ag-ui-adk",
     "httpx>=0.27.0",
     "semantic-router>=0.1.0",
-    # MCP integration (from mcp-use and Containarium patterns)
+    # MCP integration (FastMCP for modern, Pythonic MCP development)
+    "fastmcp[tasks]>=3.0.0b1",
     "mcp>=0.9.0",
     # Multi-model LLM support (from Goose patterns)
     "openai>=1.30.0",

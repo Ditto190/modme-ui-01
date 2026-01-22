@@ -10,7 +10,7 @@ from typing import Any, Dict, Optional
 
 from ag_ui_adk import ADKAgent, add_adk_fastapi_endpoint
 from dotenv import load_dotenv
-from fastapi import FastAPI, status
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from google.adk.agents import LlmAgent
@@ -42,6 +42,9 @@ from mcp_server import get_mcp_server, register_agent_tools_as_mcp
 from permissions import get_permission_manager, requires_permission, PermissionLevel
 from recipes import get_recipe_manager, RecipeExecutor
 from sse_handler import get_event_bus, sse_stream
+
+# Import FastMCP server
+from fastmcp_server import mcp as fastmcp_server
 
 load_dotenv()
 
@@ -268,7 +271,22 @@ adk_agent = ADKAgent(
     use_in_memory_services=True,
 )
 
-app = FastAPI(title="GenUI Workbench Agent")
+# Create FastMCP HTTP app for mounting
+try:
+    fastmcp_http_app = fastmcp_server.http_app(path='/mcp')
+    # Create FastAPI app with FastMCP lifespan for proper initialization
+    app = FastAPI(
+        title="GenUI Workbench Agent",
+        version="0.3.1",
+        lifespan=fastmcp_http_app.lifespan
+    )
+    # Mount FastMCP server at /mcp endpoint
+    app.mount("/mcp", fastmcp_http_app)
+    print("[FastMCP] ✅ MCP server mounted at /mcp")
+except Exception as e:
+    print(f"[FastMCP] ⚠️  Error mounting FastMCP server: {e}")
+    # Fallback to regular FastAPI without MCP lifespan
+    app = FastAPI(title="GenUI Workbench Agent", version="0.3.1")
 
 # Configure CORS for Codespaces
 # Allow requests from the Codespace UI URL
@@ -331,16 +349,22 @@ async def health_check():
         content={
             "status": "healthy",
             "service": "GenUI Workbench Agent",
-            "version": "0.3.0",
+            "version": "0.3.1",
             "timestamp": datetime.utcnow().isoformat(),
             "model": "gemini-2.5-flash",
             "features": [
+                "fastmcp_server",
                 "mcp_server",
                 "sse_streaming",
                 "multi_model_llm",
                 "permissions",
                 "recipes",
             ],
+            "fastmcp": {
+                "mounted": True,
+                "endpoint": "/mcp",
+                "version": fastmcp_server.version,
+            },
         },
         status_code=status.HTTP_200_OK,
     )
@@ -397,7 +421,7 @@ async def readiness_check():
 
 # SSE Streaming endpoint
 @app.get("/api/events")
-async def events_stream(request: fastapi.Request, channel: str = "default"):
+async def events_stream(request: Request, channel: str = "default"):
     """Stream agent events via Server-Sent Events."""
     return await sse_stream(request, channel)
 
