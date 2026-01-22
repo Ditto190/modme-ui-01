@@ -6,12 +6,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **ModMe GenUI Workspace** is a Generative UI (GenUI) R&D laboratory combining Next.js 16 frontend with Python ADK backend for creating dynamic, AI-generated interfaces. This is a local-first, privacy-focused consulting platform supporting multi-agent workflows, code sandboxing, and component-based UI generation.
 
+**New in v0.3.0** (2026-01-19): Integrated patterns from Containarium, OpenWork, Goose, and MCP-Use for enhanced MCP support, multi-model LLM, permissions, SSE streaming, and workflow recipes.
+
 Key technologies:
 
 - **Frontend**: Next.js 16, React 19, Tailwind CSS 4, CopilotKit
-- **Backend**: Python ADK (Google), FastAPI, Gemini AI
+- **Backend**: Python ADK (Google), FastAPI, Multi-Model LLM (Gemini/OpenAI/Anthropic/Ollama)
+- **Protocols**: MCP (Model Context Protocol), SSE (Server-Sent Events)
 - **Data**: Local SQLite + ChromaDB, Git-ignored `data/` directory
 - **Execution**: MicroSandbox (not Docker) for safe code isolation
+- **Permissions**: Granular permission system for agent safety
 
 ## Development Commands
 
@@ -34,6 +38,13 @@ npm run dev:ui                  # Start only Next.js UI server
 npm run dev:agent               # Start only Python ADK agent
 npm run dev:debug               # Start dev with debug logging (LOG_LEVEL=debug)
 ```
+
+**New Endpoints** (v0.3.0):
+- `/api/events` - SSE streaming for real-time agent updates
+- `/api/mcp/info` - MCP server information
+- `/api/permissions/pending` - Permission management
+- `/api/recipes` - Workflow recipe marketplace
+- `/api/llm/providers` - Multi-model LLM configuration
 
 ### Building & Production
 
@@ -347,6 +358,7 @@ Toolsets support:
 - `.copilot/knowledge/architecture.md` - System architecture details
 - `.copilot/instructions/genui-development.md` - GenUI patterns & practices
 - `Project_Overview.md` - Vision & high-level concepts
+- `docs/REPOSITORY_INTEGRATIONS.md` - **NEW**: Integration features from analyzed repos (v0.3.0)
 
 **Process & Workflow**:
 
