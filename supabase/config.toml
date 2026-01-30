@@ -1,0 +1,17 @@
+[project]
+id = "modme-genui"
+name = "ModMe GenUI Workspace"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public"]
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
