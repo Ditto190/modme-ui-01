@@ -88,12 +88,15 @@ tags: [mcp, toolset, automation]
 # Tool Name Agent
 
 ## Purpose
+
 [What this agent does]
 
 ## Capabilities
+
 [List capabilities]
 
 ## Usage
+
 [Usage examples]
 ```
 
@@ -111,11 +114,13 @@ tags: [mcp, toolset]
 # Use Tool Name
 
 ## Process
+
 1. Gather parameters
 2. Execute tool
 3. Process results
 
 ## Use Cases
+
 [Use case examples]
 ```
 
@@ -131,12 +136,15 @@ tags: [mcp, toolset]
 # Toolset Instructions
 
 ## Overview
+
 [Toolset overview]
 
 ## Available Tools
+
 [Tool list]
 
 ## Best Practices
+
 [Best practices]
 ```
 
@@ -367,6 +375,7 @@ python agent-library/scripts/generate_collection_from_keywords.py \
 ## Quick Troubleshooting
 
 ### MCP tool not found
+
 ```bash
 # Check available toolsets
 mcp_awesome_copil_list_collections
@@ -376,6 +385,7 @@ python agent-library/scripts/mcp_to_copilot_resources.py --help
 ```
 
 ### Collection validation fails
+
 ```bash
 # Check specific error
 node agent-library/eng/validate-collections.mjs --verbose
@@ -387,6 +397,7 @@ node agent-library/eng/validate-collections.mjs --verbose
 ```
 
 ### Schema generation fails
+
 ```bash
 # Verify JSON schema structure
 cat agent-library/data/toolset-tools.json | python -m json.tool
@@ -397,6 +408,7 @@ npx tsx --version
 ```
 
 ### Python/JavaScript integration issues
+
 ```bash
 # Test Python scripts
 python --version  # 3.12+
@@ -438,6 +450,7 @@ npx tsx agent-generator/src/scripts/generate-agent-schemas.ts --help
 ---
 
 **Quick Links:**
+
 - [Full Workflow Guide](./MCP_TO_COPILOT_WORKFLOW.md)
 - [Collection Generator Prompt](./prompts/generate-collection-from-keywords.prompt.md)
 - [Schema Crawler](../agent-generator/src/mcp-registry/schema-crawler.ts)
