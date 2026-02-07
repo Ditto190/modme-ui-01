@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "generate": "tsx src/scripts/generate.ts"
+    "generate": "tsx src/scripts/generate.ts",
+    "generate:agent-schemas": "tsx src/scripts/generate-agent-schemas.ts"
   },
   "dependencies": {
     "typescript": "^5.3.3",
