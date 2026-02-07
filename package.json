@@ -37,6 +37,7 @@
     "search:knowledge": "node scripts/knowledge-management/search-knowledge.js",
     "validate:knowledge-library": "node -e \"const fs=require('fs');const Ajv=require('ajv');const schema=JSON.parse(fs.readFileSync('docs/knowledge-library-schema.json','utf8'));const data=JSON.parse(fs.readFileSync('docs/knowledge-library.json','utf8'));const ajv=new Ajv();const valid=ajv.validate(schema,data);console.log(valid?'✓ Valid':'✗ Invalid:',ajv.errors);process.exit(valid?0:1)\"",
     "mcp:start": "pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/start-local-mcp-servers.ps1",
+    "mcp:status": "pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/check-mcp-servers.ps1",
     "mcp:start:all": "./scripts/start-all-mcp-servers.sh || pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/start-all-mcp-servers.ps1",
     "mcp:start:force": "./scripts/start-all-mcp-servers.sh --force || pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/start-all-mcp-servers.ps1 -Force",
     "mcp:start:wait": "./scripts/start-all-mcp-servers.sh --wait || pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/start-all-mcp-servers.ps1 -WaitForReady",
