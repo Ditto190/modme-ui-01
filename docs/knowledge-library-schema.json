@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Knowledge Library",
+  "description": "Schema for compressed knowledge base in ModMe GenUI workspace",
+  "type": "object",
+  "required": ["version", "last_updated", "topics"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp"
+    },
+    "topics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "category", "status", "summary"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]*$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["build-tools", "infrastructure", "integrations", "architecture"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "deprecated", "archived"]
+          },
+          "summary": {
+            "type": "string"
+          },
+          "keywords": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "source_files": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "consolidated_path": {
+            "type": "string"
+          },
+          "key_concepts": {
+            "type": "object"
+          },
+          "commands": {
+            "type": "object"
+          },
+          "related_topics": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "metadata": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "index": {
+      "type": "object",
+      "properties": {
+        "by_category": { "type": "object" },
+        "by_keyword": { "type": "object" }
+      }
+    }
+  }
+}

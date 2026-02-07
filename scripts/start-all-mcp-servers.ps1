@@ -322,12 +322,12 @@ function Start-PythonMCPServer {
         Write-Detail "Using venv Python: $venvPython"
     }
 
-    $args = @($Server.Path)
+    $serverArgs = @($Server.Path)
     if ($Server.Port) {
-        $args += @("--port", $Server.Port)
+        $serverArgs += @("--port", $Server.Port)
     }
 
-    Start-Process $pythonCmd -ArgumentList $args `
+    Start-Process $pythonCmd -ArgumentList $serverArgs `
         -RedirectStandardOutput $Server.LogFile -RedirectStandardError $Server.LogFile -WindowStyle Hidden
 }
 
@@ -445,6 +445,7 @@ foreach ($Server in $Servers) {
             'PythonMCP' { Start-PythonMCPServer $Server }
             'ChromaDB' { Start-ChromaDBServer $Server }
             'Configured' { Start-ConfiguredServer $Server }
+            'VSCodeMCP' { Start-VSCodeMCPServer $Server }
         }
 
         Write-Success "Started successfully"

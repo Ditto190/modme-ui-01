@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-02-08T00:00:00Z",
+  "topics": [
+    {
+      "id": "esbuild",
+      "name": "ESBuild Integration",
+      "category": "build-tools",
+      "status": "active",
+      "summary": "TypeScript/React build configuration with ESBuild for fast compilation",
+      "keywords": ["esbuild", "build", "typescript", "compilation", "react"],
+      "source_files": [
+        "ESBUILD_CHECKLIST.md",
+        "ESBUILD_CONFIGURED.md",
+        "ESBUILD_INDEX.md",
+        "ESBUILD_INTEGRATION.md",
+        "ESBUILD_NPM_SCRIPTS.md",
+        "ESBUILD_QUICK_START.md",
+        "ESBUILD_REFERENCE.md",
+        "ESBUILD_SETUP.md"
+      ],
+      "consolidated_path": "docs/build-tools/esbuild.md",
+      "key_concepts": {
+        "setup": "Single package.json script for fast builds",
+        "configuration": "esbuild.config.mjs with React/TS presets",
+        "benefits": "10x faster than tsc, sub-second rebuilds",
+        "trade_offs": "No type checking (use tsc separately)"
+      },
+      "commands": {
+        "build": "npm run build:esbuild",
+        "watch": "npm run watch:esbuild",
+        "type_check": "npx tsc --noEmit"
+      },
+      "related_topics": ["typescript", "react", "npm-scripts"],
+      "metadata": {
+        "archived_date": "2026-02-08",
+        "original_size_kb": 120,
+        "compressed_size_kb": 15,
+        "compression_ratio": "8:1"
+      }
+    }
+  ],
+  "index": {
+    "by_category": {
+      "build-tools": ["esbuild"],
+      "infrastructure": [],
+      "integrations": [],
+      "architecture": []
+    },
+    "by_keyword": {
+      "esbuild": ["esbuild"],
+      "typescript": ["esbuild"],
+      "build": ["esbuild"]
+    }
+  }
+}

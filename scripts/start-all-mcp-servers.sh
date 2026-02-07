@@ -176,6 +176,58 @@ if [[ $config_count -gt 0 ]]; then
     print_success "Found $config_count configured servers"
 fi
 
+# ============================================================================
+# 5. Load VS Code MCP servers (mcp.json in user directory)
+# ============================================================================
+print_info "Checking for VS Code MCP configuration..."
+VSCODE_MCP_PATHS=(
+    "$HOME/.config/Code/User/mcp.json"
+    "$HOME/Library/Application Support/Code/User/mcp.json"
+    "${APPDATA}/Code/User/mcp.json"
+)
+
+vscode_count=0
+for vscode_mcp_path in "${VSCODE_MCP_PATHS[@]}"; do
+    # Expand Windows paths if on WSL
+    if [[ -n "$APPDATA" ]]; then
+        vscode_mcp_path=$(wslpath "$APPDATA/Code/User/mcp.json" 2>/dev/null || echo "$vscode_mcp_path")
+    fi
+
+    if [[ -f "$vscode_mcp_path" ]]; then
+        print_detail "Found VS Code MCP config: $vscode_mcp_path"
+        if command -v jq &> /dev/null; then
+            # Parse VS Code MCP servers with jq
+            while IFS= read -r server_name; do
+                server_type=$(jq -r ".servers.\"$server_name\".type" "$vscode_mcp_path" 2>/dev/null || echo "unknown")
+                server_cmd=$(jq -r ".servers.\"$server_name\".command" "$vscode_mcp_path" 2>/dev/null || echo "")
+
+                # Skip Docker-based servers
+                if [[ "$server_cmd" == "docker" ]]; then
+                    print_detail "Skipping Docker-based server: $server_name (likely managed separately)"
+                    continue
+                fi
+
+                SERVER_NAMES+=("$server_name (VS Code)")
+                SERVER_TYPES+=("VSCodeMCP")
+                SERVER_PATHS+=("$vscode_mcp_path:$server_name")  # Store config path + server name
+                SERVER_LOGS+=("$LOG_DIR/mcp-vscode-$server_name.log")
+                SERVER_PORTS+=("")
+                ((vscode_count++))
+                print_detail "Found VS Code MCP server: $server_name ($server_type)"
+            done < <(jq -r '.servers | keys[]' "$vscode_mcp_path" 2>/dev/null || true)
+        else
+            print_warning "jq not installed, skipping VS Code MCP parsing: $vscode_mcp_path"
+        fi
+        break  # Only use first found config
+    fi
+done
+
+if [[ $vscode_count -gt 0 ]]; then
+    print_success "Found $vscode_count VS Code MCP servers"
+else
+    print_detail "No VS Code MCP configuration found"
+fi
+
 echo ""
 echo -e "\033[36m📊 Total servers discovered: ${#SERVER_NAMES[@]}\033[0m"
 echo ""
@@ -270,6 +322,57 @@ start_python_server() {
     "$python_cmd" "${args[@]}" > "$log" 2>&1 &
 }
 
+start_vscode_mcp_server() {
+    local config_path=$1
+    local server_name=$2
+    local log=$3
+
+    # Extract server name from path format "config_path:server_name"
+    if [[ "$config_path" == *:* ]]; then
+        server_name="${config_path##*:}"
+        config_path="${config_path%:*}"
+    fi
+
+    if ! command -v jq &> /dev/null; then
+        print_error "jq required to start VS Code MCP servers"
+        return 1
+    fi
+
+    # Parse server configuration
+    local server_type=$(jq -r ".servers.\"$server_name\".type" "$config_path" 2>/dev/null)
+    local server_cmd=$(jq -r ".servers.\"$server_name\".command" "$config_path" 2>/dev/null)
+
+    case "$server_type" in
+        stdio)
+            if [[ -n "$server_cmd" && "$server_cmd" != "null" ]]; then
+                # Get args as array
+                local args_json=$(jq -r ".servers.\"$server_name\".args[]" "$config_path" 2>/dev/null)
+                local args_array=()
+                while IFS= read -r arg; do
+                    args_array+=("$arg")
+                done <<< "$args_json"
+
+                # Start the server
+                "$server_cmd" "${args_array[@]}" > "$log" 2>&1 &
+                print_detail "Started STDIO server (PID: $!)"
+            else
+                print_error "No command found for server: $server_name"
+                return 1
+            fi
+            ;;
+        http)
+            local server_url=$(jq -r ".servers.\"$server_name\".url" "$config_path" 2>/dev/null)
+            print_info "HTTP server - URL: $server_url"
+            print_warning "HTTP servers cannot be started locally (remote endpoint)"
+            return 2  # Not an error, just can't start
+            ;;
+        *)
+            print_error "Unsupported VS Code MCP server type: $server_type"
+            return 1
+            ;;
+    esac
+}
+
 # ============================================================================
 # Main startup loop
 # ============================================================================
@@ -320,6 +423,21 @@ for ((i=0; i<${#SERVER_NAMES[@]}; i++)); do
         Configured)
             print_warning "Configured servers not yet implemented in bash version"
             ((SKIPPED++))
+            ;;
+        VSCodeMCP)
+            result=0
+            start_vscode_mcp_server "$path" "" "$log" || result=$?
+            if [[ $result -eq 0 ]]; then
+                print_success "Started successfully"
+                print_detail "Logs: $log"
+                ((STARTED++))
+            elif [[ $result -eq 2 ]]; then
+                # HTTP server - can't start locally
+                ((SKIPPED++))
+            else
+                print_error "Failed to start"
+                ((FAILED++))
+            fi
             ;;
     esac
 
