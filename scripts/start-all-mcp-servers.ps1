@@ -184,24 +184,41 @@ foreach ($VSCodeMcpPath in $VSCodeMcpPaths) {
                     $ServerConfig = $VSCodeConfig.servers.$ServerName
 
                     # Skip servers that require Docker (they're often already running)
-                    if ($ServerConfig.command -eq 'docker') {
+                    $cmd = $null
+                    if ($ServerConfig.PSObject.Properties['command']) {
+                        $cmd = $ServerConfig.command
+                    }
+                    
+                    if ($cmd -eq 'docker') {
                         Write-Detail "Skipping Docker-based server: $ServerName (likely managed separately)"
+                        continue
+                    }
+
+                    # Safely extract properties
+                    $serverType = if ($ServerConfig.PSObject.Properties['type']) { $ServerConfig.type } else { 'unknown' }
+                    $serverUrl = if ($ServerConfig.PSObject.Properties['url']) { $ServerConfig.url } else { $null }
+                    $serverArgs = if ($ServerConfig.PSObject.Properties['args']) { $ServerConfig.args } else { @() }
+                    $serverEnv = if ($ServerConfig.PSObject.Properties['env']) { $ServerConfig.env } else { $null }
+
+                    # Skip HTTP-only servers (they can't be started locally)
+                    if ($serverType -eq 'http' -and -not $cmd) {
+                        Write-Detail "Skipping HTTP-only server: $ServerName (remote endpoint)"
                         continue
                     }
 
                     $Servers += @{
                         Name = "$ServerName (VS Code)"
                         Type = 'VSCodeMCP'
-                        ServerType = $ServerConfig.type
-                        Command = $ServerConfig.command
-                        Args = $ServerConfig.args
-                        Url = $ServerConfig.url
-                        Env = $ServerConfig.env
+                        ServerType = $serverType
+                        Command = $cmd
+                        Args = $serverArgs
+                        Url = $serverUrl
+                        Env = $serverEnv
                         LogFile = Join-Path $LogDir "mcp-vscode-$ServerName.log"
                         Port = $null
                     }
                     $vscodeServersFound++
-                    Write-Detail "Found VS Code MCP server: $ServerName ($($ServerConfig.type))"
+                    Write-Detail "Found VS Code MCP server: $ServerName ($serverType)"
                 }
             }
         }
