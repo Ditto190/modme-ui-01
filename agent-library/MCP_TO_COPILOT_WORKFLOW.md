@@ -105,13 +105,13 @@ import json
 def fetch_toolset_via_mcp(toolset_name: str) -> Dict[str, Any]:
     """
     Fetch toolset using MCP awesome-copilot integration.
-    
+
     In practice, this would call the actual MCP tool.
     For testing, we use mock data.
     """
     # TODO: Integrate with actual MCP tool call
     # result = mcp_awesome_copil_get_toolset_tools(toolset_name)
-    
+
     # Mock structure for demonstration
     return {
         "toolset": toolset_name,
@@ -135,7 +135,7 @@ if __name__ == "__main__":
     import sys
     toolset = sys.argv[1] if len(sys.argv) > 1 else "github-pull-request"
     data = fetch_toolset_via_mcp(toolset)
-    
+
     output_file = f"agent-library/data/{toolset}-tools.json"
     Path(output_file).parent.mkdir(exist_ok=True)
     Path(output_file).write_text(json.dumps(data, indent=2))
@@ -312,10 +312,10 @@ interface MCPTool {
 
 async function generateToolsetSchemas(toolsetName: string, tools: MCPTool[]) {
   const outputDir = `agent-generator/output/schemas/${toolsetName}`;
-  
+
   // Generate schema structure
   const fileMap = generateSchemaFileStructure(toolsetName, tools);
-  
+
   // Write files
   fileMap.forEach((content, filePath) => {
     const fullPath = path.join(outputDir, filePath);
@@ -416,7 +416,7 @@ node agent-library/eng/validate-skills.mjs
 ✓ Validating collections...
   ✓ mcp-github-toolkit.collection.yml: valid
   ✓ mcp-awesome-copilot.collection.yml: valid
-  
+
 ✓ Validated 34 collections
   - 32 valid
   - 2 with errors (see details above)
