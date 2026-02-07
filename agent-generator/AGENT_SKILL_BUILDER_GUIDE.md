@@ -547,6 +547,241 @@ import { validateupsert_ui_elementInput } from '@/schemas/agent-tools';
 
 ---
 
+## 5. 🔍 Collection Generator from Keywords
+
+### Purpose
+
+Dynamically generate GitHub Copilot collections by searching for keywords across all agents, prompts, instructions, and skills. This tool automates the creation of curated collections based on topics, technologies, or workflows.
+
+### Location
+
+```
+agent-library/
+├── scripts/
+│   └── generate_collection_from_keywords.py  # 🔍 Main generator script
+├── prompts/
+│   └── generate-collection-from-keywords.prompt.md  # 💬 Interactive prompt
+└── COLLECTION_GENERATOR_README.md  # 📚 Complete documentation
+```
+
+### Quick Start
+
+**Command-Line Usage:**
+
+```bash
+# Basic collection generation
+python agent-library/scripts/generate_collection_from_keywords.py "testing automation"
+
+# Custom output name
+python agent-library/scripts/generate_collection_from_keywords.py \
+    "react nextjs typescript" --output react-frontend
+
+# Control size and types
+python agent-library/scripts/generate_collection_from_keywords.py \
+    "security authentication" \
+    --max-items 25 \
+    --include-skills
+```
+
+**Interactive Prompt Usage:**
+
+```
+@workspace /generate-collection-from-keywords
+
+What keywords should I search for to create your collection?
+```
+
+### Features
+
+| Feature                | Description                                                         |
+| ---------------------- | ------------------------------------------------------------------- |
+| **Keyword Search**     | Case-insensitive search across all assets                           |
+| **Relevance Scoring**  | Title matches (10x), description matches (5x), content matches (1x) |
+| **Multi-Type Support** | Agents, prompts, instructions, and skills                           |
+| **Auto-Tagging**       | Extracts and consolidates tags from matched items                   |
+| **Structured Output**  | Generates `.collection.yml`, `.md`, and `.metadata.json`            |
+
+### Command-Line Options
+
+| Option                   | Type   | Default  | Description                            |
+| ------------------------ | ------ | -------- | -------------------------------------- |
+| `keywords`               | string | required | Space-separated keywords to search for |
+| `--max-items`            | int    | 15       | Maximum items to include               |
+| `--output`               | string | auto     | Custom collection ID                   |
+| `--include-agents`       | flag   | true     | Include agent files                    |
+| `--include-prompts`      | flag   | true     | Include prompt files                   |
+| `--include-instructions` | flag   | true     | Include instruction files              |
+| `--include-skills`       | flag   | false    | Include skill files                    |
+| `--agent-library-root`   | path   | auto     | Path to agent-library directory        |
+
+### Examples
+
+**Example 1: Testing Collection**
+
+```bash
+python agent-library/scripts/generate_collection_from_keywords.py \
+    "testing tdd unit integration" --max-items 30 --include-skills
+```
+
+Output:
+
+- `collections/testing-tdd-unit.collection.yml`
+- `collections/testing-tdd-unit.md`
+- `collections/testing-tdd-unit.metadata.json`
+
+**Example 2: Frontend Development**
+
+```bash
+python agent-library/scripts/generate_collection_from_keywords.py \
+    "react nextjs typescript tailwind" --max-items 35 --output frontend-stack
+```
+
+**Example 3: DevOps Automation**
+
+```bash
+python agent-library/scripts/generate_collection_from_keywords.py \
+    "cicd docker kubernetes terraform" --max-items 40 --include-skills
+```
+
+### Output Structure
+
+**Collection YAML** (`.collection.yml`):
+
+```yaml
+id: testing-tdd-unit
+name: Testing Tdd Unit
+description: Collection focused on testing, tdd, unit...
+tags: [testing, tdd, unit, automation, jest, pytest]
+items:
+  - path: agents/test-automation-engineer.agent.md
+    kind: agent
+  - path: prompts/generate-unit-tests.prompt.md
+    kind: prompt
+display:
+  ordering: manual
+  show_badge: true
+  featured: false
+```
+
+**Collection Markdown** (`.md`):
+
+```markdown
+# Testing Tdd Unit
+
+Collection focused on testing, tdd, unit...
+
+**Tags**: testing, tdd, unit, automation
+
+## Collection Details
+
+- **Generated**: 2026-02-07T10:30:00
+- **Keywords**: testing, tdd, unit
+- **Total Matches**: 45
+- **Selected Items**: 15
+
+## Items in this Collection
+
+### Agents
+
+- [test-automation-engineer.agent.md](agents/...)
+
+### Prompts
+
+- [generate-unit-tests.prompt.md](prompts/...)
+
+## Usage
+
+Usage instructions...
+```
+
+### How It Works
+
+**Search Algorithm:**
+
+1. **Parse Files**: Read all matching files and extract YAML frontmatter
+2. **Keyword Matching**: Case-insensitive search in content, titles, descriptions
+3. **Relevance Scoring**:
+   - Content match: 1 point per keyword occurrence
+   - Title match: 10 points per keyword
+   - Description match: 5 points per keyword
+4. **Ranking**: Sort by relevance score (highest first)
+5. **Selection**: Take top N items (based on `--max-items`)
+
+**Collection Generation:**
+
+1. Generate collection ID from keywords (kebab-case)
+2. Extract and consolidate tags from matched items
+3. Build YAML structure with items, metadata, display settings
+4. Generate Markdown documentation
+5. Save metadata JSON with generation details
+
+### Best Practices
+
+**Choosing Keywords:**
+
+✅ **Good**:
+
+- Specific technologies: `react`, `typescript`, `docker`
+- Clear tasks: `testing`, `authentication`, `deployment`
+- Combined concepts: `api rest graphql`, `cicd automation`
+
+❌ **Avoid**:
+
+- Generic terms: `development`, `programming`
+- Single broad keywords without context
+- Misspellings (searches are exact)
+
+**Collection Sizes:**
+
+| Type          | Recommended Size |
+| ------------- | ---------------- |
+| Focused       | 10-15 items      |
+| General Topic | 20-30 items      |
+| Comprehensive | 40-100 items     |
+
+### Testing
+
+```bash
+# Run test script
+python agent-library/scripts/test_collection_generator.py
+
+# Expected output:
+# 🧪 Testing Dynamic Collection Generator
+# ✅ All tests passed!
+```
+
+### Integration
+
+**Using Generated Collections:**
+
+1. **In GitHub Copilot**:
+
+   ```bash
+   cp agent-library/collections/my-collection.* .github/copilot/collections/
+   ```
+
+2. **Team Repository**:
+
+   ```bash
+   git add agent-library/collections/my-collection.*
+   git commit -m "Add my-collection"
+   git push
+   ```
+
+3. **Contribute to Awesome-Copilot**:
+   ```bash
+   gh repo fork github/awesome-copilot
+   cp agent-library/collections/*.* awesome-copilot/collections/
+   gh pr create
+   ```
+
+### Related Documentation
+
+- **[COLLECTION_GENERATOR_README.md](../agent-library/COLLECTION_GENERATOR_README.md)** - Full documentation
+- **[generate-collection-from-keywords.prompt.md](../agent-library/prompts/generate-collection-from-keywords.prompt.md)** - Interactive prompt
+
+---
+
 ## 📚 Additional Resources
 
 - **Agent Skills Documentation**: [agent-library/docs/README.skills.md](../agent-library/docs/README.skills.md)
