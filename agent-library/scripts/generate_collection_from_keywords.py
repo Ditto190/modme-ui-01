@@ -45,18 +45,18 @@ class CollectionGenerator:
             # Extract frontmatter
             frontmatter_match = re.match(r'^---\n(.*?)\n---\n', content, re.DOTALL)
             frontmatter = {}
-            
+
             if frontmatter_match:
                 try:
                     frontmatter = yaml.safe_load(frontmatter_match.group(1))
                 except yaml.YAMLError:
                     pass
-            
+
             # Search for keywords (case-insensitive)
             content_lower = content.lower()
             matched_keywords = []
             match_count = 0
-            
+
             for keyword in keywords:
                 keyword_lower = keyword.lower()
                 count = content_lower.count(keyword_lower)
