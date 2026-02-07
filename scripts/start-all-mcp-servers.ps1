@@ -182,13 +182,13 @@ foreach ($VSCodeMcpPath in $VSCodeMcpPaths) {
             if ($VSCodeConfig.servers) {
                 foreach ($ServerName in $VSCodeConfig.servers.PSObject.Properties.Name) {
                     $ServerConfig = $VSCodeConfig.servers.$ServerName
-                    
+
                     # Skip servers that require Docker (they're often already running)
                     if ($ServerConfig.command -eq 'docker') {
                         Write-Detail "Skipping Docker-based server: $ServerName (likely managed separately)"
                         continue
                     }
-                    
+
                     $Servers += @{
                         Name = "$ServerName (VS Code)"
                         Type = 'VSCodeMCP'
@@ -356,14 +356,14 @@ function Start-ConfiguredServer {
 
 function Start-VSCodeMCPServer {
     param($Server)
-    
+
     # Handle different VS Code MCP server types
     switch ($Server.ServerType) {
         'stdio' {
             # STDIO servers run as child processes
             if ($Server.Command -and $Server.Args) {
                 $argList = $Server.Args
-                
+
                 # Handle environment variables
                 $envVars = @{}
                 if ($Server.Env) {
@@ -378,7 +378,7 @@ function Start-VSCodeMCPServer {
                         }
                     }
                 }
-                
+
                 # Start process with environment
                 $psi = New-Object System.Diagnostics.ProcessStartInfo
                 $psi.FileName = $Server.Command
@@ -387,14 +387,14 @@ function Start-VSCodeMCPServer {
                 $psi.RedirectStandardError = $true
                 $psi.UseShellExecute = $false
                 $psi.CreateNoWindow = $true
-                
+
                 foreach ($key in $envVars.Keys) {
                     $psi.Environment[$key] = $envVars[$key]
                 }
-                
+
                 # Redirect to log file (we'll need to handle this differently)
                 $process = [System.Diagnostics.Process]::Start($psi)
-                
+
                 # Async log the output
                 $outputLog = $Server.LogFile
                 $process.OutputDataReceived | ForEach-Object {
@@ -405,7 +405,7 @@ function Start-VSCodeMCPServer {
                 }
                 $process.BeginOutputReadLine()
                 $process.BeginErrorReadLine()
-                
+
                 Write-Detail "Started STDIO server (PID: $($process.Id))"
             }
         }
