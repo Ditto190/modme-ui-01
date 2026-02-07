@@ -1,37 +1,22 @@
-id: testing-automation
-name: Testing & Test Automation
-description: Comprehensive collection for writing tests, test automation, and test-driven development including unit tests, integration tests, and end-to-end testing strategies.
-tags:
-  [testing, tdd, automation, unit-tests, integration, playwright, jest, nunit]
-items:
-  # TDD Chat Modes
-  - path: agents/tdd-red.agent.md
-    kind: agent
-  - path: agents/tdd-green.agent.md
-    kind: agent
-  - path: agents/tdd-refactor.agent.md
-    kind: agent
-  - path: agents/playwright-tester.agent.md
-    kind: agent
-
-  # Testing Instructions
-  - path: instructions/playwright-typescript.instructions.md
-    kind: instruction
-  - path: instructions/playwright-python.instructions.md
-    kind: instruction
-
-  # Testing Prompts
-  - path: prompts/playwright-explore-website.prompt.md
-    kind: prompt
-  - path: prompts/playwright-generate-test.prompt.md
-    kind: prompt
-  - path: prompts/csharp-nunit.prompt.md
-    kind: prompt
-  - path: prompts/java-junit.prompt.md
-    kind: prompt
-  - path: prompts/ai-prompt-engineering-safety-review.prompt.md
-    kind: prompt
-
+description: Collection focused on testing, automation. Auto-generated based on keyword
+  search.
 display:
-  ordering: alpha
+  featured: false
+  ordering: manual
   show_badge: true
+id: testing-automation
+items:
+- kind: prompt
+  path: prompts\breakdown-test.prompt.md
+- kind: instruction
+  path: instructions\github-actions-ci-cd-best-practices.instructions.md
+- kind: agent
+  path: agents\laravel-expert-agent.agent.md
+- kind: agent
+  path: agents\stackhawk-security-onboarding.agent.md
+- kind: prompt
+  path: prompts\breakdown-plan.prompt.md
+name: Testing Automation
+tags:
+- automation
+- testing
