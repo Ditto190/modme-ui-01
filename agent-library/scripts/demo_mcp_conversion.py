@@ -7,23 +7,21 @@ This demo shows the complete workflow using real MCP data.
 
 from __future__ import annotations
 
-import json
-import subprocess
-from pathlib import Path
-from typing import Dict, Any, List
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict
 
 
 def demo_fetch_toolset(toolset_name: str = "github-pull-request") -> Dict[str, Any]:
     """
     Demo: Fetch MCP toolset data.
-    
+
     In production, this would use the actual MCP tool:
     mcp_awesome_copil_get_toolset_tools(toolset_name)
     """
-    print(f"\n=== STEP 1: Fetch MCP Toolset ===")
+    print("\n=== STEP 1: Fetch MCP Toolset ===")
     print(f"Toolset: {toolset_name}")
-    
+
     # Mock data structure (replace with actual MCP call)
     mock_data = {
         "toolset": toolset_name,
@@ -92,22 +90,22 @@ def demo_fetch_toolset(toolset_name: str = "github-pull-request") -> Dict[str, A
             }
         ]
     }
-    
+
     print(f"✓ Found {len(mock_data['tools'])} tools")
     for tool in mock_data['tools']:
         print(f"  - {tool['name']}: {tool['description']}")
-    
+
     return mock_data
 
 
 def demo_generate_agent(tool: Dict[str, Any], toolset_name: str, output_dir: Path) -> Path:
     """Demo: Generate agent file."""
-    print(f"\n=== STEP 2: Generate Agent ===")
+    print("\n=== STEP 2: Generate Agent ===")
     print(f"Tool: {tool['name']}")
-    
+
     agent_name = tool["name"].replace("_", "-")
     agent_id = f"mcp-{toolset_name}-{agent_name}"
-    
+
     agent_content = f"""---
 agent: {agent_id}
 name: {tool['name'].replace('_', ' ').title()}
@@ -174,23 +172,23 @@ const pr = await mcp_awesome_copil_get_toolset_tools({{
 - Generated: {datetime.now().strftime("%Y-%m-%d")}
 - Source: GitHub Awesome-Copilot MCP Registry
 """
-    
+
     agent_path = output_dir / "agents" / f"{agent_id}.agent.md"
     agent_path.parent.mkdir(parents=True, exist_ok=True)
     agent_path.write_text(agent_content, encoding="utf-8")
-    
+
     print(f"✓ Created: {agent_path.relative_to(output_dir.parent)}")
     return agent_path
 
 
 def demo_generate_prompt(tool: Dict[str, Any], toolset_name: str, output_dir: Path) -> Path:
     """Demo: Generate prompt file."""
-    print(f"\n=== STEP 3: Generate Prompt ===")
+    print("\n=== STEP 3: Generate Prompt ===")
     print(f"Tool: {tool['name']}")
-    
+
     prompt_name = tool["name"].replace("_", "-")
     prompt_id = f"use-{toolset_name}-{prompt_name}"
-    
+
     prompt_content = f"""---
 agent: "agent"
 description: |-
@@ -269,30 +267,30 @@ Use interactively with user input:
 
 ---
 
-Generated: {datetime.now().strftime("%Y-%m-%d")}  
-Toolset: `{toolset_name}`  
+Generated: {datetime.now().strftime("%Y-%m-%d")}
+Toolset: `{toolset_name}`
 Tool: `{tool['name']}`
 """
-    
+
     prompt_path = output_dir / "prompts" / f"{prompt_id}.prompt.md"
     prompt_path.parent.mkdir(parents=True, exist_ok=True)
     prompt_path.write_text(prompt_content, encoding="utf-8")
-    
+
     print(f"✓ Created: {prompt_path.relative_to(output_dir.parent)}")
     return prompt_path
 
 
 def demo_generate_collection(toolset_name: str, output_dir: Path) -> Path:
     """Demo: Generate collection using keyword search."""
-    print(f"\n=== STEP 4: Generate Collection ===")
+    print("\n=== STEP 4: Generate Collection ===")
     print(f"Using keyword search for: mcp {toolset_name}")
-    
+
     collection_id = f"mcp-{toolset_name}-toolkit"
     keywords = f"mcp {toolset_name} github automation"
-    
+
     print(f"Searching with keywords: {keywords}")
     print(f"Collection ID: {collection_id}")
-    
+
     # In production, run the actual script:
     # subprocess.run([
     #     "python",
@@ -301,7 +299,7 @@ def demo_generate_collection(toolset_name: str, output_dir: Path) -> Path:
     #     "--output", collection_id,
     #     "--max-items", "25"
     # ])
-    
+
     # For demo, create a simple collection
     collection_content = f"""id: {collection_id}
 name: {toolset_name.replace('-', ' ').title()} Toolkit
@@ -328,25 +326,25 @@ display:
   ordering: manual
   show_badge: true
 """
-    
+
     collection_path = output_dir / "collections" / f"{collection_id}.collection.yml"
     collection_path.parent.mkdir(parents=True, exist_ok=True)
     collection_path.write_text(collection_content, encoding="utf-8")
-    
+
     print(f"✓ Created: {collection_path.relative_to(output_dir.parent)}")
     print(f"  - {6} items")
-    print(f"  - 3 agents, 3 prompts")
-    
+    print("  - 3 agents, 3 prompts")
+
     return collection_path
 
 
 def demo_validate(output_dir: Path):
     """Demo: Validate generated files."""
-    print(f"\n=== STEP 5: Validate ===")
-    
+    print("\n=== STEP 5: Validate ===")
+
     # In production, run:
     # subprocess.run(["node", "agent-library/eng/validate-collections.mjs"])
-    
+
     print("Running validation...")
     print("✓ All collections valid")
     print("✓ All agents have valid frontmatter")
@@ -356,11 +354,11 @@ def demo_validate(output_dir: Path):
 
 def demo_generate_docs(output_dir: Path):
     """Demo: Generate documentation."""
-    print(f"\n=== STEP 6: Generate Documentation ===")
-    
+    print("\n=== STEP 6: Generate Documentation ===")
+
     # In production, run:
     # subprocess.run(["node", "agent-library/eng/update-readme.mjs"])
-    
+
     print("Generating README files...")
     print("✓ Fetched MCP server data from registry")
     print("✓ Generated install buttons")
@@ -374,7 +372,7 @@ def _format_params(params: Dict[str, Any]) -> str:
     """Format parameters for documentation."""
     if not params or "properties" not in params:
         return "_No parameters required_"
-    
+
     lines = []
     for name, info in params.get("properties", {}).items():
         required = name in params.get("required", [])
@@ -382,7 +380,7 @@ def _format_params(params: Dict[str, Any]) -> str:
         desc = info.get("description", "")
         req_str = "**required**" if required else "_optional_"
         lines.append(f"- `{name}` ({param_type}) - {req_str} - {desc}")
-    
+
     return "\n".join(lines)
 
 
@@ -390,7 +388,7 @@ def _format_param_list(params: Dict[str, Any]) -> str:
     """Format parameter list for gathering."""
     if not params or "properties" not in params:
         return "_No parameters needed_"
-    
+
     lines = []
     for name, info in params.get("properties", {}).items():
         required = name in params.get("required", [])
@@ -399,7 +397,7 @@ def _format_param_list(params: Dict[str, Any]) -> str:
             lines.append(f"- **{name}**: {desc} (required)")
         else:
             lines.append(f"- {name}: {desc} (optional)")
-    
+
     return "\n".join(lines)
 
 
@@ -420,39 +418,39 @@ def main():
     print("=" * 60)
     print("MCP to GitHub Copilot Resources - Practical Demo")
     print("=" * 60)
-    
+
     # Configuration
     toolset_name = "github-pull-request"
     output_dir = Path(__file__).parent.parent / "demo-output"
-    
-    print(f"\nConfiguration:")
+
+    print("\nConfiguration:")
     print(f"  Toolset: {toolset_name}")
     print(f"  Output: {output_dir}")
-    
+
     # Step 1: Fetch toolset
     toolset_data = demo_fetch_toolset(toolset_name)
-    
+
     # Step 2-3: Generate agents and prompts for each tool
     for tool in toolset_data["tools"]:
         demo_generate_agent(tool, toolset_name, output_dir)
         demo_generate_prompt(tool, toolset_name, output_dir)
-    
+
     # Step 4: Generate collection
     demo_generate_collection(toolset_name, output_dir)
-    
+
     # Step 5: Validate
     demo_validate(output_dir)
-    
+
     # Step 6: Generate docs
     demo_generate_docs(output_dir)
-    
+
     # Summary
     print("\n" + "=" * 60)
     print("Demo Complete!")
     print("=" * 60)
     print(f"\n📁 Output Directory: {output_dir}")
     print("\n📋 Generated Files:")
-    
+
     # List generated files
     for category in ["agents", "prompts", "collections"]:
         cat_dir = output_dir / category
@@ -461,14 +459,14 @@ def main():
             print(f"\n{category.title()} ({len(files)}):")
             for file in sorted(files):
                 print(f"  ✓ {file.name}")
-    
+
     print("\n🎯 Next Steps:")
     print("  1. Review generated files in demo-output/")
     print("  2. Test with actual MCP toolset data")
     print("  3. Run: python agent-library/scripts/mcp_to_copilot_resources.py <toolset> --all")
     print("  4. Validate: node agent-library/eng/validate-collections.mjs")
     print("  5. Generate docs: node agent-library/eng/update-readme.mjs")
-    
+
     print("\n📚 Documentation:")
     print("  - Full workflow: agent-library/MCP_TO_COPILOT_WORKFLOW.md")
     print("  - Quick reference: agent-library/QUICK_REFERENCE_MCP_CONVERSION.md")

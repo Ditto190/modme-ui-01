@@ -1,0 +1,24 @@
+id: mcp-github-pull-request-toolkit
+name: Github Pull Request Toolkit
+description: Complete toolkit for working with GitHub request via MCP
+tags:
+  - mcp
+  - github-pull-request
+  - github
+  - automation
+items:
+  - path: agents/mcp-github-pull-request-get-pull-request.agent.md
+    kind: agent
+  - path: agents/mcp-github-pull-request-list-pull-requests.agent.md
+    kind: agent
+  - path: agents/mcp-github-pull-request-create-pull-request.agent.md
+    kind: agent
+  - path: prompts/use-github-pull-request-get-pull-request.prompt.md
+    kind: prompt
+  - path: prompts/use-github-pull-request-list-pull-requests.prompt.md
+    kind: prompt
+  - path: prompts/use-github-pull-request-create-pull-request.prompt.md
+    kind: prompt
+display:
+  ordering: manual
+  show_badge: true
