@@ -188,7 +188,7 @@ foreach ($VSCodeMcpPath in $VSCodeMcpPaths) {
                     if ($ServerConfig.PSObject.Properties['command']) {
                         $cmd = $ServerConfig.command
                     }
-                    
+
                     if ($cmd -eq 'docker') {
                         Write-Detail "Skipping Docker-based server: $ServerName (likely managed separately)"
                         continue

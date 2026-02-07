@@ -38,19 +38,128 @@
         "compressed_size_kb": 15,
         "compression_ratio": "8:1"
       }
+    },
+    {
+      "id": "devcontainers",
+      "name": "DevContainer Setup",
+      "category": "infrastructure",
+      "status": "active",
+      "summary": "VS Code Dev Containers for consistent Linux development environment on Windows",
+      "keywords": ["devcontainer", "docker", "vscode", "linux", "development-environment"],
+      "source_files": [
+        "DEVCONTAINER_IMPLEMENTATION_SUMMARY.md",
+        "DEVCONTAINER_PREFLIGHT.md",
+        "DEVCONTAINER_READINESS_CHECKLIST.md",
+        "DEVCONTAINER_SETUP.md",
+        "DEVCONTAINER_TESTING_GUIDE.md",
+        "DEVCONTAINER_TRANSITION_SUMMARY.md",
+        "DEVCONTAINER_WORKTREE_STRATEGY.md"
+      ],
+      "consolidated_path": "docs/infrastructure/devcontainers.md",
+      "key_concepts": {
+        "purpose": "Cross-platform development consistency",
+        "features": "Python, Node.js, Git, MCP servers pre-configured",
+        "setup_time": "5-10 minutes first run, instant subsequent starts",
+        "benefits": "Identical environment for all developers"
+      },
+      "commands": {
+        "build": "F1 → Dev Containers: Rebuild Container",
+        "attach": "F1 → Dev Containers: Attach to Running Container",
+        "logs": "docker logs vsc-modme-ui-01-test-worktree"
+      },
+      "related_topics": ["docker", "vscode", "python", "nodejs"],
+      "metadata": {
+        "archived_date": "2026-02-08",
+        "original_size_kb": 95,
+        "compressed_size_kb": 12,
+        "compression_ratio": "7.9:1"
+      }
+    },
+    {
+      "id": "genai-toolbox",
+      "name": "GenAI Toolbox Integration",
+      "category": "integrations",
+      "status": "active",
+      "summary": "Google GenAI Toolbox SDK integration for AI-powered features and code generation",
+      "keywords": ["genai", "google", "ai", "toolbox", "gemini", "code-generation"],
+      "source_files": [
+        "GENAI_TOOLBOX_COMPARISON.md",
+        "GENAI_TOOLBOX_INTEGRATION_PLAN.md",
+        "GENAI_TOOLBOX_INTEGRATION_SUMMARY.md"
+      ],
+      "consolidated_path": "docs/integrations/genai-toolbox.md",
+      "key_concepts": {
+        "purpose": "AI-powered code generation and analysis",
+        "features": "Gemini integration, function calling, streaming responses",
+        "architecture": "SDK wrap with MCP server compatibility",
+        "benefits": "Unified AI interface across tools"
+      },
+      "commands": {
+        "test": "npm run test:genai",
+        "integration": "npm run dev:genai"
+      },
+      "related_topics": ["gemini", "mcp", "ai", "code-generation"],
+      "metadata": {
+        "archived_date": "2026-02-08",
+        "original_size_kb": 45,
+        "compressed_size_kb": 8,
+        "compression_ratio": "5.6:1"
+      }
+    },
+    {
+      "id": "implementation-summaries",
+      "name": "Implementation Summaries Archive",
+      "category": "architecture",
+      "status": "archived",
+      "summary": "Historical implementation summaries and integration documentation",
+      "keywords": ["implementation", "summary", "integration", "history", "decisions"],
+      "source_files": [
+        "DEVCONTAINER_IMPLEMENTATION_SUMMARY.md",
+        "AGENT_COLLECTION_IMPLEMENTATION_SUMMARY.md",
+        "GEMMA3N_IMPLEMENTATION_SUMMARY.md",
+        "GREPTIME_IMPLEMENTATION_SUMMARY.md",
+        "GENAI_TOOLBOX_INTEGRATION_SUMMARY.md",
+        "SCHEMA_CRAWLER_INTEGRATION_SUMMARY.md",
+        "SHELL_INTEGRATION_SUMMARY.md",
+        "MARKDOWN_SETUP_SUMMARY.md",
+        "IMPLEMENTATION_SUMMARY.md"
+      ],
+      "consolidated_path": "docs/architecture/implementation-history.md",
+      "key_concepts": {
+        "purpose": "Historical record of major implementation decisions",
+        "coverage": "DevContainer, Agent Collections, GrepTime, GenAI, Schema Crawler, Shell, Markdown",
+        "format": "Implementation summaries with rationale and outcomes",
+        "value": "Learning from past decisions and avoiding rework"
+      },
+      "commands": {},
+      "related_topics": ["architecture", "decisions", "history", "adr"],
+      "metadata": {
+        "archived_date": "2026-02-08",
+        "original_size_kb": 180,
+        "compressed_size_kb": 25,
+        "compression_ratio": "7.2:1"
+      }
     }
   ],
   "index": {
     "by_category": {
       "build-tools": ["esbuild"],
-      "infrastructure": [],
-      "integrations": [],
-      "architecture": []
+      "infrastructure": ["devcontainers"],
+      "integrations": ["genai-toolbox"],
+      "architecture": ["implementation-summaries"]
     },
     "by_keyword": {
       "esbuild": ["esbuild"],
       "typescript": ["esbuild"],
-      "build": ["esbuild"]
+      "build": ["esbuild"],
+      "devcontainer": ["devcontainers"],
+      "docker": ["devcontainers"],
+      "vscode": ["devcontainers"],
+      "genai": ["genai-toolbox"],
+      "google": ["genai-toolbox"],
+      "ai": ["genai-toolbox"],
+      "implementation": ["implementation-summaries"],
+      "summary": ["implementation-summaries"]
     }
   }
 }
