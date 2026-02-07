@@ -32,7 +32,11 @@
     "docs:diagram": "node scripts/knowledge-management/generate-diagram.js",
     "docs:diagram:svg": "node scripts/knowledge-management/generate-diagram.js --format svg",
     "docs:all": "npm run docs:sync && npm run docs:diagram:svg",
-    "search:toolset": "bash scripts/knowledge-management/search-toolsets.sh"
+    "search:toolset": "bash scripts/knowledge-management/search-toolsets.sh",
+    "mcp:start": "./scripts/start-all-mcp-servers.sh || pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/start-all-mcp-servers.ps1",
+    "mcp:start:force": "./scripts/start-all-mcp-servers.sh --force || pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/start-all-mcp-servers.ps1 -Force",
+    "mcp:start:wait": "./scripts/start-all-mcp-servers.sh --wait || pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/start-all-mcp-servers.ps1 -WaitForReady",
+    "mcp:start:verbose": "./scripts/start-all-mcp-servers.sh --verbose || pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/start-all-mcp-servers.ps1 -Verbose"
   },
   "dependencies": {
     "@ag-ui/client": "0.0.42",
