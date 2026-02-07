@@ -1,6 +1,6 @@
 # 🎯 Token Management Quick Reference
 
-**Problem**: GitLens warning → 127k tokens (threshold: 20k)  
+**Problem**: GitLens warning → 127k tokens (threshold: 20k)
 **Solution**: Ignore files + audit script
 
 ---
@@ -90,7 +90,7 @@ python scripts/audit-tokens.py
 
 ## 📚 Full Documentation
 
-- **Setup guide**: [scripts/TOKEN_MANAGEMENT.md](scripts/TOKEN_MANAGEMENT.md)
+- **Setup guide**: [scripts/TOKEN_MANAGEMENT.md](docs/inbox/TOKEN_MANAGEMENT.md)
 - **Implementation summary**: [TOKEN_MANAGEMENT_SUMMARY.md](TOKEN_MANAGEMENT_SUMMARY.md)
 - **AI Toolkit best practices**: [../.aitk/instructions/tools.instructions.md](../.aitk/instructions/tools.instructions.md)
 
@@ -108,8 +108,8 @@ python scripts/audit-tokens.py
 
 ---
 
-**Estimated token reduction**: 127k → <10k tokens (92% reduction)  
-**Status**: ✅ Ready for testing  
+**Estimated token reduction**: 127k → <10k tokens (92% reduction)
+**Status**: ✅ Ready for testing
 **Next**: Restart VS Code → Warning should disappear
 
 ---
