@@ -1,23 +1,23 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
-const INBOX_DIR = path.join(__dirname, '../../docs/inbox');
-const LIBRARY_PATH = path.join(__dirname, '../../docs/knowledge-library.json');
+const INBOX_DIR = path.join(__dirname, "../../docs/inbox");
+const LIBRARY_PATH = path.join(__dirname, "../../docs/knowledge-library.json");
 
 // AI-powered categorization keywords
 const CATEGORIES = {
-  'build-tools': ['build', 'esbuild', 'webpack', 'vite', 'compile', 'bundle', 'typescript'],
-  'infrastructure': ['docker', 'devcontainer', 'container', 'setup', 'environment', 'deployment'],
-  'integrations': ['api', 'sdk', 'integration', 'genai', 'toolbox', 'mcp', 'external'],
-  'architecture': ['implementation', 'summary', 'architecture', 'design', 'pattern', 'refactoring'],
-  'archive': ['session', 'test', 'temp', 'temporary', 'deprecated', 'old', 'legacy']
+  "build-tools": ["build", "esbuild", "webpack", "vite", "compile", "bundle", "typescript"],
+  infrastructure: ["docker", "devcontainer", "container", "setup", "environment", "deployment"],
+  integrations: ["api", "sdk", "integration", "genai", "toolbox", "mcp", "external"],
+  architecture: ["implementation", "summary", "architecture", "design", "pattern", "refactoring"],
+  archive: ["session", "test", "temp", "temporary", "deprecated", "old", "legacy"],
 };
 
 async function categorizeDocument(filePath) {
-  const content = fs.readFileSync(filePath, 'utf8').toLowerCase();
+  const content = fs.readFileSync(filePath, "utf8").toLowerCase();
   const fileName = path.basename(filePath).toLowerCase();
-  
+
   const scores = {};
   for (const [category, keywords] of Object.entries(CATEGORIES)) {
     scores[category] = 0;
@@ -26,53 +26,56 @@ async function categorizeDocument(filePath) {
       if (content.includes(keyword)) scores[category] += 1;
     }
   }
-  
+
   const bestCategory = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
-  return bestCategory[1] > 0 ? bestCategory[0] : 'archive';
+  return bestCategory[1] > 0 ? bestCategory[0] : "archive";
 }
 
 async function processInbox() {
   if (!fs.existsSync(INBOX_DIR)) {
-    console.log('📥 Inbox directory not found');
+    console.log("📥 Inbox directory not found");
     return;
   }
 
-  const files = fs.readdirSync(INBOX_DIR).filter(f => f.endsWith('.md'));
-  
+  const files = fs.readdirSync(INBOX_DIR).filter((f) => f.endsWith(".md"));
+
   if (files.length === 0) {
-    console.log('📭 Inbox is empty');
+    console.log("📭 Inbox is empty");
     return;
   }
 
-  console.log(📥 Processing  files from inbox...);
+  console.log(`📥 Processing ${files.length} files from inbox...`);
 
-  const library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+  const library = JSON.parse(fs.readFileSync(LIBRARY_PATH, "utf8"));
   const newTopics = [];
 
   for (const file of files) {
     const filePath = path.join(INBOX_DIR, file);
     const category = await categorizeDocument(filePath);
-    const topicId = path.basename(file, '.md').toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    
-    console.log(  📄  →  (id: ));
+    const topicId = path
+      .basename(file, ".md")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-");
 
-    if (!library.topics.find(t => t.id === topicId)) {
+    console.log(`  📄 ${file} → ${category} (id: ${topicId})`);
+
+    if (!library.topics.find((t) => t.id === topicId)) {
       newTopics.push({
         id: topicId,
-        name: path.basename(file, '.md').replace(/-/g, ' '),
+        name: path.basename(file, ".md").replace(/-/g, " "),
         category,
-        status: 'pending',
-        summary: 'Imported from inbox - needs review',
+        status: "pending",
+        summary: "Imported from inbox - needs review",
         keywords: [],
         source_files: [file],
-        consolidated_path: docs//.md,
+        consolidated_path: `docs/${category}/${topicId}.md`,
         key_concepts: {},
         commands: {},
         related_topics: [],
         metadata: {
-          archived_date: new Date().toISOString().split('T')[0],
-          imported_from: 'inbox'
-        }
+          archived_date: new Date().toISOString().split("T")[0],
+          imported_from: "inbox",
+        },
       });
     }
   }
@@ -80,7 +83,7 @@ async function processInbox() {
   if (newTopics.length > 0) {
     library.topics.push(...newTopics);
     library.last_updated = new Date().toISOString();
-    
+
     for (const topic of newTopics) {
       if (!library.index.by_category[topic.category]) {
         library.index.by_category[topic.category] = [];
@@ -89,11 +92,11 @@ async function processInbox() {
     }
 
     fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2));
-    console.log(\n✅ Added  new topics to knowledge library);
-    console.log('\n📦 Next steps:');
-    console.log('  1. Review new topics in docs/knowledge-library.json');
-    console.log('  2. Update summaries and keywords');
-    console.log('  3. Run: npm run compress:knowledge');
+    console.log(`\n✅ Added ${newTopics.length} new topics to knowledge library`);
+    console.log("\n📦 Next steps:");
+    console.log("  1. Review new topics in docs/knowledge-library.json");
+    console.log("  2. Update summaries and keywords");
+    console.log("  3. Run: npm run compress:knowledge");
   }
 }
 

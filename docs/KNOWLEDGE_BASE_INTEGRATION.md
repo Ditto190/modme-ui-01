@@ -93,7 +93,7 @@ const KNOWLEDGE_BASE: Record<string, ConceptMapping> = {
 
 ### Input Issue
 
-**Title**: "StatCard component not rendering"  
+**Title**: "StatCard component not rendering"
 **Body**: "When I call upsert_ui_element with StatCard type, nothing appears on the canvas..."
 
 ### Context Comment Generated
@@ -234,8 +234,8 @@ Final labels: bug, component-registry, agent, state-sync, status:triage
 
 ## Performance
 
-**Build time**: ~5 seconds (TypeScript compilation)  
-**Analysis time**: <1 second (string matching)  
+**Build time**: ~5 seconds (TypeScript compilation)
+**Analysis time**: <1 second (string matching)
 **Total workflow time**: ~15-20 seconds
 
 **Optimization considerations**:
@@ -377,15 +377,15 @@ resolveGitHubPath("src/app/page.tsx", "Ditto190/modme-ui-01", "main");
 
 ## Related Documentation
 
-- [ISSUE_MANAGEMENT_SYSTEM.md](./ISSUE_MANAGEMENT_SYSTEM.md) - Full issue system docs
+- [ISSUE_MANAGEMENT_SYSTEM.md](inbox/ISSUE_MANAGEMENT_SYSTEM.md) - Full issue system docs
 - [KNOWLEDGE_MANAGEMENT.md](./KNOWLEDGE_MANAGEMENT.md) - Knowledge base architecture
 - [TOOLSET_MANAGEMENT.md](./TOOLSET_MANAGEMENT.md) - Toolset lifecycle automation
 - [REFACTORING_PATTERNS.md](./REFACTORING_PATTERNS.md) - Code patterns and best practices
 
 ---
 
-**Maintained by**: ModMe GenUI Team  
-**Version**: 1.0.0  
+**Maintained by**: ModMe GenUI Team
+**Version**: 1.0.0
 **Last Updated**: January 3, 2026
 
 ---

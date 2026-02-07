@@ -293,7 +293,7 @@ npm test
 ## 🔗 Related Documentation
 
 - [KNOWLEDGE_BASE_INTEGRATION.md](../../docs/KNOWLEDGE_BASE_INTEGRATION.md) - Full integration guide
-- [ISSUE_MANAGEMENT_SYSTEM.md](../../docs/ISSUE_MANAGEMENT_SYSTEM.md) - Issue system overview
+- [ISSUE_MANAGEMENT_SYSTEM.md](../../docs/inbox/ISSUE_MANAGEMENT_SYSTEM.md) - Issue system overview
 - [TOOLSET_MANAGEMENT.md](../../docs/TOOLSET_MANAGEMENT.md) - Toolset lifecycle
 - [REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md) - Code patterns
 
@@ -314,6 +314,6 @@ npm test
 
 ---
 
-**Maintained by**: ModMe GenUI Team  
-**Version**: 1.0.0  
+**Maintained by**: ModMe GenUI Team
+**Version**: 1.0.0
 **Last Updated**: January 3, 2026

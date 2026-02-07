@@ -295,9 +295,9 @@ The following scripts can also be run using your preferred package manager:
 
 ### Issue Management & Automation
 
-- **[Issue Management System](docs/ISSUE_MANAGEMENT_SYSTEM.md)** - Complete issue system with templates and automation
+- **[Issue Management System](docs/inbox/ISSUE_MANAGEMENT_SYSTEM.md)** - Complete issue system with templates and automation
 - **[Knowledge Base Integration](docs/KNOWLEDGE_BASE_INTEGRATION.md)** - Semantic issue enrichment with KB Context Mapper
-- **[KB Quick Reference](docs/KB_QUICK_REFERENCE.md)** - Quick start guide for knowledge base features
+- **[KB Quick Reference](docs/inbox/KB_QUICK_REFERENCE.md)** - Quick start guide for knowledge base features
 
 ### Toolset Management
 
@@ -334,7 +334,7 @@ This project uses an intelligent issue management system with:
 3. Suggests appropriate labels
 4. Posts a helpful context comment with all the information
 
-**Learn more**: See [Issue Management System](docs/ISSUE_MANAGEMENT_SYSTEM.md) and [Knowledge Base Integration](docs/KNOWLEDGE_BASE_INTEGRATION.md)
+**Learn more**: See [Issue Management System](docs/inbox/ISSUE_MANAGEMENT_SYSTEM.md) and [Knowledge Base Integration](docs/KNOWLEDGE_BASE_INTEGRATION.md)
 
 ## 🔒 Privacy & Security
 
