@@ -1,7 +1,7 @@
 # Knowledge Base Compression Analysis & Implementation Plan
 
-**Date**: February 8, 2026  
-**Repo**: `modme-ui-01-test-worktree`  
+**Date**: February 8, 2026
+**Repo**: `modme-ui-01-test-worktree`
 **Status**: 🔴 Documentation Bloat Detected
 
 ---
@@ -325,11 +325,15 @@ Create Handlebars templates in `scripts/knowledge-management/templates/`:
 **consolidated-topic.md.hbs**:
 
 ```handlebars
-# {{name}}
+#
+{{name}}
 
-**Category**: {{category}}  
-**Status**: {{#if (eq status "active")}}🟢 Active{{else}}⚠️ Deprecated{{/if}}  
-**Last Updated**: {{last_updated}}
+**Category**:
+{{category}}
+**Status**:
+{{#if (eq status "active")}}🟢 Active{{else}}⚠️ Deprecated{{/if}}
+**Last Updated**:
+{{last_updated}}
 
 ## Summary
 
@@ -338,34 +342,32 @@ Create Handlebars templates in `scripts/knowledge-management/templates/`:
 ## Quick Start
 
 {{#each commands}}
-**{{@key}}**: `{{this}}`
+  **{{@key}}**: `{{this}}`
 {{/each}}
 
 ## Key Concepts
 
 {{#each key_concepts}}
-### {{@key}}
-{{this}}
+  ###
+  {{@key}}
+  {{this}}
 {{/each}}
 
-## Original Documentation
-
-This document consolidates the following source files:
+## Original Documentation This document consolidates the following source files:
 {{#each source_files}}
-- ~~{{this}}~~ (archived)
+  - ~~{{this}}~~ (archived)
 {{/each}}
 
-**Archived Location**: `docs/archive/{{category}}/`
-
-## Related Topics
+**Archived Location**: `docs/archive/{{category}}/` ## Related Topics
 
 {{#each related_topics}}
-- [[{{this}}]]
+  - [[{{this}}]]
 {{/each}}
 
----
-
-**Compression Stats**: {{metadata.compression_ratio}} reduction ({{metadata.original_size_kb}}KB → {{metadata.compressed_size_kb}}KB)
+--- **Compression Stats**:
+{{metadata.compression_ratio}}
+reduction ({{metadata.original_size_kb}}KB →
+{{metadata.compressed_size_kb}}KB)
 ```
 
 ---
@@ -408,35 +410,35 @@ This document consolidates the following source files:
 
 ```javascript
 #!/usr/bin/env node
-const fs = require('fs');
-const path = require('path');
-const Handlebars = require('handlebars');
+const fs = require("fs");
+const path = require("path");
+const Handlebars = require("handlebars");
 
 // Load knowledge library JSON
-const libraryPath = path.join(__dirname, '../../docs/knowledge-library.json');
-const library = JSON.parse(fs.readFileSync(libraryPath, 'utf8'));
+const libraryPath = path.join(__dirname, "../../docs/knowledge-library.json");
+const library = JSON.parse(fs.readFileSync(libraryPath, "utf8"));
 
 // Load template
-const templatePath = path.join(__dirname, 'templates/consolidated-topic.md.hbs');
-const template = Handlebars.compile(fs.readFileSync(templatePath, 'utf8'));
+const templatePath = path.join(__dirname, "templates/consolidated-topic.md.hbs");
+const template = Handlebars.compile(fs.readFileSync(templatePath, "utf8"));
 
 // Generate consolidated documents
-library.topics.forEach(topic => {
-  const outputPath = path.join(__dirname, '../../', topic.consolidated_path);
+library.topics.forEach((topic) => {
+  const outputPath = path.join(__dirname, "../../", topic.consolidated_path);
   const markdown = template(topic);
-  
+
   // Ensure directory exists
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  
+
   // Write consolidated doc
-  fs.writeFileSync(outputPath, markdown, 'utf8');
+  fs.writeFileSync(outputPath, markdown, "utf8");
   console.log(`✓ Generated: ${topic.consolidated_path}`);
-  
+
   // Archive source files
-  topic.source_files.forEach(sourceFile => {
-    const sourcePath = path.join(__dirname, '../../', sourceFile);
-    const archivePath = path.join(__dirname, '../../docs/archive', topic.category, sourceFile);
-    
+  topic.source_files.forEach((sourceFile) => {
+    const sourcePath = path.join(__dirname, "../../", sourceFile);
+    const archivePath = path.join(__dirname, "../../docs/archive", topic.category, sourceFile);
+
     if (fs.existsSync(sourcePath)) {
       fs.mkdirSync(path.dirname(archivePath), { recursive: true });
       fs.renameSync(sourcePath, archivePath);
@@ -445,7 +447,7 @@ library.topics.forEach(topic => {
   });
 });
 
-console.log('\n✅ Knowledge compression complete!');
+console.log("\n✅ Knowledge compression complete!");
 console.log(`Compression ratio: ${calculateCompressionRatio(library)}`);
 ```
 
@@ -453,55 +455,54 @@ console.log(`Compression ratio: ${calculateCompressionRatio(library)}`);
 
 ```javascript
 #!/usr/bin/env node
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require("fs");
+const path = require("path");
+const { execSync } = require("child_process");
 
 // Load knowledge library
-const libraryPath = path.join(__dirname, '../../docs/knowledge-library.json');
-const library = JSON.parse(fs.readFileSync(libraryPath, 'utf8'));
+const libraryPath = path.join(__dirname, "../../docs/knowledge-library.json");
+const library = JSON.parse(fs.readFileSync(libraryPath, "utf8"));
 
 const searchTerm = process.argv[2];
 if (!searchTerm) {
-  console.error('Usage: node search-knowledge.js <search-term>');
+  console.error("Usage: node search-knowledge.js <search-term>");
   process.exit(1);
 }
 
 // Search in JSON library
-const results = library.topics.filter(topic => 
-  topic.keywords.some(k => k.includes(searchTerm.toLowerCase())) ||
-  topic.name.toLowerCase().includes(searchTerm.toLowerCase())
+const results = library.topics.filter(
+  (topic) =>
+    topic.keywords.some((k) => k.includes(searchTerm.toLowerCase())) ||
+    topic.name.toLowerCase().includes(searchTerm.toLowerCase())
 );
 
 console.log(`\n🔍 Found ${results.length} results for "${searchTerm}":\n`);
 
-results.forEach(topic => {
+results.forEach((topic) => {
   console.log(`📄 ${topic.name}`);
   console.log(`   Category: ${topic.category}`);
   console.log(`   Path: ${topic.consolidated_path}`);
-  console.log(`   Keywords: ${topic.keywords.join(', ')}`);
+  console.log(`   Keywords: ${topic.keywords.join(", ")}`);
   console.log(`   Summary: ${topic.summary}`);
   console.log();
 });
 
 // Also search in consolidated docs with ripgrep
-console.log('📝 Searching consolidated documents...\n');
+console.log("📝 Searching consolidated documents...\n");
 try {
-  const rgOutput = execSync(
-    `rg -i "${searchTerm}" docs/ --json`,
-    { encoding: 'utf8' }
-  );
-  const matches = rgOutput.split('\n')
-    .filter(line => line.trim())
-    .map(line => JSON.parse(line))
-    .filter(item => item.type === 'match');
-  
-  matches.forEach(match => {
+  const rgOutput = execSync(`rg -i "${searchTerm}" docs/ --json`, { encoding: "utf8" });
+  const matches = rgOutput
+    .split("\n")
+    .filter((line) => line.trim())
+    .map((line) => JSON.parse(line))
+    .filter((item) => item.type === "match");
+
+  matches.forEach((match) => {
     console.log(`${match.data.path.text}:${match.data.line_number}`);
     console.log(`  ${match.data.lines.text.trim()}`);
   });
 } catch (err) {
-  console.log('  (no matches in consolidated docs)');
+  console.log("  (no matches in consolidated docs)");
 }
 ```
 
@@ -523,7 +524,7 @@ try {
    # Check consolidated docs exist
    ls -lh docs/build-tools/esbuild.md
    ls -lh docs/infrastructure/devcontainers.md
-   
+
    # Check archives created
    ls -lh docs/archive/
    ```
@@ -552,7 +553,7 @@ try {
 
    ```markdown
    # ESBuild Integration
-   
+
    #build-tools #typescript #performance
    ```
 
@@ -560,22 +561,25 @@ try {
 
    ```markdown
    # Knowledge Base Index
-   
+
    ## Build Tools
+
    - [[esbuild]] - Fast TypeScript/React builds
    - [[schema-crawler]] - JSON Schema to TypeScript/Zod
-   
+
    ## Infrastructure
+
    - [[devcontainers]] - VS Code Dev Containers setup
    - [[github-actions]] - CI/CD workflows
-   
+
    ## Integrations
+
    - [[genai-toolbox]] - Google GenAI Toolbox integration
    - [[greptime]] - Time-series database
    - [[vtcode-mcp]] - VT Code MCP server
-   
+
    ---
-   
+
    View: Graph View (Ctrl+Shift+G) | Tags (#build-tools)
    ```
 
@@ -620,15 +624,15 @@ try {
 
 ### Before vs After
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Root markdown files | 69 | 14 | 80% reduction |
-| Total size (root) | 0.86 MB | 0.15 MB | 82% reduction |
-| Documentation clusters | 8+ scattered groups | 3 organized categories | ✅ Structured |
-| Search methods | 1 (grep) | 3 (ripgrep, semantic, Foam) | 3x options |
-| Cross-references | Manual links | Auto wikilinks + backlinks | ✅ Automated |
-| Discoverability | File names only | Tags + keywords + graph | 🎯 High |
-| Maintenance | Update N files | Update 1 JSON + regen | ⚡ Fast |
+| Metric                 | Before              | After                       | Improvement   |
+| ---------------------- | ------------------- | --------------------------- | ------------- |
+| Root markdown files    | 69                  | 14                          | 80% reduction |
+| Total size (root)      | 0.86 MB             | 0.15 MB                     | 82% reduction |
+| Documentation clusters | 8+ scattered groups | 3 organized categories      | ✅ Structured |
+| Search methods         | 1 (grep)            | 3 (ripgrep, semantic, Foam) | 3x options    |
+| Cross-references       | Manual links        | Auto wikilinks + backlinks  | ✅ Automated  |
+| Discoverability        | File names only     | Tags + keywords + graph     | 🎯 High       |
+| Maintenance            | Update N files      | Update 1 JSON + regen       | ⚡ Fast       |
 
 ### Expected Outcomes
 
@@ -728,8 +732,8 @@ node scripts/knowledge-management/compress-knowledge.js
 
 ---
 
-**Status**: ✅ Ready for Implementation  
-**Estimated Time**: 8-12 hours total  
+**Status**: ✅ Ready for Implementation
+**Estimated Time**: 8-12 hours total
 **ROI**: 80% reduction in documentation bloat, 3x better discoverability
 
 **Questions?** Discuss in issue or agent chat.

@@ -354,6 +354,72 @@ function Start-ConfiguredServer {
         -RedirectStandardOutput $Server.LogFile -RedirectStandardError $Server.LogFile -WindowStyle Hidden
 }
 
+function Start-VSCodeMCPServer {
+    param($Server)
+    
+    # Handle different VS Code MCP server types
+    switch ($Server.ServerType) {
+        'stdio' {
+            # STDIO servers run as child processes
+            if ($Server.Command -and $Server.Args) {
+                $argList = $Server.Args
+                
+                # Handle environment variables
+                $envVars = @{}
+                if ($Server.Env) {
+                    foreach ($envKey in $Server.Env.PSObject.Properties.Name) {
+                        $envValue = $Server.Env.$envKey
+                        # Skip ${input:...} variables (would need user prompt)
+                        if ($envValue -notmatch '\$\{input:') {
+                            $envVars[$envKey] = $envValue
+                        }
+                        else {
+                            Write-Warning "Skipping environment variable $envKey (requires user input)"
+                        }
+                    }
+                }
+                
+                # Start process with environment
+                $psi = New-Object System.Diagnostics.ProcessStartInfo
+                $psi.FileName = $Server.Command
+                $psi.Arguments = $argList -join ' '
+                $psi.RedirectStandardOutput = $true
+                $psi.RedirectStandardError = $true
+                $psi.UseShellExecute = $false
+                $psi.CreateNoWindow = $true
+                
+                foreach ($key in $envVars.Keys) {
+                    $psi.Environment[$key] = $envVars[$key]
+                }
+                
+                # Redirect to log file (we'll need to handle this differently)
+                $process = [System.Diagnostics.Process]::Start($psi)
+                
+                # Async log the output
+                $outputLog = $Server.LogFile
+                $process.OutputDataReceived | ForEach-Object {
+                    if ($_.Data) { Add-Content -Path $outputLog -Value $_.Data }
+                }
+                $process.ErrorDataReceived | ForEach-Object {
+                    if ($_.Data) { Add-Content -Path $outputLog -Value $_.Data }
+                }
+                $process.BeginOutputReadLine()
+                $process.BeginErrorReadLine()
+                
+                Write-Detail "Started STDIO server (PID: $($process.Id))"
+            }
+        }
+        'http' {
+            # HTTP servers are usually already running remotely
+            Write-Info "HTTP server - URL: $($Server.Url)"
+            Write-Warning "HTTP servers cannot be started locally (remote endpoint)"
+        }
+        default {
+            throw "Unsupported VS Code MCP server type: $($Server.ServerType)"
+        }
+    }
+}
+
 # ============================================================================
 # Main startup loop
 # ============================================================================
