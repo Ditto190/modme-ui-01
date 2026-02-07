@@ -139,6 +139,63 @@
         "compressed_size_kb": 25,
         "compression_ratio": "7.2:1"
       }
+    },
+    {
+      "id": "session-archives",
+      "name": "Session Archives",
+      "category": "archive",
+      "status": "archived",
+      "summary": "Historical session summaries and temporal documentation from 2026-01",
+      "keywords": ["session", "refactoring", "test-results", "temporal", "history"],
+      "source_files": [
+        "SESSION_SUMMARY_2026-01-03.md",
+        "REFACTORING_APPLIED_2026-01-03.md",
+        "TEST_RESULTS_MCP_COLLECTION_GENERATION.md",
+        "TEST_SUMMARY_SKILLS_REF.md"
+      ],
+      "consolidated_path": "docs/archive/sessions/2026-01.md",
+      "key_concepts": {
+        "purpose": "Historical record of development sessions",
+        "period": "January 2026",
+        "coverage": "Refactoring, test results, skills implementation",
+        "value": "Timeline of project evolution"
+      },
+      "commands": {},
+      "related_topics": ["history", "testing", "refactoring"],
+      "metadata": {
+        "archived_date": "2026-02-08",
+        "original_size_kb": 85,
+        "compressed_size_kb": 12,
+        "compression_ratio": "7.1:1"
+      }
+    },
+    {
+      "id": "temporary-files",
+      "name": "Temporary Files Cleanup",
+      "category": "archive",
+      "status": "archived",
+      "summary": "Temporary agent and test files moved to archive",
+      "keywords": ["temporary", "test", "draft", "wip"],
+      "source_files": [
+        "temp-smart-mcp-agent.md",
+        "temp-smart-mcp-clinerules.md",
+        "test_agent_prompt.md"
+      ],
+      "consolidated_path": "docs/archive/temp/temporary-files.md",
+      "key_concepts": {
+        "purpose": "Archive temporary and work-in-progress files",
+        "status": "No longer actively used",
+        "action": "Moved to archive for reference",
+        "cleanup_date": "2026-02-08"
+      },
+      "commands": {},
+      "related_topics": ["cleanup", "archive"],
+      "metadata": {
+        "archived_date": "2026-02-08",
+        "original_size_kb": 25,
+        "compressed_size_kb": 4,
+        "compression_ratio": "6.3:1"
+      }
     }
   ],
   "index": {
@@ -146,7 +203,8 @@
       "build-tools": ["esbuild"],
       "infrastructure": ["devcontainers"],
       "integrations": ["genai-toolbox"],
-      "architecture": ["implementation-summaries"]
+      "architecture": ["implementation-summaries"],
+      "archive": ["session-archives", "temporary-files"]
     },
     "by_keyword": {
       "esbuild": ["esbuild"],
@@ -159,7 +217,11 @@
       "google": ["genai-toolbox"],
       "ai": ["genai-toolbox"],
       "implementation": ["implementation-summaries"],
-      "summary": ["implementation-summaries"]
+      "summary": ["implementation-summaries"],
+      "session": ["session-archives"],
+      "test": ["session-archives", "temporary-files"],
+      "temporary": ["temporary-files"],
+      "archive": ["session-archives", "temporary-files"]
     }
   }
 }
