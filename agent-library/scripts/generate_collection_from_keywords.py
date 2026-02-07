@@ -8,7 +8,6 @@ Usage:
     python generate_collection_from_keywords.py "azure cloud devops" --include-agents --include-prompts --include-instructions
 """
 
-import json
 import re
 import sys
 from datetime import datetime
@@ -232,7 +231,8 @@ class CollectionGenerator:
                 'show_badge': True,
                 'featured': False
             },
-            'metadata': {
+            # Additional metadata fields (not part of official spec, but useful for tracking)
+            'generation': {
                 'generated_at': datetime.now().isoformat(),
                 'keywords': keywords,
                 'total_matches': len(all_matches),
@@ -249,12 +249,10 @@ class CollectionGenerator:
 
         collection_id = collection_data['id']
 
-        # Save YAML file
+        # Save YAML file (includes generation metadata as additional fields)
         yaml_path = output_dir / f"{collection_id}.collection.yml"
         with open(yaml_path, 'w', encoding='utf-8') as f:
-            # Remove metadata before saving YAML (it's for generation info only)
-            yaml_data = {k: v for k, v in collection_data.items() if k != 'metadata'}
-            yaml.dump(yaml_data, f, default_flow_style=False, allow_unicode=True)
+            yaml.dump(collection_data, f, default_flow_style=False, allow_unicode=True)
 
         print(f"✅ Saved YAML: {yaml_path}")
 
@@ -266,20 +264,13 @@ class CollectionGenerator:
 
         print(f"✅ Saved Markdown: {md_path}")
 
-        # Save metadata JSON (for reference)
-        if 'metadata' in collection_data:
-            json_path = output_dir / f"{collection_id}.metadata.json"
-            with open(json_path, 'w', encoding='utf-8') as f:
-                json.dump(collection_data['metadata'], f, indent=2)
-            print(f"✅ Saved metadata: {json_path}")
-
     def generate_markdown(self, collection_data: Dict[str, Any]) -> str:
         """Generate Markdown documentation for the collection"""
         name = collection_data['name']
         description = collection_data['description']
         tags = collection_data['tags']
         items = collection_data['items']
-        metadata = collection_data.get('metadata', {})
+        generation = collection_data.get('generation', {})
 
         md = f"# {name}\n\n"
         md += f"{description}\n\n"
@@ -287,12 +278,12 @@ class CollectionGenerator:
         if tags:
             md += f"**Tags**: {', '.join(tags)}\n\n"
 
-        if metadata:
+        if generation:
             md += "## Collection Details\n\n"
-            md += f"- **Generated**: {metadata.get('generated_at', 'N/A')}\n"
-            md += f"- **Keywords**: {', '.join(metadata.get('keywords', []))}\n"
-            md += f"- **Total Matches**: {metadata.get('total_matches', 0)}\n"
-            md += f"- **Selected Items**: {metadata.get('selected_items', 0)}\n\n"
+            md += f"- **Generated**: {generation.get('generated_at', 'N/A')}\n"
+            md += f"- **Keywords**: {', '.join(generation.get('keywords', []))}\n"
+            md += f"- **Total Matches**: {generation.get('total_matches', 0)}\n"
+            md += f"- **Selected Items**: {generation.get('selected_items', 0)}\n\n"
 
         # Group items by kind
         agents = [item for item in items if item['kind'] == 'agent']

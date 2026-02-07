@@ -21,6 +21,31 @@ display:
   show_badge: false # set to true to show collection badge
 ```
 
+## Auto-Generated Collections (Optional Extension)
+
+For collections created by automation tools, you can include a `generation` field to track metadata:
+
+```yaml
+id: my-collection-id
+name: My Collection Name
+description: Auto-generated collection based on keyword search.
+tags: [tag1, tag2]
+items:
+  - path: prompts/my-prompt.prompt.md
+    kind: prompt
+display:
+  ordering: manual
+  show_badge: true
+  featured: false
+generation:
+  generated_at: "2026-02-07T23:44:18.655504"
+  keywords: [keyword1, keyword2, keyword3]
+  total_matches: 342
+  selected_items: 10
+```
+
+**Note:** The `generation` field is **not part of the official GitHub Copilot collection specification**. It's an optional extension that provides tracking information for automated collection generation. GitHub Copilot will ignore this field, so it doesn't interfere with standard collection functionality.
+
 ## Field Descriptions
 
 - **id**: Unique identifier using lowercase letters, numbers, and hyphens only

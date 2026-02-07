@@ -1,0 +1,53 @@
+description: Collection focused on workflows, collections, copilot, mcp, toolset,
+  github, collection, agent, development-tools. Auto-generated based on keyword search.
+display:
+  featured: false
+  ordering: manual
+  show_badge: true
+generation:
+  generated_at: '2026-02-07T23:44:18.655504'
+  keywords:
+  - workflows
+  - collections
+  - copilot
+  - mcp
+  - toolset
+  - github
+  - collection
+  - agent
+  - development-tools
+  selected_items: 10
+  total_matches: 342
+id: mcp-awesome-copilot
+items:
+- kind: instruction
+  path: instructions\agents.instructions.md
+- kind: prompt
+  path: prompts\generate-collection-from-keywords.prompt.md
+- kind: prompt
+  path: prompts\tldr-prompt.prompt.md
+- kind: prompt
+  path: prompts\suggest-awesome-github-copilot-collections.prompt.md
+- kind: prompt
+  path: prompts\github-copilot-starter.prompt.md
+- kind: instruction
+  path: instructions\github-actions-ci-cd-best-practices.instructions.md
+- kind: prompt
+  path: prompts\suggest-awesome-github-copilot-agents.prompt.md
+- kind: instruction
+  path: instructions\dotnet-maui-9-to-dotnet-maui-10-upgrade.instructions.md
+- kind: instruction
+  path: instructions\dataverse-python-agentic-workflows.instructions.md
+- kind: prompt
+  path: prompts\java-mcp-server-generator.prompt.md
+name: Workflows Collections Copilot Mcp Toolset Github Collection Agent Development-Tools
+tags:
+- agent
+- collection
+- collections
+- copilot
+- development-tools
+- github
+- mcp
+- toolset
+- workflows

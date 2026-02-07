@@ -1,0 +1,34 @@
+description: Collection focused on schema, validation, zod, typescript. Auto-generated
+  based on keyword search.
+display:
+  featured: false
+  ordering: manual
+  show_badge: true
+id: mcp-schema-tools
+items:
+- kind: instruction
+  path: instructions\power-platform-connector.instructions.md
+- kind: prompt
+  path: prompts\breakdown-test.prompt.md
+- kind: instruction
+  path: instructions\azure-logic-apps-power-automate.instructions.md
+- kind: instruction
+  path: instructions\declarative-agents-microsoft365.instructions.md
+- kind: prompt
+  path: prompts\power-platform-mcp-connector-suite.prompt.md
+- kind: agent
+  path: agents\typescript-mcp-expert.agent.md
+- kind: instruction
+  path: instructions\power-apps-code-apps.instructions.md
+- kind: instruction
+  path: instructions\tanstack-start-shadcn-tailwind.instructions.md
+- kind: instruction
+  path: instructions\typescript-mcp-server.instructions.md
+- kind: agent
+  path: agents\power-platform-mcp-integration-expert.agent.md
+name: Schema Validation Zod Typescript
+tags:
+- schema
+- typescript
+- validation
+- zod

@@ -92,10 +92,10 @@ def generate_collection_from_search(
             "collection_name": collection_data['name'],
             "item_count": len(collection_data['items']),
             "tags": collection_data['tags'][:5],  # First 5 tags
+            "generation": collection_data.get('generation', {}),
             "files_created": [
                 f"collections/{collection_data['id']}.collection.yml",
-                f"collections/{collection_data['id']}.md",
-                f"collections/{collection_data['id']}.metadata.json"
+                f"collections/{collection_data['id']}.md"
             ]
         }
 

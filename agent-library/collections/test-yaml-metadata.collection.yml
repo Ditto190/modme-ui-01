@@ -1,0 +1,33 @@
+description: Collection focused on test, collection, yaml, metadata. Auto-generated
+  based on keyword search.
+display:
+  featured: false
+  ordering: manual
+  show_badge: true
+generation:
+  generated_at: '2026-02-07T23:43:46.790570'
+  keywords:
+  - test
+  - collection
+  - yaml
+  - metadata
+  selected_items: 5
+  total_matches: 342
+id: test-yaml-metadata
+items:
+- kind: prompt
+  path: prompts\breakdown-test.prompt.md
+- kind: instruction
+  path: instructions\github-actions-ci-cd-best-practices.instructions.md
+- kind: instruction
+  path: instructions\springboot-4-migration.instructions.md
+- kind: prompt
+  path: prompts\generate-collection-from-keywords.prompt.md
+- kind: instruction
+  path: instructions\dataverse-python-testing-debugging.instructions.md
+name: Test Collection Yaml Metadata
+tags:
+- collection
+- metadata
+- test
+- yaml
