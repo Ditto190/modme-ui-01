@@ -430,13 +430,13 @@ foreach ($Server in $Servers) {
 
     try {
         $ErrorActionPreference = 'Stop'  # Force errors to be catchable
-        
+
         switch ($Server.Type) {
-            'Script' { 
+            'Script' {
                 if (-not $Server.Extension) {
                     throw "Server missing Extension property"
                 }
-                Start-ScriptServer $Server 
+                Start-ScriptServer $Server
             }
             'PythonMCP' { Start-PythonMCPServer $Server }
             'ChromaDB' { Start-ChromaDBServer $Server }
