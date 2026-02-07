@@ -163,6 +163,62 @@ if ($configServersFound -gt 0) {
     Write-Success "Found $configServersFound configured servers"
 }
 
+# ============================================================================
+# 5. Load VS Code MCP servers (mcp.json in user directory)
+# ============================================================================
+Write-Info "Checking for VS Code MCP configuration..."
+$VSCodeMcpPaths = @(
+    "$env:APPDATA\Code\User\mcp.json",
+    "$env:HOME/.config/Code/User/mcp.json",
+    "$env:HOME/Library/Application Support/Code/User/mcp.json"
+)
+
+$vscodeServersFound = 0
+foreach ($VSCodeMcpPath in $VSCodeMcpPaths) {
+    if (Test-Path $VSCodeMcpPath) {
+        Write-Detail "Found VS Code MCP config: $VSCodeMcpPath"
+        try {
+            $VSCodeConfig = Get-Content $VSCodeMcpPath -Raw | ConvertFrom-Json
+            if ($VSCodeConfig.servers) {
+                foreach ($ServerName in $VSCodeConfig.servers.PSObject.Properties.Name) {
+                    $ServerConfig = $VSCodeConfig.servers.$ServerName
+                    
+                    # Skip servers that require Docker (they're often already running)
+                    if ($ServerConfig.command -eq 'docker') {
+                        Write-Detail "Skipping Docker-based server: $ServerName (likely managed separately)"
+                        continue
+                    }
+                    
+                    $Servers += @{
+                        Name = "$ServerName (VS Code)"
+                        Type = 'VSCodeMCP'
+                        ServerType = $ServerConfig.type
+                        Command = $ServerConfig.command
+                        Args = $ServerConfig.args
+                        Url = $ServerConfig.url
+                        Env = $ServerConfig.env
+                        LogFile = Join-Path $LogDir "mcp-vscode-$ServerName.log"
+                        Port = $null
+                    }
+                    $vscodeServersFound++
+                    Write-Detail "Found VS Code MCP server: $ServerName ($($ServerConfig.type))"
+                }
+            }
+        }
+        catch {
+            Write-Warning "Failed to parse $VSCodeMcpPath : $_"
+        }
+        break  # Only use first found config
+    }
+}
+
+if ($vscodeServersFound -gt 0) {
+    Write-Success "Found $vscodeServersFound VS Code MCP servers"
+}
+else {
+    Write-Detail "No VS Code MCP configuration found"
+}
+
 Write-Host ""
 Write-Host "📊 Total servers discovered: $($Servers.Count)" -ForegroundColor Cyan
 Write-Host ""
