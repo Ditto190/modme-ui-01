@@ -40,4 +40,4 @@ Help me with documentation best practices and design patterns.
 4. Reference related agents for multi-step workflows
 
 ---
-*Generated: 2026-01-08T08:32:24.485931*
+*Generated: 2026-02-07T09:18:49.043732*
