@@ -7,13 +7,20 @@ Generates JSON Schemas from TypeScript interfaces and agent prompts from skills.
 Reference Implementation: agent-generator/src/scripts/generate.ts
 """
 
-from google.adk.tools import ToolContext
-from typing import Dict, Any, Optional
+try:
+    from google.adk.tools import ToolContext
+except ModuleNotFoundError:
+    # Mock ToolContext when google.adk is not available (for standalone use)
+    class ToolContext:
+        def __init__(self):
+            self.state = {}
+
 import json
+import re
 import subprocess
 import tempfile
 from pathlib import Path
-import re
+from typing import Any, Dict, Optional
 
 # Paths
 AGENT_GENERATOR_ROOT = Path(__file__).parent.parent.parent / "agent-generator"
