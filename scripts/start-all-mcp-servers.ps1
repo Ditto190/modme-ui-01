@@ -429,12 +429,20 @@ foreach ($Server in $Servers) {
     }
 
     try {
+        $ErrorActionPreference = 'Stop'  # Force errors to be catchable
+        
         switch ($Server.Type) {
-            'Script' { Start-ScriptServer $Server }
+            'Script' { 
+                if (-not $Server.Extension) {
+                    throw "Server missing Extension property"
+                }
+                Start-ScriptServer $Server 
+            }
             'PythonMCP' { Start-PythonMCPServer $Server }
             'ChromaDB' { Start-ChromaDBServer $Server }
             'Configured' { Start-ConfiguredServer $Server }
             'VSCodeMCP' { Start-VSCodeMCPServer $Server }
+            default { throw "Unknown server type: $($Server.Type)" }
         }
 
         Write-Success "Started successfully"
@@ -467,8 +475,12 @@ foreach ($Server in $Servers) {
     }
     catch {
         Write-Fail "Failed to start: $_"
+        Write-Detail "Error details: $($_.Exception.Message)"
         Write-Detail "Check logs: $($Server.LogFile)"
         $Failed++
+    }
+    finally {
+        $ErrorActionPreference = 'Continue'
     }
 }
 
