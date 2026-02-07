@@ -32,6 +32,7 @@ npm run mcp:start:verbose
 ### Direct Execution
 
 **PowerShell (Windows):**
+
 ```powershell
 .\scripts\start-all-mcp-servers.ps1
 .\scripts\start-all-mcp-servers.ps1 -Force
@@ -40,6 +41,7 @@ npm run mcp:start:verbose
 ```
 
 **Bash (Linux/macOS/WSL):**
+
 ```bash
 ./scripts/start-all-mcp-servers.sh
 ./scripts/start-all-mcp-servers.sh --force
@@ -50,26 +52,31 @@ npm run mcp:start:verbose
 ## Features
 
 ### 🔍 Auto-Discovery
+
 - Scans multiple locations for MCP servers
 - Detects different server types automatically
 - Finds configuration files recursively
 
 ### ⚡ Smart Startup
+
 - Checks if servers are already running (by port or process)
 - Skips already-running servers (unless `--force` is used)
 - Supports parallel startup (experimental)
 
 ### 🏥 Health Checks
+
 - Waits for servers with known ports to be ready
 - Configurable timeout (30 seconds default)
 - Reports server readiness status
 
 ### 📝 Comprehensive Logging
+
 - All server output goes to `.logs/mcp-<name>.log`
 - Color-coded console output
 - Detailed summary report
 
 ### 🌐 Cross-Platform
+
 - PowerShell script for Windows
 - Bash script for Linux/macOS/WSL
 - NPM scripts work on all platforms
@@ -83,6 +90,7 @@ npm run mcp:start:verbose
 **Supported extensions:** `.ps1`, `.sh`, `.bat`, `.cmd`, `.exe`
 
 **Example:**
+
 ```
 .copilot/mcp-servers/
   ├── start-everything.ps1      ← Discovered
@@ -97,10 +105,12 @@ npm run mcp:start:verbose
 **Pattern:** Files matching `*_mcp_server.py`
 
 **Known servers:**
+
 - `journal_mcp_server.py` (port 8002)
 - Custom servers you create
 
 **Example:**
+
 ```python
 # agent/my_custom_mcp_server.py
 if __name__ == "__main__":
@@ -124,6 +134,7 @@ if __name__ == "__main__":
 **Location:** Any `mcp_config.json` file in the repository
 
 **Format:**
+
 ```json
 {
   "mcpServers": {
@@ -139,21 +150,21 @@ if __name__ == "__main__":
 
 ### PowerShell
 
-| Option | Description |
-|--------|-------------|
-| `-Force` | Restart servers even if already running |
-| `-WaitForReady` | Wait for health checks (servers with ports) |
-| `-Verbose` | Show detailed output including discovery info |
-| `-Parallel` | Start servers in parallel (experimental) |
+| Option          | Description                                   |
+| --------------- | --------------------------------------------- |
+| `-Force`        | Restart servers even if already running       |
+| `-WaitForReady` | Wait for health checks (servers with ports)   |
+| `-Verbose`      | Show detailed output including discovery info |
+| `-Parallel`     | Start servers in parallel (experimental)      |
 
 ### Bash
 
-| Option | Description |
-|--------|-------------|
-| `--force`, `-f` | Restart servers even if already running |
-| `--wait`, `-w` | Wait for health checks (servers with ports) |
+| Option            | Description                                   |
+| ----------------- | --------------------------------------------- |
+| `--force`, `-f`   | Restart servers even if already running       |
+| `--wait`, `-w`    | Wait for health checks (servers with ports)   |
 | `--verbose`, `-v` | Show detailed output including discovery info |
-| `--help`, `-h` | Show help message |
+| `--help`, `-h`    | Show help message                             |
 
 ## Output Example
 
@@ -206,6 +217,7 @@ All server output is logged to `.logs/`:
 ```
 
 **Tip:** Monitor logs in real-time:
+
 ```bash
 # PowerShell
 Get-Content .logs\mcp-journal.log -Wait
@@ -241,7 +253,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=8003)
     args = parser.parse_args()
-    
+
     print(f"Starting custom MCP server on port {args.port}")
     # ... implementation
 
@@ -359,8 +371,8 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ```javascript
 // Node.js
-const { execSync } = require('child_process');
-execSync('npm run mcp:start:wait', { stdio: 'inherit' });
+const { execSync } = require("child_process");
+execSync("npm run mcp:start:wait", { stdio: "inherit" });
 ```
 
 ```python
