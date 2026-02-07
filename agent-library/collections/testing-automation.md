@@ -2,37 +2,17 @@
 
 Collection focused on testing, automation. Auto-generated based on keyword search.
 
-**Tags**: automation, testing
-
-## Collection Details
-
-- **Generated**: 2026-02-07T23:32:24.315760
-- **Keywords**: testing, automation
-- **Total Matches**: 228
-- **Selected Items**: 5
+**Tags:** automation, testing
 
 ## Items in this Collection
 
-### Agents
+| Title | Type | Description | MCP Servers |
+| ----- | ---- | ----------- | ----------- |
+| [Test Planning & Quality Assurance Prompt](../prompts\breakdown-test.prompt.md)<br />[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Fprompts%5Cbreakdown-test.prompt.md)<br />[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Fprompts%5Cbreakdown-test.prompt.md) | Prompt | Test Planning and Quality Assurance prompt that generates comprehensive test strategies, task breakdowns, and quality validation plans for GitHub projects. |  |
+| [GitHub Actions CI/CD Best Practices](../instructions\github-actions-ci-cd-best-practices.instructions.md)<br />[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Finstructions%5Cgithub-actions-ci-cd-best-practices.instructions.md)<br />[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Finstructions%5Cgithub-actions-ci-cd-best-practices.instructions.md) | Instruction | Comprehensive guide for building robust, secure, and efficient CI/CD pipelines using GitHub Actions. Covers workflow structure, jobs, steps, environment variables, secret management, caching, matrix strategies, testing, and deployment strategies. |  |
+| [Laravel Expert Agent](../agents\laravel-expert-agent.agent.md)<br />[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Fagents%5Claravel-expert-agent.agent.md)<br />[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/agent?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Fagents%5Claravel-expert-agent.agent.md) | Agent | Expert Laravel development assistant specializing in modern Laravel 12+ applications with Eloquent, Artisan, testing, and best practices |  |
+| [Stackhawk Security Onboarding](../agents\stackhawk-security-onboarding.agent.md)<br />[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Fagents%5Cstackhawk-security-onboarding.agent.md)<br />[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/agent?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Fagents%5Cstackhawk-security-onboarding.agent.md) | Agent | Automatically set up StackHawk security testing for your repository with generated configuration and GitHub Actions workflow | stackhawk-mcp<br />[![Install MCP](https://img.shields.io/badge/Install-VS_Code-0098FF?style=flat-square)](https://aka.ms/awesome-copilot/install/mcp-vscode?name=stackhawk-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22stackhawk-mcp%22%5D%2C%22env%22%3A%7B%7D%7D)<br />[![Install MCP](https://img.shields.io/badge/Install-VS_Code_Insiders-24bfa5?style=flat-square)](https://aka.ms/awesome-copilot/install/mcp-vscodeinsiders?name=stackhawk-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22stackhawk-mcp%22%5D%2C%22env%22%3A%7B%7D%7D)<br />[![Install MCP](https://img.shields.io/badge/Install-Visual_Studio-C16FDE?style=flat-square)](https://aka.ms/awesome-copilot/install/mcp-visualstudio/mcp-install?%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22stackhawk-mcp%22%5D%2C%22env%22%3A%7B%7D%7D) |
+| [GitHub Issue Planning & Project Automation Prompt](../prompts\breakdown-plan.prompt.md)<br />[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Fprompts%5Cbreakdown-plan.prompt.md)<br />[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Fprompts%5Cbreakdown-plan.prompt.md) | Prompt | Issue Planning and Automation prompt that generates comprehensive project plans with Epic > Feature > Story/Enabler > Test hierarchy, dependencies, priorities, and automated tracking. |  |
 
-- [laravel-expert-agent.agent.md](agents\laravel-expert-agent.agent.md)
-- [stackhawk-security-onboarding.agent.md](agents\stackhawk-security-onboarding.agent.md)
-
-### Prompts
-
-- [breakdown-test.prompt.md](prompts\breakdown-test.prompt.md)
-- [breakdown-plan.prompt.md](prompts\breakdown-plan.prompt.md)
-
-### Instructions
-
-- [github-actions-ci-cd-best-practices.instructions.md](instructions\github-actions-ci-cd-best-practices.instructions.md)
-
-## Usage
-
-This collection can be used in GitHub Copilot Chat:
-
-1. Install the collection files
-2. Access items via `/` commands (for prompts)
-3. Activate agents in VS Code Copilot Chat
-4. Instructions apply automatically based on file patterns
-
+---
+*This collection includes 5 curated items for **Testing Automation**.*

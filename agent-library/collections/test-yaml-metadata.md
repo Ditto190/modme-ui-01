@@ -2,34 +2,17 @@
 
 Collection focused on test, collection, yaml, metadata. Auto-generated based on keyword search.
 
-**Tags**: collection, metadata, test, yaml
-
-## Collection Details
-
-- **Generated**: 2026-02-07T23:43:46.790570
-- **Keywords**: test, collection, yaml, metadata
-- **Total Matches**: 342
-- **Selected Items**: 5
+**Tags:** collection, metadata, test, yaml
 
 ## Items in this Collection
 
-### Prompts
+| Title | Type | Description |
+| ----- | ---- | ----------- |
+| [Test Planning & Quality Assurance Prompt](../prompts\breakdown-test.prompt.md)<br />[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Fprompts%5Cbreakdown-test.prompt.md)<br />[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Fprompts%5Cbreakdown-test.prompt.md) | Prompt | Test Planning and Quality Assurance prompt that generates comprehensive test strategies, task breakdowns, and quality validation plans for GitHub projects. |
+| [GitHub Actions CI/CD Best Practices](../instructions\github-actions-ci-cd-best-practices.instructions.md)<br />[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Finstructions%5Cgithub-actions-ci-cd-best-practices.instructions.md)<br />[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Finstructions%5Cgithub-actions-ci-cd-best-practices.instructions.md) | Instruction | Comprehensive guide for building robust, secure, and efficient CI/CD pipelines using GitHub Actions. Covers workflow structure, jobs, steps, environment variables, secret management, caching, matrix strategies, testing, and deployment strategies. |
+| [Spring Boot 3.x to 4.0 Migration Guide](../instructions\springboot-4-migration.instructions.md)<br />[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Finstructions%5Cspringboot-4-migration.instructions.md)<br />[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Finstructions%5Cspringboot-4-migration.instructions.md) | Instruction | Comprehensive guide for migrating Spring Boot applications from 3.x to 4.0, focusing on Gradle Kotlin DSL and version catalogs |
+| [Generate Custom Collection from Keywords](../prompts\generate-collection-from-keywords.prompt.md)<br />[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Fprompts%5Cgenerate-collection-from-keywords.prompt.md)<br />[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Fprompts%5Cgenerate-collection-from-keywords.prompt.md) | Prompt | Dynamically generate custom agent collections based on keyword searches across agents, prompts, instructions, and skills |
+| [Dataverse SDK for Python — Testing & Debugging Strategies](../instructions\dataverse-python-testing-debugging.instructions.md)<br />[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Finstructions%5Cdataverse-python-testing-debugging.instructions.md)<br />[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://aka.ms/awesome-copilot/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fgithub%2Fawesome-copilot%2Fmain%2Finstructions%5Cdataverse-python-testing-debugging.instructions.md) | Instruction | No description |
 
-- [breakdown-test.prompt.md](prompts\breakdown-test.prompt.md)
-- [generate-collection-from-keywords.prompt.md](prompts\generate-collection-from-keywords.prompt.md)
-
-### Instructions
-
-- [github-actions-ci-cd-best-practices.instructions.md](instructions\github-actions-ci-cd-best-practices.instructions.md)
-- [springboot-4-migration.instructions.md](instructions\springboot-4-migration.instructions.md)
-- [dataverse-python-testing-debugging.instructions.md](instructions\dataverse-python-testing-debugging.instructions.md)
-
-## Usage
-
-This collection can be used in GitHub Copilot Chat:
-
-1. Install the collection files
-2. Access items via `/` commands (for prompts)
-3. Activate agents in VS Code Copilot Chat
-4. Instructions apply automatically based on file patterns
-
+---
+*This collection includes 5 curated items for **Test Collection Yaml Metadata**.*

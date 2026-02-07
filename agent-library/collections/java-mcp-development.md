@@ -21,7 +21,6 @@ recommended
 This chat mode provides expert guidance for building MCP servers in Java.
 
 This chat mode is ideal for:
-
 - Creating new MCP server projects with Java
 - Implementing reactive handlers with Project Reactor
 - Setting up stdio or HTTP transports
@@ -30,7 +29,6 @@ This chat mode is ideal for:
 - Integrating with Spring Boot applications
 
 To get the best results, consider:
-
 - Using the instruction file to set context for Java MCP development
 - Using the prompt to generate initial project structure
 - Switching to the expert chat mode for detailed implementation help

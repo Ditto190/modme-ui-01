@@ -21,7 +21,6 @@ recommended
 This chat mode provides expert guidance for building MCP servers in C#.
 
 This chat mode is ideal for:
-
 - Creating new MCP server projects
 - Implementing tools and prompts
 - Debugging protocol issues
@@ -29,7 +28,6 @@ This chat mode is ideal for:
 - Learning MCP best practices
 
 To get the best results, consider:
-
 - Using the instruction file to set context for all Copilot interactions
 - Using the prompt to generate initial project structure
 - Switching to the expert chat mode for detailed implementation help

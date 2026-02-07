@@ -21,7 +21,6 @@ recommended
 This chat mode provides expert guidance for building MCP servers in Kotlin.
 
 This chat mode is ideal for:
-
 - Creating new MCP server projects with Kotlin
 - Implementing type-safe tools with coroutines and kotlinx.serialization
 - Setting up stdio or SSE transports with Ktor
@@ -30,7 +29,6 @@ This chat mode is ideal for:
 - Building multiplatform MCP servers (JVM, Wasm, iOS)
 
 To get the best results, consider:
-
 - Using the instruction file to set context for Kotlin MCP development
 - Using the prompt to generate initial project structure with Gradle
 - Switching to the expert chat mode for detailed implementation help

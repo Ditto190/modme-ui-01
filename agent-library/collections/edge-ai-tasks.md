@@ -96,3 +96,4 @@ Research is dumped out into a .copilot-tracking/research/*-research.md file and 
 Also, task-researcher will provide additional ideas for implementation which you can work with GitHub Copilot on selecting the right one to focus on.
 
 ---
+
