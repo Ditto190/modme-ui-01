@@ -2,7 +2,7 @@
 
 **Purpose**: Enhance the Copilot telemetry system with richer metadata, prompt management, and dataset categorization based on Phoenix/OpenInference best practices.
 
-**Last Updated**: February 8, 2026  
+**Last Updated**: February 8, 2026
 **Based on**: Phoenix v8.0+, OpenInference semantic conventions
 
 ---
@@ -58,20 +58,20 @@ from openinference.instrumentation import setSession, setUser, setMetadata, setT
 
 def set_openinference_attributes(span, event: CopilotTelemetryEvent):
     """Enhanced attribute setting with context propagation."""
-    
+
     # Set session context (for conversation grouping)
     if event.session_id:
         ctx = setSession(context.active(), {"sessionId": event.session_id})
         context.attach(ctx)
         span.set_attribute(SpanAttributes.SESSION_ID, event.session_id)
-    
+
     # Set user context (hash for privacy as we already do)
     if event.request_id:
         user_hash = hash_user_id(event.request_id)
         ctx = setUser(context.active(), {"userId": user_hash})
         context.attach(ctx)
         span.set_attribute(SpanAttributes.USER_ID, user_hash)
-    
+
     # Set custom metadata for operational context
     metadata = {
         "copilot.workspace": event.workspace,
@@ -80,15 +80,15 @@ def set_openinference_attributes(span, event: CopilotTelemetryEvent):
     }
     if event.agent_role:
         metadata["copilot.agent_role"] = event.agent_role
-    
+
     ctx = setMetadata(context.active(), metadata)
     context.attach(ctx)
-    
+
     # Add metadata as span attributes (flattened)
     for key, value in metadata.items():
         if value is not None:
             span.set_attribute(f"metadata.{key}", str(value))
-    
+
     # Set tags for filtering (event type, model family, etc.)
     tags = [event.event_type]
     if event.model:
@@ -99,11 +99,11 @@ def set_openinference_attributes(span, event: CopilotTelemetryEvent):
         tags.append(f"role:{event.agent_role}")
     if event.feedback:
         tags.append(f"feedback:{event.feedback}")
-    
+
     ctx = setTag(context.active(), {"tags": tags})
     context.attach(ctx)
     span.set_attribute("tags", json.dumps(tags))
-    
+
     # Existing attribute code...
     # (keep all your current set_attribute calls)
 ```
@@ -114,7 +114,7 @@ def set_openinference_attributes(span, event: CopilotTelemetryEvent):
 ```python
 def set_openinference_attributes(span, event: CopilotTelemetryEvent):
     # ... existing code ...
-    
+
     # Tool information (OpenInference semantic conventions)
     if event.tools_available:
         span.set_attribute(
@@ -127,7 +127,7 @@ def set_openinference_attributes(span, event: CopilotTelemetryEvent):
                 for tool_name in event.tools_available
             ])
         )
-    
+
     if event.tools_used:
         # Mark which tools were actually invoked
         span.set_attribute("llm.tools_used", json.dumps(event.tools_used))
@@ -169,31 +169,31 @@ from openinference.instrumentation import setPromptTemplate
 
 def track_prompt_template(span, event: CopilotTelemetryEvent):
     """Track agent instructions as a versioned prompt template."""
-    
+
     if not event.instructions:
         return
-    
+
     # Extract prompt template (system message)
     prompt_template = event.instructions
-    
+
     # Build variables from context
     prompt_variables = {
         "model": event.model or "unknown",
         "agent_role": event.agent_role or "default",
         "workspace": event.workspace or "unknown"
     }
-    
+
     # Add any user context
     if event.messages and len(event.messages) > 0:
         user_query = extract_user_prompt(event.messages)
         if user_query:
             prompt_variables["user_query"] = user_query[:100]  # Truncate for brevity
-    
+
     # Generate version identifier based on content hash
     prompt_version = hashlib.sha256(
         (prompt_template + event.agent_role or "").encode()
     ).hexdigest()[:8]
-    
+
     # Set prompt context
     ctx = setPromptTemplate(
         context.active(),
@@ -204,7 +204,7 @@ def track_prompt_template(span, event: CopilotTelemetryEvent):
         }
     )
     context.attach(ctx)
-    
+
     # Also add as span attributes
     span.set_attribute("llm.prompt_template.template", prompt_template)
     span.set_attribute("llm.prompt_template.version", prompt_version)
@@ -232,7 +232,7 @@ async def upsert_prompt_to_phoenix(
     version_description: Optional[str] = None
 ) -> Dict[str, Any]:
     """Create or update a prompt in Phoenix."""
-    
+
     prompt_payload = {
         "name": f"copilot-{agent_role.lower().replace(' ', '-')}",
         "description": f"GitHub Copilot {agent_role} instructions",
@@ -255,7 +255,7 @@ async def upsert_prompt_to_phoenix(
             }
         }
     }
-    
+
     async with httpx.AsyncClient() as client:
         response = await client.post(
             f"{PHOENIX_BASE_URL}/v1/prompts",
@@ -271,7 +271,7 @@ async def upsert_prompt_to_phoenix(
 @app.post("/telemetry")
 async def receive_telemetry(event: CopilotTelemetryEvent):
     # ... existing span creation ...
-    
+
     # Store prompt in Phoenix if instructions present
     if event.instructions and event.agent_role:
         try:
@@ -284,7 +284,7 @@ async def receive_telemetry(event: CopilotTelemetryEvent):
             )
         except Exception as e:
             logger.warning(f"Failed to store prompt in Phoenix: {e}")
-    
+
     # ... rest of handling ...
 ```
 
@@ -309,12 +309,12 @@ class AgentContext(BaseModel):
 
 def parse_agent_context(event: CopilotTelemetryEvent) -> AgentContext:
     """Extract structured agent context from telemetry."""
-    
+
     instructions = event.instructions or ""
-    
+
     # Parse instructions to extract structure
     # (This is a simplified parser - adjust based on actual format)
-    
+
     capabilities = []
     if "code generation" in instructions.lower():
         capabilities.append("code_generation")
@@ -322,12 +322,12 @@ def parse_agent_context(event: CopilotTelemetryEvent) -> AgentContext:
         capabilities.append("debugging")
     if "explanation" in instructions.lower():
         capabilities.append("explanation")
-    
+
     constraints = []
     if "do not" in instructions.lower():
         # Extract constraints (simple heuristic)
         constraints.append("safety_guidelines" )
-    
+
     return AgentContext(
         role=event.agent_role or "unknown",
         system_prompt=instructions,
@@ -341,7 +341,7 @@ def set_agent_context_attributes(span, agent_context: AgentContext):
     span.set_attribute("agent.system_prompt", agent_context.system_prompt)
     span.set_attribute("agent.capabilities", json.dumps(agent_context.capabilities))
     span.set_attribute("agent.constraints", json.dumps(agent_context.constraints))
-    
+
     if agent_context.examples:
         span.set_attribute("agent.has_examples", len(agent_context.examples))
 ```
@@ -424,7 +424,7 @@ def calculate_cost(
     model_info = get_model_info(model_name)
     if not model_info:
         return None
-    
+
     input_cost = (input_tokens / 1000) * model_info.cost_per_1k_input
     output_cost = (output_tokens / 1000) * model_info.cost_per_1k_output
     return input_cost + output_cost
@@ -433,7 +433,7 @@ def set_model_attributes(span, event: CopilotTelemetryEvent):
     """Add enhanced model metadata to span."""
     if not event.model:
         return
-    
+
     model_info = get_model_info(event.model)
     if model_info:
         span.set_attribute(SpanAttributes.LLM_MODEL_NAME, event.model)
@@ -443,7 +443,7 @@ def set_model_attributes(span, event: CopilotTelemetryEvent):
         span.set_attribute("llm.model.context_window", model_info.context_window)
         span.set_attribute("llm.model.supports_tools", model_info.supports_tools)
         span.set_attribute("llm.model.supports_vision", model_info.supports_vision)
-        
+
         # Calculate and add cost
         if event.input_tokens and event.output_tokens:
             cost = calculate_cost(
@@ -481,24 +481,24 @@ PHOENIX_BASE_URL = os.getenv("PHOENIX_BASE_URL", "http://localhost:6006")
 
 class DatasetCriteria:
     """Criteria for auto-adding examples to datasets."""
-    
+
     @staticmethod
     def is_high_quality(event: CopilotTelemetryEvent) -> bool:
         """Check if event meets quality criteria."""
         # Has user feedback
         if event.feedback == "positive":
             return True
-        
+
         # Long conversations (more context)
         if event.messages and len(event.messages) >= 4:
             return True
-        
+
         # Tool usage examples
         if event.tools_used and len(event.tools_used) > 0:
             return True
-        
+
         return False
-    
+
     @staticmethod
     def categorize(event: CopilotTelemetryEvent) -> Dict[str, str]:
         """Generate category metadata for dataset example."""
@@ -506,7 +506,7 @@ class DatasetCriteria:
             "event_type": event.event_type,
             "agent_role": event.agent_role or "unknown"
         }
-        
+
         # Categorize by task type
         if event.instructions:
             instructions_lower = event.instructions.lower()
@@ -520,7 +520,7 @@ class DatasetCriteria:
                 categories["task_type"] = "generation"
             else:
                 categories["task_type"] = "general"
-        
+
         # Categorize by complexity
         if event.messages:
             turn_count = len([m for m in event.messages if m.role == "user"])
@@ -530,7 +530,7 @@ class DatasetCriteria:
                 categories["complexity"] = "moderate"
             else:
                 categories["complexity"] = "complex"
-        
+
         # Categorize by outcome
         if event.feedback == "positive":
             categories["outcome"] = "success"
@@ -540,7 +540,7 @@ class DatasetCriteria:
             categories["outcome"] = "error"
         else:
             categories["outcome"] = "unknown"
-        
+
         return categories
 
 async def add_to_dataset(
@@ -549,7 +549,7 @@ async def add_to_dataset(
     dataset_name: str = "copilot-production"
 ) -> Optional[Dict[str, Any]]:
     """Add telemetry event to Phoenix dataset."""
-    
+
     # Extract input/output for dataset example
     input_data = {
         "user_query": extract_user_prompt(event.messages) if event.messages else "",
@@ -557,14 +557,14 @@ async def add_to_dataset(
         "instructions": event.instructions,
         "tools_available": event.tools_available or []
     }
-    
+
     output_data = {
         "response": extract_assistant_response(event.messages) if event.messages else "",
         "tools_used": event.tools_used or [],
         "latency_ms": event.latency_ms,
         "tokens_used": event.total_tokens
     }
-    
+
     # Add metadata for categorization
     metadata = DatasetCriteria.categorize(event)
     metadata.update({
@@ -574,7 +574,7 @@ async def add_to_dataset(
         "feedback": event.feedback,
         "workspace": event.workspace
     })
-    
+
     payload = {
         "dataset_name": dataset_name,
         "examples": [
@@ -585,7 +585,7 @@ async def add_to_dataset(
             }
         ]
     }
-    
+
     try:
         async with httpx.AsyncClient() as client:
             response = await client.post(
@@ -608,9 +608,9 @@ async def receive_telemetry(event: CopilotTelemetryEvent):
         f"copilot.{event.event_type}.{event.agent_role or 'unknown'}"
     ) as span:
         # ... existing span setup ...
-        
+
         span_id = span.get_span_context().span_id
-        
+
         # Auto-add high-quality examples to dataset
         if DatasetCriteria.is_high_quality(event):
             asyncio.create_task(
@@ -620,7 +620,7 @@ async def receive_telemetry(event: CopilotTelemetryEvent):
                     dataset_name="copilot-production"
                 )
             )
-        
+
         # ... rest of handling ...
 ```
 
@@ -648,13 +648,13 @@ phoenix_client = Client(endpoint=PHOENIX_BASE_URL)
 
 class AutoAnnotator:
     """Automatic span annotation based on heuristics."""
-    
+
     @staticmethod
     def annotate_feedback(span_id: str, event: CopilotTelemetryEvent):
         """Add human feedback as annotation."""
         if not event.feedback:
             return
-        
+
         phoenix_client.annotations.add_span_annotation(
             annotation_name="user_feedback",
             annotator_kind="HUMAN",
@@ -663,13 +663,13 @@ class AutoAnnotator:
             score=1.0 if event.feedback == "positive" else 0.0,
             explanation=f"User provided {event.feedback} feedback"
         )
-    
+
     @staticmethod
     def annotate_latency(span_id: str, event: CopilotTelemetryEvent):
         """Add latency-based quality annotation."""
         if not event.latency_ms:
             return
-        
+
         # Define latency thresholds
         if event.latency_ms < 1000:
             label = "fast"
@@ -680,7 +680,7 @@ class AutoAnnotator:
         else:
             label = "slow"
             score = 0.3
-        
+
         phoenix_client.annotations.add_span_annotation(
             annotation_name="response_latency",
             annotator_kind="CODE",
@@ -689,15 +689,15 @@ class AutoAnnotator:
             score=score,
             explanation=f"Response took {event.latency_ms}ms"
         )
-    
+
     @staticmethod
     def annotate_tool_usage(span_id: str, event: CopilotTelemetryEvent):
         """Add tool usage annotation."""
         if not event.tools_used:
             return
-        
+
         tool_count = len(event.tools_used)
-        
+
         phoenix_client.annotations.add_span_annotation(
             annotation_name="tool_usage",
             annotator_kind="CODE",
@@ -710,13 +710,13 @@ class AutoAnnotator:
                 "available_tools": event.tools_available or []
             }
         )
-    
+
     @staticmethod
     def annotate_error(span_id: str, event: CopilotTelemetryEvent):
         """Add error annotation."""
         if not event.error_message:
             return
-        
+
         phoenix_client.annotations.add_span_annotation(
             annotation_name="execution_error",
             annotator_kind="CODE",
@@ -751,40 +751,40 @@ async def annotate_span(span_id: str, event: CopilotTelemetryEvent):
 @app.post("/telemetry")
 async def receive_telemetry(event: CopilotTelemetryEvent):
     """Enhanced telemetry endpoint with full Phoenix integration."""
-    
+
     with tracer.start_as_current_span(
         f"copilot.{event.event_type}.{event.agent_role or 'unknown'}"
     ) as span:
         try:
             # 1. Set core OpenInference attributes (existing)
             set_openinference_attributes(span, event)
-            
+
             # 2. Add enhanced context propagation (NEW)
             set_enhanced_context(span, event)
-            
+
             # 3. Track prompt template (NEW)
             if event.instructions:
                 track_prompt_template(span, event)
-            
+
             # 4. Add agent context (NEW)
             agent_context = parse_agent_context(event)
             set_agent_context_attributes(span, agent_context)
-            
+
             # 5. Add model metadata (NEW)
             set_model_attributes(span, event)
-            
+
             # 6. Mark span status
             if event.error_message:
                 span.set_status(Status(StatusCode.ERROR, event.error_message))
             else:
                 span.set_status(Status(StatusCode.OK))
-            
+
             # Get span ID for post-processing
             span_id = str(span.get_span_context().span_id)
-            
+
             # 7. Background tasks (non-blocking)
             background_tasks = []
-            
+
             # Store prompt in Phoenix if new instructions
             if event.instructions and event.agent_role:
                 background_tasks.append(
@@ -795,25 +795,25 @@ async def receive_telemetry(event: CopilotTelemetryEvent):
                         agent_role=event.agent_role
                     )
                 )
-            
+
             # Add to dataset if high quality
             if DatasetCriteria.is_high_quality(event):
                 background_tasks.append(
                     add_to_dataset(span_id, event)
                 )
-            
+
             # Add annotations
             background_tasks.append(
                 annotate_span(span_id, event)
             )
-            
+
             # Execute background tasks
             for task in background_tasks:
                 asyncio.create_task(task)
-            
+
             # Increment success counter
             request_count["success"] += 1
-            
+
             return {
                 "status": "success",
                 "message": "Telemetry received and forwarded to Phoenix",
@@ -829,7 +829,7 @@ async def receive_telemetry(event: CopilotTelemetryEvent):
                     "annotations"
                 ]
             }
-            
+
         except Exception as e:
             logger.error(f"Error processing telemetry: {e}", exc_info=True)
             span.set_status(Status(StatusCode.ERROR, str(e)))
@@ -843,18 +843,18 @@ def set_enhanced_context(span, event: CopilotTelemetryEvent):
     from openinference.instrumentation import (
         setSession, setUser, setMetadata, setTag
     )
-    
+
     # Session tracking
     if event.session_id:
         ctx = setSession(otel_context.active(), {"sessionId": event.session_id})
         otel_context.attach(ctx)
-    
+
     # User tracking (hashed)
     if event.request_id:
         user_hash = hash_user_id(event.request_id)
         ctx = setUser(otel_context.active(), {"userId": user_hash})
         otel_context.attach(ctx)
-    
+
     # Metadata
     metadata = {
         "copilot.workspace": event.workspace,
@@ -864,7 +864,7 @@ def set_enhanced_context(span, event: CopilotTelemetryEvent):
     }
     ctx = setMetadata(otel_context.active(), {k: v for k, v in metadata.items() if v})
     otel_context.attach(ctx)
-    
+
     # Tags for filtering
     tags = [event.event_type]
     if event.model:
@@ -873,7 +873,7 @@ def set_enhanced_context(span, event: CopilotTelemetryEvent):
         tags.append(f"role:{event.agent_role}")
     if event.feedback:
         tags.append(f"feedback:{event.feedback}")
-    
+
     ctx = setTag(otel_context.active(), {"tags": tags})
     otel_context.attach(ctx)
 ```

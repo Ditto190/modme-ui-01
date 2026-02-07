@@ -24,7 +24,7 @@ This document maps your specific enhancement requests to the detailed implementa
 
 ### 2. "Prompts especially should be ingested or categorised when the agent logs are in"
 
-**→ See**: 
+**→ See**:
 - [Section 2: Prompt Template Integration](./COPILOT_OBSERVABILITY_CUSTOMIZATION_GUIDE.md#2-prompt-template-integration)
 - [Section 5: Dataset Categorization](./COPILOT_OBSERVABILITY_CUSTOMIZATION_GUIDE.md#5-dataset-categorization)
 
