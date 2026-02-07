@@ -82,7 +82,7 @@ if [[ -d "$MCP_DIR" ]]; then
         basename=$(basename "$file")
         name="${basename%.*}"
         ext="${basename##*.}"
-        
+
         if [[ "$ext" =~ ^(sh|ps1|bat|cmd)$ ]]; then
             SERVER_NAMES+=("$name (script)")
             SERVER_TYPES+=("Script")
@@ -93,7 +93,7 @@ if [[ -d "$MCP_DIR" ]]; then
             print_detail "Found script: $basename"
         fi
     done < <(find "$MCP_DIR" -maxdepth 1 -type f -print0)
-    
+
     if [[ $script_count -gt 0 ]]; then
         print_success "Found $script_count MCP startup scripts"
     fi
@@ -111,13 +111,13 @@ if [[ -d "$AGENT_DIR" ]]; then
     while IFS= read -r -d '' file; do
         basename=$(basename "$file")
         name="${basename%_mcp_server.py}"
-        
+
         # Assign ports for known servers
         port=""
         case "$basename" in
             journal_mcp_server.py) port="8002" ;;
         esac
-        
+
         SERVER_NAMES+=("$name (Python MCP)")
         SERVER_TYPES+=("PythonMCP")
         SERVER_PATHS+=("$file")
@@ -126,7 +126,7 @@ if [[ -d "$AGENT_DIR" ]]; then
         ((python_count++))
         print_detail "Found Python MCP: $basename${port:+ (port $port)}"
     done < <(find "$AGENT_DIR" -maxdepth 1 -type f -name "*_mcp_server.py" -print0)
-    
+
     if [[ $python_count -gt 0 ]]; then
         print_success "Found $python_count Python MCP servers"
     fi
@@ -204,19 +204,19 @@ is_port_open() {
 is_server_running() {
     local port=$1
     local path=$2
-    
+
     # Check by port if available
     if [[ -n "$port" ]]; then
         is_port_open "$port"
         return $?
     fi
-    
+
     # Check by command line
     if [[ -n "$path" ]]; then
         pgrep -f "$path" > /dev/null 2>&1
         return $?
     fi
-    
+
     return 1
 }
 
@@ -224,7 +224,7 @@ start_script_server() {
     local path=$1
     local log=$2
     local ext="${path##*.}"
-    
+
     case "$ext" in
         sh)
             bash "$path" > "$log" 2>&1 &
@@ -247,26 +247,26 @@ start_python_server() {
     local path=$1
     local log=$2
     local port=$3
-    
+
     # Find Python command
     local python_cmd="python3"
     if command -v python &> /dev/null; then
         python_cmd="python"
     fi
-    
+
     # Check for venv
     local venv_python="$ROOT/agent/.venv/bin/python"
     if [[ -f "$venv_python" ]]; then
         python_cmd="$venv_python"
         print_detail "Using venv Python: $venv_python"
     fi
-    
+
     # Build args
     local args=("$path")
     if [[ -n "$port" ]]; then
         args+=("--port" "$port")
     fi
-    
+
     "$python_cmd" "${args[@]}" > "$log" 2>&1 &
 }
 
@@ -284,17 +284,17 @@ for ((i=0; i<${#SERVER_NAMES[@]}; i++)); do
     path="${SERVER_PATHS[$i]}"
     log="${SERVER_LOGS[$i]}"
     port="${SERVER_PORTS[$i]}"
-    
+
     echo ""
     echo -e "\033[36m🔧 $name\033[0m"
-    
+
     # Check if already running
     if [[ $FORCE -eq 0 ]] && is_server_running "$port" "$path"; then
         print_success "Already running"
         ((SKIPPED++))
         continue
     fi
-    
+
     # Start server based on type
     case "$type" in
         Script)
@@ -322,14 +322,14 @@ for ((i=0; i<${#SERVER_NAMES[@]}; i++)); do
             ((SKIPPED++))
             ;;
     esac
-    
+
     # Optional: Wait for health check
     if [[ $WAIT_FOR_READY -eq 1 ]] && [[ -n "$port" ]]; then
         print_info "Waiting for port $port to be ready..."
         retry_count=0
         max_retries=30
         ready=0
-        
+
         while [[ $retry_count -lt $max_retries ]]; do
             sleep 1
             if is_port_open "$port"; then
@@ -341,7 +341,7 @@ for ((i=0; i<${#SERVER_NAMES[@]}; i++)); do
             echo -n "."
         done
         echo ""
-        
+
         if [[ $ready -eq 0 ]]; then
             print_warning "Server did not become ready within 30 seconds"
         fi
