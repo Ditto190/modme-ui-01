@@ -123,7 +123,7 @@ See [scripts/examples/generate_collection_example.py](../scripts/examples/genera
 
 ## 📚 Documentation
 
-- **Complete Guide**: [docs/AGENT_COLLECTION_PROGRAMMING_GUIDE.md](../docs/AGENT_COLLECTION_PROGRAMMING_GUIDE.md)
+- **Complete Guide**: [docs/AGENT_COLLECTION_PROGRAMMING_GUIDE.md](../docs/inbox/AGENT_COLLECTION_PROGRAMMING_GUIDE.md)
 - **Implementation Summary**: [AGENT_COLLECTION_IMPLEMENTATION_SUMMARY.md](../AGENT_COLLECTION_IMPLEMENTATION_SUMMARY.md)
 - **Python Tool**: [agent/tools/collection_manager.py](../agent/tools/collection_manager.py)
 

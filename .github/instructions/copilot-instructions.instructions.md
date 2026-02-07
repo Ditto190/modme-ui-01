@@ -1,6 +1,6 @@
 # ModMe GenUI Workbench - AI Agent Instructions
 
-> **Last Updated**: January 5, 2026 | **Quick Start**: `npm run dev` | **Docs**: [CODEBASE_INDEX.md](../../CODEBASE_INDEX.md)
+> **Last Updated**: January 5, 2026 | **Quick Start**: `npm run dev` | **Docs**: [CODEBASE_INDEX.md](../../docs/inbox/CODEBASE_INDEX.md)
 
 ## Purpose
 
@@ -202,7 +202,7 @@ Place starter scripts in `.copilot/mcp-servers/`:
 - `start-everything.{ps1,sh}` - MCP reference implementation (all protocol features)
 - `start-agent.{ps1,bat}` - Custom Python agent
 
-See [docs/MCP_EVERYTHING_SERVER.md](../../docs/MCP_EVERYTHING_SERVER.md)
+See [docs/MCP_EVERYTHING_SERVER.md](../../docs/inbox/MCP_EVERYTHING_SERVER.md)
 
 ---
 
@@ -856,9 +856,9 @@ python --version                     # 3.12+?
 - **Refactoring Patterns**: [docs/REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md)
 - **Schema Crawler Tool**: [agent-generator/SCHEMA_CRAWLER_README.md](../../agent-generator/SCHEMA_CRAWLER_README.md)
 - **ChromaDB Integration**: [docs/CHROMADB_INDEXING.md](../../docs/inbox/CHROMADB_INDEXING.md)
-- **MCP Everything Server**: [docs/MCP_EVERYTHING_SERVER.md](../../docs/MCP_EVERYTHING_SERVER.md)
+- **MCP Everything Server**: [docs/MCP_EVERYTHING_SERVER.md](../../docs/inbox/MCP_EVERYTHING_SERVER.md)
 - **Toolset Management**: [TOOLSET_README.md](../../TOOLSET_README.md), [docs/TOOLSET_MANAGEMENT.md](../../docs/TOOLSET_MANAGEMENT.md)
-- **Codebase Index**: [CODEBASE_INDEX.md](../../CODEBASE_INDEX.md) - Complete file inventory
+- **Codebase Index**: [CODEBASE_INDEX.md](../../docs/inbox/CODEBASE_INDEX.md) - Complete file inventory
 
 ---
 

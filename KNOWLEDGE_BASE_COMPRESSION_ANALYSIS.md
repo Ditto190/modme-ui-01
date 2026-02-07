@@ -724,7 +724,7 @@ node scripts/knowledge-management/compress-knowledge.js
 
 ## References
 
-- **Existing System**: [`docs/KNOWLEDGE_MANAGEMENT.md`](docs/KNOWLEDGE_MANAGEMENT.md)
+- **Existing System**: [`docs/KNOWLEDGE_MANAGEMENT.md`](docs/inbox/KNOWLEDGE_MANAGEMENT.md)
 - **Foam Guide**: [`foam-knowledgebase/docs/copilot-guide.md`](../foam-knowledgebase/docs/copilot-guide.md)
 - **KB Mapper**: [`scripts/knowledge-management/issue-context-mapper.ts`](scripts/knowledge-management/issue-context-mapper.ts)
 - **Toolset Pattern**: [`agent/toolsets.json`](agent/toolsets.json)

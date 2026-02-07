@@ -1,7 +1,7 @@
 # Models Library - Codebase Index
 
 > **Comprehensive inventory of the transformers.js models library**
-> Following the structure of [CODEBASE_INDEX.md](../../../CODEBASE_INDEX.md)
+> Following the structure of [CODEBASE_INDEX.md](../../../docs/inbox/CODEBASE_INDEX.md)
 
 **Created**: January 7, 2026
 **Version**: 1.0.0

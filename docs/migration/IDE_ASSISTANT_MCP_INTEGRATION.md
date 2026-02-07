@@ -2,9 +2,9 @@
 
 > **Migration Guide**: Adding Smart Coding MCP & AI-Assisted Refactoring to ModMe GenUI Workbench
 
-**Created**: 2026-01-04  
-**Scan Date**: 2026-01-04T00:00:00.000Z  
-**Repository**: modme-ui-01  
+**Created**: 2026-01-04
+**Scan Date**: 2026-01-04T00:00:00.000Z
+**Repository**: modme-ui-01
 **Purpose**: Integrate VSCode refactoring actions, Antigravity IDE connector, and smart-coding-mcp into devcontainer
 
 ---
@@ -568,7 +568,7 @@ rm -rf .devcontainer/mcp-servers/
 
 - [MCP_INTEGRATION_PLAN.md](../../agent-generator/src/mcp-registry/MCP_INTEGRATION_PLAN.md)
 - [REFACTORING_PATTERNS.md](../REFACTORING_PATTERNS.md)
-- [CODEBASE_INDEX.md](../../CODEBASE_INDEX.md)
+- [CODEBASE_INDEX.md](../inbox/CODEBASE_INDEX.md)
 
 ### GitHub MCP Tools
 
@@ -593,6 +593,6 @@ Enabled for this migration:
 
 ---
 
-**Last Updated**: 2026-01-04  
-**Maintainer**: ModMe GenUI Team  
+**Last Updated**: 2026-01-04
+**Maintainer**: ModMe GenUI Team
 **Status**: Ready for Testing

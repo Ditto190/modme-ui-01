@@ -2,7 +2,7 @@
 
 > **What's been configured and how to use it**
 
-**Date**: January 6, 2026  
+**Date**: January 6, 2026
 **Status**: ✅ Complete
 
 ---
@@ -362,7 +362,7 @@ After successful installation:
 
 ## 📖 Additional Documentation
 
-- **[INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md)** - Complete installation guide
+- **[INSTALLATION_GUIDE.md](docs/inbox/INSTALLATION_GUIDE.md)** - Complete installation guide
 - **[README.md](README.md)** - Project overview
 - **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - AI agent guide
 - **[MIGRATION_IMPLEMENTATION_PLAN.md](MIGRATION_IMPLEMENTATION_PLAN.md)** - Monorepo migration plan
@@ -387,7 +387,7 @@ After successful installation:
 1. Run `./scripts/quick-start.sh` to get started instantly
 2. Run `./scripts/install-all.sh --check-only` to verify prerequisites
 3. Run `npm run dev` to start development
-4. Read [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) for detailed instructions
+4. Read [INSTALLATION_GUIDE.md](docs/inbox/INSTALLATION_GUIDE.md) for detailed instructions
 
 **Next Phase** (per MIGRATION_IMPLEMENTATION_PLAN.md):
 
@@ -397,7 +397,7 @@ After successful installation:
 
 ---
 
-**Questions?** See [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) or create an issue.
+**Questions?** See [INSTALLATION_GUIDE.md](docs/inbox/INSTALLATION_GUIDE.md) or create an issue.
 
 URL For setup
 

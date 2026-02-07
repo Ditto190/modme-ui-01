@@ -2,7 +2,7 @@
 
 > **Enhanced `prompt.py`** - Generate VSCode/GitLens-compatible custom instructions from agent skills
 
-**Created**: January 4, 2026  
+**Created**: January 4, 2026
 **For**: ModMe GenUI Workbench & GitLens AI Features
 
 ---
@@ -351,7 +351,7 @@ python test_prompt_formats.py
 
 - [.github/copilot-instructions.md](../../.github/copilot-instructions.md) - Current AI agent instructions
 - [docs/REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md) - Dual-runtime refactoring guides
-- [CODEBASE_INDEX.md](../../CODEBASE_INDEX.md) - Complete file catalog
+- [CODEBASE_INDEX.md](../../docs/inbox/CODEBASE_INDEX.md) - Complete file catalog
 
 ---
 
@@ -420,6 +420,6 @@ For questions about this integration:
 
 ---
 
-**Last Updated**: January 4, 2026  
-**Maintainer**: ModMe GenUI Team  
+**Last Updated**: January 4, 2026
+**Maintainer**: ModMe GenUI Team
 **GitLens Version**: Compatible with VSCode GitLens v15.0.0+

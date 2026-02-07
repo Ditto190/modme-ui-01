@@ -2,8 +2,8 @@
 
 > **Complete integration of skillcreatorai/Ai-Agent-Skills repository into ModMe GenUI Workbench**
 
-**Date**: January 6, 2026  
-**Repository**: <https://github.com/skillcreatorai/Ai-Agent-Skills>  
+**Date**: January 6, 2026
+**Repository**: <https://github.com/skillcreatorai/Ai-Agent-Skills>
 **Status**: ✅ Complete and Ready for Use
 
 ---
@@ -357,8 +357,8 @@ python -m agent.skills_ref.skill_library generate-prompt | head -100
 - **Original Skills Ref**: [agent/skills_ref/README.md](../README.md)
 - **Agent Skills Spec**: <https://agentskills.io/specification>
 - **Ai-Agent-Skills Repo**: <https://github.com/skillcreatorai/Ai-Agent-Skills>
-- **Codebase Index**: [CODEBASE_INDEX.md](../../CODEBASE_INDEX.md)
-- **Knowledge Management**: [docs/KNOWLEDGE_MANAGEMENT.md](../../docs/KNOWLEDGE_MANAGEMENT.md)
+- **Codebase Index**: [CODEBASE_INDEX.md](../../docs/inbox/CODEBASE_INDEX.md)
+- **Knowledge Management**: [docs/KNOWLEDGE_MANAGEMENT.md](../../docs/inbox/KNOWLEDGE_MANAGEMENT.md)
 
 ---
 
@@ -434,19 +434,19 @@ python -m agent.skills_ref.skill_library generate-prompt | head -100
 
 Successfully integrated the skillcreatorai/Ai-Agent-Skills repository with complete:
 
-✅ Repository cloning and management  
-✅ Skill discovery and search  
-✅ Installation and tracking  
-✅ CLI interface (8 commands)  
-✅ Python API  
-✅ Agent prompt generation  
-✅ Documentation and examples  
+✅ Repository cloning and management
+✅ Skill discovery and search
+✅ Installation and tracking
+✅ CLI interface (8 commands)
+✅ Python API
+✅ Agent prompt generation
+✅ Documentation and examples
 ✅ Test suite
 
 **Ready for production use!**
 
 ---
 
-**Maintained by**: ModMe GenUI Team  
-**Implemented**: January 6, 2026  
+**Maintained by**: ModMe GenUI Team
+**Implemented**: January 6, 2026
 **Version**: 1.0.0

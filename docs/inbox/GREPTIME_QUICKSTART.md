@@ -78,7 +78,6 @@ curl http://localhost:4000/v1/sql \
 2. Open: <http://localhost:3001> (admin/admin)
 
 3. Add Data Source:
-
    - Type: **Prometheus**
    - URL: `http://localhost:4000/v1/prometheus`
    - Save & Test
@@ -89,7 +88,7 @@ curl http://localhost:4000/v1/sql \
 
 ## 📖 Full Documentation
 
-See [GREPTIME_OBSERVABILITY.md](../docs/GREPTIME_OBSERVABILITY.md) for:
+See [GREPTIME_OBSERVABILITY.md](inbox/GREPTIME_OBSERVABILITY.md) for:
 
 - Architecture diagrams
 - Complete metrics reference
@@ -151,8 +150,8 @@ curl http://localhost:4000/v1/otlp/v1/metrics
 - [ ] Create Grafana dashboard
 - [ ] Add custom metrics
 - [ ] Configure alerts
-- [ ] Review [GREPTIME_OBSERVABILITY.md](../docs/GREPTIME_OBSERVABILITY.md)
+- [ ] Review [GREPTIME_OBSERVABILITY.md](inbox/GREPTIME_OBSERVABILITY.md)
 
 ---
 
-**Need help?** See full docs at [GREPTIME_OBSERVABILITY.md](../docs/GREPTIME_OBSERVABILITY.md)
+**Need help?** See full docs at [GREPTIME_OBSERVABILITY.md](inbox/GREPTIME_OBSERVABILITY.md)

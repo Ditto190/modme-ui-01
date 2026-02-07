@@ -2,8 +2,8 @@
 
 > **Complete guide for porting this monorepo into other projects**
 
-**Version**: 1.0.0  
-**Date**: January 3, 2026  
+**Version**: 1.0.0
+**Date**: January 3, 2026
 **Status**: Production-Ready
 
 ---
@@ -691,9 +691,9 @@ const KNOWLEDGE_BASE: Record<string, ConceptMapping> = {
 
 ## 📚 Additional Resources
 
-- **[CODEBASE_INDEX.md](CODEBASE_INDEX.md)** - Complete searchable index
+- **[CODEBASE_INDEX.md](docs/inbox/CODEBASE_INDEX.md)** - Complete searchable index
 - **[COMPONENT_MANIFEST.json](COMPONENT_MANIFEST.json)** - Machine-readable component registry
-- **[docs/KNOWLEDGE_BASE_INTEGRATION.md](docs/KNOWLEDGE_BASE_INTEGRATION.md)** - KB implementation details
+- **[docs/KNOWLEDGE_BASE_INTEGRATION.md](docs/inbox/KNOWLEDGE_BASE_INTEGRATION.md)** - KB implementation details
 - **[docs/TOOLSET_MANAGEMENT.md](docs/TOOLSET_MANAGEMENT.md)** - Toolset system docs
 - **[agent-generator/SCHEMA_CRAWLER_README.md](agent-generator/SCHEMA_CRAWLER_README.md)** - Schema crawler guide
 
@@ -703,7 +703,7 @@ const KNOWLEDGE_BASE: Record<string, ConceptMapping> = {
 
 For porting questions:
 
-1. Check [CODEBASE_INDEX.md](CODEBASE_INDEX.md) for component details
+1. Check [CODEBASE_INDEX.md](docs/inbox/CODEBASE_INDEX.md) for component details
 2. Review component-specific README files
 3. See [docs/](docs/) for architecture documentation
 4. File issue with `porting` label

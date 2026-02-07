@@ -2,8 +2,8 @@
 
 > **Step-by-step guide for bootstrapping a new AI-powered monorepo from modme-ui-01 components**
 
-**Created**: 2026-01-03  
-**Strategy**: Hybrid Bootstrap (see [REPO_COMPARISON.md](./REPO_COMPARISON.md))  
+**Created**: 2026-01-03
+**Strategy**: Hybrid Bootstrap (see [REPO_COMPARISON.md](docs/inbox/REPO_COMPARISON.md))
 **Components**: [COMPONENT_MANIFEST.json](./COMPONENT_MANIFEST.json)
 
 ---

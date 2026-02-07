@@ -15,7 +15,7 @@ The project includes starter scripts for the official MCP "everything" server:
 - **PowerShell**: `.copilot/mcp-servers/start-everything.ps1`
 - **Bash**: `.copilot/mcp-servers/start-everything.sh`
 
-This is a comprehensive reference implementation that demonstrates all MCP protocol features. See [`docs/MCP_EVERYTHING_SERVER.md`](../../docs/MCP_EVERYTHING_SERVER.md) for details.
+This is a comprehensive reference implementation that demonstrates all MCP protocol features. See [`docs/MCP_EVERYTHING_SERVER.md`](../../docs/inbox/MCP_EVERYTHING_SERVER.md) for details.
 
 ### Custom Server Scripts
 

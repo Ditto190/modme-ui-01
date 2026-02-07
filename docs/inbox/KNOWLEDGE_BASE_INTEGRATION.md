@@ -378,7 +378,7 @@ resolveGitHubPath("src/app/page.tsx", "Ditto190/modme-ui-01", "main");
 ## Related Documentation
 
 - [ISSUE_MANAGEMENT_SYSTEM.md](inbox/ISSUE_MANAGEMENT_SYSTEM.md) - Full issue system docs
-- [KNOWLEDGE_MANAGEMENT.md](./KNOWLEDGE_MANAGEMENT.md) - Knowledge base architecture
+- [KNOWLEDGE_MANAGEMENT.md](inbox/KNOWLEDGE_MANAGEMENT.md) - Knowledge base architecture
 - [TOOLSET_MANAGEMENT.md](./TOOLSET_MANAGEMENT.md) - Toolset lifecycle automation
 - [REFACTORING_PATTERNS.md](./REFACTORING_PATTERNS.md) - Code patterns and best practices
 

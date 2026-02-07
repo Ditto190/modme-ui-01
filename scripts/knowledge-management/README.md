@@ -66,13 +66,13 @@ Expected output:
 
 🎉 All tests passed! Knowledge Base is working correctly.
 
-````
+```
 
 ### Manual Testing
 
 ```bash
 npm run context "Issue title" "Issue body with StatCard and upsert_ui_element"
-````
+```
 
 Output (JSON):
 
@@ -292,7 +292,7 @@ npm test
 
 ## 🔗 Related Documentation
 
-- [KNOWLEDGE_BASE_INTEGRATION.md](../../docs/KNOWLEDGE_BASE_INTEGRATION.md) - Full integration guide
+- [KNOWLEDGE_BASE_INTEGRATION.md](../../docs/inbox/KNOWLEDGE_BASE_INTEGRATION.md) - Full integration guide
 - [ISSUE_MANAGEMENT_SYSTEM.md](../../docs/inbox/ISSUE_MANAGEMENT_SYSTEM.md) - Issue system overview
 - [TOOLSET_MANAGEMENT.md](../../docs/TOOLSET_MANAGEMENT.md) - Toolset lifecycle
 - [REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md) - Code patterns

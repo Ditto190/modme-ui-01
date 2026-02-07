@@ -75,8 +75,8 @@ counter.add(1, { action: "click" });
 
 ## Documentation
 
-- **Complete Reference**: [docs/GREPTIME_OBSERVABILITY.md](../../docs/GREPTIME_OBSERVABILITY.md)
-- **Quick Start Guide**: [docs/GREPTIME_QUICKSTART.md](../../docs/GREPTIME_QUICKSTART.md)
+- **Complete Reference**: [docs/GREPTIME_OBSERVABILITY.md](../../docs/inbox/GREPTIME_OBSERVABILITY.md)
+- **Quick Start Guide**: [docs/GREPTIME_QUICKSTART.md](../../docs/inbox/GREPTIME_QUICKSTART.md)
 - **Implementation Summary**: [GREPTIME_IMPLEMENTATION_SUMMARY.md](../../GREPTIME_IMPLEMENTATION_SUMMARY.md)
 - **Usage Examples**: [examples.ts](./examples.ts)
 
@@ -147,11 +147,11 @@ Same as parent project (see root LICENSE file)
 
 ## Support
 
-- Check [GREPTIME_OBSERVABILITY.md](../../docs/GREPTIME_OBSERVABILITY.md)
+- Check [GREPTIME_OBSERVABILITY.md](../../docs/inbox/GREPTIME_OBSERVABILITY.md)
 - Review [examples.ts](./examples.ts) for usage patterns
 - Verify GreptimeDB health: `curl http://localhost:4000/health`
 
 ---
 
-**Version**: 1.0.0  
+**Version**: 1.0.0
 **Last Updated**: January 2, 2026
