@@ -350,7 +350,7 @@ python test_prompt_formats.py
 ### Project Documentation
 
 - [.github/copilot-instructions.md](../../.github/copilot-instructions.md) - Current AI agent instructions
-- [docs/REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md) - Dual-runtime refactoring guides
+- [docs/REFACTORING_PATTERNS.md](../../docs/inbox/REFACTORING_PATTERNS.md) - Dual-runtime refactoring guides
 - [CODEBASE_INDEX.md](../../docs/inbox/CODEBASE_INDEX.md) - Complete file catalog
 
 ---

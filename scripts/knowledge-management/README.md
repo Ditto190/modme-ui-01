@@ -295,7 +295,7 @@ npm test
 - [KNOWLEDGE_BASE_INTEGRATION.md](../../docs/inbox/KNOWLEDGE_BASE_INTEGRATION.md) - Full integration guide
 - [ISSUE_MANAGEMENT_SYSTEM.md](../../docs/inbox/ISSUE_MANAGEMENT_SYSTEM.md) - Issue system overview
 - [TOOLSET_MANAGEMENT.md](../../docs/TOOLSET_MANAGEMENT.md) - Toolset lifecycle
-- [REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md) - Code patterns
+- [REFACTORING_PATTERNS.md](../../docs/inbox/REFACTORING_PATTERNS.md) - Code patterns
 
 ## 📝 Notes
 

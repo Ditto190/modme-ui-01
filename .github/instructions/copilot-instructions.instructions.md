@@ -351,7 +351,7 @@ npm run check                # Lint + format combined
 - **State Injection**: Modify `before_model_modifier()` to inject canvas state into system prompt
 - **Response Control**: Use `after_model_modifier()` to stop consecutive tool calls
 
-**Example Tool Pattern** (see [docs/REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md) Pattern 1):
+**Example Tool Pattern** (see [docs/REFACTORING_PATTERNS.md](../../docs/inbox/REFACTORING_PATTERNS.md) Pattern 1):
 
 ```python
 def my_tool(tool_context: ToolContext, param: str) -> Dict[str, str]:
@@ -853,7 +853,7 @@ python --version                     # 3.12+?
 - **Google ADK**: https://ai.google.dev/adk/docs
 - **AG-UI Client**: https://www.npmjs.com/package/@ag-ui/client
 - **Generative UI Architecture**: [Project_Overview.md](../../Project_Overview.md)
-- **Refactoring Patterns**: [docs/REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md)
+- **Refactoring Patterns**: [docs/REFACTORING_PATTERNS.md](../../docs/inbox/REFACTORING_PATTERNS.md)
 - **Schema Crawler Tool**: [agent-generator/SCHEMA_CRAWLER_README.md](../../agent-generator/SCHEMA_CRAWLER_README.md)
 - **ChromaDB Integration**: [docs/CHROMADB_INDEXING.md](../../docs/inbox/CHROMADB_INDEXING.md)
 - **MCP Everything Server**: [docs/MCP_EVERYTHING_SERVER.md](../../docs/inbox/MCP_EVERYTHING_SERVER.md)
@@ -1083,7 +1083,7 @@ npm run validate:toolsets
 | Health check         | http://localhost:8000/health                                                               |
 | Toolset validation   | `npm run validate:toolsets`                                                                |
 | Documentation sync   | `npm run docs:all`                                                                         |
-| Refactoring patterns | [docs/REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md)                         |
+| Refactoring patterns | [docs/REFACTORING_PATTERNS.md](../../docs/inbox/REFACTORING_PATTERNS.md)                         |
 | Schema crawler       | [agent-generator/SCHEMA_CRAWLER_README.md](../../agent-generator/SCHEMA_CRAWLER_README.md) |
 | ChromaDB HTTP server | `python scripts/start_chroma_server.py --port 8001`                                        |
 | Session memory       | `python scripts/session_memory.py --serve --serve-port 8002`                               |

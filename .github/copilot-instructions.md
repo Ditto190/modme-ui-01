@@ -399,7 +399,7 @@ curl localhost:8000/ready    # Toolsets loaded confirmation
 
 ## Extended Documentation
 
-- [../docs/REFACTORING_PATTERNS.md](../docs/REFACTORING_PATTERNS.md) — Dual-runtime refactoring guides
+- [../docs/REFACTORING_PATTERNS.md](../docs/inbox/REFACTORING_PATTERNS.md) — Dual-runtime refactoring guides
 - [../PORTING_GUIDE.md](../PORTING_GUIDE.md) — Component portability patterns
 - [../CODEBASE_INDEX.md](../docs/inbox/CODEBASE_INDEX.md) — Full file catalog
 - [../agent/skills_ref/GITLENS_INTEGRATION.md](../agent/skills_ref/GITLENS_INTEGRATION.md) — GitLens AI custom instructions generator

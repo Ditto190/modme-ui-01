@@ -773,7 +773,7 @@ modme-monorepo/
 - [BOOTSTRAP_GUIDE.md](./BOOTSTRAP_GUIDE.md) - Setup guide
 - [REPO_COMPARISON.md](docs/inbox/REPO_COMPARISON.md) - Template analysis
 - [docs/CHROMADB_INDEXING.md](docs/inbox/CHROMADB_INDEXING.md) - Code indexing
-- [docs/REFACTORING_PATTERNS.md](./docs/REFACTORING_PATTERNS.md) - Code patterns
+- [docs/REFACTORING_PATTERNS.md](docs/inbox/REFACTORING_PATTERNS.md) - Code patterns
 
 ## 🔧 Development
 

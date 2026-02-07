@@ -437,7 +437,7 @@ jobs:
 | -------------------------------------------------------------------------------- | -------------------------------------- |
 | [agent/tools/README.md](agent/tools/README.md)                                   | Complete tool usage guide              |
 | [docs/GENERATE_SCHEMAS_CONVERSION.md](docs/inbox/GENERATE_SCHEMAS_CONVERSION.md) | TypeScript → Python conversion details |
-| [docs/REFACTORING_PATTERNS.md](docs/REFACTORING_PATTERNS.md)                     | Agent tool refactoring patterns        |
+| [docs/REFACTORING_PATTERNS.md](docs/inbox/REFACTORING_PATTERNS.md)                     | Agent tool refactoring patterns        |
 | [genai-toolbox/tools.yaml](genai-toolbox/tools.yaml)                             | Tool configuration                     |
 | [tests/test_generate_schemas.py](tests/test_generate_schemas.py)                 | Test suite                             |
 
@@ -503,7 +503,7 @@ tools:
 To extend these tools:
 
 1. Review [agent/tools/README.md](agent/tools/README.md)
-2. Follow patterns in [docs/REFACTORING_PATTERNS.md](docs/REFACTORING_PATTERNS.md)
+2. Follow patterns in [docs/REFACTORING_PATTERNS.md](docs/inbox/REFACTORING_PATTERNS.md)
 3. Add tests to [tests/test_generate_schemas.py](tests/test_generate_schemas.py)
 4. Update [genai-toolbox/tools.yaml](genai-toolbox/tools.yaml)
 

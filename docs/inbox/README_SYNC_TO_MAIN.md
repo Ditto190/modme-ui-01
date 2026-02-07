@@ -1,3 +1,3 @@
-This branch `main` was created from `feature/genui-workbench-refactor` by the Copilot assistant to sync recent integration work from the codespace.
+# Sync to main
 
-Files merged include collection management tools and a transpiled embeddings artifact. Please review the PRs and CI results before deploying to production.
+This repository's `main` branch was created from `feature/genui-workbench-refactor` to consolidate integration work. Review the PR and CI workflows before merging to production.

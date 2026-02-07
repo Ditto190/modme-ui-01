@@ -567,7 +567,7 @@ rm -rf .devcontainer/mcp-servers/
 ### Project References
 
 - [MCP_INTEGRATION_PLAN.md](../../agent-generator/src/mcp-registry/MCP_INTEGRATION_PLAN.md)
-- [REFACTORING_PATTERNS.md](../REFACTORING_PATTERNS.md)
+- [REFACTORING_PATTERNS.md](../inbox/REFACTORING_PATTERNS.md)
 - [CODEBASE_INDEX.md](../inbox/CODEBASE_INDEX.md)
 
 ### GitHub MCP Tools

@@ -367,7 +367,7 @@ After successful installation:
 - **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - AI agent guide
 - **[MIGRATION_IMPLEMENTATION_PLAN.md](MIGRATION_IMPLEMENTATION_PLAN.md)** - Monorepo migration plan
 - **[PORTING_GUIDE.md](PORTING_GUIDE.md)** - Component porting guide
-- **[docs/REFACTORING_PATTERNS.md](docs/REFACTORING_PATTERNS.md)** - Code patterns
+- **[docs/REFACTORING_PATTERNS.md](docs/inbox/REFACTORING_PATTERNS.md)** - Code patterns
 
 ---
 
