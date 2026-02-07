@@ -1,0 +1,32 @@
+# Dockerfile for Copilot Telemetry Proxy
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY agent/requirements-phoenix.txt /app/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements-phoenix.txt
+
+# Copy application code
+COPY agent/observability /app/agent/observability
+COPY agent/__init__.py /app/agent/
+
+# Create datasets directory
+RUN mkdir -p /app/datasets
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Expose proxy port
+EXPOSE 8080
+
+# Run proxy server
+CMD ["python", "-m", "agent.observability.copilot_phoenix_proxy"]

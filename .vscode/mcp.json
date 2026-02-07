@@ -1,11 +1,19 @@
 {
   "servers": {
+    "phoenix": {
+      "command": "npx",
+      "args": ["-y", "@arizeai/phoenix-mcp@latest", "--baseUrl", "http://localhost:6006"],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NODE_OPTIONS": "--no-warnings"
+      }
+    },
+    "phoenix-docs": {
+      "url": "https://arizeai-433a7140.mintlify.app/mcp"
+    },
     "github-agentic-workflows": {
       "command": "gh",
-      "args": [
-        "aw",
-        "mcp-server"
-      ],
+      "args": ["aw", "mcp-server"],
       "cwd": "${workspaceFolder}"
     }
   }

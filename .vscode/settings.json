@@ -184,6 +184,18 @@
   },
 
   // ============================================================
+  // TZ COPILOT TELEMETRY COLLECTOR SETTINGS
+  // ============================================================
+  "tzCopilotTelemetry.enabled": true,
+  "tzCopilotTelemetry.exportEndpoint": "http://localhost:8080/telemetry",
+  "tzCopilotTelemetry.captureChat": true,
+  "tzCopilotTelemetry.captureCompletions": true,
+  "tzCopilotTelemetry.includePrompts": true,
+  "tzCopilotTelemetry.includeResponses": true,
+  "tzCopilotTelemetry.includeContext": true,
+  "tzCopilotTelemetry.anonymizeData": false,
+
+  // ============================================================
   // YAML SCHEMAS
   // ============================================================
   "yaml.schemas": {
@@ -270,6 +282,6 @@
     "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json": "./genai-toolbox/tools.yaml"
   },
   "terminal.integrated.automationProfile.windows": {
-    
+
   }
 }

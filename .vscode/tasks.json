@@ -73,6 +73,108 @@
       }
     },
     {
+      "label": "Start Copilot Observability",
+      "type": "npm",
+      "script": "copilot:start",
+      "problemMatcher": [],
+      "runOptions": {
+        "runOn": "folderOpen",
+        "reevaluateOnRerun": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "panel": "shared",
+        "focus": false,
+        "showReuseMessage": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Stop Copilot Observability",
+      "type": "npm",
+      "script": "copilot:stop",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Restart Copilot Proxy",
+      "type": "npm",
+      "script": "copilot:restart",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "View Copilot Proxy Logs",
+      "type": "npm",
+      "script": "copilot:logs",
+      "problemMatcher": [],
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      }
+    },
+    {
+      "label": "View All Observability Logs",
+      "type": "npm",
+      "script": "copilot:logs:all",
+      "problemMatcher": [],
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      }
+    },
+    {
+      "label": "Export Copilot Dataset (7 days)",
+      "type": "npm",
+      "script": "copilot:export",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Export Fine-tuning Dataset",
+      "type": "npm",
+      "script": "copilot:export:finetune",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Check Copilot Proxy Health",
+      "type": "npm",
+      "script": "copilot:health",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
       "label": "Search Toolsets",
       "type": "shell",
       "problemMatcher": [],

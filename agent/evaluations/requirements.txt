@@ -1,0 +1,14 @@
+# DeepEval - Open-source LLM Evaluation Framework
+deepeval>=1.0.0
+
+# HTTP client for GreptimeDB (if not already in main requirements)
+httpx>=0.26.0
+
+# Data processing
+pandas>=2.0.0
+
+# Environment variables
+python-dotenv>=1.0.0
+
+# OpenAI (for DeepEval evaluator models - can use local/other LLMs too)
+openai>=1.0.0

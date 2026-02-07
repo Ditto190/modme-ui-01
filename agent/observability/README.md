@@ -1,6 +1,6 @@
 # ModMe GenUI Observability Package
 
-> OpenTelemetry + GreptimeDB observability for Python ADK agents and React/Next.js frontends
+> OpenTelemetry + GreptimeDB + Phoenix observability for Python ADK agents and React/Next.js frontends
 
 ## Overview
 
@@ -8,6 +8,7 @@ This package provides unified observability (metrics, logs, traces) for the ModM
 
 - **Python Agent** (FastAPI + Google ADK) → OpenTelemetry → GreptimeDB
 - **React Frontend** (Next.js 16) → OpenTelemetry → GreptimeDB
+- **GitHub Copilot** (VSCode) → Phoenix → Dataset Export
 
 ## Features
 
@@ -16,6 +17,8 @@ This package provides unified observability (metrics, logs, traces) for the ModM
 - ✅ **Logs**: Structured log ingestion (planned)
 - ✅ **Authentication**: Basic Auth support
 - ✅ **Auto-instrumentation**: FastAPI, React hooks
+- ✅ **Copilot Telemetry**: GitHub Copilot interaction capture
+- ✅ **Dataset Export**: JSONL, CSV, Parquet for fine-tuning
 - ✅ **Graceful degradation**: App works without observability
 
 ## Quick Start
@@ -73,12 +76,55 @@ const counter = meter.createCounter("ui_metric");
 counter.add(1, { action: "click" });
 ```
 
+## GitHub Copilot Observability
+
+### Start Copilot Telemetry Capture
+
+**Complete guide:** [docs/COPILOT_OBSERVABILITY_GUIDE.md](../../docs/COPILOT_OBSERVABILITY_GUIDE.md)
+
+```bash
+# Start Phoenix + Telemetry Proxy
+.\scripts\start-copilot-observability.ps1   # Windows
+./scripts/start-copilot-observability.sh    # Unix/macOS
+
+# View traces in Phoenix UI
+# http://localhost:6006
+
+# Export datasets for fine-tuning
+python -m agent.observability.export_copilot_dataset \
+    --output-dir ./datasets \
+    --format jsonl \
+    --finetune-format \
+    --days-back 7
+```
+
+## Module Reference
+
+### Core Observability
+
+- **`greptime_config.py`** - GreptimeDB client configuration
+- **`greptime_logger.py`** - Structured logging to GreptimeDB
+- **`phoenix_config.py`** - Phoenix tracing configuration
+- **`phoenix_instrumentors.py`** - Auto-instrumentation helpers
+
+### Copilot Telemetry
+
+- **`copilot_phoenix_proxy.py`** - FastAPI proxy server for TZ extension
+- **`vscode_copilot_telemetry.py`** - OpenTelemetry adapter for Copilot
+- **`export_copilot_dataset.py`** - Dataset export utility (JSONL, CSV, Parquet)
+
+### Data Ingestion
+
+- **`conversation_ingestion.py`** - Conversation data ingestion
+- **`provider_adapters.py`** - Multi-provider LLM adapters
+- **`custom_provider_tracer.py`** - Custom provider tracing
+
 ## Documentation
 
 - **Complete Reference**: [docs/GREPTIME_OBSERVABILITY.md](../../docs/inbox/GREPTIME_OBSERVABILITY.md)
 - **Quick Start Guide**: [docs/GREPTIME_QUICKSTART.md](../../docs/inbox/GREPTIME_QUICKSTART.md)
+- **Copilot Observability**: [docs/COPILOT_OBSERVABILITY_GUIDE.md](../../docs/COPILOT_OBSERVABILITY_GUIDE.md)
 - **Implementation Summary**: [GREPTIME_IMPLEMENTATION_SUMMARY.md](../../GREPTIME_IMPLEMENTATION_SUMMARY.md)
-- **Usage Examples**: [examples.ts](./examples.ts)
 
 ## Architecture
 
@@ -86,6 +132,8 @@ counter.add(1, { action: "click" });
 Python Agent ──┐
                ├──> GreptimeDB ──> Grafana
 React UI ──────┘   (OTLP/HTTP)
+
+VSCode Copilot ──> Proxy ──> Phoenix ──> Dataset Export
 ```
 
 ## Dependencies
@@ -95,6 +143,12 @@ React UI ──────┘   (OTLP/HTTP)
 - `opentelemetry-api`
 - `opentelemetry-sdk`
 - `opentelemetry-exporter-otlp-proto-http`
+
+**Copilot Telemetry (install with):**
+
+```bash
+pip install -r requirements-phoenix.txt
+```
 
 **TypeScript (install with npm):**
 
