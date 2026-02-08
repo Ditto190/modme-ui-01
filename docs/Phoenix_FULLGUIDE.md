@@ -219,32 +219,177 @@ curl -X POST http://localhost:5678/webhook/universal-chat-ingest \
 
 ### 1. Entry Points
 
-**A. n8n Webhook (Primary Production Entry)**
+#### A. n8n Webhook (Production Entry Point) ⭐
+
+**Purpose**: Primary production endpoint for receiving chat data from any source.
+
+**Configuration:**
 
 - **File**: `agent/observability/n8n_workflow_universal_ingestion.json`
-- **Webhook URL**: `http://localhost:5678/webhook/universal-chat-ingest`
+- **Webhook URL**: <http://localhost:5678/webhook/universal-chat-ingest>
 - **Method**: POST
-- **Expected Body**:
+- **Content-Type**: application/json
+- **Docker Port**: 5678 (configured in `docker-compose.n8n.yml`)
 
-  ```json
-  {
-    "projectName": "chat-traces", // optional
-    "sourceLabel": "filename.json", // optional
-    "chatData": {
-      /* raw chat JSON */
-    }
+**Request Body** (flexible format):
+
+```json
+{
+  "projectName": "chat-traces",
+  "sourceLabel": "filename.json",
+  "chatData": {
+    // Any chat format - will be auto-detected
+    "responderUsername": "GitHub Copilot",
+    "conversationId": "abc-123",
+    "requests": [...]
   }
-  ```
+}
+```
 
-- **n8n Docker Port**: 5678 (mapped in `docker-compose.n8n.yml`)
-  **B. CLI Test Pipeline (Development)**
+**Response** (known format):
+
+```json
+{
+  "status": "success",
+  "format": "copilot-chat",
+  "turns_ingested": 5,
+  "project": "chat-traces"
+}
+```
+
+**Response** (unknown format):
+
+```json
+{
+  "status": "unknown_format",
+  "discovery": {
+    "suggested_filename": "unknown-my-agent-2026-02-08-a3f9e2.json",
+    "top_level_schema": {...},
+    "candidate_paths": ["requests", "messages"]
+  }
+}
+```
+
+**Example cURL:**
+
+```bash
+curl -X POST http://localhost:5678/webhook/universal-chat-ingest \
+  -H "Content-Type: application/json" \
+  -d @datasets/copilot-chat.json
+```
+
+#### B. CLI Test Pipeline (Development Tool)
+
+**Purpose**: End-to-end testing of format detection and normalization without requiring n8n.
+
+**Configuration:**
+
 - **File**: `agent-generator/src/chat-formats/test-pipeline.ts`
-- **Command**: `npx tsx src/chat-formats/test-pipeline.ts [path/to/chat.json]`
-- **Default Path**: `datasets/chat.json`
-- **Purpose**: End-to-end testing of detection + normalization without n8n
-  **C. Direct Bridge Upload (Legacy Compatibility)**
-- **Endpoint**: `http://localhost:8787/upload` (Copilot-specific)
-- **Endpoint**: `http://localhost:8787/upload-file` (Multipart file upload)
+- **Default Dataset**: `datasets/chat.json`
+
+**Usage:**
+
+```bash
+cd agent-generator
+
+# Test default dataset
+npx tsx src/chat-formats/test-pipeline.ts
+
+# Test custom file
+npx tsx src/chat-formats/test-pipeline.ts ../datasets/my-chat.json
+
+# Test with absolute path
+npx tsx src/chat-formats/test-pipeline.ts /full/path/to/chat.json
+```
+
+**What It Does:**
+
+1. Loads JSON file from filesystem
+2. Detects format via fingerprinting engine
+3. Normalizes to UniversalTurnPayload schema
+4. Validates with Zod schemas
+5. Prints diagnostic report
+
+**Example Output:**
+
+```plaintext
+✓ Format detected: copilot-chat (confidence: exact)
+✓ Normalized 5 turns
+✓ Schema validation passed
+
+UniversalTurnPayload:
+  format: copilot-chat
+  agent: GitHub Copilot
+  project: test-project
+  turns: 5
+
+Turn 1:
+  user: "How do I implement authentication?"
+  assistant: "Here's a secure authentication implementation..."
+  tools: 2 (search_codebase, read_file)
+  model: gpt-4
+```
+
+#### C. Direct Bridge Upload (Legacy & Integration)
+
+**Purpose**: HTTP API for direct uploads, bypassing n8n. Useful for automated scripts and integrations.
+
+**Endpoints:**
+
+**1. Universal Format (Recommended):**
+
+```bash
+POST http://localhost:8787/ingest
+Content-Type: application/json
+
+Body: UniversalTurnPayload
+```
+
+**2. Legacy Copilot Format:**
+
+```bash
+POST http://localhost:8787/upload
+Content-Type: application/json
+
+Body: Raw Copilot chat.json structure
+```
+
+**3. File Upload:**
+
+```bash
+POST http://localhost:8787/upload-file
+Content-Type: multipart/form-data
+
+Body: file=@chat.json
+```
+
+**Example (Universal Format):**
+
+```bash
+curl -X POST http://localhost:8787/ingest \
+  -H "Content-Type: application/json" \
+  -d '{
+    "format": "copilot-chat",
+    "projectName": "my-project",
+    "source": "manual-upload",
+    "turns": [
+      {
+        "index": 0,
+        "userMessage": "Hello",
+        "assistantResponse": "Hi there!",
+        "model": "gpt-4"
+      }
+    ]
+  }'
+```
+
+**Example (File Upload):**
+
+```bash
+curl -X POST http://localhost:8787/upload-file \
+  -F "file=@datasets/copilot-chat.json" \
+  -F "projectName=my-project"
+```
 
 ---
 
