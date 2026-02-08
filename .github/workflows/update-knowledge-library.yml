@@ -1,0 +1,194 @@
+name: Update Knowledge Library
+
+on:
+  push:
+    branches:
+      - main
+      - test-main-tracking
+    paths:
+      - "docs/archive/**/*.md"
+      - "docs/**/*.md"
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: "Force full rebuild of knowledge library"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-knowledge-library:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.9.0"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Detect archived files
+        id: detect_archives
+        run: |
+          echo "Detecting newly archived documentation..."
+
+          # Get list of archived files from this push
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.force_update }}" = "true" ]; then
+            echo "Force update mode - scanning all archives"
+            ARCHIVED_FILES=$(find docs/archive -name "*.md" -type f)
+          else
+            # Get changed files in docs/archive from this push
+            ARCHIVED_FILES=$(git diff --name-only HEAD~1 HEAD -- 'docs/archive/**/*.md' || echo "")
+          fi
+
+          if [ -z "$ARCHIVED_FILES" ]; then
+            echo "No archived files detected"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Archived files detected:"
+            echo "$ARCHIVED_FILES"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+
+            # Save to file for next step
+            echo "$ARCHIVED_FILES" > /tmp/archived_files.txt
+          fi
+
+      - name: Update knowledge-library.json
+        if: steps.detect_archives.outputs.has_changes == 'true'
+        run: |
+          node scripts/knowledge-management/update-knowledge-library.mjs
+
+      - name: Validate knowledge-library.json
+        if: steps.detect_archives.outputs.has_changes == 'true'
+        run: |
+          # Validate JSON structure
+          node -e "JSON.parse(require('fs').readFileSync('docs/knowledge-library.json', 'utf8'))"
+          echo "✓ JSON structure valid"
+
+          # Validate against schema if it exists
+          if [ -f "docs/knowledge-library-schema.json" ]; then
+            npx ajv-cli validate -s docs/knowledge-library-schema.json -d docs/knowledge-library.json || true
+          fi
+
+      - name: Generate archive summary
+        if: steps.detect_archives.outputs.has_changes == 'true'
+        run: |
+          cat > docs/archive/README.md << 'EOF'
+          # Documentation Archive
+
+          **Last Updated:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+          This directory contains historical documentation that has been archived for reference.
+          Documentation is organized by:
+
+          - **Date**: Major archive events are grouped by year-month (e.g., `2026-02/`)
+          - **Category**: By functional area (e.g., `observability/`, `build-tools/`)
+          - **Purpose**: Implementation, testing, and temporal documentation
+
+          ## Archive Structure
+
+          \`\`\`
+          archive/
+          ├── observability/
+          │   ├── 2026-02-phoenix/       # Phoenix implementation docs (Feb 2026)
+          │   ├── 2026-02-copilot/       # Copilot observability docs (Feb 2026)
+          │   └── 2026-02-implementation/ # General implementation status
+          ├── build-tools/
+          └── sessions/                  # Historical session summaries
+          \`\`\`
+
+          ## Using Archived Documentation
+
+          Archived documentation remains searchable and accessible via:
+
+          1. **Knowledge Library**: See [knowledge-library.json](../knowledge-library.json)
+          2. **Foam Search**: Use \`[[wiki-links]]\` to reference archived notes
+          3. **Full-text Search**: \`npm run search:toolset "pattern"\`
+          4. **Git History**: Full commit history preserved
+
+          ## Accessing Archive Topics
+
+          Query the knowledge library for archived topics:
+
+          \`\`\`bash
+          # List all archived topics
+          node -e "console.log(JSON.parse(require('fs').readFileSync('docs/knowledge-library.json')).topics.filter(t => t.status === 'archived'))"
+
+          # Search archived content
+          npm run search:toolset "phoenix implementation"
+          \`\`\`
+
+          ## Why Archive?
+
+          Documentation is archived when:
+          - **Temporal**: Implementation/test docs superseded by consolidated guides
+          - **Historical**: Snapshots of decision-making processes
+          - **Superseded**: Replaced by newer, consolidated documentation
+          - **Reference**: Useful for context but not current operational docs
+
+          ---
+
+          **Note**: Archived documentation is never deleted - it provides historical context and audit trails.
+          EOF
+
+      - name: Commit changes
+        if: steps.detect_archives.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          git add docs/knowledge-library.json docs/archive/README.md
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: update knowledge library with archived documentation
+
+            - Auto-detected archived files in docs/archive/
+            - Updated knowledge-library.json with metadata
+            - Regenerated archive README
+
+            [skip ci]"
+
+            git push
+          fi
+
+      - name: Create summary
+        if: always()
+        run: |
+          echo "## Knowledge Library Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.detect_archives.outputs.has_changes }}" = "true" ]; then
+            echo "✅ **Changes Detected**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Archived files processed:" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            cat /tmp/archived_files.txt >> $GITHUB_STEP_SUMMARY || echo "(file list unavailable)" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+            # Count topics in knowledge library
+            TOPIC_COUNT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('docs/knowledge-library.json')).topics.length)")
+            ARCHIVED_COUNT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('docs/knowledge-library.json')).topics.filter(t => t.status === 'archived').length)")
+
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Knowledge Library Stats:**" >> $GITHUB_STEP_SUMMARY
+            echo "- Total topics: $TOPIC_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "- Archived topics: $ARCHIVED_COUNT" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ **No Changes**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "No archived documentation detected in this push." >> $GITHUB_STEP_SUMMARY
+          fi

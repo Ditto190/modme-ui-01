@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-02-07T18:10:34.916Z",
+  "last_updated": "2026-02-08T12:00:00.000Z",
   "topics": [
     {
       "id": "esbuild",
@@ -8,13 +8,7 @@
       "category": "build-tools",
       "status": "active",
       "summary": "TypeScript/React build configuration with ESBuild for fast compilation",
-      "keywords": [
-        "esbuild",
-        "build",
-        "typescript",
-        "compilation",
-        "react"
-      ],
+      "keywords": ["esbuild", "build", "typescript", "compilation", "react"],
       "source_files": [
         "ESBUILD_CHECKLIST.md",
         "ESBUILD_CONFIGURED.md",
@@ -37,11 +31,7 @@
         "watch": "npm run watch:esbuild",
         "type_check": "npx tsc --noEmit"
       },
-      "related_topics": [
-        "typescript",
-        "react",
-        "npm-scripts"
-      ],
+      "related_topics": ["typescript", "react", "npm-scripts"],
       "metadata": {
         "archived_date": "2026-02-08",
         "original_size_kb": 120,
@@ -55,13 +45,7 @@
       "category": "infrastructure",
       "status": "active",
       "summary": "VS Code Dev Containers for consistent Linux development environment on Windows",
-      "keywords": [
-        "devcontainer",
-        "docker",
-        "vscode",
-        "linux",
-        "development-environment"
-      ],
+      "keywords": ["devcontainer", "docker", "vscode", "linux", "development-environment"],
       "source_files": [
         "DEVCONTAINER_IMPLEMENTATION_SUMMARY.md",
         "DEVCONTAINER_PREFLIGHT.md",
@@ -83,12 +67,7 @@
         "attach": "F1 → Dev Containers: Attach to Running Container",
         "logs": "docker logs vsc-modme-ui-01-test-worktree"
       },
-      "related_topics": [
-        "docker",
-        "vscode",
-        "python",
-        "nodejs"
-      ],
+      "related_topics": ["docker", "vscode", "python", "nodejs"],
       "metadata": {
         "archived_date": "2026-02-08",
         "original_size_kb": 95,
@@ -102,14 +81,7 @@
       "category": "integrations",
       "status": "active",
       "summary": "Google GenAI Toolbox SDK integration for AI-powered features and code generation",
-      "keywords": [
-        "genai",
-        "google",
-        "ai",
-        "toolbox",
-        "gemini",
-        "code-generation"
-      ],
+      "keywords": ["genai", "google", "ai", "toolbox", "gemini", "code-generation"],
       "source_files": [
         "GENAI_TOOLBOX_COMPARISON.md",
         "GENAI_TOOLBOX_INTEGRATION_PLAN.md",
@@ -126,12 +98,7 @@
         "test": "npm run test:genai",
         "integration": "npm run dev:genai"
       },
-      "related_topics": [
-        "gemini",
-        "mcp",
-        "ai",
-        "code-generation"
-      ],
+      "related_topics": ["gemini", "mcp", "ai", "code-generation"],
       "metadata": {
         "archived_date": "2026-02-08",
         "original_size_kb": 45,
@@ -145,13 +112,7 @@
       "category": "architecture",
       "status": "archived",
       "summary": "Historical implementation summaries and integration documentation",
-      "keywords": [
-        "implementation",
-        "summary",
-        "integration",
-        "history",
-        "decisions"
-      ],
+      "keywords": ["implementation", "summary", "integration", "history", "decisions"],
       "source_files": [
         "DEVCONTAINER_IMPLEMENTATION_SUMMARY.md",
         "AGENT_COLLECTION_IMPLEMENTATION_SUMMARY.md",
@@ -171,12 +132,7 @@
         "value": "Learning from past decisions and avoiding rework"
       },
       "commands": {},
-      "related_topics": [
-        "architecture",
-        "decisions",
-        "history",
-        "adr"
-      ],
+      "related_topics": ["architecture", "decisions", "history", "adr"],
       "metadata": {
         "archived_date": "2026-02-08",
         "original_size_kb": 180,
@@ -190,13 +146,7 @@
       "category": "archive",
       "status": "archived",
       "summary": "Historical session summaries and temporal documentation from 2026-01",
-      "keywords": [
-        "session",
-        "refactoring",
-        "test-results",
-        "temporal",
-        "history"
-      ],
+      "keywords": ["session", "refactoring", "test-results", "temporal", "history"],
       "source_files": [
         "SESSION_SUMMARY_2026-01-03.md",
         "REFACTORING_APPLIED_2026-01-03.md",
@@ -211,11 +161,7 @@
         "value": "Timeline of project evolution"
       },
       "commands": {},
-      "related_topics": [
-        "history",
-        "testing",
-        "refactoring"
-      ],
+      "related_topics": ["history", "testing", "refactoring"],
       "metadata": {
         "archived_date": "2026-02-08",
         "original_size_kb": 85,
@@ -229,12 +175,7 @@
       "category": "archive",
       "status": "archived",
       "summary": "Temporary agent and test files moved to archive",
-      "keywords": [
-        "temporary",
-        "test",
-        "draft",
-        "wip"
-      ],
+      "keywords": ["temporary", "test", "draft", "wip"],
       "source_files": [
         "temp-smart-mcp-agent.md",
         "temp-smart-mcp-clinerules.md",
@@ -248,10 +189,7 @@
         "cleanup_date": "2026-02-08"
       },
       "commands": {},
-      "related_topics": [
-        "cleanup",
-        "archive"
-      ],
+      "related_topics": ["cleanup", "archive"],
       "metadata": {
         "archived_date": "2026-02-08",
         "original_size_kb": 25,
@@ -266,9 +204,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "ANTHROPIC_SKILLS_INTEGRATION.md"
-      ],
+      "source_files": ["ANTHROPIC_SKILLS_INTEGRATION.md"],
       "consolidated_path": "docs/integrations/anthropic-skills-integration.md",
       "key_concepts": {},
       "commands": {},
@@ -285,9 +221,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "ARCHITECTURE_UPDATE.md"
-      ],
+      "source_files": ["ARCHITECTURE_UPDATE.md"],
       "consolidated_path": "docs/architecture/architecture-update.md",
       "key_concepts": {},
       "commands": {},
@@ -304,9 +238,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "CHROMADB_INDEXING.md"
-      ],
+      "source_files": ["CHROMADB_INDEXING.md"],
       "consolidated_path": "docs/integrations/chromadb-indexing.md",
       "key_concepts": {},
       "commands": {},
@@ -323,9 +255,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "Claude_Implementation.md"
-      ],
+      "source_files": ["Claude_Implementation.md"],
       "consolidated_path": "docs/architecture/claude-implementation.md",
       "key_concepts": {},
       "commands": {},
@@ -342,9 +272,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "DEPENDENCY_OPTIMIZATION_STRATEGY.md"
-      ],
+      "source_files": ["DEPENDENCY_OPTIMIZATION_STRATEGY.md"],
       "consolidated_path": "docs/build-tools/dependency-optimization-strategy.md",
       "key_concepts": {},
       "commands": {},
@@ -361,9 +289,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "docker-setup.md"
-      ],
+      "source_files": ["docker-setup.md"],
       "consolidated_path": "docs/infrastructure/docker-setup.md",
       "key_concepts": {},
       "commands": {},
@@ -380,9 +306,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "GENERATE_SCHEMAS_CONVERSION.md"
-      ],
+      "source_files": ["GENERATE_SCHEMAS_CONVERSION.md"],
       "consolidated_path": "docs/integrations/generate-schemas-conversion.md",
       "key_concepts": {},
       "commands": {},
@@ -399,9 +323,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "INDEX.md"
-      ],
+      "source_files": ["INDEX.md"],
       "consolidated_path": "docs/integrations/index.md",
       "key_concepts": {},
       "commands": {},
@@ -418,9 +340,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "ISSUE_MANAGEMENT_SYSTEM.md"
-      ],
+      "source_files": ["ISSUE_MANAGEMENT_SYSTEM.md"],
       "consolidated_path": "docs/infrastructure/issue-management-system.md",
       "key_concepts": {},
       "commands": {},
@@ -437,9 +357,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "JOURNAL_CODE_INDEXING.md"
-      ],
+      "source_files": ["JOURNAL_CODE_INDEXING.md"],
       "consolidated_path": "docs/integrations/journal-code-indexing.md",
       "key_concepts": {},
       "commands": {},
@@ -456,9 +374,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "KB_IMPLEMENTATION_SUMMARY.md"
-      ],
+      "source_files": ["KB_IMPLEMENTATION_SUMMARY.md"],
       "consolidated_path": "docs/architecture/kb-implementation-summary.md",
       "key_concepts": {},
       "commands": {},
@@ -475,9 +391,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "KB_MEMORY_GRAPH.md"
-      ],
+      "source_files": ["KB_MEMORY_GRAPH.md"],
       "consolidated_path": "docs/architecture/kb-memory-graph.md",
       "key_concepts": {},
       "commands": {},
@@ -494,9 +408,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "KB_QUICK_REFERENCE.md"
-      ],
+      "source_files": ["KB_QUICK_REFERENCE.md"],
       "consolidated_path": "docs/architecture/kb-quick-reference.md",
       "key_concepts": {},
       "commands": {},
@@ -513,9 +425,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "KB_TEST_FIX.md"
-      ],
+      "source_files": ["KB_TEST_FIX.md"],
       "consolidated_path": "docs/archive/kb-test-fix.md",
       "key_concepts": {},
       "commands": {},
@@ -532,9 +442,7 @@
       "status": "pending",
       "summary": "Imported from inbox - needs review",
       "keywords": [],
-      "source_files": [
-        "README.md"
-      ],
+      "source_files": ["README.md"],
       "consolidated_path": "docs/archive/readme.md",
       "key_concepts": {},
       "commands": {},
@@ -547,15 +455,8 @@
   ],
   "index": {
     "by_category": {
-      "build-tools": [
-        "esbuild",
-        "dependency-optimization-strategy"
-      ],
-      "infrastructure": [
-        "devcontainers",
-        "docker-setup",
-        "issue-management-system"
-      ],
+      "build-tools": ["esbuild", "dependency-optimization-strategy"],
+      "infrastructure": ["devcontainers", "docker-setup", "issue-management-system"],
       "integrations": [
         "genai-toolbox",
         "anthropic-skills-integration",
@@ -572,61 +473,24 @@
         "kb-memory-graph",
         "kb-quick-reference"
       ],
-      "archive": [
-        "session-archives",
-        "temporary-files",
-        "kb-test-fix",
-        "readme"
-      ]
+      "archive": ["session-archives", "temporary-files", "kb-test-fix", "readme"]
     },
     "by_keyword": {
-      "esbuild": [
-        "esbuild"
-      ],
-      "typescript": [
-        "esbuild"
-      ],
-      "build": [
-        "esbuild"
-      ],
-      "devcontainer": [
-        "devcontainers"
-      ],
-      "docker": [
-        "devcontainers"
-      ],
-      "vscode": [
-        "devcontainers"
-      ],
-      "genai": [
-        "genai-toolbox"
-      ],
-      "google": [
-        "genai-toolbox"
-      ],
-      "ai": [
-        "genai-toolbox"
-      ],
-      "implementation": [
-        "implementation-summaries"
-      ],
-      "summary": [
-        "implementation-summaries"
-      ],
-      "session": [
-        "session-archives"
-      ],
-      "test": [
-        "session-archives",
-        "temporary-files"
-      ],
-      "temporary": [
-        "temporary-files"
-      ],
-      "archive": [
-        "session-archives",
-        "temporary-files"
-      ]
+      "esbuild": ["esbuild"],
+      "typescript": ["esbuild"],
+      "build": ["esbuild"],
+      "devcontainer": ["devcontainers"],
+      "docker": ["devcontainers"],
+      "vscode": ["devcontainers"],
+      "genai": ["genai-toolbox"],
+      "google": ["genai-toolbox"],
+      "ai": ["genai-toolbox"],
+      "implementation": ["implementation-summaries"],
+      "summary": ["implementation-summaries"],
+      "session": ["session-archives"],
+      "test": ["session-archives", "temporary-files"],
+      "temporary": ["temporary-files"],
+      "archive": ["session-archives", "temporary-files"]
     }
   }
 }
