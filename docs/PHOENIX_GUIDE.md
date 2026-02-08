@@ -7,6 +7,62 @@
 
 Phoenix (Arize AI) provides LLM observability with OpenInference semantic conventions for tracing AI agent conversations.
 
+---
+
+## Quick Reference — Ports & URLs
+
+| Service            | URL                                                   | Purpose                 |
+| ------------------ | ----------------------------------------------------- | ----------------------- |
+| **Phoenix UI**     | <http://localhost:6006>                               | View traces, projects   |
+| **Phoenix OTLP**   | <http://localhost:6006/v1/traces>                     | Protobuf trace receiver |
+| **Trace Bridge**   | <http://localhost:8787>                               | JSON → OTLP bridge      |
+| **Bridge Swagger** | <http://localhost:8787/docs>                          | Interactive API docs    |
+| **n8n UI**         | <http://localhost:5678>                               | Workflow editor         |
+| **n8n Webhook**    | <http://localhost:5678/webhook/universal-chat-ingest> | Pipeline entry point    |
+| **n8n MCP**        | <http://localhost:3000>                               | MCP server for n8n      |
+
+## Quick Reference — Test Commands
+
+```bash
+# 1. Run TypeScript pipeline tests (no services needed)
+cd agent-generator && npx tsx src/chat-formats/test-pipeline.ts
+
+# 2. Regenerate OpenAPI spec + client SDK
+cd agent-generator && npm run generate:all
+
+# 3. Test bridge directly (bypass n8n)
+cd agent-generator && npx tsx src/chat-formats/test-pipeline.ts datasets/chat.json
+# Then POST the payload from test output to http://localhost:8787/ingest
+
+# 4. Check bridge health
+curl http://localhost:8787/health
+
+# 5. Check n8n workflow status (requires API key)
+curl -H "X-N8N-API-KEY: $N8N_API_KEY" http://localhost:5678/api/v1/workflows
+```
+
+---
+
+## Supported AI Agent Chat Models
+
+**Processed Formats** — Models and platforms successfully ingested into Phoenix:
+
+| Format ID       | Platform/Tool     | Model(s)             | Status     | Last Tested | Notes                          |
+| --------------- | ----------------- | -------------------- | ---------- | ----------- | ------------------------------ |
+| `copilot-chat`  | GitHub Copilot    | GPT-4, Claude Sonnet | ✅ Stable  | 2026-02-08  | Full tool calls + thinking     |
+| _(placeholder)_ | _(new additions)_ | _(model names)_      | _(status)_ | _(date)_    | _(observations/special cases)_ |
+
+**Legend:**
+
+- ✅ **Stable**: Production-ready, full feature support
+- 🔧 **Experimental**: Working but may have edge cases
+- 🚧 **In Progress**: Format descriptor created, testing in progress
+- ❌ **Deprecated**: No longer supported
+
+**Add new formats here as they are tested and validated.**
+
+---
+
 ## Quick Start
 
 ```bash
