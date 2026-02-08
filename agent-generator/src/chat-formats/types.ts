@@ -57,7 +57,7 @@ export const UniversalTurnSchema = z.object({
   tokens: TokenUsageSchema.optional(),
   toolCalls: z.array(ToolCallSchema).default([]),
   thinking: z.string().optional().describe('Chain-of-thought / reasoning text'),
-  metadata: z.record(z.any()).default({}).describe('Agent-specific metadata preserved as-is'),
+  metadata: z.record(z.string(), z.unknown()).default({}).describe('Agent-specific metadata preserved as-is'),
 });
 
 export type UniversalTurn = z.infer<typeof UniversalTurnSchema>;

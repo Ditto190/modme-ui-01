@@ -40,7 +40,8 @@
       "mcp__plugin_episodic-memory_episodic-memory__read",
       "Bash(dir:*)",
       "Bash(node -e:*)",
-      "mcp__plugin_serena_serena__think_about_collected_information"
+      "mcp__plugin_serena_serena__think_about_collected_information",
+      "Bash(\"C:\\\\Users\\\\dylan\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\python.exe\" -c \"import pydantic; print\\(''pydantic:'', pydantic.__version__\\)\")"
     ]
   }
 }

@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Universal Chat Ingestion API",
-    "version": "2.0.0",
-    "description": "# Universal Chat Ingestion Bridge\n\nA format-agnostic API for ingesting AI chat conversations into Phoenix observability.\n\n## Architecture\n\n```\nany-agent-chat.json → n8n Workflow → /ingest → OTLP Spans → Phoenix\n```\n\n## Supported Formats\n\n- **copilot-chat**: VS Code Copilot Chat exports\n- *More formats coming soon via schema-crawler*\n\n## Adding New Formats\n\nWhen an unknown format is submitted, the API returns a `discoverySample`\nwith structural analysis. This sample can be used to generate a new\n`ChatFormatDescriptor` offline using the schema-crawler tools.\n\n## Related Documentation\n\n- [ADR-006: Universal Chat Ingestion Pipeline](https://github.com/Ditto190/modme-ui-01/blob/main/docs/adr-006-universal-chat-ingestion-pipeline.md)\n- [Phoenix Documentation](https://docs.arize.com/phoenix)",
+    "version": "2.1.0",
+    "description": "# Universal Chat Ingestion Bridge\n\nA format-agnostic API for ingesting AI chat conversations into Phoenix observability.\n\n## Architecture\n\n```\nany-agent-chat.json → n8n Workflow → /ingest → OTLP Spans → Phoenix\n```\n\n## Schema Provenance\n\nAll data schemas are defined once in `types.ts` (Zod) and flow to:\n- **TypeScript pipeline** — Zod runtime validation\n- **OpenAPI spec** — this document (via zod-openapi)\n- **Python bridge** — Pydantic models (generated from this spec)\n- **Client SDKs** — TypeScript client (via @hey-api/openapi-ts)\n\n## Supported Formats\n\n- **copilot-chat**: VS Code Copilot Chat exports\n- *More formats added via schema-crawler + offline AI*\n\n## Adding New Formats\n\nWhen an unknown format is submitted, the API returns a `discoverySample`\nwith structural analysis. Use this sample to generate a new\n`ChatFormatDescriptor` offline with the schema-crawler tools.\n\n## Related\n\n- [ADR-006: Universal Chat Ingestion Pipeline](https://github.com/Ditto190/modme-ui-01/blob/main/docs/adr-006-universal-chat-ingestion-pipeline.md)\n- [Phoenix Documentation](https://docs.arize.com/phoenix)",
     "contact": {
       "name": "ModMe GenUI Team",
       "url": "https://github.com/Ditto190/modme-ui-01"
@@ -234,7 +234,7 @@
                 },
                 "example": {
                   "status": "healthy",
-                  "version": "2.0.0",
+                  "version": "2.1.0",
                   "phoenixConnected": true,
                   "formats": [
                     "copilot-chat"
@@ -257,15 +257,15 @@
             "description": "Tool/function name (e.g., \"read_file\", \"search\")"
           },
           "input": {
-            "description": "Stringified JSON arguments passed to the tool",
+            "description": "Stringified input/arguments",
             "type": "string"
           },
           "output": {
-            "description": "Stringified JSON result from the tool",
+            "description": "Stringified result/output",
             "type": "string"
           },
           "round": {
-            "description": "Tool calling round index (0-indexed, for multi-round tool use)",
+            "description": "Which round of tool calling (0-indexed)",
             "type": "integer",
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
@@ -274,28 +274,24 @@
         "required": [
           "name"
         ],
-        "additionalProperties": false,
-        "description": "A single tool invocation within a turn"
+        "additionalProperties": false
       },
       "TokenUsage": {
         "type": "object",
         "properties": {
           "prompt": {
             "default": 0,
-            "description": "Number of prompt/input tokens",
             "type": "integer",
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
           },
           "completion": {
             "default": 0,
-            "description": "Number of completion/output tokens",
             "type": "integer",
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
           },
           "total": {
-            "description": "Total tokens (if provided by API)",
             "type": "integer",
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
@@ -305,8 +301,7 @@
           "prompt",
           "completion"
         ],
-        "additionalProperties": false,
-        "description": "Token usage metrics for a turn"
+        "additionalProperties": false
       },
       "UniversalTurn": {
         "type": "object",
@@ -327,7 +322,7 @@
           },
           "model": {
             "default": "unknown",
-            "description": "Model identifier (e.g., claude-sonnet-4-20250514)",
+            "description": "Model identifier (e.g., \"claude-sonnet-4-20250514\")",
             "type": "string"
           },
           "timestampMs": {
@@ -337,7 +332,7 @@
             "maximum": 9007199254740991
           },
           "latencyMs": {
-            "description": "Total response time in milliseconds",
+            "description": "Total response time in ms",
             "type": "integer",
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
@@ -347,20 +342,17 @@
             "properties": {
               "prompt": {
                 "default": 0,
-                "description": "Number of prompt/input tokens",
                 "type": "integer",
                 "minimum": -9007199254740991,
                 "maximum": 9007199254740991
               },
               "completion": {
                 "default": 0,
-                "description": "Number of completion/output tokens",
                 "type": "integer",
                 "minimum": -9007199254740991,
                 "maximum": 9007199254740991
               },
               "total": {
-                "description": "Total tokens (if provided by API)",
                 "type": "integer",
                 "minimum": -9007199254740991,
                 "maximum": 9007199254740991
@@ -370,12 +362,10 @@
               "prompt",
               "completion"
             ],
-            "additionalProperties": false,
-            "description": "Token usage metrics for a turn"
+            "additionalProperties": false
           },
           "toolCalls": {
             "default": [],
-            "description": "Tools/functions invoked during this turn",
             "type": "array",
             "items": {
               "type": "object",
@@ -385,15 +375,15 @@
                   "description": "Tool/function name (e.g., \"read_file\", \"search\")"
                 },
                 "input": {
-                  "description": "Stringified JSON arguments passed to the tool",
+                  "description": "Stringified input/arguments",
                   "type": "string"
                 },
                 "output": {
-                  "description": "Stringified JSON result from the tool",
+                  "description": "Stringified result/output",
                   "type": "string"
                 },
                 "round": {
-                  "description": "Tool calling round index (0-indexed, for multi-round tool use)",
+                  "description": "Which round of tool calling (0-indexed)",
                   "type": "integer",
                   "minimum": -9007199254740991,
                   "maximum": 9007199254740991
@@ -402,12 +392,11 @@
               "required": [
                 "name"
               ],
-              "additionalProperties": false,
-              "description": "A single tool invocation within a turn"
+              "additionalProperties": false
             }
           },
           "thinking": {
-            "description": "Chain-of-thought / reasoning text (if model provides it)",
+            "description": "Chain-of-thought / reasoning text",
             "type": "string"
           },
           "metadata": {
@@ -428,31 +417,27 @@
           "toolCalls",
           "metadata"
         ],
-        "additionalProperties": false,
-        "description": "A single conversation turn in the universal format"
+        "additionalProperties": false
       },
       "UniversalTurnPayload": {
         "type": "object",
         "properties": {
           "format": {
             "type": "string",
-            "description": "Detected format ID from the registry (e.g., copilot-chat, claude-code)"
+            "description": "Detected format ID (e.g., \"copilot-chat\", \"claude-code\")"
           },
           "agent": {
             "type": "string",
-            "description": "AI agent that produced this chat (e.g., GitHub Copilot)"
+            "description": "Agent name (e.g., \"GitHub Copilot\", \"Claude Code\")"
           },
           "projectName": {
             "default": "chat-traces",
-            "description": "Phoenix project name for trace organization",
             "type": "string"
           },
           "sessionId": {
-            "description": "Session identifier (if available from source)",
             "type": "string"
           },
           "responder": {
-            "description": "User/responder identity",
             "type": "string"
           },
           "turns": {
@@ -477,7 +462,7 @@
                 },
                 "model": {
                   "default": "unknown",
-                  "description": "Model identifier (e.g., claude-sonnet-4-20250514)",
+                  "description": "Model identifier (e.g., \"claude-sonnet-4-20250514\")",
                   "type": "string"
                 },
                 "timestampMs": {
@@ -487,7 +472,7 @@
                   "maximum": 9007199254740991
                 },
                 "latencyMs": {
-                  "description": "Total response time in milliseconds",
+                  "description": "Total response time in ms",
                   "type": "integer",
                   "minimum": -9007199254740991,
                   "maximum": 9007199254740991
@@ -497,20 +482,17 @@
                   "properties": {
                     "prompt": {
                       "default": 0,
-                      "description": "Number of prompt/input tokens",
                       "type": "integer",
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
                     },
                     "completion": {
                       "default": 0,
-                      "description": "Number of completion/output tokens",
                       "type": "integer",
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
                     },
                     "total": {
-                      "description": "Total tokens (if provided by API)",
                       "type": "integer",
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
@@ -520,12 +502,10 @@
                     "prompt",
                     "completion"
                   ],
-                  "additionalProperties": false,
-                  "description": "Token usage metrics for a turn"
+                  "additionalProperties": false
                 },
                 "toolCalls": {
                   "default": [],
-                  "description": "Tools/functions invoked during this turn",
                   "type": "array",
                   "items": {
                     "type": "object",
@@ -535,15 +515,15 @@
                         "description": "Tool/function name (e.g., \"read_file\", \"search\")"
                       },
                       "input": {
-                        "description": "Stringified JSON arguments passed to the tool",
+                        "description": "Stringified input/arguments",
                         "type": "string"
                       },
                       "output": {
-                        "description": "Stringified JSON result from the tool",
+                        "description": "Stringified result/output",
                         "type": "string"
                       },
                       "round": {
-                        "description": "Tool calling round index (0-indexed, for multi-round tool use)",
+                        "description": "Which round of tool calling (0-indexed)",
                         "type": "integer",
                         "minimum": -9007199254740991,
                         "maximum": 9007199254740991
@@ -552,12 +532,11 @@
                     "required": [
                       "name"
                     ],
-                    "additionalProperties": false,
-                    "description": "A single tool invocation within a turn"
+                    "additionalProperties": false
                   }
                 },
                 "thinking": {
-                  "description": "Chain-of-thought / reasoning text (if model provides it)",
+                  "description": "Chain-of-thought / reasoning text",
                   "type": "string"
                 },
                 "metadata": {
@@ -578,10 +557,8 @@
                 "toolCalls",
                 "metadata"
               ],
-              "additionalProperties": false,
-              "description": "A single conversation turn in the universal format"
-            },
-            "description": "The normalized conversation turns (minimum 1)"
+              "additionalProperties": false
+            }
           }
         },
         "required": [
@@ -590,8 +567,34 @@
           "projectName",
           "turns"
         ],
-        "additionalProperties": false,
-        "description": "Complete payload sent from n8n to Python bridge /ingest endpoint"
+        "additionalProperties": false
+      },
+      "FingerprintRule": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "check": {
+            "type": "string",
+            "enum": [
+              "exists",
+              "type_string",
+              "type_number",
+              "type_array",
+              "type_object",
+              "equals",
+              "matches",
+              "has_key"
+            ]
+          },
+          "value": {}
+        },
+        "required": [
+          "path",
+          "check"
+        ],
+        "additionalProperties": false
       },
       "IngestSuccessResponse": {
         "type": "object",
