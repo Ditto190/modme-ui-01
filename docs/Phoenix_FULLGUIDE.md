@@ -2082,11 +2082,11 @@ Bridge uses OpenTelemetry standard. Any OTLP-compatible backend works:
 
 ## Changelog
 
-| Version | Date       | Changes                                                      |
-| ------- | ---------- | ------------------------------------------------------------ |
-| 3.0     | 2026-02-08 | Complete rewrite as comprehensive workbook with diagrams     |
-| 2.0     | 2026-02-07 | Added discovery mode and format registration                |
-| 1.0     | 2026-01-15 | Initial technical flow map for Copilot chat ingestion        |
+| Version | Date       | Changes                                                  |
+| ------- | ---------- | -------------------------------------------------------- |
+| 3.0     | 2026-02-08 | Complete rewrite as comprehensive workbook with diagrams |
+| 2.0     | 2026-02-07 | Added discovery mode and format registration             |
+| 1.0     | 2026-01-15 | Initial technical flow map for Copilot chat ingestion    |
 
 ---
 
