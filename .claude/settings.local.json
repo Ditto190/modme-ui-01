@@ -38,7 +38,9 @@
       "WebFetch(domain:tools.openapis.org)",
       "Bash(ls:*)",
       "mcp__plugin_episodic-memory_episodic-memory__read",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(node -e:*)",
+      "mcp__plugin_serena_serena__think_about_collected_information"
     ]
   }
 }
