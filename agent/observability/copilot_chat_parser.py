@@ -611,6 +611,8 @@ Examples:
     parser.add_argument(
         "input_file",
         type=str,
+        nargs="?",
+        default=None,
         help="Path to VS Code Copilot Chat JSON file",
     )
     parser.add_argument(
@@ -666,6 +668,9 @@ Examples:
         for c in METADATA_COLUMNS:
             print(f"  - {c}")
         return
+
+    if not args.input_file:
+        parser.error("input_file is required (unless using --print-schema)")
 
     # Parse
     df = parse_chat_json(args.input_file, include_empty_turns=args.include_empty)
