@@ -15,7 +15,8 @@
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "typescript-json-schema": "^0.62.0",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "zod-openapi": "^5.4.6"
   },
   "devDependencies": {
     "@hey-api/client-fetch": "^0.13.1",
