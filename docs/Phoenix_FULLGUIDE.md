@@ -744,5 +744,3 @@ Phoenix (localhost:6006)
    - MCP auth token for MCP server
      All file paths, ports, URLs, and service configurations have been verified and documented above.
      agentId: a6ce866 (for resuming to continue this agent's work if needed)
-     <usage>total_tokens: 107659
-     tool_uses: 27
