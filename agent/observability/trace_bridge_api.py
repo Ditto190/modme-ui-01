@@ -46,6 +46,14 @@ import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 
+# Pydantic models — mirrors the Zod schemas in types.ts
+from agent.observability.models import (
+    HealthResponse,
+    IngestSuccessResponse,
+    LegacyUploadRequest,
+    UniversalTurnPayload,
+)
+
 # Import the existing uploader
 from agent.observability.upload_chat_traces import (
     upload_chat_json,
@@ -68,9 +76,12 @@ app = FastAPI(
     description=(
         "Accepts chat data via HTTP and uploads as OTLP traces to Phoenix. "
         "Supports both legacy Copilot-specific format (/upload) and "
-        "universal normalized format (/ingest) from the n8n pipeline."
+        "universal normalized format (/ingest) from the n8n pipeline.\n\n"
+        "## Schema Provenance\n\n"
+        "Canonical schemas defined in `types.ts` (Zod) → OpenAPI spec → Pydantic models.\n"
+        "See `/docs` for interactive API explorer."
     ),
-    version="2.0.0",
+    version="2.1.0",
 )
 
 
@@ -403,9 +414,9 @@ def _upload_universal_turn(
 # ============================================================================
 
 
-@app.get("/health")
+@app.get("/health", response_model=HealthResponse)
 async def health():
-    return {"status": "ok", "service": "trace-bridge", "version": "2.0.0"}
+    return HealthResponse()
 
 
 @app.post("/upload")
@@ -490,8 +501,8 @@ async def upload_file(request: Request):
     return JSONResponse(content=result)
 
 
-@app.post("/ingest")
-async def ingest_universal(request: Request):
+@app.post("/ingest", response_model=IngestSuccessResponse)
+async def ingest_universal(payload: UniversalTurnPayload):
     """Accept pre-normalized UniversalTurnPayload and upload as traces.
 
     This is the format-agnostic endpoint used by the n8n Universal Chat
@@ -501,55 +512,21 @@ async def ingest_universal(request: Request):
       3. Normalization to UniversalTurnPayload
 
     This endpoint handles:
-      4. OTLP span creation
-      5. Protobuf serialization
+      4. OTLP span creation (via Pydantic-validated payload)
+      5. Protobuf serialization (via OTel SDK)
       6. Upload to Phoenix
 
-    Expected JSON body (UniversalTurnPayload):
-        {
-            "format": "copilot-chat",        // detected format ID
-            "agent": "GitHub Copilot",        // agent display name
-            "projectName": "chat-traces",     // Phoenix project
-            "sessionId": "abc-123",           // optional
-            "responder": "user@example.com",  // optional
-            "turns": [                        // normalized turns
-                {
-                    "index": 0,
-                    "userMessage": "...",
-                    "assistantResponse": "...",
-                    "model": "claude-sonnet-4.5",
-                    "timestampMs": 1770501001707,
-                    "latencyMs": 3200,
-                    "tokens": {"prompt": 1500, "completion": 800},
-                    "toolCalls": [{"name": "read_file", ...}],
-                    "thinking": "...",
-                    "metadata": {}
-                }
-            ]
-        }
+    FastAPI auto-validates the request body against the UniversalTurnPayload
+    Pydantic model. Invalid payloads return 422 with field-level errors.
     """
-    try:
-        body = await request.json()
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Invalid JSON: {e}")
-
-    # Validate required fields
-    if "turns" not in body or not isinstance(body["turns"], list):
-        raise HTTPException(
-            status_code=400,
-            detail="Body must contain 'turns' array (UniversalTurnPayload format)",
-        )
-
-    if not body.get("format"):
-        raise HTTPException(
-            status_code=400,
-            detail="Body must contain 'format' field identifying the source agent format",
-        )
-
-    endpoint = body.get("phoenixUrl", PHOENIX_ENDPOINT)
+    endpoint = payload.phoenixUrl or PHOENIX_ENDPOINT
 
     try:
-        result = upload_universal_turns(payload=body, endpoint=endpoint)
+        # Convert Pydantic model to dict for the existing upload function
+        result = upload_universal_turns(
+            payload=payload.model_dump(exclude={"phoenixUrl"}),
+            endpoint=endpoint,
+        )
     except Exception as e:
         logger.exception("[/ingest] Upload failed")
         raise HTTPException(status_code=500, detail=str(e))
