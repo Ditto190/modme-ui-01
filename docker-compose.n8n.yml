@@ -16,8 +16,14 @@ services:
       - N8N_PORT=5678
       - N8N_PROTOCOL=http
       - WEBHOOK_URL=http://localhost:5678/
+      # Phoenix endpoint (use host.docker.internal to reach host machine)
+      - PHOENIX_URL=http://host.docker.internal:6006
+      - PHOENIX_COLLECTOR_ENDPOINT=http://host.docker.internal:6006/v1/traces
     volumes:
       - n8n_data:/home/node/.n8n
+    networks:
+      - n8n_network
+      - observability # Join Phoenix network
     healthcheck:
       test:
         ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5678/healthz"]
@@ -55,7 +61,16 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - n8n_network
+      - observability # Join Phoenix network
 
 volumes:
   n8n_data:
     driver: local
+
+networks:
+  n8n_network:
+    driver: bridge
+  observability:
+    external: true # Reference the Phoenix network
