@@ -123,7 +123,7 @@ INFO:     Uvicorn running on http://0.0.0.0:6006
 ## Step 4: Verify Phoenix is Running
 
 Open your browser and navigate to:
-**<http://localhost:6006>6>**
+**http://localhost:6006**
 
 You should see the Phoenix UI dashboard.
 
@@ -230,8 +230,8 @@ python -m ensurepip --upgrade
 
 Install Docker Desktop:
 
-- Windows: <https://docs.docker.com/desktop/install/windows-install/>/>
-- Mac: <https://docs.docker.com/desktop/install/mac-install/>/>
+- Windows: https://docs.docker.com/desktop/install/windows-install/
+- Mac: https://docs.docker.com/desktop/install/mac-install/
 
 Or use Option C (Python) instead.
 
@@ -278,7 +278,7 @@ pip install openinference-instrumentation-anthropic
 Once setup is complete, verify:
 
 - [ ] Python dependencies installed (`pip list | Select-String phoenix`)
-- [ ] Phoenix server running (`docker ps` or check <http://localhost:6006>6>)
+- [ ] Phoenix server running (`docker ps` or check http://localhost:6006)
 - [ ] Environment file created (`.env.local` exists)
 - [ ] Test script runs without errors
 - [ ] Phoenix UI accessible in browser
@@ -311,7 +311,7 @@ Start-Process "http://localhost:6006"
 After successful setup:
 
 1. Run your agent and make some AI API calls
-2. Open <http://localhost:6006>6>
+2. Open http://localhost:6006
 3. You should see traces appearing in real-time
 4. Explore the Phoenix UI features:
    - Trace Explorer
@@ -324,4 +324,4 @@ After successful setup:
 - Check full guide: `docs/PHOENIX_OBSERVABILITY.md`
 - Quick reference: `docs/PHOENIX_QUICK_REFERENCE.md`
 - Architecture: `docs/PHOENIX_ARCHITECTURE.md`
-- Discord: <https://discord.gg/Dmm69peqjh>h>
+- Discord: https://discord.gg/Dmm69peqjh
