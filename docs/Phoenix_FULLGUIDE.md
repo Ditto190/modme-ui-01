@@ -1723,7 +1723,7 @@ N8N_API_KEY=your-api-key-here
 // agent-generator/src/chat-formats/formats/myagent.ts
 function extractMyAgentTools(turn: any): ToolCall[] {
   const toolCalls: ToolCall[] = [];
-  
+
   if (turn.function_calls) {
     for (const call of turn.function_calls) {
       toolCalls.push({
@@ -1733,7 +1733,7 @@ function extractMyAgentTools(turn: any): ToolCall[] {
       });
     }
   }
-  
+
   return toolCalls;
 }
 
@@ -1765,6 +1765,7 @@ await initializeRegistry();
 Detects chat format via fingerprinting.
 
 **Parameters:**
+
 - `data`: Unknown JSON object
 
 **Returns**: `DetectionResult`
@@ -1793,6 +1794,7 @@ if (result.confidence === "exact") {
 Complete ingestion pipeline: detect → normalize → validate.
 
 **Parameters:**
+
 - `data`: Unknown JSON object
 - `projectName`: Phoenix project name (optional)
 - `sourceLabel`: Source filename for discovery (optional)
@@ -1819,6 +1821,7 @@ if ("format" in result) {
 Generates human-readable diagnostic report for failed detection.
 
 **Parameters:**
+
 - `data`: Unknown JSON object
 
 **Returns**: Diagnostic text
@@ -1897,6 +1900,7 @@ Legacy Copilot format upload.
 Multipart file upload.
 
 **Form Fields:**
+
 - `file`: JSON file
 - `projectName`: Optional project name
 
@@ -1928,27 +1932,33 @@ const UniversalTurnPayloadSchema = z.object({
   sessionId: z.string().optional(),
   responder: z.string().optional(),
   source: z.string().optional(),
-  turns: z.array(z.object({
-    index: z.number(),
-    userMessage: z.string(),
-    assistantResponse: z.string(),
-    model: z.string(),
-    timestampMs: z.number().optional(),
-    latencyMs: z.number().optional(),
-    tokens: z.object({
-      prompt: z.number().optional(),
-      completion: z.number().optional(),
-      total: z.number().optional(),
-    }).optional(),
-    toolCalls: z.array(z.object({
-      name: z.string(),
-      input: z.string().optional(),
-      output: z.string().optional(),
-      round: z.number().optional(),
-    })),
-    thinking: z.string().optional(),
-    metadata: z.record(z.unknown()),
-  })),
+  turns: z.array(
+    z.object({
+      index: z.number(),
+      userMessage: z.string(),
+      assistantResponse: z.string(),
+      model: z.string(),
+      timestampMs: z.number().optional(),
+      latencyMs: z.number().optional(),
+      tokens: z
+        .object({
+          prompt: z.number().optional(),
+          completion: z.number().optional(),
+          total: z.number().optional(),
+        })
+        .optional(),
+      toolCalls: z.array(
+        z.object({
+          name: z.string(),
+          input: z.string().optional(),
+          output: z.string().optional(),
+          round: z.number().optional(),
+        })
+      ),
+      thinking: z.string().optional(),
+      metadata: z.record(z.unknown()),
+    })
+  ),
 });
 ```
 
@@ -1956,17 +1966,17 @@ const UniversalTurnPayloadSchema = z.object({
 
 ## Quick Reference — Ports & URLs
 
-| Service            | URL                                                 | Purpose                 |
-| ------------------ | --------------------------------------------------- | ----------------------- |
-| **Phoenix UI**     | http://localhost:6006                               | View traces, projects   |
-| **Phoenix OTLP**   | http://localhost:6006/v1/traces                     | Protobuf trace receiver |
-| **Trace Bridge**   | http://localhost:8787                               | JSON → OTLP bridge      |
-| **Bridge Swagger** | http://localhost:8787/docs                          | Interactive API docs    |
-| **n8n UI**         | http://localhost:5678                               | Workflow editor         |
-| **n8n Webhook**    | http://localhost:5678/webhook/universal-chat-ingest | Pipeline entry point    |
-| **n8n MCP**        | http://localhost:3000                               | MCP server for n8n      |
+| Service            | URL                                                   | Purpose                 |
+| ------------------ | ----------------------------------------------------- | ----------------------- |
+| **Phoenix UI**     | <http://localhost:6006>                               | View traces, projects   |
+| **Phoenix OTLP**   | <http://localhost:6006/v1/traces>                     | Protobuf trace receiver |
+| **Trace Bridge**   | <http://localhost:8787>                               | JSON → OTLP bridge      |
+| **Bridge Swagger** | <http://localhost:8787/docs>                          | Interactive API docs    |
+| **n8n UI**         | <http://localhost:5678>                               | Workflow editor         |
+| **n8n Webhook**    | <http://localhost:5678/webhook/universal-chat-ingest> | Pipeline entry point    |
+| **n8n MCP**        | <http://localhost:3000>                               | MCP server for n8n      |
 
-### Quick Reference — Test Commands
+## Quick Reference — Test Commands
 
 ```powershell
 # 1. Run TypeScript pipeline tests (no services needed)
@@ -1982,6 +1992,102 @@ cd agent-generator && npx tsx src/chat-formats/test-pipeline.ts datasets/chat.js
 # 4. Check bridge health
 curl http://localhost:8787/health
 
-# 5. Check n8n workflow status
+# 5. Check n8n workflow status (requires API key)
 curl -H "X-N8N-API-KEY: $N8N_API_KEY" http://localhost:5678/api/v1/workflows
 ```
+
+---
+
+## Summary & Best Practices
+
+### Key Takeaways
+
+1. **Universal Format First**: Always normalize to `UniversalTurnPayload` schema before sending to Phoenix
+2. **Fingerprinting is Exact**: ALL fingerprint rules must pass for format detection
+3. **Custom Extractors**: Use when response assembly or tool call extraction differs from standard patterns
+4. **n8n is Optional**: You can upload directly to bridge (`/ingest`) for automated workflows
+5. **Discovery Mode**: Unknown formats generate structural reports to help create new descriptors
+6. **Phoenix Projects**: Use `projectName` parameter to organize traces by source/experiment
+7. **Type Safety**: All TypeScript code uses Zod schemas for runtime validation
+
+### Recommended Workflow
+
+**For New Format Support:**
+
+1. Export sample chat file from new AI system
+2. Run CLI test pipeline: `npx tsx src/chat-formats/test-pipeline.ts sample.json`
+3. Review discovery report for structural insights
+4. Create format descriptor with fingerprint rules
+5. Register descriptor in registry
+6. Add custom extractors if needed (response assembly, tool calls, thinking)
+7. Test with CLI pipeline again
+8. Deploy to production (n8n workflow automatically picks up new formats)
+
+**For Production Use:**
+
+1. Configure n8n workflow with proper webhook URL
+2. Secure n8n with API key authentication
+3. Enable Phoenix persistence (PostgreSQL backend)
+4. Set up monitoring for bridge health endpoint
+5. Archive chat files after successful ingestion
+6. Use Phoenix projects to segment traces by environment (dev/staging/prod)
+
+### Performance Considerations
+
+- **Fingerprinting**: O(n × m) where n = formats, m = rules per format. Keep fingerprint rules minimal.
+- **Normalization**: Processes all turns in memory. For large conversations (>1000 turns), consider batching.
+- **Bridge Memory**: Each trace creates an in-memory protobuf before export. Monitor heap size for high volume.
+- **Phoenix Storage**: Default SQLite works for <100k spans. Use PostgreSQL for enterprise scale.
+
+### Security Best Practices
+
+- **Sanitize Inputs**: Bridge validates JSON but doesn't sanitize strings. Don't expose bridge directly to internet.
+- **n8n API Keys**: Always set `N8N_BASIC_AUTH_ACTIVE=true` in production
+- **Phoenix Auth**: Configure PHOENIX_AUTH_ENABLED for multi-user environments
+- **CORS**: Bridge allows all origins by default. Set `ALLOWED_ORIGINS` environment variable.
+- **Rate Limiting**: Not implemented. Add reverse proxy (nginx) with rate limiting for public endpoints.
+
+### Extending The System
+
+**Adding New Chat Formats:**
+
+See **Practical Examples → Example 2** for complete walkthrough.
+
+**Adding Custom Span Attributes:**
+
+```typescript
+// In normalizer.ts, add to metadata field
+turn.metadata.custom_field = extractCustomField(rawTurn);
+```
+
+**Integrating New LLM Observability Tools:**
+
+Bridge uses OpenTelemetry standard. Any OTLP-compatible backend works:
+
+- **Jaeger**: Change `PHOENIX_OTLP_ENDPOINT` to Jaeger collector
+- **Datadog**: Export via OpenTelemetry collector
+- **New Relic**: Configure OTLP exporter with New Relic endpoint
+
+---
+
+## Related Documentation
+
+- **PHOENIX_GUIDE.md**: User guide for Phoenix observability features
+- **PHOENIX_SETUP.md**: Detailed installation and production configuration
+- **PHOENIX_REFERENCE.md**: Technical API reference and architecture
+- **ADR-006**: Architecture decision record for Universal Chat Ingestion Pipeline
+- **N8N_PHOENIX_QUICK_REF.md**: n8n workflow patterns and recipes
+
+---
+
+## Changelog
+
+| Version | Date       | Changes                                                      |
+| ------- | ---------- | ------------------------------------------------------------ |
+| 3.0     | 2026-02-08 | Complete rewrite as comprehensive workbook with diagrams     |
+| 2.0     | 2026-02-07 | Added discovery mode and format registration                |
+| 1.0     | 2026-01-15 | Initial technical flow map for Copilot chat ingestion        |
+
+---
+
+**Questions or Issues?** Check the Troubleshooting section or open an issue in the repository.
