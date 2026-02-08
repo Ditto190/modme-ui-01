@@ -1,0 +1,102 @@
+{
+  "name": "AI Message Ingestion Workflow",
+  "description": "Workflow to ingest AI agent chat responses from multiple providers using HTTP webhooks",
+  "nodes": [
+    {
+      "id": "webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ingest-messages",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "validate_input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300],
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "// Validate incoming webhook data\nconst data = $input.all();\n\nif (!data || !data[0] || !data[0].json || !data[0].json.messages) {\n  throw new Error('Invalid input: messages array required');\n}\n\nconst messages = data[0].json.messages;\nconst validationMode = data[0].json.validation_mode || 'strict';\n\nif (!Array.isArray(messages) || messages.length === 0) {\n  throw new Error('messages must be a non-empty array');\n}\n\nreturn [{\n  json: {\n    messages,\n    validationMode,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      }
+    },
+    {
+      "id": "call_python_agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [650, 300],
+      "parameters": {
+        "url": "http://localhost:8000/mcp/call",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"tool\": \"ingest_agent_responses\",\n  \"params\": {\n    \"messages\": {{ $json.messages }},\n    \"validation_mode\": \"{{ $json.validationMode }}\",\n    \"store_in_state\": true\n  }\n}",
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "transform_response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300],
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "// Transform Python agent response for output\nconst data = $input.all()[0].json;\n\n// Extract key metrics\nconst stats = data.stats || {};\nconst failed = data.failed || [];\nconst messages = data.messages || [];\n\n// Group messages by provider\nconst byProvider = {};\nmessages.forEach(msg => {\n  if (!byProvider[msg.provider]) {\n    byProvider[msg.provider] = [];\n  }\n  byProvider[msg.provider].push(msg);\n});\n\n// Count tool calls\nconst toolCallCount = messages.reduce((acc, msg) => {\n  return acc + (msg.toolCalls ? msg.toolCalls.length : 0);\n}, 0);\n\nreturn [{\n  json: {\n    status: data.status,\n    summary: {\n      total: stats.total,\n      succeeded: stats.succeeded,\n      failed: stats.failed,\n      toolCalls: toolCallCount,\n      byProvider: Object.keys(byProvider).map(provider => ({\n        provider,\n        count: byProvider[provider].length\n      }))\n    },\n    messages,\n    failed,\n    processedAt: new Date().toISOString()\n  }\n}];"
+      }
+    },
+    {
+      "id": "respond_success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1050, 300],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      }
+    },
+    {
+      "id": "error_handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 500],
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "// Handle errors gracefully\nconst error = $input.all()[0].error;\n\nreturn [{\n  json: {\n    status: 'error',\n    message: error?.message || 'Unknown error occurred',\n    timestamp: new Date().toISOString()\n  }\n}];"
+      }
+    },
+    {
+      "id": "respond_error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1050, 500],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "responseCode": 500
+      }
+    }
+  ],
+  "connections": {
+    "webhook": {
+      "main": [[{ "node": "validate_input", "type": "main", "index": 0 }]]
+    },
+    "validate_input": {
+      "main": [[{ "node": "call_python_agent", "type": "main", "index": 0 }]]
+    },
+    "call_python_agent": {
+      "main": [[{ "node": "transform_response", "type": "main", "index": 0 }]]
+    },
+    "transform_response": {
+      "main": [[{ "node": "respond_success", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

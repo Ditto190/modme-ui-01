@@ -6,13 +6,16 @@
   "type": "module",
   "scripts": {
     "generate": "tsx src/scripts/generate.ts",
-    "generate:agent-schemas": "tsx src/scripts/generate-agent-schemas.ts"
+    "generate:agent-schemas": "tsx src/scripts/generate-agent-schemas.ts",
+    "test:pipeline": "tsx src/chat-formats/test-pipeline.ts",
+    "test:pipeline:custom": "tsx src/chat-formats/test-pipeline.ts"
   },
   "dependencies": {
-    "typescript": "^5.3.3",
+    "glob": "^10.3.10",
     "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
     "typescript-json-schema": "^0.62.0",
-    "glob": "^10.3.10"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^20.10.6"

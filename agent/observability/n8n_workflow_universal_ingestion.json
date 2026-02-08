@@ -1,0 +1,119 @@
+{
+  "name": "Universal Chat Ingestion → Phoenix Traces",
+  "id": "dfHBSbrEHbUi4H8B",
+  "description": "Universal chat ingestion pipeline with format detection, normalization, and discovery sampling for unknown formats. Supports VS Code Copilot Chat with extensible format registry.",
+  "active": false,
+  "nodes": [
+    {
+      "id": "ucw-webhook-001",
+      "name": "Receive Chat JSON",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "universal-chat-ingest",
+      "parameters": {
+        "path": "universal-chat-ingest",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": { "onError": "continueRegularOutput" }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "ucw-detect-001",
+      "name": "Detect Agent Format",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 300],
+      "notes": "Fingerprint-based format detection. Registry mirrors agent-generator/src/chat-formats/registry.ts. Passes raw data through on failure for discovery step.",
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const REGISTRY = [\n  { id: 'copilot-chat', name: 'VS Code Copilot Chat', agent: 'GitHub Copilot', priority: 100, fingerprint: [{ path: 'responderUsername', check: 'type_string' }, { path: 'requests', check: 'type_array' }, { path: 'requests[0].message', check: 'type_object' }, { path: 'requests[0].variableData', check: 'type_object' }] },\n];\nfunction getByPath(obj, path) { if (!obj || !path) return undefined; return path.replace(/\\[(\\d+)\\]/g, '.$1').split('.').reduce((o, k) => o != null ? o[k] : undefined, obj); }\nfunction evaluateRule(data, rule) { const v = getByPath(data, rule.path); switch (rule.check) { case 'type_string': return typeof v === 'string'; case 'type_array': return Array.isArray(v); case 'type_object': return typeof v === 'object' && v !== null && !Array.isArray(v); case 'exists': return v != null; case 'equals': return v === rule.value; case 'matches': return typeof v === 'string' && typeof rule.value === 'string' && new RegExp(rule.value).test(v); case 'has_key': return typeof v === 'object' && v !== null && typeof rule.value === 'string' && rule.value in v; default: return false; } }\nfunction detectFormat(data) {\n  let bestPartial = null;\n  for (const fmt of [...REGISTRY].sort((a, b) => b.priority - a.priority)) {\n    const results = fmt.fingerprint.map(r => ({ rule: r, passed: evaluateRule(data, r) }));\n    if (results.every(r => r.passed)) return { matched: true, formatId: fmt.id, format: fmt, confidence: 'exact' };\n    const passedCount = results.filter(r => r.passed).length;\n    if (passedCount > 0 && (!bestPartial || passedCount > bestPartial.passedCount)) bestPartial = { formatId: fmt.id, passedCount, total: results.length };\n  }\n  const topLevel = Object.fromEntries(Object.keys(data || {}).map(k => [k, Array.isArray(data[k]) ? 'array[' + data[k].length + ']' : typeof data[k]]));\n  return { matched: false, formatId: null, confidence: bestPartial ? 'partial' : 'none', diagnostic: JSON.stringify(topLevel), bestPartial };\n}\nconst body = $input.first().json.body || $input.first().json;\nconst projectName = body.projectName || 'chat-traces';\nconst sourceLabel = body.sourceLabel || body.filename || 'unknown';\nconst chatData = body.chatData || body;\nconst detection = detectFormat(chatData);\nif (!detection.matched) {\n  return [{ json: { detected: false, error: 'Unknown chat format', confidence: detection.confidence, diagnostic: detection.diagnostic, bestPartial: detection.bestPartial, _rawData: chatData, _sourceLabel: sourceLabel } }];\n}\nreturn [{ json: { detected: true, formatId: detection.formatId, format: detection.format, chatData, projectName } }];"
+      }
+    },
+    {
+      "id": "ucw-check-001",
+      "name": "Check Detection",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [750, 300],
+      "parameters": {
+        "conditions": {
+          "options": { "version": 2, "leftValue": "", "caseSensitive": true, "typeValidation": "strict" },
+          "conditions": [{ "id": "detect-check", "leftValue": "={{ $json.detected }}", "rightValue": true, "operator": { "type": "boolean", "operation": "equals" } }],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "ucw-normalize-001",
+      "name": "Normalize Turns",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 200],
+      "notes": "Format-specific normalization. Mirrors agent-generator/src/chat-formats/normalizer.ts + formats/copilot-chat.ts. Produces UniversalTurnPayload for the Python bridge.",
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const { formatId, chatData, projectName } = $input.first().json;\nfunction getByPath(obj, path) { if (!obj || !path) return undefined; return path.replace(/\\[(\\d+)\\]/g, '.$1').split('.').reduce((o, k) => o != null ? o[k] : undefined, obj); }\nfunction assembleCopilotResponse(responses) { if (!Array.isArray(responses)) return ''; const parts = []; for (const r of responses) { const kind = r?.kind; if (['thinking','mcpServersStarting','undoStop','confirmation'].includes(kind)) continue; if (kind === 'toolInvocationSerialized') { const msg = r.pastTenseMessage || r.invocationMessage || ''; const text = typeof msg === 'object' ? (msg.value || '') : String(msg); if (text) parts.push('[Tool] ' + text); continue; } if (kind === 'progressTaskSerialized' && r.content?.value) { parts.push(r.content.value); continue; } if (typeof r?.value === 'string' && r.value.trim()) parts.push(r.value); } return parts.join('\\n'); }\nfunction extractCopilotThinking(turn) { const resp = turn.response; if (!Array.isArray(resp)) return ''; return resp.filter(r => r?.kind === 'thinking' && r?.value).map(r => r.value).join('\\n---\\n'); }\nfunction extractCopilotToolCalls(turn) { const rounds = getByPath(turn, 'result.metadata.toolCallRounds'); if (!Array.isArray(rounds)) return []; const calls = []; for (let ri = 0; ri < rounds.length; ri++) { for (const tc of (rounds[ri]?.toolCalls || [])) { calls.push({ name: tc.name || 'unknown', input: (typeof tc.arguments === 'string' ? tc.arguments : JSON.stringify(tc.arguments || '')).slice(0, 2000), output: (typeof tc.result === 'string' ? tc.result : '').slice(0, 2000), round: ri }); } } return calls; }\nfunction normalizeCopilot(data, projName) { const turns = data.requests || []; const normalized = []; for (let i = 0; i < turns.length; i++) { const t = turns[i]; const userMsg = getByPath(t, 'message.text') || ''; if (!userMsg.trim()) continue; normalized.push({ index: i, userMessage: userMsg, assistantResponse: assembleCopilotResponse(t.response), model: t.modelId || 'unknown', timestampMs: t.timestamp || null, latencyMs: getByPath(t, 'result.timings.totalElapsed') || null, tokens: { prompt: getByPath(t, 'result.metadata.promptTokens') || 0, completion: getByPath(t, 'result.metadata.outputTokens') || 0 }, toolCalls: extractCopilotToolCalls(t), thinking: extractCopilotThinking(t) || undefined, metadata: {} }); } return { format: 'copilot-chat', agent: 'GitHub Copilot', projectName: projName, sessionId: getByPath(turns[0], 'result.metadata.sessionId') || '', responder: data.responderUsername || 'unknown', turns: normalized }; }\nlet payload; switch (formatId) { case 'copilot-chat': payload = normalizeCopilot(chatData, projectName); break; default: return [{ json: { error: 'No normalizer for ' + formatId } }]; }\nif (!payload.turns?.length) return [{ json: { error: 'No turns extracted' } }];\nreturn [{ json: { payload, stats: { format: formatId, turnsExtracted: payload.turns.length, toolCallsFound: payload.turns.reduce((s, t) => s + (t.toolCalls?.length || 0), 0) } } }];"
+      }
+    },
+    {
+      "id": "ucw-bridge-001",
+      "name": "Send to Bridge",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1250, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8787/ingest",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.payload) }}",
+        "options": { "timeout": 120000 },
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Content-Type", "value": "application/json" }] }
+      }
+    },
+    {
+      "id": "ucw-success-001",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1500, 200],
+      "parameters": { "respondWith": "json", "responseBody": "={{ $json }}" }
+    },
+    {
+      "id": "ucw-discovery-001",
+      "name": "Generate Discovery Sample",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 450],
+      "notes": "Discovery step: when format detection fails, generates a structural sample of the unknown JSON for offline analysis by the schema-crawler. Mirrors agent-generator/src/chat-formats/discovery.ts.",
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// DISCOVERY STEP - sample unknown format for offline analysis\nconst detection = $input.first().json;\nconst chatData = detection._rawData || {};\nconst sourceLabel = detection._sourceLabel || 'unknown';\n\nfunction describeType(v) {\n  if (v === null) return 'null';\n  if (v === undefined) return 'undefined';\n  if (Array.isArray(v)) return v.length === 0 ? 'array[0]' : 'array[' + v.length + ']<' + describeType(v[0]) + '>';\n  if (typeof v === 'object') { const k = Object.keys(v); return k.length <= 5 ? 'object{' + k.join(',') + '}' : 'object{' + k.slice(0,5).join(',') + ',...+' + (k.length-5) + '}'; }\n  if (typeof v === 'string') return v.length > 50 ? 'string(' + v.length + 'chars)' : 'string';\n  return typeof v;\n}\n\nfunction truncate(obj, max) {\n  max = max || 200;\n  if (obj===null||obj===undefined) return obj;\n  if (typeof obj==='string') return obj.slice(0,max);\n  if (typeof obj==='number'||typeof obj==='boolean') return obj;\n  if (Array.isArray(obj)) return obj.slice(0,3).map(function(i){return truncate(i,max);});\n  if (typeof obj==='object') { var r={}; for (var ek of Object.keys(obj)) r[ek]=truncate(obj[ek],max); return r; }\n  return obj;\n}\n\nfunction mapKeys(obj, pfx, depth, max) {\n  pfx = pfx || ''; depth = depth || 0; max = max || 5;\n  if (depth>=max||!obj||typeof obj!=='object') return [];\n  var entries=[];\n  var keys=Array.isArray(obj)?['[0]']:Object.keys(obj);\n  var tgt=Array.isArray(obj)?{'[0]':obj[0]}:obj;\n  for (var k of keys) {\n    var fp=pfx?(pfx+'.'+k):k; var v=tgt[k];\n    var e={path:fp,type:describeType(v)};\n    if (typeof v==='string'&&v.length>0) e.sample=v.slice(0,100);\n    entries.push(e);\n    if (typeof v==='object'&&v!==null&&!Array.isArray(v)) entries=entries.concat(mapKeys(v,fp,depth+1,max));\n    else if (Array.isArray(v)&&v.length>0) entries=entries.concat(mapKeys(v[0],fp+'[0]',depth+1,max));\n  }\n  return entries;\n}\n\nvar chatMarkers=['message','content','text','role','response','request','prompt'];\nvar turnsNames=['messages','requests','turns','conversation','exchanges','chat'];\nvar candidatePath=null, candidateCount=0, bestScore=0;\nfor (var [key,value] of Object.entries(chatData)) {\n  if (!Array.isArray(value)||value.length===0) continue;\n  if (typeof value[0]!=='object'||value[0]===null) continue;\n  var fk=Object.keys(value[0]).map(function(k){return k.toLowerCase();});\n  var score=value.length;\n  for (var m of chatMarkers) if (fk.some(function(k){return k.includes(m);})) score+=100;\n  if (turnsNames.includes(key.toLowerCase())) score+=200;\n  if (score>bestScore) { bestScore=score; candidatePath=key; candidateCount=value.length; }\n}\n\nvar topSchema={};\nfor (var [tk,tv] of Object.entries(chatData)) topSchema[tk]=describeType(tv);\nvar firstTurnSchema=null, firstTurnSample=null;\nif (candidatePath&&Array.isArray(chatData[candidatePath])&&chatData[candidatePath].length>0) {\n  var ft=chatData[candidatePath][0]; firstTurnSchema={};\n  for (var [fk2,fv2] of Object.entries(ft)) firstTurnSchema[fk2]=describeType(fv2);\n  firstTurnSample=truncate(ft,200);\n}\n\nvar deepKeyMap=mapKeys(chatData,'',0,5);\nvar sig=Object.keys(chatData).sort().map(function(k){var v=chatData[k];return Array.isArray(v)?(k+':arr'+v.length):(k+':'+typeof v);}).join('|');\nvar hash=0; for(var i=0;i<sig.length;i++){hash=((hash<<5)-hash)+sig.charCodeAt(i);hash|=0;}\nvar contentHash=Math.abs(hash).toString(36).padStart(8,'0');\nvar now=new Date();\nvar datePart=now.toISOString().replace(/[:.]/g,'-').slice(0,19);\n\nreturn [{json:{\n  sampled:true,\n  suggestedFilename:'unknown-'+sourceLabel+'-'+datePart+'-'+contentHash.slice(0,6)+'.json',\n  sample:{sampledAt:now.toISOString(),contentHash:contentHash,sourceLabel:sourceLabel,topLevelSchema:topSchema,firstTurnSchema:firstTurnSchema,candidateTurnsPath:candidatePath,candidateTurnsCount:candidateCount,diagnosticText:detection.diagnostic||'',firstTurnSample:firstTurnSample,deepKeyMap:deepKeyMap},\n  detection:{matched:false,confidence:detection.confidence||'none',formatId:null}\n}}];"
+      }
+    },
+    {
+      "id": "ucw-error-001",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1250, 450],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'unknown_format', discovery: $input.first().json }) }}",
+        "options": { "responseCode": 422 }
+      }
+    }
+  ],
+  "connections": {
+    "Receive Chat JSON": { "main": [[{ "node": "Detect Agent Format", "type": "main", "index": 0 }]] },
+    "Detect Agent Format": { "main": [[{ "node": "Check Detection", "type": "main", "index": 0 }]] },
+    "Check Detection": { "main": [[{ "node": "Normalize Turns", "type": "main", "index": 0 }], [{ "node": "Generate Discovery Sample", "type": "main", "index": 0 }]] },
+    "Normalize Turns": { "main": [[{ "node": "Send to Bridge", "type": "main", "index": 0 }]] },
+    "Send to Bridge": { "main": [[{ "node": "Success Response", "type": "main", "index": 0 }]] },
+    "Generate Discovery Sample": { "main": [[{ "node": "Error Response", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}
