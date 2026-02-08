@@ -17,13 +17,14 @@ services:
       - N8N_PROTOCOL=http
       - WEBHOOK_URL=http://localhost:5678/
       # Phoenix endpoint (use host.docker.internal to reach host machine)
-      - PHOENIX_URL=http://host.docker.internal:6006
-      - PHOENIX_COLLECTOR_ENDPOINT=http://host.docker.internal:6006/v1/traces
+      - PHOENIX_URL=${N8N_PHOENIX_URL:-http://host.docker.internal:6006}
+      - PHOENIX_COLLECTOR_ENDPOINT=${N8N_PHOENIX_COLLECTOR_ENDPOINT:-http://host.docker.internal:6006/v1/traces}
+      # Allow Code nodes to access environment variables (n8n v2.34+)
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=${N8N_BLOCK_ENV_ACCESS_IN_NODE:-false}
     volumes:
       - n8n_data:/home/node/.n8n
     networks:
       - n8n_network
-      - observability # Join Phoenix network
     healthcheck:
       test:
         ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5678/healthz"]
@@ -63,7 +64,6 @@ services:
       retries: 3
     networks:
       - n8n_network
-      - observability # Join Phoenix network
 
 volumes:
   n8n_data:
@@ -72,5 +72,3 @@ volumes:
 networks:
   n8n_network:
     driver: bridge
-  observability:
-    external: true # Reference the Phoenix network
