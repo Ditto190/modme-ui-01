@@ -42,7 +42,6 @@ import argparse
 import json
 import logging
 import os
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -571,20 +570,13 @@ def upload_to_phoenix(
     from phoenix.client import Client
 
     endpoint = phoenix_endpoint or os.getenv("PHOENIX_ENDPOINT", "http://localhost:6006")
-    client = Client(endpoint=endpoint)
 
-    dataset = client.datasets.create_dataset(
-        dataframe=df,
-        name=dataset_name,
-        input_keys=INPUT_COLUMNS,
-        output_keys=OUTPUT_COLUMNS,
-        metadata_keys=[c for c in METADATA_COLUMNS if c in df.columns],
-    )
+    # Phoenix Client uses environment variables PHOENIX_HOST and PHOENIX_PORT
+    # or we can pass them directly
+    if endpoint != "http://localhost:6006":
+        logger.warning(f"Custom endpoint {endpoint} specified, but Phoenix Client may use default localhost:6006")
 
-    logger.info(f"Uploaded dataset '{dataset_name}' to Phoenix at {endpoint}")
-    return dataset
-
-
+    client = Client()  # Phoenix Client uses PHOENIX_HOST/PHOENIX_PORT env vars
 # ============================================================================
 # CLI
 # ============================================================================
@@ -678,7 +670,7 @@ Examples:
     # Summary
     print(f"\nParsed {len(df)} turns from {args.input_file}")
     print(f"Columns: {len(df.columns)}")
-    print(f"\nSample (first row):")
+    print("\nSample (first row):")
     if not df.empty:
         first = df.iloc[0]
         print(f"  user_message:     {str(first.get('user_message', ''))[:80]}...")

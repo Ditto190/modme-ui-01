@@ -63,6 +63,11 @@
     "copilot:health": "curl http://localhost:8080/health || pwsh -Command \"(Invoke-WebRequest -Uri http://localhost:8080/health).Content\"",
     "copilot:ui": "npm run phoenix:ui",
     "copilot:dev": "npm run copilot:start && npm run copilot:ui",
+    "copilot:process-chat": "cd agent && python -m observability.process_chat_json",
+    "copilot:parse-chat": "cd agent && python -m observability.copilot_chat_parser",
+    "copilot:parse-only": "cd agent && python -m observability.process_chat_json --no-upload --output ../datasets/processed_chat.csv",
+    "copilot:validate-schema": "cd agent && python -m observability.copilot_chat_parser --print-schema",
+    "copilot:batch-upload": "cd agent && python -m observability.process_chat_json ../datasets/chat.json copilot-demo",
     "observability:start": "npm run copilot:start",
     "observability:stop": "npm run copilot:stop"
   },

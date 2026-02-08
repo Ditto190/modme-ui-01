@@ -141,6 +141,45 @@ class CopilotTelemetryEvent(BaseModel):
     error_message: Optional[str] = None
     error_code: Optional[str] = None
 
+    # ========== NEW FIELDS FROM CHAT.JSON PARSER (23 fields) ==========
+
+    # Token breakdown (5 fields)
+    token_breakdown: Optional[dict] = Field(default=None, description="Token breakdown by category from promptTokenDetails")
+    token_pct_system: Optional[float] = Field(default=None, description="Percentage of tokens from system instructions")
+    token_pct_tools: Optional[float] = Field(default=None, description="Percentage of tokens from tool definitions")
+    token_pct_messages: Optional[float] = Field(default=None, description="Percentage of tokens from user messages")
+    tokens_prompt: Optional[int] = Field(default=None, description="Total prompt tokens (may differ from input_tokens)")
+
+    # MCP tracking (2 fields)
+    mcp_servers_started: Optional[List[str]] = Field(default=None, description="MCP servers that started during session")
+    mcp_tools_available: Optional[List[str]] = Field(default=None, description="Tools available from MCP servers (server/tool format)")
+
+    # Tool execution detail (2 fields)
+    tool_call_rounds_count: Optional[int] = Field(default=None, description="Number of tool execution rounds (ReAct pattern)")
+    tool_calls_detail: Optional[str] = Field(default=None, description="JSON string with detailed tool call history")
+
+    # Response composition (5 fields)
+    response_kind_counts: Optional[str] = Field(default=None, description="JSON counts of response kinds (thinking, toolInvocation, etc.)")
+    code_blocks_count: Optional[int] = Field(default=None, description="Number of code blocks in response")
+    code_languages: Optional[List[str]] = Field(default=None, description="Programming languages detected in code blocks")
+    files_edited: Optional[List[str]] = Field(default=None, description="Files modified via textEditGroup responses")
+    inline_references_count: Optional[int] = Field(default=None, description="Count of inline file/symbol references")
+
+    # Thinking / Chain-of-Thought (1 field)
+    thinking: Optional[str] = Field(default=None, description="Internal chain-of-thought reasoning exposed to user")
+
+    # Context attachments (3 fields)
+    workspace_repos: Optional[List[str]] = Field(default=None, description="Git repositories in workspace context")
+    prompt_files: Optional[List[str]] = Field(default=None, description="Files explicitly referenced in system prompt")
+    attached_files: Optional[List[str]] = Field(default=None, description="Files user attached via @ mentions or selection")
+
+    # Conversation flow (5 fields)
+    turn_index: Optional[int] = Field(default=None, description="Turn number in multi-turn conversation (0-indexed)")
+    is_first_turn: Optional[bool] = Field(default=None, description="Whether this is first turn in conversation")
+    had_confirmation_prompt: Optional[bool] = Field(default=None, description="Whether agent asked for user confirmation")
+    max_tool_calls_exceeded: Optional[bool] = Field(default=None, description="Whether tool call limit was hit")
+    previous_request_id: Optional[str] = Field(default=None, description="Request ID of previous turn for conversation chaining")
+
 # ============================================================================
 # FASTAPI APPLICATION
 # ============================================================================
@@ -209,6 +248,89 @@ def set_openinference_attributes(span: trace.Span, event: CopilotTelemetryEvent)
             span.set_attribute(SpanAttributes.INPUT_VALUE, user_prompt)
         if assistant_response:
             span.set_attribute(SpanAttributes.OUTPUT_VALUE, assistant_response)
+
+    # ========== NEW ATTRIBUTES FROM CHAT.JSON FIELDS ==========
+
+    # Token breakdown
+    if event.token_breakdown:
+        for category, count in event.token_breakdown.items():
+            span.set_attribute(f"llm.token_count.{category}", count)
+
+    if event.token_pct_system is not None:
+        span.set_attribute("llm.token_pct.system_instructions", event.token_pct_system)
+    if event.token_pct_tools is not None:
+        span.set_attribute("llm.token_pct.tool_definitions", event.token_pct_tools)
+    if event.token_pct_messages is not None:
+        span.set_attribute("llm.token_pct.user_messages", event.token_pct_messages)
+    if event.tokens_prompt is not None:
+        span.set_attribute("llm.token_count.prompt_detailed", event.tokens_prompt)
+
+    # MCP tracking
+    if event.mcp_servers_started:
+        span.set_attribute("mcp.servers_started", ",".join(event.mcp_servers_started))
+        span.set_attribute("mcp.servers_started_count", len(event.mcp_servers_started))
+
+    if event.mcp_tools_available:
+        span.set_attribute("mcp.tools_available", ",".join(event.mcp_tools_available))
+        span.set_attribute("mcp.tools_available_count", len(event.mcp_tools_available))
+
+    # Tool execution detail
+    if event.tool_call_rounds_count is not None:
+        span.set_attribute("tool.rounds_count", event.tool_call_rounds_count)
+
+    if event.tool_calls_detail:
+        span.set_attribute("tool.calls_detail", event.tool_calls_detail)
+
+    # Response composition
+    if event.response_kind_counts:
+        span.set_attribute("response.kind_counts", event.response_kind_counts)
+
+    if event.code_blocks_count is not None:
+        span.set_attribute("response.code_blocks_count", event.code_blocks_count)
+
+    if event.code_languages:
+        span.set_attribute("response.code_languages", ",".join(event.code_languages))
+        span.set_attribute("response.code_languages_count", len(event.code_languages))
+
+    if event.files_edited:
+        span.set_attribute("response.files_edited", ",".join(event.files_edited))
+        span.set_attribute("response.files_edited_count", len(event.files_edited))
+
+    if event.inline_references_count is not None:
+        span.set_attribute("response.inline_references_count", event.inline_references_count)
+
+    # Thinking / Chain-of-Thought
+    if event.thinking:
+        span.set_attribute("llm.thinking", event.thinking)
+
+    # Context attachments
+    if event.workspace_repos:
+        span.set_attribute("context.workspace_repos", ",".join(event.workspace_repos))
+        span.set_attribute("context.workspace_repos_count", len(event.workspace_repos))
+
+    if event.prompt_files:
+        span.set_attribute("context.prompt_files", ",".join(event.prompt_files))
+        span.set_attribute("context.prompt_files_count", len(event.prompt_files))
+
+    if event.attached_files:
+        span.set_attribute("context.attached_files", ",".join(event.attached_files))
+        span.set_attribute("context.attached_files_count", len(event.attached_files))
+
+    # Conversation flow
+    if event.turn_index is not None:
+        span.set_attribute("conversation.turn_index", event.turn_index)
+
+    if event.is_first_turn is not None:
+        span.set_attribute("conversation.is_first_turn", event.is_first_turn)
+
+    if event.had_confirmation_prompt is not None:
+        span.set_attribute("conversation.had_confirmation_prompt", event.had_confirmation_prompt)
+
+    if event.max_tool_calls_exceeded is not None:
+        span.set_attribute("conversation.max_tool_calls_exceeded", event.max_tool_calls_exceeded)
+
+    if event.previous_request_id:
+        span.set_attribute("conversation.previous_request_id", event.previous_request_id)
 
 # ============================================================================
 # API ENDPOINTS
