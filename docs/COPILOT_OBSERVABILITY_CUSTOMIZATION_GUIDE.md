@@ -24,6 +24,7 @@
 ### Current Limitations
 
 The current implementation captures basic telemetry but misses important context:
+
 - No user/session tracking
 - Limited metadata about conversation context
 - No tags for filtering/categorization
@@ -34,6 +35,7 @@ The current implementation captures basic telemetry but misses important context
 Phoenix provides context propagation utilities for adding custom attributes:
 
 **Available Context Setters:**
+
 - `setSession(context, { sessionId })` - Track multi-turn conversations
 - `setUser(context, { userId })` - Track different users
 - `setMetadata(context, { key: value })` - Custom operational metadata
@@ -45,6 +47,7 @@ Phoenix provides context propagation utilities for adding custom attributes:
 #### A. Add Session & User Tracking
 
 **Current Code** (`copilot_phoenix_proxy.py` line ~120):
+
 ```python
 class CopilotTelemetryEvent(BaseModel):
     session_id: Optional[str] = None
@@ -52,6 +55,7 @@ class CopilotTelemetryEvent(BaseModel):
 ```
 
 **Enhancement**:
+
 ```python
 from opentelemetry import context
 from openinference.instrumentation import setSession, setUser, setMetadata, setTag
@@ -111,6 +115,7 @@ def set_openinference_attributes(span, event: CopilotTelemetryEvent):
 #### B. Add Tool-Related Metadata
 
 **Enhancement for Tool Tracking**:
+
 ```python
 def set_openinference_attributes(span, event: CopilotTelemetryEvent):
     # ... existing code ...
@@ -148,6 +153,7 @@ def set_openinference_attributes(span, event: CopilotTelemetryEvent):
 ### Phoenix Prompts Feature
 
 Phoenix v8.0+ includes:
+
 - Prompt versioning with tags (prod/staging/dev)
 - Prompt playground for testing variations
 - Prompt-to-trace linkage for evaluation
@@ -158,12 +164,14 @@ Phoenix v8.0+ includes:
 #### A. Capture Agent Instructions as Prompts
 
 **Current Code** (`copilot_phoenix_proxy.py` line ~140):
+
 ```python
 class CopilotTelemetryEvent(BaseModel):
     instructions: Optional[str] = None  # Agent instructions/system prompt
 ```
 
 **Enhancement**: Store instructions as prompt template
+
 ```python
 from openinference.instrumentation import setPromptTemplate
 
@@ -217,6 +225,7 @@ def track_prompt_template(span, event: CopilotTelemetryEvent):
 #### B. Create Prompts in Phoenix via REST API
 
 **New Module**: `agent/observability/copilot_prompts.py`
+
 ```python
 """Prompt management for Copilot telemetry."""
 import httpx
@@ -267,6 +276,7 @@ async def upsert_prompt_to_phoenix(
 ```
 
 **Integration in Proxy**:
+
 ```python
 @app.post("/telemetry")
 async def receive_telemetry(event: CopilotTelemetryEvent):
@@ -353,6 +363,7 @@ def set_agent_context_attributes(span, agent_context: AgentContext):
 ### Current State
 
 Model is captured as a string (`event.model`). Enhancement needed for:
+
 - Model family/provider detection
 - Model capability tracking
 - Cost calculation per model
@@ -360,6 +371,7 @@ Model is captured as a string (`event.model`). Enhancement needed for:
 ### Enhancement: Model Registry
 
 **New Module**: `agent/observability/model_registry.py`
+
 ```python
 """Model registry for enhanced metadata."""
 from typing import Dict, Optional
@@ -462,6 +474,7 @@ def set_model_attributes(span, event: CopilotTelemetryEvent):
 ### Phoenix Datasets Feature
 
 Phoenix allows:
+
 - Adding spans to datasets via UI or API
 - Categorizing examples with metadata
 - Using dataset splits (train/test) for experiments
@@ -472,6 +485,7 @@ Phoenix allows:
 **Goal**: Automatically add high-value spans to datasets based on criteria
 
 **New Module**: `agent/observability/dataset_manager.py`
+
 ```python
 """Automatic dataset creation from telemetry."""
 import httpx
@@ -601,6 +615,7 @@ async def add_to_dataset(
 ```
 
 **Integration in Proxy**:
+
 ```python
 @app.post("/telemetry")
 async def receive_telemetry(event: CopilotTelemetryEvent):
@@ -633,6 +648,7 @@ async def receive_telemetry(event: CopilotTelemetryEvent):
 Annotations = labels/scores/explanations attached to spans for evaluation
 
 **Annotation Types:**
+
 - **Human**: Manual feedback from users
 - **LLM**: LLM-as-Judge evaluations
 - **Code**: Automated checks
@@ -640,6 +656,7 @@ Annotations = labels/scores/explanations attached to spans for evaluation
 ### Enhancement: Automatic Annotation Pipeline
 
 **New Module**: `agent/observability/auto_annotate.py`
+
 ```python
 """Automatic annotation of spans based on rules."""
 from phoenix.client import Client
@@ -881,6 +898,7 @@ def set_enhanced_context(span, event: CopilotTelemetryEvent):
 ### Configuration Updates
 
 **File**: `.env`
+
 ```bash
 # Existing
 PHOENIX_COLLECTOR_ENDPOINT=http://phoenix:6006/v1/traces
@@ -897,6 +915,7 @@ COPILOT_DEFAULT_MODEL=gpt-4o
 ### Updated Requirements
 
 **File**: `agent/requirements-phoenix.txt`
+
 ```txt
 # Existing
 fastapi==0.124.0
