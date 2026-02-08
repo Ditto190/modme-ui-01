@@ -1,0 +1,741 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Universal Chat Ingestion API",
+    "version": "2.0.0",
+    "description": "# Universal Chat Ingestion Bridge\n\nA format-agnostic API for ingesting AI chat conversations into Phoenix observability.\n\n## Architecture\n\n```\nany-agent-chat.json → n8n Workflow → /ingest → OTLP Spans → Phoenix\n```\n\n## Supported Formats\n\n- **copilot-chat**: VS Code Copilot Chat exports\n- *More formats coming soon via schema-crawler*\n\n## Adding New Formats\n\nWhen an unknown format is submitted, the API returns a `discoverySample`\nwith structural analysis. This sample can be used to generate a new\n`ChatFormatDescriptor` offline using the schema-crawler tools.\n\n## Related Documentation\n\n- [ADR-006: Universal Chat Ingestion Pipeline](https://github.com/Ditto190/modme-ui-01/blob/main/docs/adr-006-universal-chat-ingestion-pipeline.md)\n- [Phoenix Documentation](https://docs.arize.com/phoenix)",
+    "contact": {
+      "name": "ModMe GenUI Team",
+      "url": "https://github.com/Ditto190/modme-ui-01"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8787",
+      "description": "Local development bridge"
+    },
+    {
+      "url": "http://host.docker.internal:8787",
+      "description": "Docker-internal bridge (from n8n)"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Ingestion",
+      "description": "Endpoints for uploading chat traces"
+    },
+    {
+      "name": "Formats",
+      "description": "Chat format metadata and discovery"
+    },
+    {
+      "name": "System",
+      "description": "Health and status endpoints"
+    }
+  ],
+  "paths": {
+    "/ingest": {
+      "post": {
+        "operationId": "ingestChatTraces",
+        "summary": "Ingest normalized chat traces into Phoenix",
+        "description": "Accepts pre-normalized conversation turns in the Universal Turn Format and\nuploads them as OpenInference-compliant OTLP traces to Phoenix.\n\nThe payload should be normalized by the n8n workflow before calling this endpoint.\nEach turn becomes an AGENT → LLM span (with optional TOOL child spans).",
+        "tags": [
+          "Ingestion"
+        ],
+        "requestBody": {
+          "description": "Normalized chat conversation payload",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UniversalTurnPayload"
+              },
+              "example": {
+                "format": "copilot-chat",
+                "agent": "GitHub Copilot",
+                "projectName": "modme-genui-traces",
+                "sessionId": "session-abc-123",
+                "responder": "dylan",
+                "turns": [
+                  {
+                    "index": 0,
+                    "userMessage": "Help me refactor this function to use async/await",
+                    "assistantResponse": "Here is the refactored version...",
+                    "model": "claude-sonnet-4-20250514",
+                    "timestampMs": 1707350400000,
+                    "latencyMs": 3200,
+                    "tokens": {
+                      "prompt": 1500,
+                      "completion": 800
+                    },
+                    "toolCalls": [
+                      {
+                        "name": "read_file",
+                        "input": "{\"path\":\"src/index.ts\"}",
+                        "output": "..."
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Traces successfully uploaded to Phoenix",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IngestSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload (validation error)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unknown format (includes discovery sample)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "discoverySample": {
+                      "$ref": "#/components/schemas/DiscoverySample"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error (Phoenix upload failed)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/formats": {
+      "get": {
+        "operationId": "listSupportedFormats",
+        "summary": "List supported chat formats",
+        "description": "Returns the list of chat formats the bridge can process.",
+        "tags": [
+          "Formats"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of supported format IDs and their metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "formats": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "agent": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "formats": [
+                    {
+                      "id": "copilot-chat",
+                      "name": "VS Code Copilot Chat",
+                      "agent": "GitHub Copilot",
+                      "status": "stable"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "healthCheck",
+        "summary": "Health check",
+        "tags": [
+          "System"
+        ],
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "healthy"
+                      ]
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "phoenixConnected": {
+                      "type": "boolean"
+                    },
+                    "formats": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "healthy",
+                  "version": "2.0.0",
+                  "phoenixConnected": true,
+                  "formats": [
+                    "copilot-chat"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ToolCall": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Tool/function name (e.g., \"read_file\", \"search\")"
+          },
+          "input": {
+            "description": "Stringified JSON arguments passed to the tool",
+            "type": "string"
+          },
+          "output": {
+            "description": "Stringified JSON result from the tool",
+            "type": "string"
+          },
+          "round": {
+            "description": "Tool calling round index (0-indexed, for multi-round tool use)",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false,
+        "description": "A single tool invocation within a turn"
+      },
+      "TokenUsage": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "default": 0,
+            "description": "Number of prompt/input tokens",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "completion": {
+            "default": 0,
+            "description": "Number of completion/output tokens",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "total": {
+            "description": "Total tokens (if provided by API)",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "prompt",
+          "completion"
+        ],
+        "additionalProperties": false,
+        "description": "Token usage metrics for a turn"
+      },
+      "UniversalTurn": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Turn position in conversation (0-indexed)"
+          },
+          "userMessage": {
+            "type": "string",
+            "description": "The human input text"
+          },
+          "assistantResponse": {
+            "type": "string",
+            "description": "The assistant output text"
+          },
+          "model": {
+            "default": "unknown",
+            "description": "Model identifier (e.g., claude-sonnet-4-20250514)",
+            "type": "string"
+          },
+          "timestampMs": {
+            "description": "Unix timestamp in milliseconds",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "latencyMs": {
+            "description": "Total response time in milliseconds",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "tokens": {
+            "type": "object",
+            "properties": {
+              "prompt": {
+                "default": 0,
+                "description": "Number of prompt/input tokens",
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "completion": {
+                "default": 0,
+                "description": "Number of completion/output tokens",
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "total": {
+                "description": "Total tokens (if provided by API)",
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "prompt",
+              "completion"
+            ],
+            "additionalProperties": false,
+            "description": "Token usage metrics for a turn"
+          },
+          "toolCalls": {
+            "default": [],
+            "description": "Tools/functions invoked during this turn",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Tool/function name (e.g., \"read_file\", \"search\")"
+                },
+                "input": {
+                  "description": "Stringified JSON arguments passed to the tool",
+                  "type": "string"
+                },
+                "output": {
+                  "description": "Stringified JSON result from the tool",
+                  "type": "string"
+                },
+                "round": {
+                  "description": "Tool calling round index (0-indexed, for multi-round tool use)",
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false,
+              "description": "A single tool invocation within a turn"
+            }
+          },
+          "thinking": {
+            "description": "Chain-of-thought / reasoning text (if model provides it)",
+            "type": "string"
+          },
+          "metadata": {
+            "default": {},
+            "description": "Agent-specific metadata preserved as-is",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "index",
+          "userMessage",
+          "assistantResponse",
+          "model",
+          "toolCalls",
+          "metadata"
+        ],
+        "additionalProperties": false,
+        "description": "A single conversation turn in the universal format"
+      },
+      "UniversalTurnPayload": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "description": "Detected format ID from the registry (e.g., copilot-chat, claude-code)"
+          },
+          "agent": {
+            "type": "string",
+            "description": "AI agent that produced this chat (e.g., GitHub Copilot)"
+          },
+          "projectName": {
+            "default": "chat-traces",
+            "description": "Phoenix project name for trace organization",
+            "type": "string"
+          },
+          "sessionId": {
+            "description": "Session identifier (if available from source)",
+            "type": "string"
+          },
+          "responder": {
+            "description": "User/responder identity",
+            "type": "string"
+          },
+          "turns": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991,
+                  "description": "Turn position in conversation (0-indexed)"
+                },
+                "userMessage": {
+                  "type": "string",
+                  "description": "The human input text"
+                },
+                "assistantResponse": {
+                  "type": "string",
+                  "description": "The assistant output text"
+                },
+                "model": {
+                  "default": "unknown",
+                  "description": "Model identifier (e.g., claude-sonnet-4-20250514)",
+                  "type": "string"
+                },
+                "timestampMs": {
+                  "description": "Unix timestamp in milliseconds",
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "latencyMs": {
+                  "description": "Total response time in milliseconds",
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "tokens": {
+                  "type": "object",
+                  "properties": {
+                    "prompt": {
+                      "default": 0,
+                      "description": "Number of prompt/input tokens",
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "completion": {
+                      "default": 0,
+                      "description": "Number of completion/output tokens",
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "total": {
+                      "description": "Total tokens (if provided by API)",
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "prompt",
+                    "completion"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Token usage metrics for a turn"
+                },
+                "toolCalls": {
+                  "default": [],
+                  "description": "Tools/functions invoked during this turn",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Tool/function name (e.g., \"read_file\", \"search\")"
+                      },
+                      "input": {
+                        "description": "Stringified JSON arguments passed to the tool",
+                        "type": "string"
+                      },
+                      "output": {
+                        "description": "Stringified JSON result from the tool",
+                        "type": "string"
+                      },
+                      "round": {
+                        "description": "Tool calling round index (0-indexed, for multi-round tool use)",
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "additionalProperties": false,
+                    "description": "A single tool invocation within a turn"
+                  }
+                },
+                "thinking": {
+                  "description": "Chain-of-thought / reasoning text (if model provides it)",
+                  "type": "string"
+                },
+                "metadata": {
+                  "default": {},
+                  "description": "Agent-specific metadata preserved as-is",
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {}
+                }
+              },
+              "required": [
+                "index",
+                "userMessage",
+                "assistantResponse",
+                "model",
+                "toolCalls",
+                "metadata"
+              ],
+              "additionalProperties": false,
+              "description": "A single conversation turn in the universal format"
+            },
+            "description": "The normalized conversation turns (minimum 1)"
+          }
+        },
+        "required": [
+          "format",
+          "agent",
+          "projectName",
+          "turns"
+        ],
+        "additionalProperties": false,
+        "description": "Complete payload sent from n8n to Python bridge /ingest endpoint"
+      },
+      "IngestSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Success message with stats"
+          },
+          "stats": {
+            "type": "object",
+            "properties": {
+              "totalTurns": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "uploadedTurns": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "toolCallsFound": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "totalTurns",
+              "uploadedTurns",
+              "toolCallsFound"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "stats"
+        ],
+        "additionalProperties": false,
+        "description": "Successful ingestion response"
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "const": false
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "code": {
+            "description": "Error code for programmatic handling",
+            "type": "string"
+          }
+        },
+        "required": [
+          "success",
+          "error"
+        ],
+        "additionalProperties": false,
+        "description": "Error response"
+      },
+      "DiscoverySample": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when sample was created"
+          },
+          "filename": {
+            "description": "Original filename if provided",
+            "type": "string"
+          },
+          "totalSize": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Original file size in bytes"
+          },
+          "turnsCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Estimated number of turns detected"
+          },
+          "topLevelKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Top-level JSON keys found"
+          },
+          "deepKeyMap": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Map of all paths to their types"
+          },
+          "candidateTurnsPath": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Best guess for the turns array path"
+          },
+          "firstTurnSample": {
+            "description": "Truncated first turn for schema generation"
+          },
+          "detectionErrors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Why detection failed"
+          }
+        },
+        "required": [
+          "timestamp",
+          "totalSize",
+          "turnsCount",
+          "topLevelKeys",
+          "deepKeyMap",
+          "candidateTurnsPath",
+          "detectionErrors"
+        ],
+        "additionalProperties": false,
+        "description": "Discovery sample for unknown chat formats"
+      }
+    }
+  }
+}
