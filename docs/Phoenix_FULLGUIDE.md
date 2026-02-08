@@ -1,10 +1,223 @@
-Perfect! Now I have a complete picture. Let me create a comprehensive flow map.
+# Phoenix Universal Chat Ingestion Pipeline - Complete Guide
 
-## Universal Chat Ingestion Pipeline — Complete End-to-End Flow Map
+**Version**: 1.0  
+**Last Updated**: February 8, 2026  
+**Status**: Production Ready
 
-Show less
+## Table of Contents
 
-### 1. ENTRY POINTS
+1. [Overview](#overview)
+2. [Architecture](#architecture)
+3. [Quick Start](#quick-start)
+4. [Components](#components)
+5. [Data Flow](#data-flow)
+6. [Extending the System](#extending-the-system)
+7. [Troubleshooting](#troubleshooting)
+8. [API Reference](#api-reference)
+
+---
+
+## Overview
+
+### What is the Universal Chat Ingestion Pipeline?
+
+A production-ready system for capturing AI agent conversations from any platform and storing them in Phoenix for observability, analysis, and fine-tuning dataset creation.
+
+**Key Features:**
+
+- ✅ **Format Detection** - Automatically identifies chat format via fingerprinting
+- ✅ **Universal Normalization** - Converts any format to OpenInference standard
+- ✅ **Multi-Entry Points** - n8n webhooks, CLI tools, or direct API
+- ✅ **Production Ready** - Docker-based, with error handling and discovery
+- ✅ **Extensible** - Add new chat formats via plugins
+
+**Supported Formats:**
+
+- ✅ VS Code Copilot Chat
+- 🔧 Claude Desktop (via discovery)
+- 🔧 Cursor AI (via discovery)
+- 🔧 Windsurf IDE (via discovery)
+- 📝 Custom formats (extend via TypeScript descriptors)
+
+### Why Use This System?
+
+**Problem**: Every AI agent platform has a different chat format:
+
+```
+Copilot: { responderUsername, requests: [...], message: "..." }
+Claude:  { conversations: [{ messages: [...] }] }
+Cursor:  { thread: { turns: [...] } }
+```
+
+**Solution**: Single pipeline that:
+
+1. Detects format automatically (fingerprinting)
+2. Normalizes to universal schema
+3. Stores in Phoenix with OpenInference conventions
+4. Makes all chats searchable/analyzable in one place
+
+---
+
+## Architecture
+
+### System Overview
+
+```mermaid
+graph TB
+    subgraph "Entry Points"
+        A1[n8n Webhook<br/>:5678]
+        A2[CLI Tool<br/>test-pipeline.ts]
+        A3[Direct Upload<br/>:8787/upload]
+    end
+
+    subgraph "TypeScript Layer"
+        B1[Format Detection<br/>fingerprint.ts]
+        B2[Registry<br/>registry.ts]
+        B3[Normalization<br/>normalizer.ts]
+        B4[Discovery<br/>discovery.ts]
+    end
+
+    subgraph "Python Bridge"
+        C1[FastAPI Server<br/>:8787]
+        C2[OTLP Span Creation]
+    end
+
+    subgraph "Storage"
+        D1[Phoenix<br/>:6006]
+        D2[SQLite/PostgreSQL]
+    end
+
+    A1 --> B1
+    A2 --> B1
+    A3 --> C1
+
+    B1 --> B2
+    B2 --> B3
+    B3 --> C1
+    B1 -.Unknown Format.-> B4
+
+    C1 --> C2
+    C2 --> D1
+    D1 --> D2
+
+    classDef entry fill:#e1f5ff
+    classDef typescript fill:#fff4e1
+    classDef python fill:#e8f5e9
+    classDef storage fill:#f3e5f5
+
+    class A1,A2,A3 entry
+    class B1,B2,B3,B4 typescript
+    class C1,C2 python
+    class D1,D2 storage
+```
+
+### Component Architecture
+
+| Component            | Technology          | Port | Purpose                          |
+| -------------------- | ------------------- | ---- | -------------------------------- |
+| **n8n Workflow**     | JavaScript (Docker) | 5678 | Production webhook entry point   |
+| **TypeScript Layer** | Node.js 22.9.0+     | N/A  | Format detection & normalization |
+| **Python Bridge**    | FastAPI + Pydantic  | 8787 | OTLP span creation               |
+| **Phoenix Server**   | Docker              | 6006 | Trace storage & UI               |
+
+### Data Flow Diagram
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant n8n
+    participant TS as TypeScript Layer
+    participant Bridge as Python Bridge
+    participant Phoenix
+
+    User->>n8n: POST /webhook/universal-chat-ingest
+    n8n->>TS: Detect format (fingerprint)
+    TS-->>n8n: formatId: "copilot-chat"
+
+    n8n->>TS: Normalize turns
+    TS-->>n8n: UniversalTurnPayload
+
+    n8n->>Bridge: POST /ingest
+    Bridge->>Bridge: Validate with Pydantic
+    Bridge->>Bridge: Create OTLP spans
+    Bridge->>Phoenix: POST /v1/traces (Protobuf)
+    Phoenix-->>Bridge: 200 OK
+    Bridge-->>n8n: Ingestion stats
+    n8n-->>User: Success response
+```
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- **Node.js**: 22.9.0+
+- **Python**: 3.12+
+- **Docker**: For Phoenix and n8n
+- **npm/pnpm**: For TypeScript dependencies
+
+### 5-Minute Setup
+
+**1. Start Phoenix:**
+
+```bash
+docker-compose -f docker-compose.phoenix.yml up -d
+```
+
+**2. Start n8n:**
+
+```bash
+docker-compose -f docker-compose.n8n.yml up -d
+```
+
+**3. Start Python Bridge:**
+
+```bash
+cd agent
+pip install -r requirements-phoenix.txt
+python observability/trace_bridge_api.py
+# Bridge starts on http://localhost:8787
+```
+
+**4. Import n8n Workflow:**
+
+```bash
+# Open n8n: http://localhost:5678
+# Import: agent/observability/n8n_workflow_universal_ingestion.json
+# Activate the workflow
+```
+
+**5. Test with Sample:**
+
+```bash
+cd agent-generator
+npx tsx src/chat-formats/test-pipeline.ts datasets/chat.json
+```
+
+**6. View in Phoenix:**
+
+Open http://localhost:6006 and see your traces!
+
+### Verification
+
+```bash
+# Check all services
+curl http://localhost:6006  # Phoenix UI
+curl http://localhost:8787/health  # Bridge
+curl http://localhost:5678  # n8n
+
+# Test n8n webhook
+curl -X POST http://localhost:5678/webhook/universal-chat-ingest \
+  -H "Content-Type: application/json" \
+  -d @datasets/chat.json
+```
+
+---
+
+## Components
+
+### 1. Entry Points
 
 **A. n8n Webhook (Primary Production Entry)**
 
@@ -588,15 +801,15 @@ N8N_API_KEY=[long JWT token]
 
 ### 4. Port Mapping Summary
 
-| Service           | Port | Purpose            | Access From                       |
-| ----------------- | ---- | ------------------ | --------------------------------- |
-| **Phoenix UI**    | 6006 | Web interface      | `http://localhost:6006`           |
-| **Phoenix gRPC**  | 4317 | OTLP collector     | `localhost:4317`                  |
-| **n8n UI**        | 5678 | Workflow editor    | `http://localhost:5678`           |
-| **n8n MCP**       | 3000 | MCP HTTP server    | `http://localhost:3000`           |
-| **Copilot Proxy** | 8080 | Telemetry endpoint | `http://localhost:8080/telemetry` |
-| **Trace Bridge**  | 8787 | JSON→Protobuf      | `http://localhost:8787/ingest`    |
-| **Agent Server**  | 8000 | Python ADK         | `http://localhost:8000`           |
+| Service                                   | Port                    | Purpose            | Access From                       |
+| ----------------------------------------- | ----------------------- | ------------------ | --------------------------------- |
+| **Phoenix UI**                            | 6006                    | Web interface      | `http://localhost:6006`           |
+| **Phoenix gRPC**                          | 4317                    | OTLP collector     | `localhost:4317`                  |
+| **n8n UI**                                | 5678                    | Workflow editor    | `http://localhost:5678`           |
+| **n8n MCP**                               | 3000                    | MCP HTTP server    | `http://localhost:3000`           |
+| **Copilot Proxy**                         | 8080                    | Telemetry endpoint | `http://localhost:8080/telemetry` |
+| **Trace Bridge**                          | 8787                    | JSON→Protobuf      | `http://localhost:8787/ingest`    |
+| \*\*Agent <http://localhost:5678>thon ADK | `http://localhost:8000` |
 
 ---
 
@@ -727,6 +940,8 @@ Phoenix (localhost:6006)
 
 ### 10. Key Architectural Notes
 
+<http://localhost:6006>
+
 1. **Docker→Host Communication:**
    - n8n uses `host.docker.internal` to reach host services (bridge, Phoenix)
    - Bridge uses `localhost` to reach Phoenix on host
@@ -744,3 +959,269 @@ Phoenix (localhost:6006)
    - MCP auth token for MCP server
      All file paths, ports, URLs, and service configurations have been verified and documented above.
      agentId: a6ce866 (for resuming to continue this agent's work if needed)
+     Here's your step-by-step runbook for the full end-to-end pipeline:
+
+---
+
+## Universal Chat Ingestion Pipeline — End-to-End Runbook
+
+### Architecture Overview
+
+```
+chat.json ──► n8n Webhook ──► Detect Format ──► Normalize ──► Bridge /ingest ──► Phoenix
+  (any agent)    :5678          (fingerprint)     (extract)      :8787              :6006
+                                                                 Pydantic ──► OTLP Protobuf
+```
+
+---
+
+### Step 1 — Start Infrastructure (3 services)
+
+Start in this order because of dependencies: **Phoenix → Bridge → n8n**
+
+```powershell
+# Terminal 1: Phoenix (must be first — Bridge needs it)
+docker-compose -f docker-compose.phoenix.yml up -d
+
+# Verify Phoenix is healthy
+curl http://localhost:6006/healthz
+# → opens at http://localhost:6006
+```
+
+```powershell
+# Terminal 2: Trace Bri<http://localhost:6006>8n — n8n POSTs to it)
+cd D:\Github_Projects\M<http://localhost:6006/v1/traces>tree
+& "C:\Users\dylan\AppDa<http://localhost:8787>hon\Python312\python.exe" -m agent.observability.trace_bridge_api
+<http://localhost:8787/docs>
+# Verify bridge is heal<http://localhost:5678>
+curl http://localhost:8<http://localhost:5678/webhook/universal-chat-ingest>
+# → {"status":"ok","ser<http://localhost:3000>"version":"2.1.0"}
+
+# Swagger UI available at:
+# http://localhost:8787/docs
+```
+
+```powershell
+# Terminal 3: n8n (needs Bridge reachable at host.docker.internal:8787)
+docker-compose -f docker-compose.n8n.yml up -d
+
+# Verify n8n is healthy
+curl http://localhost:5678/healthz
+# → n8n UI at http://localhost:5678 (admin / admin123)
+```
+
+`★ Insight ─────────────────────────────────────`
+**Why this order matters:** n8n runs in Docker and POSTs to `host.docker.internal:8787`. If the bridge isn't running, the n8n workflow will fail at the "Send to Bridge" node. Phoenix must be up before the bridge because `OTLPSpanExporter` connects on startup.
+`─────────────────────────────────────────────────`
+
+---
+
+### Step 2 — Activate the n8n Workflow
+
+The universal ingestion workflow must be **active** for the webhook to accept requests:
+
+1. Open **http://localhost:5678** → log in (`admin` / `admin123`)
+2. Find workflow: **"Universal Chat Ingestion"** (ID: `dfHBSbrEHbUi4H8B`)
+3. Toggle it **Active** (or via API):
+
+```powershell
+# Activate via n8n REST API
+curl -X POST http://localhost:5678/api/v1/workflows/dfHBSbrEHbUi4H8B/activate \
+  -H "X-N8N-API-KEY: $N8N_API_KEY"
+```
+
+> **Remember:** n8n's `active` field is read-only on PUT. You must use POST to the `/activate` endpoint.
+
+---
+
+### Step 3 — Prepare a Chat Export
+
+Get a chat.json file from any supported agent. Currently supported:
+
+| Agent                    | Format ID      | How to Export                                 |
+| ------------------------ | -------------- | --------------------------------------------- |
+| **VS Code Copilot Chat** | `copilot-chat` | VS Code → Copilot Chat panel → `...` → Export |
+
+Your test dataset lives at: `datasets/chat.json` (5.4 MB Copilot export)
+
+---
+
+### Step 4 — Send to the Pipeline
+
+POST the chat data to the n8n webhook:
+
+```powershell
+# Using the test dataset
+$chatData = Get-Content datasets/chat.json -Raw
+$body = @{
+    chatData    = ($chatData | ConvertFrom-Json)
+    projectName = "my-test-project"
+    sourceLabel = "chat.json"
+} | ConvertTo-Json -Depth 50
+
+Invoke-RestMethod -Method POST `
+  -Uri "http://localhost:5678/webhook/universal-chat-ingest" `
+  -ContentType "application/json" `
+  -Body $body
+```
+
+Or with curl:
+
+```bash
+curl -X POST http://localhost:5678/webhook/universal-chat-ingest \
+  -H "Content-Type: application/json" \
+  -d "{\"chatData\": $(cat datasets/chat.json), \"projectName\": \"my-test-project\"}"
+```
+
+---
+
+### Step 5 — What Happens Inside (the n8n workflow)
+
+The workflow executes 4 nodes in sequence:
+
+```
+Node 1: "Receive Chat JSON" (Webhook)
+  ↓ Extracts chatData, projectName, sourceLabel from POST body
+
+Node 2: "Detect Agent Format" (Code)
+  ↓ Runs fingerprint rules against chatData:
+  ↓   • responderUsername → type_string ✓
+  ↓   • requests → type_array ✓
+  ↓   • requests[0].message → type_object ✓
+  ↓   • requests[0].variableData → type_object ✓
+  ↓ Result: { detected: true, formatId: "copilot-chat" }
+
+Node 3: "Normalize Turns" (Code)
+  ↓ Extracts turns from requests[] array
+  ↓ For each turn:
+  ↓   • Assembles response[] (filters thinking blocks)
+  ↓   • Extracts tool calls from toolCallRounds[]
+  ↓   • Extracts thinking/CoT blocks
+  ↓   • Builds UniversalTurn object
+  ↓ Output: UniversalTurnPayload { format, agent, turns[] }
+
+Node 4: "Send to Bridge" (HTTP Request)
+  ↓ POST http://host.docker.internal:8787/ingest
+  ↓ Body: UniversalTurnPayload (JSON)
+```
+
+`★ Insight ─────────────────────────────────────`
+**The n8n Code nodes mirror the TypeScript logic** in `fingerprint.ts`, `normalizer.ts`, and `formats/copilot-chat.ts` as inline JavaScript. This means the pipeline runs with zero external dependencies inside n8n — no npm modules, no TypeScript compilation, fully self-contained.
+`─────────────────────────────────────────────────`
+
+---
+
+### Step 6 — What Happens in the Bridge
+
+When the bridge receives the POST at `/ingest`:
+
+```
+1. FastAPI validates body against Pydantic UniversalTurnPayload
+   → Rejects 422 if invalid (field-level errors)
+
+2. Initializes OTLP tracer:
+   TracerProvider → OTLPSpanExporter(http://localhost:6006/v1/traces)
+
+3. For each turn, creates 3-level span tree:
+
+   AGENT span (root)
+   ├─ openinference.span.kind = "AGENT"
+   ├─ input.value = userMessage
+   ├─ output.value = assistantResponse
+   │
+   └─ LLM span (child)
+      ├─ openinference.span.kind = "LLM"
+      ├─ llm.model_name = "copilot/claude-sonnet-4.5"
+      ├─ llm.token_count.prompt = 58214
+      ├─ llm.token_count.completion = 297
+      │
+      └─ TOOL span × N (children, one per toolCall)
+         ├─ openinference.span.kind = "TOOL"
+         ├─ tool.name = "fetch_webpage"
+         ├─ input.value = "{\"url\": \"...\"}"
+         └─ output.value = "{\"content\": \"...\"}"
+
+4. OTel SDK serializes spans → Protobuf
+5. OTLPSpanExporter POSTs to Phoenix /v1/traces
+6. Returns: { status, total_turns, uploaded, elapsed_seconds }
+```
+
+---
+
+### Step 7 — Verify in Phoenix
+
+Open **http://localhost:6006** and check:
+
+1. **Project selector** → Choose your `projectName` (e.g., `my-test-project`)
+2. **Traces tab** → You should see one trace per conversation turn
+3. **Click a trace** → See the 3-level span tree: AGENT → LLM → TOOL(s)
+4. **Span details** → Verify:
+   - `input.value` shows the user's message
+   - `output.value` shows the assistant's response
+   - `llm.model_name` shows the model used
+   - Tool spans show `tool.name`, input, and output
+
+---
+
+### Step 8 — What If the Format Is Unknown?
+
+If you POST a chat.json from an **unsupported agent**, the pipeline takes the discovery path:
+
+```
+Node 2: "Detect Agent Format"
+  → No fingerprint match
+  → { detected: false, confidence: "none" }
+
+Node 3b: "Generate Discovery Sample" (failure path)
+  → Analyzes structure: top-level keys, nested paths
+  → Finds candidate turns array (e.g., "messages", "conversation")
+  → Samples first turn for schema generation
+  → Saves to datasets/unknown-formats/unknown-{label}-{timestamp}-{hash}.json
+
+Webhook returns 422:
+{
+  "status": "unknown_format",
+  "discovery": {
+    "topLevelKeys": ["version", "metadata", "conversation"],
+    "candidateTurnsPath": "conversation",
+    "turnsCount": 15,
+    "firstTurnSample": { "role": "user", "content": "...", "timestamp": 1707... }
+  }
+}
+```
+
+You then use the discovery sample to **write a new format descriptor** and register it — no LLM calls needed at runtime.
+
+---
+
+### Quick Reference — Ports & URLs
+
+| Service            | URL                                                 | Purpose                 |
+| ------------------ | --------------------------------------------------- | ----------------------- |
+| **Phoenix UI**     | http://localhost:6006                               | View traces, projects   |
+| **Phoenix OTLP**   | http://localhost:6006/v1/traces                     | Protobuf trace receiver |
+| **Trace Bridge**   | http://localhost:8787                               | JSON → OTLP bridge      |
+| **Bridge Swagger** | http://localhost:8787/docs                          | Interactive API docs    |
+| **n8n UI**         | http://localhost:5678                               | Workflow editor         |
+| **n8n Webhook**    | http://localhost:5678/webhook/universal-chat-ingest | Pipeline entry point    |
+| **n8n MCP**        | http://localhost:3000                               | MCP server for n8n      |
+
+### Quick Reference — Test Commands
+
+```powershell
+# 1. Run TypeScript pipeline tests (no services needed)
+cd agent-generator && npx tsx src/chat-formats/test-pipeline.ts
+
+# 2. Regenerate OpenAPI spec + client SDK
+cd agent-generator && npm run generate:all
+
+# 3. Test bridge directly (bypass n8n)
+cd agent-generator && npx tsx src/chat-formats/test-pipeline.ts datasets/chat.json
+# Then POST the payload from test output to http://localhost:8787/ingest
+
+# 4. Check bridge health
+curl http://localhost:8787/health
+
+# 5. Check n8n workflow status
+curl -H "X-N8N-API-KEY: $N8N_API_KEY" http://localhost:5678/api/v1/workflows
+```
