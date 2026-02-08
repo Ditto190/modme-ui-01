@@ -7,6 +7,7 @@
   "scripts": {
     "generate": "tsx src/scripts/generate.ts",
     "generate:agent-schemas": "tsx src/scripts/generate-agent-schemas.ts",
+    "generate:openapi": "tsx src/chat-formats/openapi.ts",
     "test:pipeline": "tsx src/chat-formats/test-pipeline.ts",
     "test:pipeline:custom": "tsx src/chat-formats/test-pipeline.ts"
   },

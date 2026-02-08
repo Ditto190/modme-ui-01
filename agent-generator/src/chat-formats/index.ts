@@ -16,46 +16,49 @@
  */
 
 // High-level API
-export { detect, ingest, diagnose, listFormats, initializeRegistry } from './registry';
+export { detect, diagnose, ingest, initializeRegistry, listFormats } from "./registry";
 
 // Types (for format authors and consumers)
 export type {
   ChatFormatDescriptor,
   ChatFormatRegistry,
+  DetectionResult,
   FieldMapping,
   FieldPath,
   FingerprintRule,
-  UniversalTurn,
-  UniversalTurnPayload,
+  NormalizationResult,
   TokenUsage,
   ToolCall,
-  DetectionResult,
-  NormalizationResult,
-} from './types';
+  UniversalTurn,
+  UniversalTurnPayload,
+} from "./types";
 
 // Schemas (for Zod validation)
 export {
-  UniversalTurnSchema,
-  UniversalTurnPayloadSchema,
-  ToolCallSchema,
-  TokenUsageSchema,
   ChatFormatDescriptorSchema,
-  FingerprintRuleSchema,
-  FieldMappingSchema,
   ChatFormatRegistrySchema,
-} from './types';
+  FieldMappingSchema,
+  FingerprintRuleSchema,
+  TokenUsageSchema,
+  ToolCallSchema,
+  UniversalTurnPayloadSchema,
+  UniversalTurnSchema,
+} from "./types";
 
 // Discovery (for unknown format handling)
-export { generateDiscoverySample } from './discovery';
-export type { StructuralSample, DiscoveryResult } from './discovery';
+export { generateDiscoverySample } from "./discovery";
+export type { DiscoveryResult, StructuralSample } from "./discovery";
 
 // Utilities (for format descriptor authors)
-export { getByPath, evaluateRule, matchFormat } from './fingerprint';
+export { evaluateRule, getByPath, matchFormat } from "./fingerprint";
 export {
   registerResponseAssembler,
   registerThinkingExtractor,
   registerToolCallExtractor,
-} from './normalizer';
+} from "./normalizer";
+
+// OpenAPI spec generation
+export { generateAndSaveSpec, generateOpenApiDocument } from "./openapi";
 
 // Format descriptors (for direct access)
-export { copilotChatDescriptor } from './formats/copilot-chat';
+export { copilotChatDescriptor } from "./formats/copilot-chat";
