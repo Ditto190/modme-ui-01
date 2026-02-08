@@ -1,7 +1,7 @@
 # Phoenix Universal Chat Ingestion Pipeline - Complete Guide
 
-**Version**: 1.0  
-**Last Updated**: February 8, 2026  
+**Version**: 1.0
+**Last Updated**: February 8, 2026
 **Status**: Production Ready
 
 ## Table of Contents
@@ -1339,7 +1339,622 @@ You then use the discovery sample to **write a new format descriptor** and regis
 
 ---
 
-### Quick Reference — Ports & URLs
+## Troubleshooting
+
+### Common Issues & Solutions
+
+#### 1. Format Not Detected
+
+**Symptom**: n8n workflow returns `"status": "unknown_format"`
+
+**Cause**: Your chat format doesn't match any registered fingerprints.
+
+**Solution**:
+
+1. Check the discovery report in the response:
+
+```json
+{
+  "status": "unknown_format",
+  "discovery": {
+    "suggested_filename": "unknown-my-agent-2026-02-08-a3f9e2.json",
+    "top_level_schema": { "turns": "array", "model": "string" },
+    "candidate_paths": ["turns", "messages"]
+  }
+}
+```
+
+2. Save your chat file to `agent-generator/datasets/unknown-formats/{suggested_filename}`
+3. Create a new format descriptor in `agent-generator/src/chat-formats/formats/`
+4. Register it in `registry.ts`
+5. Test with CLI pipeline: `npx tsx src/chat-formats/test-pipeline.ts datasets/unknown-formats/your-file.json`
+
+#### 2. Bridge Connection Refused
+
+**Symptom**: n8n shows error "ECONNREFUSED 127.0.0.1:8787"
+
+**Solution**:
+
+```bash
+# Check bridge is running
+docker-compose -f docker-compose.phoenix.yml ps
+
+# If not running, start it
+docker-compose -f docker-compose.phoenix.yml up trace-bridge -d
+
+# Check logs
+docker-compose -f docker-compose.phoenix.yml logs trace-bridge
+
+# Test health endpoint
+curl http://localhost:8787/health
+```
+
+#### 3. Phoenix Not Showing Traces
+
+**Symptom**: Bridge shows success but Phoenix UI is empty.
+
+**Solution**:
+
+1. Check Phoenix is running:
+
+```bash
+docker-compose -f docker-compose.phoenix.yml ps phoenix
+```
+
+2. Check bridge logs for OTLP export errors:
+
+```bash
+docker-compose -f docker-compose.phoenix.yml logs trace-bridge | grep -i error
+```
+
+3. Verify Phoenix OTLP endpoint is reachable:
+
+```bash
+curl -X POST http://localhost:6006/v1/traces \
+  -H "Content-Type: application/x-protobuf" \
+  --data-binary @test-span.pb
+```
+
+4. Check Phoenix UI console for JavaScript errors
+5. Try clearing Phoenix cache:
+
+```bash
+docker-compose -f docker-compose.phoenix.yml down -v
+docker-compose -f docker-compose.phoenix.yml up -d
+```
+
+#### 4. n8n Workflow Not Triggering
+
+**Symptom**: POST to webhook returns 404 or no response.
+
+**Solution**:
+
+1. Verify n8n is running and accessible:
+
+```bash
+curl http://localhost:5678
+```
+
+2. Check workflow is active in n8n UI
+3. Verify webhook URL path matches workflow:
+   - n8n UI → Workflows → Universal Chat Ingestion → Webhook node
+   - Path should be `/webhook/universal-chat-ingest`
+4. Check n8n logs:
+
+```bash
+docker-compose -f docker-compose.n8n.yml logs n8n
+```
+
+5. Test webhook activation:
+
+```bash
+curl -X POST http://localhost:5678/webhook-test/universal-chat-ingest \
+  -H "Content-Type: application/json" \
+  -d '{"test": true}'
+```
+
+#### 5. Module Import Errors in TypeScript
+
+**Symptom**: `Cannot find module '@chat-formats/...'` or similar errors.
+
+**Solution**:
+
+```bash
+cd agent-generator
+
+# Reinstall dependencies
+npm install
+
+# Rebuild TypeScript
+npm run build
+
+# Clear TypeScript cache
+rm -rf node_modules/.cache
+rm -rf dist
+
+# Test again
+npx tsx src/chat-formats/test-pipeline.ts
+```
+
+#### 6. Zod Validation Errors
+
+**Symptom**: `ZodError: Invalid type at path "turns[0].userMessage"`
+
+**Cause**: Normalized data doesn't match UniversalTurnPayload schema.
+
+**Solution**:
+
+1. Enable debug logging in normalizer:
+
+```typescript
+// agent-generator/src/chat-formats/normalizer.ts
+console.log("Normalized turn:", JSON.stringify(turn, null, 2));
+```
+
+2. Check field mappings in your format descriptor
+3. Verify custom extractors return correct types:
+   - `userMessage` must be string (required)
+   - `assistantResponse` must be string (required)
+   - `toolCalls` must be `ToolCall[]` (optional)
+4. Add fallback values for missing fields
+
+#### 7. Docker Compose Port Conflicts
+
+**Symptom**: `Error: port is already allocated`
+
+**Solution**:
+
+```bash
+# Find what's using the port (example: 6006)
+netstat -ano | findstr :6006  # Windows
+lsof -i :6006                 # macOS/Linux
+
+# Stop conflicting service or change port
+# Edit docker-compose.phoenix.yml:
+services:
+  phoenix:
+    ports:
+      - "6007:6006"  # Changed from 6006:6006
+```
+
+### Debug Logs
+
+Enable detailed logging for troubleshooting:
+
+**Bridge (Python FastAPI):**
+
+```bash
+# Edit agent/observability/trace_bridge/main.py
+import logging
+logging.basicConfig(level=logging.DEBUG)
+```
+
+**TypeScript Pipeline:**
+
+```typescript
+// agent-generator/src/chat-formats/fingerprint.ts
+const DEBUG = true;
+if (DEBUG) console.log("Detection result:", result);
+```
+
+**n8n Workflow:**
+
+Add "Run Code" node after each step:
+
+```javascript
+// n8n Code node
+console.log("Debug output:", $input.all());
+return $input.all();
+```
+
+---
+
+## Practical Examples
+
+### Example 1: Ingesting Copilot Chat via n8n
+
+**Scenario**: You exported a Copilot chat from VS Code and want to view it in Phoenix.
+
+**Steps:**
+
+1. **Export chat from VS Code**:
+   - Open Copilot Chat panel
+   - Click "..." menu → Export to JSON
+   - Save as `copilot-chat-2026-02-08.json`
+
+2. **Upload via n8n webhook**:
+
+```bash
+curl -X POST http://localhost:5678/webhook/universal-chat-ingest \
+  -H "Content-Type: application/json" \
+  -d @copilot-chat-2026-02-08.json
+```
+
+3. **View in Phoenix**:
+   - Open <http://localhost:6006>
+   - Navigate to Projects → "chat-traces"
+   - See your conversation with tool calls, thinking traces, token counts
+
+**Expected Result:**
+
+```json
+{
+  "status": "success",
+  "format": "copilot-chat",
+  "turns_ingested": 12,
+  "project": "chat-traces",
+  "trace_id": "abc123..."
+}
+```
+
+### Example 2: Testing Unknown Format Discovery
+
+**Scenario**: You have a chat export from a new AI tool (e.g., "MyAgent") that isn't recognized yet.
+
+**Steps:**
+
+1. **Attempt detection via CLI**:
+
+```bash
+cd agent-generator
+npx tsx src/chat-formats/test-pipeline.ts datasets/myagent-export.json
+```
+
+2. **Review discovery report**:
+
+```plaintext
+⚠ Format not recognized
+
+Suggested filename: unknown-myagent-2026-02-08-a3f9e2.json
+
+Top-level schema:
+  conversation_id: string
+  messages: array
+  metadata: object
+
+Candidate turn arrays:
+  - messages (confidence: high, 15 items)
+  - turns (confidence: medium, 15 items)
+
+Sample first turn:
+  {
+    "role": "user",
+    "content": "How do I...",
+    "timestamp": "2026-02-08T10:30:00Z"
+  }
+```
+
+3. **Create format descriptor**:
+
+```typescript
+// agent-generator/src/chat-formats/formats/myagent.ts
+export const myAgentDescriptor: ChatFormatDescriptor = {
+  id: "myagent",
+  humanName: "MyAgent Chat",
+  priority: 90,
+  status: "experimental",
+  fingerprint: [
+    { path: "conversation_id", check: "type_string" },
+    { path: "messages", check: "type_array" },
+    { path: "messages[0].role", check: "type_string" },
+  ],
+  fieldMapping: {
+    turns: "messages",
+    user_message: "content",
+    assistant_response: "content",
+    model: "metadata.model",
+    timestamp: "timestamp",
+  },
+  requiresResponseAssembly: false,
+};
+```
+
+4. **Register in registry**:
+
+```typescript
+// agent-generator/src/chat-formats/registry.ts
+import { myAgentDescriptor } from "./formats/myagent.js";
+
+export async function initializeRegistry() {
+  chatRegistry.set("myagent", myAgentDescriptor);
+}
+```
+
+5. **Test again**:
+
+```bash
+npx tsx src/chat-formats/test-pipeline.ts datasets/myagent-export.json
+```
+
+**Expected Result:**
+
+```plaintext
+✓ Format detected: myagent (confidence: exact)
+✓ Normalized 15 turns
+✓ Schema validation passed
+```
+
+### Example 3: Automated Pipeline via GitHub Actions
+
+**Scenario**: Automatically ingest chat exports from CI/CD pipeline.
+
+**Workflow** (`.github/workflows/ingest-chats.yml`):
+
+```yaml
+name: Ingest AI Chat Logs
+
+on:
+  push:
+    paths:
+      - "chat-logs/**/*.json"
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Upload to Phoenix
+        run: |
+          for file in chat-logs/*.json; do
+            curl -X POST ${{ secrets.N8N_WEBHOOK_URL }} \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer ${{ secrets.N8N_API_KEY }}" \
+              -d @"$file"
+          done
+```
+
+**Secrets Configuration:**
+
+```plaintext
+N8N_WEBHOOK_URL=https://your-server.com/webhook/universal-chat-ingest
+N8N_API_KEY=your-api-key-here
+```
+
+### Example 4: Custom Tool Call Extraction
+
+**Scenario**: Your AI agent has a unique tool call format.
+
+**Problem**: Default extractor doesn't find tool calls.
+
+**Solution**: Register custom extractor.
+
+```typescript
+// agent-generator/src/chat-formats/formats/myagent.ts
+function extractMyAgentTools(turn: any): ToolCall[] {
+  const toolCalls: ToolCall[] = [];
+  
+  if (turn.function_calls) {
+    for (const call of turn.function_calls) {
+      toolCalls.push({
+        name: call.function_name,
+        input: JSON.stringify(call.arguments),
+        output: call.result,
+      });
+    }
+  }
+  
+  return toolCalls;
+}
+
+// Register in initializeRegistry()
+registerToolCallExtractor("myagent", extractMyAgentTools);
+```
+
+---
+
+## API Reference
+
+### TypeScript Registry API
+
+**Location**: `agent-generator/src/chat-formats/registry.ts`
+
+#### `initializeRegistry(): Promise<void>`
+
+Initializes the format registry and registers all custom extractors.
+
+**MUST be called before any other registry functions.**
+
+```typescript
+import { initializeRegistry } from "./chat-formats/registry.js";
+await initializeRegistry();
+```
+
+#### `detect(data: unknown): DetectionResult`
+
+Detects chat format via fingerprinting.
+
+**Parameters:**
+- `data`: Unknown JSON object
+
+**Returns**: `DetectionResult`
+
+```typescript
+{
+  format: string | null;        // Format ID or null
+  confidence: "exact" | "partial" | "none";
+  matchedRules: number;
+  totalRules: number;
+  diagnostics?: string;         // Error message if failed
+}
+```
+
+**Example:**
+
+```typescript
+const result = detect(chatData);
+if (result.confidence === "exact") {
+  console.log(`Detected format: ${result.format}`);
+}
+```
+
+#### `ingest(data: unknown, projectName?: string, sourceLabel?: string): UniversalTurnPayload | DiscoveryReport`
+
+Complete ingestion pipeline: detect → normalize → validate.
+
+**Parameters:**
+- `data`: Unknown JSON object
+- `projectName`: Phoenix project name (optional)
+- `sourceLabel`: Source filename for discovery (optional)
+
+**Returns**: `UniversalTurnPayload` or `DiscoveryReport`
+
+**Example:**
+
+```typescript
+const result = ingest(chatData, "my-project", "chat.json");
+
+if ("format" in result) {
+  // Success - UniversalTurnPayload
+  console.log(`Ingested ${result.turns.length} turns`);
+} else {
+  // Unknown format - DiscoveryReport
+  console.log("Unknown format, discovery report:");
+  console.log(result.suggested_filename);
+}
+```
+
+#### `diagnose(data: unknown): string`
+
+Generates human-readable diagnostic report for failed detection.
+
+**Parameters:**
+- `data`: Unknown JSON object
+
+**Returns**: Diagnostic text
+
+**Example:**
+
+```typescript
+const report = diagnose(chatData);
+console.log(report);
+// Output:
+// "Format detection failed.
+// Top-level keys: messages, metadata, timestamp
+// Candidate turn arrays: messages (15 items)
+// Suggestion: Check fingerprint rules for existing formats"
+```
+
+#### `listFormats(): ChatFormatDescriptor[]`
+
+Returns array of all registered format descriptors.
+
+```typescript
+const formats = listFormats();
+formats.forEach((fmt) => {
+  console.log(`${fmt.id}: ${fmt.humanName} (priority ${fmt.priority})`);
+});
+```
+
+### Python Bridge API
+
+**Base URL**: `http://localhost:8787`
+
+**OpenAPI Spec**: <http://localhost:8787/docs>
+
+#### `POST /ingest` ⭐ (Recommended)
+
+Ingest universal format payload.
+
+**Request Body**: `UniversalTurnPayload`
+
+```json
+{
+  "format": "copilot-chat",
+  "projectName": "my-project",
+  "turns": [
+    {
+      "index": 0,
+      "userMessage": "Hello",
+      "assistantResponse": "Hi!",
+      "model": "gpt-4"
+    }
+  ]
+}
+```
+
+**Response**: `IngestionResult`
+
+```json
+{
+  "success": true,
+  "trace_id": "abc123",
+  "turns_ingested": 1,
+  "project": "my-project"
+}
+```
+
+#### `POST /upload`
+
+Legacy Copilot format upload.
+
+**Request Body**: Raw Copilot `chat.json` structure
+
+**Response**: `IngestionResult`
+
+#### `POST /upload-file`
+
+Multipart file upload.
+
+**Form Fields:**
+- `file`: JSON file
+- `projectName`: Optional project name
+
+**Response**: `IngestionResult`
+
+#### `GET /health`
+
+Health check endpoint.
+
+**Response:**
+
+```json
+{
+  "status": "healthy",
+  "phoenix_url": "http://localhost:6006",
+  "uptime_seconds": 3600
+}
+```
+
+### UniversalTurnPayload Schema
+
+Complete Zod schema for universal turn format:
+
+```typescript
+const UniversalTurnPayloadSchema = z.object({
+  format: z.string(),
+  agent: z.string().optional(),
+  projectName: z.string(),
+  sessionId: z.string().optional(),
+  responder: z.string().optional(),
+  source: z.string().optional(),
+  turns: z.array(z.object({
+    index: z.number(),
+    userMessage: z.string(),
+    assistantResponse: z.string(),
+    model: z.string(),
+    timestampMs: z.number().optional(),
+    latencyMs: z.number().optional(),
+    tokens: z.object({
+      prompt: z.number().optional(),
+      completion: z.number().optional(),
+      total: z.number().optional(),
+    }).optional(),
+    toolCalls: z.array(z.object({
+      name: z.string(),
+      input: z.string().optional(),
+      output: z.string().optional(),
+      round: z.number().optional(),
+    })),
+    thinking: z.string().optional(),
+    metadata: z.record(z.unknown()),
+  })),
+});
+```
+
+---
+
+## Quick Reference — Ports & URLs
 
 | Service            | URL                                                 | Purpose                 |
 | ------------------ | --------------------------------------------------- | ----------------------- |
