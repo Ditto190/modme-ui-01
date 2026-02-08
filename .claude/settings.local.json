@@ -25,7 +25,8 @@
       "Bash(\"C:\\\\Users\\\\dylan\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\python.exe\" -c \"import phoenix.Client as C; c=C\\(\\); df=c.get_spans_dataframe\\(project_name=''copilot-research-n8n''\\); print\\(f''Spans: {len\\(df\\)}''\\)\")",
       "mcp__plugin_episodic-memory_episodic-memory__search",
       "mcp__n8n-mcp__n8n_list_workflows",
-      "WebFetch(domain:ai-sdk.dev)"
+      "WebFetch(domain:ai-sdk.dev)",
+      "mcp__code-reasoning__code-reasoning"
     ]
   }
 }
