@@ -1,13 +1,18 @@
 /**
  * chat-formats/openapi.ts
  *
- * Exports Zod schemas as OpenAPI 3.1 specification using zod-openapi v5.
+ * Generates OpenAPI 3.1 specification from the canonical Zod schemas in types.ts.
+ *
+ * SINGLE SOURCE OF TRUTH: All data schemas live in types.ts.
+ * This file only adds:
+ *   - API-specific schemas (IngestSuccessResponse, ErrorResponse, DiscoverySample)
+ *   - OpenAPI document structure (paths, servers, tags, examples)
  *
  * This enables:
  * - Auto-generated API documentation for the /ingest endpoint
  * - Schema sharing with external tools (Postman, Swagger UI, etc.)
- * - Client SDK generation in any language
- * - Contract testing between TypeScript and Python bridge
+ * - Client SDK generation via @hey-api/openapi-ts
+ * - Contract testing between TypeScript pipeline and Python bridge
  *
  * Usage:
  *   npm run generate:openapi
@@ -21,125 +26,32 @@ import { z } from "zod";
 import { createSchema } from "zod-openapi";
 
 // ============================================================================
-// SCHEMAS WITH DESCRIPTIONS (zod-openapi v5 uses native .describe())
+// IMPORT CANONICAL SCHEMAS FROM types.ts (single source of truth)
+// ============================================================================
+
+import {
+  FingerprintRuleSchema,
+  TokenUsageSchema,
+  ToolCallSchema,
+  UniversalTurnPayloadSchema,
+  UniversalTurnSchema,
+} from "./types";
+
+// Re-export for consumers who only import from openapi.ts
+export {
+  FingerprintRuleSchema,
+  TokenUsageSchema,
+  ToolCallSchema,
+  UniversalTurnPayloadSchema,
+  UniversalTurnSchema,
+};
+
+// ============================================================================
+// API-SPECIFIC SCHEMAS (not in types.ts — only relevant to the HTTP layer)
 // ============================================================================
 
 /**
- * Tool call within a conversation turn
- */
-export const ToolCallSchema = z
-  .object({
-    name: z.string().describe('Tool/function name (e.g., "read_file", "search")'),
-    input: z.string().optional().describe("Stringified JSON arguments passed to the tool"),
-    output: z.string().optional().describe("Stringified JSON result from the tool"),
-    round: z
-      .number()
-      .int()
-      .optional()
-      .describe("Tool calling round index (0-indexed, for multi-round tool use)"),
-  })
-  .describe("A single tool invocation within a turn");
-
-export type ToolCall = z.infer<typeof ToolCallSchema>;
-
-/**
- * Token usage metrics
- */
-export const TokenUsageSchema = z
-  .object({
-    prompt: z.number().int().default(0).describe("Number of prompt/input tokens"),
-    completion: z.number().int().default(0).describe("Number of completion/output tokens"),
-    total: z.number().int().optional().describe("Total tokens (if provided by API)"),
-  })
-  .describe("Token usage metrics for a turn");
-
-export type TokenUsage = z.infer<typeof TokenUsageSchema>;
-
-/**
- * A single conversation turn in the universal format
- */
-export const UniversalTurnSchema = z
-  .object({
-    index: z.number().int().describe("Turn position in conversation (0-indexed)"),
-    userMessage: z.string().describe("The human input text"),
-    assistantResponse: z.string().describe("The assistant output text"),
-    model: z
-      .string()
-      .default("unknown")
-      .describe("Model identifier (e.g., claude-sonnet-4-20250514)"),
-    timestampMs: z.number().int().optional().describe("Unix timestamp in milliseconds"),
-    latencyMs: z.number().int().optional().describe("Total response time in milliseconds"),
-    tokens: TokenUsageSchema.optional(),
-    toolCalls: z
-      .array(ToolCallSchema)
-      .default([])
-      .describe("Tools/functions invoked during this turn"),
-    thinking: z
-      .string()
-      .optional()
-      .describe("Chain-of-thought / reasoning text (if model provides it)"),
-    metadata: z
-      .record(z.string(), z.unknown())
-      .default({})
-      .describe("Agent-specific metadata preserved as-is"),
-  })
-  .describe("A single conversation turn in the universal format");
-
-export type UniversalTurn = z.infer<typeof UniversalTurnSchema>;
-
-/**
- * Complete payload sent from n8n → Python bridge /ingest
- */
-export const UniversalTurnPayloadSchema = z
-  .object({
-    format: z
-      .string()
-      .describe("Detected format ID from the registry (e.g., copilot-chat, claude-code)"),
-    agent: z.string().describe("AI agent that produced this chat (e.g., GitHub Copilot)"),
-    projectName: z
-      .string()
-      .default("chat-traces")
-      .describe("Phoenix project name for trace organization"),
-    sessionId: z.string().optional().describe("Session identifier (if available from source)"),
-    responder: z.string().optional().describe("User/responder identity"),
-    turns: z
-      .array(UniversalTurnSchema)
-      .min(1)
-      .describe("The normalized conversation turns (minimum 1)"),
-  })
-  .describe("Complete payload sent from n8n to Python bridge /ingest endpoint");
-
-export type UniversalTurnPayload = z.infer<typeof UniversalTurnPayloadSchema>;
-
-/**
- * Fingerprint rule for format detection
- */
-export const FingerprintRuleSchema = z
-  .object({
-    path: z.string().describe("JSONPath-like key to check (dot notation)"),
-    check: z
-      .enum([
-        "exists",
-        "type_string",
-        "type_number",
-        "type_array",
-        "type_object",
-        "equals",
-        "matches",
-        "has_key",
-      ])
-      .describe("Type of check to perform"),
-    value: z
-      .unknown()
-      .optional()
-      .describe("Expected value (for equals) or regex pattern (for matches)"),
-  })
-  .describe("A fingerprint rule for format detection");
-
-export type FingerprintRule = z.infer<typeof FingerprintRuleSchema>;
-
-/**
- * Successful ingestion response
+ * Successful ingestion response from POST /ingest
  */
 export const IngestSuccessResponseSchema = z
   .object({
@@ -154,7 +66,7 @@ export const IngestSuccessResponseSchema = z
   .describe("Successful ingestion response");
 
 /**
- * Error response
+ * Error response for 4xx/5xx responses
  */
 export const ErrorResponseSchema = z
   .object({
@@ -165,7 +77,8 @@ export const ErrorResponseSchema = z
   .describe("Error response");
 
 /**
- * Discovery sample for unknown formats
+ * Discovery sample returned when an unknown format is submitted (422).
+ * This is the API-facing shape; see discovery.ts StructuralSample for internal use.
  */
 export const DiscoverySampleSchema = z
   .object({
@@ -174,9 +87,17 @@ export const DiscoverySampleSchema = z
     totalSize: z.number().int().describe("Original file size in bytes"),
     turnsCount: z.number().int().describe("Estimated number of turns detected"),
     topLevelKeys: z.array(z.string()).describe("Top-level JSON keys found"),
-    deepKeyMap: z.record(z.string(), z.string()).describe("Map of all paths to their types"),
-    candidateTurnsPath: z.string().nullable().describe("Best guess for the turns array path"),
-    firstTurnSample: z.unknown().optional().describe("Truncated first turn for schema generation"),
+    deepKeyMap: z
+      .record(z.string(), z.string())
+      .describe("Map of all paths to their types"),
+    candidateTurnsPath: z
+      .string()
+      .nullable()
+      .describe("Best guess for the turns array path"),
+    firstTurnSample: z
+      .unknown()
+      .optional()
+      .describe("Truncated first turn for schema generation"),
     detectionErrors: z.array(z.string()).describe("Why detection failed"),
   })
   .describe("Discovery sample for unknown chat formats");
@@ -188,24 +109,29 @@ export type DiscoverySample = z.infer<typeof DiscoverySampleSchema>;
 // ============================================================================
 
 /**
- * Generate the complete OpenAPI 3.1 document
+ * Generate the complete OpenAPI 3.1 document.
+ *
+ * Uses createSchema() from zod-openapi to convert Zod → JSON Schema,
+ * then assembles the full OpenAPI doc with paths, examples, and $refs.
  */
 export function generateOpenApiDocument() {
-  // Convert Zod schemas to JSON Schema
-  const toolCallJsonSchema = createSchema(ToolCallSchema);
-  const tokenUsageJsonSchema = createSchema(TokenUsageSchema);
-  const universalTurnJsonSchema = createSchema(UniversalTurnSchema);
-  const universalTurnPayloadJsonSchema = createSchema(UniversalTurnPayloadSchema);
-  const ingestSuccessJsonSchema = createSchema(IngestSuccessResponseSchema);
-  const errorJsonSchema = createSchema(ErrorResponseSchema);
-  const discoverySampleJsonSchema = createSchema(DiscoverySampleSchema);
+  // Convert Zod schemas to JSON Schema via zod-openapi
+  const componentSchemas = {
+    ToolCall: createSchema(ToolCallSchema).schema,
+    TokenUsage: createSchema(TokenUsageSchema).schema,
+    UniversalTurn: createSchema(UniversalTurnSchema).schema,
+    UniversalTurnPayload: createSchema(UniversalTurnPayloadSchema).schema,
+    FingerprintRule: createSchema(FingerprintRuleSchema).schema,
+    IngestSuccessResponse: createSchema(IngestSuccessResponseSchema).schema,
+    ErrorResponse: createSchema(ErrorResponseSchema).schema,
+    DiscoverySample: createSchema(DiscoverySampleSchema).schema,
+  };
 
-  // Build the OpenAPI document manually (zod-openapi v5 createDocument expects refs)
   const openApiDoc = {
     openapi: "3.1.0",
     info: {
       title: "Universal Chat Ingestion API",
-      version: "2.0.0",
+      version: "2.1.0",
       description: `
 # Universal Chat Ingestion Bridge
 
@@ -217,18 +143,26 @@ A format-agnostic API for ingesting AI chat conversations into Phoenix observabi
 any-agent-chat.json → n8n Workflow → /ingest → OTLP Spans → Phoenix
 \`\`\`
 
+## Schema Provenance
+
+All data schemas are defined once in \`types.ts\` (Zod) and flow to:
+- **TypeScript pipeline** — Zod runtime validation
+- **OpenAPI spec** — this document (via zod-openapi)
+- **Python bridge** — Pydantic models (generated from this spec)
+- **Client SDKs** — TypeScript client (via @hey-api/openapi-ts)
+
 ## Supported Formats
 
 - **copilot-chat**: VS Code Copilot Chat exports
-- *More formats coming soon via schema-crawler*
+- *More formats added via schema-crawler + offline AI*
 
 ## Adding New Formats
 
 When an unknown format is submitted, the API returns a \`discoverySample\`
-with structural analysis. This sample can be used to generate a new
-\`ChatFormatDescriptor\` offline using the schema-crawler tools.
+with structural analysis. Use this sample to generate a new
+\`ChatFormatDescriptor\` offline with the schema-crawler tools.
 
-## Related Documentation
+## Related
 
 - [ADR-006: Universal Chat Ingestion Pipeline](https://github.com/Ditto190/modme-ui-01/blob/main/docs/adr-006-universal-chat-ingestion-pipeline.md)
 - [Phoenix Documentation](https://docs.arize.com/phoenix)
@@ -253,18 +187,9 @@ with structural analysis. This sample can be used to generate a new
       },
     ],
     tags: [
-      {
-        name: "Ingestion",
-        description: "Endpoints for uploading chat traces",
-      },
-      {
-        name: "Formats",
-        description: "Chat format metadata and discovery",
-      },
-      {
-        name: "System",
-        description: "Health and status endpoints",
-      },
+      { name: "Ingestion", description: "Endpoints for uploading chat traces" },
+      { name: "Formats", description: "Chat format metadata and discovery" },
+      { name: "System", description: "Health and status endpoints" },
     ],
     paths: {
       "/ingest": {
@@ -294,14 +219,19 @@ Each turn becomes an AGENT → LLM span (with optional TOOL child spans).
                   turns: [
                     {
                       index: 0,
-                      userMessage: "Help me refactor this function to use async/await",
+                      userMessage:
+                        "Help me refactor this function to use async/await",
                       assistantResponse: "Here is the refactored version...",
                       model: "claude-sonnet-4-20250514",
                       timestampMs: 1707350400000,
                       latencyMs: 3200,
                       tokens: { prompt: 1500, completion: 800 },
                       toolCalls: [
-                        { name: "read_file", input: '{"path":"src/index.ts"}', output: "..." },
+                        {
+                          name: "read_file",
+                          input: '{"path":"src/index.ts"}',
+                          output: "...",
+                        },
                       ],
                     },
                   ],
@@ -314,7 +244,9 @@ Each turn becomes an AGENT → LLM span (with optional TOOL child spans).
               description: "Traces successfully uploaded to Phoenix",
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/IngestSuccessResponse" },
+                  schema: {
+                    $ref: "#/components/schemas/IngestSuccessResponse",
+                  },
                 },
               },
             },
@@ -335,7 +267,9 @@ Each turn becomes an AGENT → LLM span (with optional TOOL child spans).
                     properties: {
                       success: { type: "boolean", enum: [false] },
                       error: { type: "string" },
-                      discoverySample: { $ref: "#/components/schemas/DiscoverySample" },
+                      discoverySample: {
+                        $ref: "#/components/schemas/DiscoverySample",
+                      },
                     },
                   },
                 },
@@ -356,7 +290,8 @@ Each turn becomes an AGENT → LLM span (with optional TOOL child spans).
         get: {
           operationId: "listSupportedFormats",
           summary: "List supported chat formats",
-          description: "Returns the list of chat formats the bridge can process.",
+          description:
+            "Returns the list of chat formats the bridge can process.",
           tags: ["Formats"],
           responses: {
             "200": {
@@ -417,7 +352,7 @@ Each turn becomes an AGENT → LLM span (with optional TOOL child spans).
                   },
                   example: {
                     status: "healthy",
-                    version: "2.0.0",
+                    version: "2.1.0",
                     phoenixConnected: true,
                     formats: ["copilot-chat"],
                   },
@@ -429,15 +364,7 @@ Each turn becomes an AGENT → LLM span (with optional TOOL child spans).
       },
     },
     components: {
-      schemas: {
-        ToolCall: toolCallJsonSchema.schema,
-        TokenUsage: tokenUsageJsonSchema.schema,
-        UniversalTurn: universalTurnJsonSchema.schema,
-        UniversalTurnPayload: universalTurnPayloadJsonSchema.schema,
-        IngestSuccessResponse: ingestSuccessJsonSchema.schema,
-        ErrorResponse: errorJsonSchema.schema,
-        DiscoverySample: discoverySampleJsonSchema.schema,
-      },
+      schemas: componentSchemas,
     },
   };
 
@@ -474,14 +401,17 @@ export function generateAndSaveSpec(outputPath?: string) {
   writeFileSync(finalPath, JSON.stringify(doc, null, 2), "utf-8");
 
   console.log(`✅ OpenAPI spec generated: ${finalPath}`);
-  console.log(`   Schemas: ToolCall, TokenUsage, UniversalTurn, UniversalTurnPayload, etc.`);
-  console.log(`   Endpoints: POST /ingest, GET /formats, GET /health`);
+  console.log(
+    `   Schemas: ${Object.keys(doc.components.schemas).join(", ")}`
+  );
+  console.log(`   Endpoints: ${Object.keys(doc.paths).join(", ")}`);
 
   return finalPath;
 }
 
 // Run if executed directly
-const isMain = import.meta.url === `file:///${process.argv[1].replace(/\\/g, "/")}`;
+const isMain =
+  import.meta.url === `file:///${process.argv[1].replace(/\\/g, "/")}`;
 if (isMain) {
   generateAndSaveSpec();
 }
