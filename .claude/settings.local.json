@@ -37,7 +37,8 @@
       "mcp__n8n-mcp__n8n_autofix_workflow",
       "WebFetch(domain:tools.openapis.org)",
       "Bash(ls:*)",
-      "mcp__plugin_episodic-memory_episodic-memory__read"
+      "mcp__plugin_episodic-memory_episodic-memory__read",
+      "Bash(dir:*)"
     ]
   }
 }
