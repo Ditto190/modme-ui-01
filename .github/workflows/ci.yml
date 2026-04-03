@@ -152,6 +152,41 @@ jobs:
             exit 1
           fi
 
+  # Language matrix: placeholder checks for TypeScript, Node, Python, and Go.
+  # Replace the echo commands with real checks as each language is adopted.
+  check:
+    name: "Check (${{ matrix.language }})"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [typescript, node, python, go]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (typescript / node)
+        if: matrix.language == 'typescript' || matrix.language == 'node'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup Python
+        if: matrix.language == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup Go
+        if: matrix.language == 'go'
+        uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+
+      - name: Placeholder check
+        run: echo "No checks defined yet for ${{ matrix.language }}."
+
   integration-check:
     name: Integration Check
     runs-on: ubuntu-latest

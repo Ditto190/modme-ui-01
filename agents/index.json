@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "description": "Local agent asset index for modme-ui-01. Lists rubrics, prompts, skills, and subagents available in this repository.",
+  "sources": [
+    {
+      "id": "local-review-rubric",
+      "path": "agents/review/code-review-rubric.md",
+      "type": "review-checklist",
+      "languages": ["typescript", "javascript", "python", "go"],
+      "tags": ["code-review", "quality", "agents", "security", "maintainability"]
+    },
+    {
+      "id": "pr-template",
+      "path": ".github/pull_request_template.md",
+      "type": "pr-template",
+      "languages": ["typescript", "javascript", "python", "go"],
+      "tags": ["pull-request", "agents", "awesome-copilot", "process"]
+    },
+    {
+      "id": "copilot-instructions",
+      "path": ".github/copilot-instructions.md",
+      "type": "agent-instructions",
+      "languages": ["typescript", "javascript", "python"],
+      "tags": ["copilot", "instructions", "conventions", "architecture"]
+    },
+    {
+      "id": "suggest-awesome-copilot-agents",
+      "path": ".github/prompts/suggest-awesome-github-copilot-agents.prompt.md",
+      "type": "prompt",
+      "languages": ["typescript", "javascript", "python", "go"],
+      "tags": ["awesome-copilot", "agents", "discovery", "prompt"]
+    },
+    {
+      "id": "awesome-copilot-collection",
+      "path": ".github/collections/awesome-copilot.collection.yml",
+      "type": "collection",
+      "languages": ["typescript", "javascript", "python", "go"],
+      "tags": ["awesome-copilot", "collection", "discovery"]
+    },
+    {
+      "id": "security-guide-prompt",
+      "path": ".github/prompts/security-guide.prompt.md",
+      "type": "prompt",
+      "languages": ["typescript", "javascript", "python", "go"],
+      "tags": ["security", "code-review", "prompt"]
+    },
+    {
+      "id": "architecture-guide-prompt",
+      "path": ".github/prompts/architecture-guide.prompt.md",
+      "type": "prompt",
+      "languages": ["typescript", "javascript", "python", "go"],
+      "tags": ["architecture", "design", "prompt"]
+    },
+    {
+      "id": "testing-guide-prompt",
+      "path": ".github/prompts/testing-guide.prompt.md",
+      "type": "prompt",
+      "languages": ["typescript", "javascript", "python", "go"],
+      "tags": ["testing", "quality", "prompt"]
+    },
+    {
+      "id": "expert-react-frontend-agent",
+      "path": ".github/agents/expert-react-frontend-engineer.agent.md",
+      "type": "subagent",
+      "languages": ["typescript", "javascript"],
+      "tags": ["react", "frontend", "nextjs", "subagent"]
+    },
+    {
+      "id": "security-specialist-agent",
+      "path": ".github/agents/security-specialist.agent.md",
+      "type": "subagent",
+      "languages": ["typescript", "javascript", "python", "go"],
+      "tags": ["security", "subagent", "code-review"]
+    },
+    {
+      "id": "devops-infra-specialist-agent",
+      "path": ".github/agents/devops-infra-specialist.agent.md",
+      "type": "subagent",
+      "languages": ["typescript", "javascript", "python", "go"],
+      "tags": ["devops", "ci", "infrastructure", "subagent"]
+    },
+    {
+      "id": "copilot-pre-review-gate-workflow",
+      "path": ".github/workflows/copilot-pre-review-gate.yml",
+      "type": "workflow",
+      "languages": ["typescript", "javascript", "python", "go"],
+      "tags": ["ci", "pre-review", "automation", "agents"]
+    },
+    {
+      "id": "validator-script",
+      "path": "scripts/validate_copilot_resources.ts",
+      "type": "script",
+      "languages": ["typescript"],
+      "tags": ["validation", "linting", "agents", "automation"]
+    }
+  ]
+}

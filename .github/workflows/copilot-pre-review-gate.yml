@@ -1,0 +1,84 @@
+name: "Copilot Pre-Review — PR Gate"
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: Validate agent/LLM resources
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed files
+        id: changed
+        run: |
+          git fetch origin "${{ github.base_ref }}" --depth=1
+          git diff --name-only "origin/${{ github.base_ref }}" HEAD > /tmp/all-changed-files.txt
+          echo "All changed files:"
+          cat /tmp/all-changed-files.txt
+
+      - name: Filter LLM/agent-related resources
+        id: filter
+        run: |
+          grep -E \
+            '^agents/|^skills/|^plugins/|\.agent\.md$|\.prompt\.md$|\.instructions\.md$' \
+            /tmp/all-changed-files.txt > /tmp/agent-files.txt || true
+
+          COUNT=$(wc -l < /tmp/agent-files.txt | tr -d ' ')
+          echo "count=${COUNT}" >> "$GITHUB_OUTPUT"
+
+          echo "Filtered agent/LLM files (${COUNT}):"
+          cat /tmp/agent-files.txt
+
+      - name: Setup Node.js
+        if: steps.filter.outputs.count > 0
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install ts-node
+        if: steps.filter.outputs.count > 0
+        run: npm install -g ts-node typescript
+
+      - name: Run validator
+        if: steps.filter.outputs.count > 0
+        id: validator
+        run: |
+          set +e
+          npx ts-node --project scripts/tsconfig.json --transpileOnly \
+            scripts/validate_copilot_resources.ts /tmp/agent-files.txt
+          EXIT_CODE=$?
+          set -e
+
+          if [ "${EXIT_CODE}" -eq 0 ]; then
+            echo "status=OK" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=FAIL" >> "$GITHUB_OUTPUT"
+          fi
+
+          exit "${EXIT_CODE}"
+
+      - name: Prepare pre-review artifact
+        if: always() && steps.filter.outputs.count > 0
+        run: |
+          mkdir -p pre-review
+          echo "${{ github.event.pull_request.number }}" > pre-review/pr-number.txt
+          cp /tmp/agent-files.txt pre-review/changed-resources.txt
+          echo "${{ steps.validator.outputs.status || 'SKIPPED' }}" > pre-review/status.txt
+
+      - name: Upload pre-review results
+        if: always() && steps.filter.outputs.count > 0
+        uses: actions/upload-artifact@v4
+        with:
+          name: copilot-pre-review-results
+          path: pre-review/
+          retention-days: 7

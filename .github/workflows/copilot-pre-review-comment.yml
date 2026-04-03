@@ -1,0 +1,100 @@
+name: "Copilot Pre-Review — PR Comment"
+
+on:
+  workflow_run:
+    workflows: ["Copilot Pre-Review — PR Gate"]
+    types: [completed]
+
+permissions:
+  pull-requests: write
+  actions: read
+
+jobs:
+  comment:
+    name: Post pre-review results as PR comment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download pre-review artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: copilot-pre-review-results
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: pre-review/
+
+      - name: Read artifact files
+        id: read
+        run: |
+          PR_NUMBER=$(cat pre-review/pr-number.txt 2>/dev/null | tr -d '[:space:]')
+          STATUS=$(cat pre-review/status.txt 2>/dev/null | tr -d '[:space:]')
+          RESOURCES=$(cat pre-review/changed-resources.txt 2>/dev/null || echo "")
+
+          echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+          echo "status=${STATUS}" >> "$GITHUB_OUTPUT"
+
+          # Store multi-line value safely
+          {
+            echo "resources<<EOF"
+            echo "${RESOURCES}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Post or update PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = parseInt('${{ steps.read.outputs.pr_number }}', 10);
+            const status   = '${{ steps.read.outputs.status }}';
+            const resources = `${{ steps.read.outputs.resources }}`.trim();
+
+            if (!prNumber) {
+              core.warning('Could not determine PR number from artifact.');
+              return;
+            }
+
+            const marker = '<!-- copilot-pre-review -->';
+
+            const statusEmoji = status === 'OK' ? '✅' : status === 'FAIL' ? '❌' : '⚠️';
+            const resourceBlock = resources
+              ? '```\n' + resources + '\n```'
+              : '_(none)_';
+
+            const body = [
+              marker,
+              '## Copilot Pre-Review Report',
+              '',
+              `**Status:** ${statusEmoji} ${status}`,
+              '',
+              '### Changed agent/LLM resources',
+              resourceBlock,
+              '',
+              '_Powered by the [Copilot Pre-Review Gate](.github/workflows/copilot-pre-review-gate.yml) workflow._',
+              '_Review checklist: [`agents/review/code-review-rubric.md`](agents/review/code-review-rubric.md)_',
+            ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner:      context.repo.owner,
+                repo:       context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+              core.info(`Updated existing pre-review comment (id=${existing.id}) on PR #${prNumber}.`);
+            } else {
+              await github.rest.issues.createComment({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+              core.info(`Created new pre-review comment on PR #${prNumber}.`);
+            }
