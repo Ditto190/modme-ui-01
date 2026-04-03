@@ -29,9 +29,18 @@ jobs:
       - name: Filter LLM/agent-related resources
         id: filter
         run: |
+          set +e
           grep -E \
             '^agents/|^skills/|^plugins/|\.agent\.md$|\.prompt\.md$|\.instructions\.md$' \
-            /tmp/all-changed-files.txt > /tmp/agent-files.txt || true
+            /tmp/all-changed-files.txt > /tmp/agent-files.txt
+          GREP_EXIT=$?
+          set -e
+
+          # grep exit 0 = matches found, exit 1 = no matches, exit 2 = error
+          if [ "${GREP_EXIT}" -eq 2 ]; then
+            echo "grep encountered an error while filtering changed files" >&2
+            exit 2
+          fi
 
           COUNT=$(wc -l < /tmp/agent-files.txt | tr -d ' ')
           echo "count=${COUNT}" >> "$GITHUB_OUTPUT"

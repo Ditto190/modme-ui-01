@@ -26,8 +26,8 @@ jobs:
       - name: Read artifact files
         id: read
         run: |
-          PR_NUMBER=$(cat pre-review/pr-number.txt 2>/dev/null | tr -d '[:space:]')
-          STATUS=$(cat pre-review/status.txt 2>/dev/null | tr -d '[:space:]')
+          PR_NUMBER=$(cat pre-review/pr-number.txt 2>/dev/null | tr -d '[:space:]' || echo "")
+          STATUS=$(cat pre-review/status.txt 2>/dev/null | tr -d '[:space:]' || echo "")
           RESOURCES=$(cat pre-review/changed-resources.txt 2>/dev/null || echo "")
 
           echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
@@ -42,11 +42,15 @@ jobs:
 
       - name: Post or update PR comment
         uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ steps.read.outputs.pr_number }}
+          STATUS: ${{ steps.read.outputs.status }}
+          RESOURCES: ${{ steps.read.outputs.resources }}
         with:
           script: |
-            const prNumber = parseInt('${{ steps.read.outputs.pr_number }}', 10);
-            const status   = '${{ steps.read.outputs.status }}';
-            const resources = `${{ steps.read.outputs.resources }}`.trim();
+            const prNumber = parseInt(process.env.PR_NUMBER || '', 10);
+            const status   = process.env.STATUS || '';
+            const resources = (process.env.RESOURCES || '').trim();
 
             if (!prNumber) {
               core.warning('Could not determine PR number from artifact.');

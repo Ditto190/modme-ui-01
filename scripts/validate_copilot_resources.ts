@@ -23,7 +23,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-const REQUIRED_HEADING_RE = /^#\s/;
+const REQUIRED_HEADING_RE = /^#+\s*/;
 const REFERENCE_PATTERNS = ["AGENTS.md", "awesome-copilot"];
 
 function validateFile(filePath: string): boolean {
@@ -45,7 +45,7 @@ function validateFile(filePath: string): boolean {
     console.error(
       `FAIL: ${filePath} — first non-empty line does not start with a Markdown heading (#).`
     );
-    console.error(`      Got: ${JSON.stringify(firstNonEmpty.slice(0, 80))}`);
+    console.error(`      Got: ${JSON.stringify(firstNonEmpty.slice(0, 80))}${firstNonEmpty.length > 80 ? " ... (truncated)" : ""}`);
     return false;
   }
 

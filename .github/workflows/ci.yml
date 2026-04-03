@@ -157,6 +157,8 @@ jobs:
   check:
     name: "Check (${{ matrix.language }})"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -184,8 +186,14 @@ jobs:
         with:
           go-version: "stable"
 
-      - name: Placeholder check
-        run: echo "No checks defined yet for ${{ matrix.language }}."
+      - name: Verify toolchain
+        run: |
+          case "${{ matrix.language }}" in
+            typescript|node) node --version ;;
+            python)          python --version ;;
+            go)              go version ;;
+          esac
+          echo "No checks defined yet for ${{ matrix.language }}."
 
   integration-check:
     name: Integration Check
