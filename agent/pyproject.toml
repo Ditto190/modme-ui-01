@@ -20,7 +20,7 @@ local = [
     "semantic-router[local]",
 ]
 test = [
-    "pytest>=8.0.0",
+    "pytest>=9.0.3",
     "pytest-asyncio>=0.23.0",
     "pytest-mock>=3.12.0",
 ]
