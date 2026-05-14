@@ -8,10 +8,7 @@ tags:
 - coding
 title: Api Design Specialist
 tools:
-- tools_api-design
-- mcp_github2_get_toolset_tools
-- fetch_documentation
-- search_code
+['vscode/getProjectSetupInfo', 'vscode/installExtension', 'vscode/newWorkspace', 'vscode/openSimpleBrowser', 'vscode/runCommand', 'vscode/askQuestions', 'vscode/vscodeAPI', 'vscode/extensions', 'execute/runNotebookCell', 'execute/testFailure', 'execute/getTerminalOutput', 'execute/awaitTerminal', 'execute/killTerminal', 'execute/runTask', 'execute/createAndRunTask', 'execute/runInTerminal', 'execute/runTests', 'read/getNotebookSummary', 'read/problems', 'read/readFile', 'read/readNotebookCellOutput', 'read/terminalSelection', 'read/terminalLastCommand', 'read/getTaskOutput', 'agent/runSubagent', 'edit/createDirectory', 'edit/createFile', 'edit/createJupyterNotebook', 'edit/editFiles', 'edit/editNotebook', 'search/changes', 'search/codebase', 'search/fileSearch', 'search/listDirectory', 'search/searchResults', 'search/textSearch', 'search/usages', 'web/fetch', 'github/search_code', 'github/search_code', 'todo']
 type: agent
 ---
 
@@ -40,4 +37,4 @@ Help me with api design best practices and design patterns.
 4. Reference related agents for multi-step workflows
 
 ---
-*Generated: 2026-01-08T08:32:24.497472*
+*Generated: 2026-02-07T09:36:23.863973*

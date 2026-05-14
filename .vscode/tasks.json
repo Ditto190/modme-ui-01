@@ -1,153 +1,287 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "Start MCP servers if stopped",
-			"type": "shell",
-			"problemMatcher": [],
-			"runOptions": {
-				"runOn": "folderOpen"
-			},
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"panel": "dedicated"
-			},
-			"windows": {
-				"command": "pwsh",
-				"args": [
-					"-NoProfile",
-					"-ExecutionPolicy",
-					"Bypass",
-					"-File",
-					"${workspaceFolder}\\scripts\\start-mcp-servers.ps1"
-				]
-			},
-			"linux": {
-				"command": "bash",
-				"args": [
-					"${workspaceFolder}/scripts/start-mcp-servers.sh"
-				]
-			},
-			"osx": {
-				"command": "bash",
-				"args": [
-					"${workspaceFolder}/scripts/start-mcp-servers.sh"
-				]
-			}
-		},
-		{
-			"label": "Search Toolsets",
-			"type": "shell",
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"panel": "dedicated"
-			},
-			"windows": {
-				"command": "pwsh",
-				"args": [
-					"-NoProfile",
-					"-Command",
-					"${workspaceFolder}\\scripts\\knowledge-management\\search-toolsets.bat",
-					"${input:searchPattern}"
-				]
-			},
-			"linux": {
-				"command": "bash",
-				"args": [
-					"${workspaceFolder}/scripts/knowledge-management/search-toolsets.sh",
-					"${input:searchPattern}"
-				]
-			},
-			"osx": {
-				"command": "bash",
-				"args": [
-					"${workspaceFolder}/scripts/knowledge-management/search-toolsets.sh",
-					"${input:searchPattern}"
-				]
-			}
-		},
-		{
-			"label": "Validate Toolsets",
-			"type": "npm",
-			"script": "docs:sync",
-			"args": [
-				"--validate-only"
-			],
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"panel": "shared"
-			}
-		},
-		{
-			"label": "Generate Documentation",
-			"type": "npm",
-			"script": "docs:all",
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"panel": "shared"
-			}
-		},
-		{
-			"label": "Sync Markdown to JSON",
-			"type": "npm",
-			"script": "docs:md-to-json",
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"panel": "shared"
-			}
-		},
-		{
-			"label": "Sync JSON to Markdown",
-			"type": "npm",
-			"script": "docs:json-to-md",
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"panel": "shared"
-			}
-		},
-		{
-			"label": "View Toolset Diagram",
-			"type": "shell",
-			"command": "node",
-			"args": [
-				"${workspaceFolder}/scripts/knowledge-management/generate-diagram.js",
-				"--format",
-				"svg",
-				"--verbose"
-			],
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"panel": "shared"
-			},
-			"dependsOn": [
-				"Generate Documentation"
-			]
-		},
-		{
-			"label": "Install Path Intellisense",
-			"type": "shell",
-			"command": "code --install-extension path-intellisense"
-		}
-	],
-	"inputs": [
-		{
-			"id": "searchPattern",
-			"type": "promptString",
-			"description": "Enter search pattern (regex or literal)",
-			"default": ""
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start MCP servers if stopped",
+      "type": "shell",
+      "problemMatcher": [],
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "windows": {
+        "command": "pwsh",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "${workspaceFolder}\\scripts\\start-mcp-servers.ps1"
+        ]
+      },
+      "linux": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/start-mcp-servers.sh"]
+      },
+      "osx": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/start-mcp-servers.sh"]
+      }
+    },
+    {
+      "label": "Start All MCP Servers",
+      "type": "npm",
+      "script": "mcp:start",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Start All MCP Servers (Force Restart)",
+      "type": "npm",
+      "script": "mcp:start:force",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": false
+      }
+    },
+    {
+      "label": "Start All MCP Servers (Wait for Ready)",
+      "type": "npm",
+      "script": "mcp:start:wait",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": false
+      }
+    },
+    {
+      "label": "Start Copilot Observability",
+      "type": "npm",
+      "script": "copilot:start",
+      "problemMatcher": [],
+      "runOptions": {
+        "runOn": "folderOpen",
+        "reevaluateOnRerun": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "panel": "shared",
+        "focus": false,
+        "showReuseMessage": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Stop Copilot Observability",
+      "type": "npm",
+      "script": "copilot:stop",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Restart Copilot Proxy",
+      "type": "npm",
+      "script": "copilot:restart",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "View Copilot Proxy Logs",
+      "type": "npm",
+      "script": "copilot:logs",
+      "problemMatcher": [],
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      }
+    },
+    {
+      "label": "View All Observability Logs",
+      "type": "npm",
+      "script": "copilot:logs:all",
+      "problemMatcher": [],
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      }
+    },
+    {
+      "label": "Export Copilot Dataset (7 days)",
+      "type": "npm",
+      "script": "copilot:export",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Export Fine-tuning Dataset",
+      "type": "npm",
+      "script": "copilot:export:finetune",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Check Copilot Proxy Health",
+      "type": "npm",
+      "script": "copilot:health",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Search Toolsets",
+      "type": "shell",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "windows": {
+        "command": "pwsh",
+        "args": [
+          "-NoProfile",
+          "-Command",
+          "${workspaceFolder}\\scripts\\knowledge-management\\search-toolsets.bat",
+          "${input:searchPattern}"
+        ]
+      },
+      "linux": {
+        "command": "bash",
+        "args": [
+          "${workspaceFolder}/scripts/knowledge-management/search-toolsets.sh",
+          "${input:searchPattern}"
+        ]
+      },
+      "osx": {
+        "command": "bash",
+        "args": [
+          "${workspaceFolder}/scripts/knowledge-management/search-toolsets.sh",
+          "${input:searchPattern}"
+        ]
+      }
+    },
+    {
+      "label": "Validate Toolsets",
+      "type": "npm",
+      "script": "docs:sync",
+      "args": ["--validate-only"],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Generate Documentation",
+      "type": "npm",
+      "script": "docs:all",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Sync Markdown to JSON",
+      "type": "npm",
+      "script": "docs:md-to-json",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Sync JSON to Markdown",
+      "type": "npm",
+      "script": "docs:json-to-md",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "View Toolset Diagram",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/scripts/knowledge-management/generate-diagram.js",
+        "--format",
+        "svg",
+        "--verbose"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "dependsOn": ["Generate Documentation"]
+    },
+    {
+      "label": "Install Path Intellisense",
+      "type": "shell",
+      "command": "code --install-extension path-intellisense"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "searchPattern",
+      "type": "promptString",
+      "description": "Enter search pattern (regex or literal)",
+      "default": ""
+    }
+  ]
 }

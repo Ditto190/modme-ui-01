@@ -420,7 +420,7 @@ spec:
 - **Integration Plan**: [../../GENAI_TOOLBOX_INTEGRATION_PLAN.md](../../GENAI_TOOLBOX_INTEGRATION_PLAN.md)
 - **Quick Start**: [QUICKSTART.md](QUICKSTART.md)
 - **Comparison**: [../../GENAI_TOOLBOX_COMPARISON.md](../../GENAI_TOOLBOX_COMPARISON.md)
-- **GreptimeDB Guide**: [../../docs/GREPTIME_OBSERVABILITY.md](../../docs/GREPTIME_OBSERVABILITY.md)
+- **GreptimeDB Guide**: [../../docs/GREPTIME_OBSERVABILITY.md](../../docs/inbox/GREPTIME_OBSERVABILITY.md)
 
 ### External Links
 
@@ -457,6 +457,6 @@ spec:
 
 ---
 
-**Version**: 0.24.0  
-**Maintained by**: Google + ModMe GenUI Team  
+**Version**: 0.24.0
+**Maintained by**: Google + ModMe GenUI Team
 **Last Updated**: January 8, 2026

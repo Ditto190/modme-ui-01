@@ -491,7 +491,7 @@ pytest --cov=agent.tools tests/
 
 ## Related Documentation
 
-- [REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md) - Tool refactoring patterns
+- [REFACTORING_PATTERNS.md](../../docs/inbox/REFACTORING_PATTERNS.md) - Tool refactoring patterns
 - [SCHEMA_CRAWLER_README.md](../../agent-generator/SCHEMA_CRAWLER_README.md) - Schema crawler details
 - [genai-toolbox/tools.yaml](../../genai-toolbox/tools.yaml) - Tool configuration
 - [agent/main.py](../main.py) - Agent integration examples
@@ -503,12 +503,12 @@ pytest --cov=agent.tools tests/
 For issues or questions:
 
 1. Check tool docstrings for usage details
-2. Review [REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md) for patterns
+2. Review [REFACTORING_PATTERNS.md](../../docs/inbox/REFACTORING_PATTERNS.md) for patterns
 3. Run tool with `--help` flag (if CLI entry point exists)
 4. Check test files for usage examples
 
 ---
 
-**Last Updated**: 2026-01-03  
-**Maintained by**: ModMe GenUI Team  
+**Last Updated**: 2026-01-03
+**Maintained by**: ModMe GenUI Team
 **Version**: 1.0.0

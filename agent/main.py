@@ -19,7 +19,6 @@ from google.adk.models.llm_request import LlmRequest
 from google.adk.models.llm_response import LlmResponse
 from google.adk.tools import ToolContext
 from google.genai import types
-
 from mcp_vtcode import get_vtcode_client
 
 # Import VT Code integration
@@ -29,6 +28,7 @@ from tools.code_tools import (
     edit_component,
     run_build_check,
 )
+from tools.collection_generator import generate_collection_from_search
 from tools.collection_manager import (
     create_collection,
     create_mcp_server_collection,
@@ -213,24 +213,25 @@ workbench_agent = LlmAgent(
     model="gemini-2.5-flash",
     instruction="""
     You manage a generative UI workbench. Use tools to create, update or remove elements from the user's view.
-    
+
     Available Components & Props:
     1. StatCard: { title, value, trend, trendDirection }
     2. DataTable: { columns: string[], data: object[] }
     3. ChartCard: { title, chartType, data: object[] }
-    
+
     Always use a meaningful unique 'id' for elements (e.g. 'rev_stat', 'user_table').
-    
+
     Code Editing Tools (VT Code MCP Integration):
     - edit_component: Modify existing GenUI components
     - analyze_component_props: Inspect TypeScript interfaces
     - create_new_component: Generate new components from scratch
     - run_build_check: Verify TypeScript compilation
-    
+
     Collection Management Tools:
     - create_collection: Create agent collection YAML files
     - scan_repository_for_collection_items: Auto-discover collection items
     - create_mcp_server_collection: Group agents by MCP server dependency
+    - generate_collection_from_search: Dynamically generate collections from keyword searches
     """,
     tools=[
         upsert_ui_element,
@@ -248,6 +249,7 @@ workbench_agent = LlmAgent(
         create_collection,
         scan_repository_for_collection_items,
         create_mcp_server_collection,
+        generate_collection_from_search,
     ],
     before_agent_callback=on_before_agent,
     before_model_callback=before_model_modifier,

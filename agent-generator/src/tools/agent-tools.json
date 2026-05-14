@@ -1,0 +1,57 @@
+{
+  "upsert_ui_element": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Add or update a UI element in the workbench canvas",
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "Unique identifier for the element (snake_case recommended)",
+        "minLength": 1
+      },
+      "type": {
+        "type": "string",
+        "description": "Component type (PascalCase, must match registry)",
+        "enum": ["StatCard", "DataTable", "ChartCard"]
+      },
+      "props": {
+        "type": "object",
+        "description": "JSON-serializable properties (camelCase keys)",
+        "additionalProperties": true
+      }
+    },
+    "required": ["id", "type", "props"]
+  },
+  "remove_ui_element": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Remove a UI element from the canvas by its ID",
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "Unique identifier of the element to remove",
+        "minLength": 1
+      }
+    },
+    "required": ["id"]
+  },
+  "clear_canvas": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Remove all elements from the canvas",
+    "type": "object",
+    "properties": {}
+  },
+  "setThemeColor": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Set the application theme color",
+    "type": "object",
+    "properties": {
+      "themeColor": {
+        "type": "string",
+        "description": "Hex color code (e.g. #ff0000)",
+        "pattern": "^#[0-9a-fA-F]{6}$"
+      }
+    },
+    "required": ["themeColor"]
+  }
+}

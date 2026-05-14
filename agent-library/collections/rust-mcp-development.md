@@ -21,7 +21,6 @@ recommended
 This chat mode provides expert guidance for building MCP servers in Rust.
 
 This chat mode is ideal for:
-
 - Creating new MCP server projects with Rust
 - Implementing async handlers with tokio runtime
 - Using rmcp procedural macros for tools
@@ -31,7 +30,6 @@ This chat mode is ideal for:
 - Performance optimization with Arc and RwLock
 
 To get the best results, consider:
-
 - Using the instruction file to set context for Rust MCP development
 - Using the prompt to generate initial project structure
 - Switching to the expert chat mode for detailed implementation help

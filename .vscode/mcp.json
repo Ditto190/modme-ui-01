@@ -1,10 +1,41 @@
 {
   "servers": {
+    "phoenix": {
+      "command": "npx",
+      "args": ["-y", "@arizeai/phoenix-mcp@latest", "--baseUrl", "http://localhost:6006"],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NODE_OPTIONS": "--no-warnings"
+      }
+    },
+    "phoenix-docs": {
+      "url": "https://arizeai-433a7140.mintlify.app/mcp"
+    },
     "github-agentic-workflows": {
       "command": "gh",
+      "args": ["aw", "mcp-server"],
+      "cwd": "${workspaceFolder}"
+    },
+    "n8n-mcp": {
+      "command": "docker",
       "args": [
-        "aw",
-        "mcp-server"
+        "run",
+        "-i",
+        "--rm",
+        "--init",
+        "-e",
+        "MCP_MODE=stdio",
+        "-e",
+        "LOG_LEVEL=error",
+        "-e",
+        "DISABLE_CONSOLE_OUTPUT=true",
+        "-e",
+        "N8N_API_URL=http://host.docker.internal:5678",
+        "-e",
+        "N8N_API_KEY=${env:N8N_API_KEY}",
+        "-e",
+        "WEBHOOK_SECURITY_MODE=moderate",
+        "ghcr.io/czlonkowski/n8n-mcp:latest"
       ],
       "cwd": "${workspaceFolder}"
     }

@@ -1,7 +1,7 @@
 # GitLens AI Integration Summary
 
-**Date**: January 4, 2026  
-**Component**: `agent/skills_ref/prompt.py`  
+**Date**: January 4, 2026
+**Component**: `agent/skills_ref/prompt.py`
 **Status**: ✅ Production Ready
 
 ---
@@ -329,10 +329,10 @@ ls -lh examples/output/
 - **Full Guide**: [GITLENS_INTEGRATION.md](GITLENS_INTEGRATION.md)
 - **Example Script**: [examples/generate_gitlens_instructions.py](examples/generate_gitlens_instructions.py)
 - **Project Instructions**: [.github/copilot-instructions.md](../../.github/copilot-instructions.md)
-- **Refactoring Patterns**: [docs/REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md)
+- **Refactoring Patterns**: [docs/REFACTORING_PATTERNS.md](../../docs/inbox/REFACTORING_PATTERNS.md)
 
 ---
 
-**Generated**: January 4, 2026  
-**Author**: GitHub Copilot (Claude Sonnet 4.5)  
+**Generated**: January 4, 2026
+**Author**: GitHub Copilot (Claude Sonnet 4.5)
 **Tools Used**: `github_repo`, `mcp_io_github_ups_get-library-docs`, `mcp_github_list_available_toolsets`

@@ -85,7 +85,7 @@ If you want this shortened further or to include sample prompts (tool invocation
 
 # Copilot Instructions — ModMe GenUI Workbench
 
-> **Updated**: January 6, 2026  
+> **Updated**: January 6, 2026
 > **Purpose**: Targeted, repo-specific guidance for AI coding agents to become productive quickly in this GenUI R&D laboratory.
 
 ## Big Picture Architecture
@@ -399,7 +399,7 @@ curl localhost:8000/ready    # Toolsets loaded confirmation
 
 ## Extended Documentation
 
-- [../docs/REFACTORING_PATTERNS.md](../docs/REFACTORING_PATTERNS.md) — Dual-runtime refactoring guides
+- [../docs/REFACTORING_PATTERNS.md](../docs/inbox/REFACTORING_PATTERNS.md) — Dual-runtime refactoring guides
 - [../PORTING_GUIDE.md](../PORTING_GUIDE.md) — Component portability patterns
-- [../CODEBASE_INDEX.md](../CODEBASE_INDEX.md) — Full file catalog
+- [../CODEBASE_INDEX.md](../docs/inbox/CODEBASE_INDEX.md) — Full file catalog
 - [../agent/skills_ref/GITLENS_INTEGRATION.md](../agent/skills_ref/GITLENS_INTEGRATION.md) — GitLens AI custom instructions generator

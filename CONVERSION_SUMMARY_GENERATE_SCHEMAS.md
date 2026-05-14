@@ -2,7 +2,7 @@
 
 > **Successfully converted generate.ts to Python agent tools for ModMe GenUI Workbench**
 
-**Conversion Date**: January 3, 2026  
+**Conversion Date**: January 3, 2026
 **Status**: ✅ Complete (Testing Pending)
 
 ---
@@ -85,11 +85,11 @@ tools:
 
 ### 4. Created Comprehensive Documentation
 
-| File                                                                       | Purpose                         | Lines |
-| -------------------------------------------------------------------------- | ------------------------------- | ----- |
-| [agent/tools/README.md](agent/tools/README.md)                             | Complete tool usage guide       | ~500  |
-| [docs/GENERATE_SCHEMAS_CONVERSION.md](docs/GENERATE_SCHEMAS_CONVERSION.md) | Conversion details & comparison | ~400  |
-| This Summary                                                               | Quick reference                 | ~150  |
+| File                                                                             | Purpose                         | Lines |
+| -------------------------------------------------------------------------------- | ------------------------------- | ----- |
+| [agent/tools/README.md](agent/tools/README.md)                                   | Complete tool usage guide       | ~500  |
+| [docs/GENERATE_SCHEMAS_CONVERSION.md](docs/inbox/GENERATE_SCHEMAS_CONVERSION.md) | Conversion details & comparison | ~400  |
+| This Summary                                                                     | Quick reference                 | ~150  |
 
 **Total**: ~1,050 lines of documentation
 
@@ -433,13 +433,13 @@ jobs:
 
 ## 📚 Reference Documentation
 
-| Document                                                                   | Purpose                                |
-| -------------------------------------------------------------------------- | -------------------------------------- |
-| [agent/tools/README.md](agent/tools/README.md)                             | Complete tool usage guide              |
-| [docs/GENERATE_SCHEMAS_CONVERSION.md](docs/GENERATE_SCHEMAS_CONVERSION.md) | TypeScript → Python conversion details |
-| [docs/REFACTORING_PATTERNS.md](docs/REFACTORING_PATTERNS.md)               | Agent tool refactoring patterns        |
-| [genai-toolbox/tools.yaml](genai-toolbox/tools.yaml)                       | Tool configuration                     |
-| [tests/test_generate_schemas.py](tests/test_generate_schemas.py)           | Test suite                             |
+| Document                                                                         | Purpose                                |
+| -------------------------------------------------------------------------------- | -------------------------------------- |
+| [agent/tools/README.md](agent/tools/README.md)                                   | Complete tool usage guide              |
+| [docs/GENERATE_SCHEMAS_CONVERSION.md](docs/inbox/GENERATE_SCHEMAS_CONVERSION.md) | TypeScript → Python conversion details |
+| [docs/REFACTORING_PATTERNS.md](docs/inbox/REFACTORING_PATTERNS.md)                     | Agent tool refactoring patterns        |
+| [genai-toolbox/tools.yaml](genai-toolbox/tools.yaml)                             | Tool configuration                     |
+| [tests/test_generate_schemas.py](tests/test_generate_schemas.py)                 | Test suite                             |
 
 ---
 
@@ -503,7 +503,7 @@ tools:
 To extend these tools:
 
 1. Review [agent/tools/README.md](agent/tools/README.md)
-2. Follow patterns in [docs/REFACTORING_PATTERNS.md](docs/REFACTORING_PATTERNS.md)
+2. Follow patterns in [docs/REFACTORING_PATTERNS.md](docs/inbox/REFACTORING_PATTERNS.md)
 3. Add tests to [tests/test_generate_schemas.py](tests/test_generate_schemas.py)
 4. Update [genai-toolbox/tools.yaml](genai-toolbox/tools.yaml)
 
@@ -514,14 +514,14 @@ To extend these tools:
 For questions or issues:
 
 1. 📖 Check [agent/tools/README.md](agent/tools/README.md)
-2. 📚 Review [docs/GENERATE_SCHEMAS_CONVERSION.md](docs/GENERATE_SCHEMAS_CONVERSION.md)
+2. 📚 Review [docs/GENERATE_SCHEMAS_CONVERSION.md](docs/inbox/GENERATE_SCHEMAS_CONVERSION.md)
 3. 🧪 Examine [tests/test_generate_schemas.py](tests/test_generate_schemas.py)
 4. 💬 Open GitHub issue
 
 ---
 
-**Conversion Completed**: January 3, 2026  
-**Status**: ✅ Ready for Testing  
+**Conversion Completed**: January 3, 2026
+**Status**: ✅ Ready for Testing
 **Maintained By**: ModMe GenUI Team
 
 ---

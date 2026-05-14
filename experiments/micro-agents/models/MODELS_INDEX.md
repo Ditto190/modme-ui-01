@@ -1,10 +1,10 @@
 # Models Library - Codebase Index
 
-> **Comprehensive inventory of the transformers.js models library**  
-> Following the structure of [CODEBASE_INDEX.md](../../../CODEBASE_INDEX.md)
+> **Comprehensive inventory of the transformers.js models library**
+> Following the structure of [CODEBASE_INDEX.md](../../../docs/inbox/CODEBASE_INDEX.md)
 
-**Created**: January 7, 2026  
-**Version**: 1.0.0  
+**Created**: January 7, 2026
+**Version**: 1.0.0
 **Location**: `/experiments/micro-agents/models/`
 
 ---
@@ -39,8 +39,8 @@ models/
 
 #### 1. Unified Embedding Service (`embeddings.ts`)
 
-**Path**: `experiments/micro-agents/models/embeddings.ts`  
-**Lines**: 400  
+**Path**: `experiments/micro-agents/models/embeddings.ts`
+**Lines**: 400
 **Purpose**: Multi-model embedding generation and semantic search
 
 **Key Features**:
@@ -156,8 +156,8 @@ interface CacheStats {
 
 #### 2. Type Definitions (`types/gemma3n-config.ts`)
 
-**Path**: `experiments/micro-agents/models/types/gemma3n-config.ts`  
-**Lines**: 300  
+**Path**: `experiments/micro-agents/models/types/gemma3n-config.ts`
+**Lines**: 300
 **Purpose**: Generated TypeScript types with Zod validation
 
 **Generation Method**: Generated using [schema-crawler.ts](../../../agent-generator/src/mcp-registry/schema-crawler.ts)
@@ -267,8 +267,8 @@ export const DEFAULT_TEXT_CONFIG: Gemma3nTextConfig = {
 
 #### 3. Type Barrel (`types/index.ts`)
 
-**Path**: `experiments/micro-agents/models/types/index.ts`  
-**Lines**: 20  
+**Path**: `experiments/micro-agents/models/types/index.ts`
+**Lines**: 20
 **Purpose**: Centralized type exports
 
 ```typescript
@@ -351,7 +351,7 @@ const results = await embeddingService.adaptiveRetrieval(query, {
 
 #### Package Configuration (`package.json`)
 
-**Path**: `experiments/micro-agents/models/package.json`  
+**Path**: `experiments/micro-agents/models/package.json`
 **Lines**: 40
 
 ```json
@@ -406,8 +406,8 @@ const results = await embeddingService.adaptiveRetrieval(query, {
 
 #### Test Suite (`test-models.js`)
 
-**Path**: `experiments/micro-agents/models/test-models.js`  
-**Lines**: 165  
+**Path**: `experiments/micro-agents/models/test-models.js`
+**Lines**: 165
 **Purpose**: Integration tests for all embedding features
 
 **Test Coverage**:
@@ -454,8 +454,8 @@ npm test
 
 #### Installation Verification (`verify-install.sh`)
 
-**Path**: `experiments/micro-agents/models/verify-install.sh`  
-**Lines**: 50  
+**Path**: `experiments/micro-agents/models/verify-install.sh`
+**Lines**: 50
 **Purpose**: Verify complete installation
 
 **Checks**:
@@ -981,10 +981,10 @@ To add a new model:
 - **[Quick Start](./QUICK_START.md)** - Getting started guide
 - **[Schema Crawler](../../../agent-generator/SCHEMA_CRAWLER_README.md)** - Type generation tool
 - **[Skill Creator](../../../agent-generator/src/skills/skill-creator/)** - Agent skill packaging
-- **[ChromaDB Indexing](../../../docs/CHROMADB_INDEXING.md)** - Vector database setup
+- **[ChromaDB Indexing](../../../docs/inbox/CHROMADB_INDEXING.md)** - Vector database setup
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: January 7, 2026  
+**Version**: 1.0.0
+**Last Updated**: January 7, 2026
 **Maintained by**: ModMe GenUI Team

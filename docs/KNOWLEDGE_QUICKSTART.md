@@ -201,13 +201,14 @@ new_tool(id="test", options={"enabled": true})
 EOF
 
 ```
-````
+
+```
 
 **Step 3**: Regenerate docs
 
 ```bash
 npm run docs:all
-````
+```
 
 The diagram will now show the toolset with red dashed border and deprecation arrow.
 
@@ -337,7 +338,7 @@ ls templates/
 
 ## Next Steps
 
-- Read [KNOWLEDGE_MANAGEMENT.md](KNOWLEDGE_MANAGEMENT.md) for architecture details
+- Read [KNOWLEDGE_MANAGEMENT.md](inbox/KNOWLEDGE_MANAGEMENT.md) for architecture details
 - Explore [toolset-schema.json](../agent/toolset-schema.json) for schema reference
 - Check [TOOLSET_MANAGEMENT.md](TOOLSET_MANAGEMENT.md) for runtime loading
 
@@ -381,5 +382,5 @@ ls templates/
 
 ---
 
-**Last Updated**: 2025-01-15  
+**Last Updated**: 2025-01-15
 **Version**: 1.0.0

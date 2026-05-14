@@ -40,4 +40,4 @@ Help me with performance best practices and design patterns.
 4. Reference related agents for multi-step workflows
 
 ---
-*Generated: 2026-01-08T08:32:24.502599*
+*Generated: 2026-02-07T09:36:23.865871*

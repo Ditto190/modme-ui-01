@@ -1,6 +1,6 @@
 # ModMe GenUI Workbench - AI Agent Instructions
 
-> **Last Updated**: January 5, 2026 | **Quick Start**: `npm run dev` | **Docs**: [CODEBASE_INDEX.md](../../CODEBASE_INDEX.md)
+> **Last Updated**: January 5, 2026 | **Quick Start**: `npm run dev` | **Docs**: [CODEBASE_INDEX.md](../../docs/inbox/CODEBASE_INDEX.md)
 
 ## Purpose
 
@@ -143,7 +143,7 @@ python scripts/session_memory.py --serve --serve-port 8002
 - **1536** - Higher fidelity
 - **3072** - Maximum precision
 
-**Configuration**: See [docs/CHROMADB_INDEXING.md](../../docs/CHROMADB_INDEXING.md)
+**Configuration**: See [docs/CHROMADB_INDEXING.md](../../docs/inbox/CHROMADB_INDEXING.md)
 
 ---
 
@@ -202,7 +202,7 @@ Place starter scripts in `.copilot/mcp-servers/`:
 - `start-everything.{ps1,sh}` - MCP reference implementation (all protocol features)
 - `start-agent.{ps1,bat}` - Custom Python agent
 
-See [docs/MCP_EVERYTHING_SERVER.md](../../docs/MCP_EVERYTHING_SERVER.md)
+See [docs/MCP_EVERYTHING_SERVER.md](../../docs/inbox/MCP_EVERYTHING_SERVER.md)
 
 ---
 
@@ -351,7 +351,7 @@ npm run check                # Lint + format combined
 - **State Injection**: Modify `before_model_modifier()` to inject canvas state into system prompt
 - **Response Control**: Use `after_model_modifier()` to stop consecutive tool calls
 
-**Example Tool Pattern** (see [docs/REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md) Pattern 1):
+**Example Tool Pattern** (see [docs/REFACTORING_PATTERNS.md](../../docs/inbox/REFACTORING_PATTERNS.md) Pattern 1):
 
 ```python
 def my_tool(tool_context: ToolContext, param: str) -> Dict[str, str]:
@@ -752,7 +752,7 @@ uv run python -m skills_ref.cli to-prompt ../agent-generator/src/skills/
 - web-artifacts-builder (Next.js + shadcn/ui projects)
 - algorithmic-art, theme-factory, skill-creator
 
-See [AGENT_SKILLS_IMPLEMENTATION.md](../../AGENT_SKILLS_IMPLEMENTATION.md) and [docs/ANTHROPIC_SKILLS_INTEGRATION.md](../../docs/ANTHROPIC_SKILLS_INTEGRATION.md)
+See [AGENT_SKILLS_IMPLEMENTATION.md](../../AGENT_SKILLS_IMPLEMENTATION.md) and [docs/ANTHROPIC_SKILLS_INTEGRATION.md](../../docs/inbox/ANTHROPIC_SKILLS_INTEGRATION.md)
 
 ### Schema Crawler Tool
 
@@ -853,12 +853,12 @@ python --version                     # 3.12+?
 - **Google ADK**: https://ai.google.dev/adk/docs
 - **AG-UI Client**: https://www.npmjs.com/package/@ag-ui/client
 - **Generative UI Architecture**: [Project_Overview.md](../../Project_Overview.md)
-- **Refactoring Patterns**: [docs/REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md)
+- **Refactoring Patterns**: [docs/REFACTORING_PATTERNS.md](../../docs/inbox/REFACTORING_PATTERNS.md)
 - **Schema Crawler Tool**: [agent-generator/SCHEMA_CRAWLER_README.md](../../agent-generator/SCHEMA_CRAWLER_README.md)
-- **ChromaDB Integration**: [docs/CHROMADB_INDEXING.md](../../docs/CHROMADB_INDEXING.md)
-- **MCP Everything Server**: [docs/MCP_EVERYTHING_SERVER.md](../../docs/MCP_EVERYTHING_SERVER.md)
+- **ChromaDB Integration**: [docs/CHROMADB_INDEXING.md](../../docs/inbox/CHROMADB_INDEXING.md)
+- **MCP Everything Server**: [docs/MCP_EVERYTHING_SERVER.md](../../docs/inbox/MCP_EVERYTHING_SERVER.md)
 - **Toolset Management**: [TOOLSET_README.md](../../TOOLSET_README.md), [docs/TOOLSET_MANAGEMENT.md](../../docs/TOOLSET_MANAGEMENT.md)
-- **Codebase Index**: [CODEBASE_INDEX.md](../../CODEBASE_INDEX.md) - Complete file inventory
+- **Codebase Index**: [CODEBASE_INDEX.md](../../docs/inbox/CODEBASE_INDEX.md) - Complete file inventory
 
 ---
 
@@ -1083,7 +1083,7 @@ npm run validate:toolsets
 | Health check         | http://localhost:8000/health                                                               |
 | Toolset validation   | `npm run validate:toolsets`                                                                |
 | Documentation sync   | `npm run docs:all`                                                                         |
-| Refactoring patterns | [docs/REFACTORING_PATTERNS.md](../../docs/REFACTORING_PATTERNS.md)                         |
+| Refactoring patterns | [docs/REFACTORING_PATTERNS.md](../../docs/inbox/REFACTORING_PATTERNS.md)                         |
 | Schema crawler       | [agent-generator/SCHEMA_CRAWLER_README.md](../../agent-generator/SCHEMA_CRAWLER_README.md) |
 | ChromaDB HTTP server | `python scripts/start_chroma_server.py --port 8001`                                        |
 | Session memory       | `python scripts/session_memory.py --serve --serve-port 8002`                               |

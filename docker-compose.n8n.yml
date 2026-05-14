@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+  # Local n8n instance
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n-local
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=admin123
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      # Phoenix endpoint (use host.docker.internal to reach host machine)
+      - PHOENIX_URL=${N8N_PHOENIX_URL:-http://host.docker.internal:6006}
+      - PHOENIX_COLLECTOR_ENDPOINT=${N8N_PHOENIX_COLLECTOR_ENDPOINT:-http://host.docker.internal:6006/v1/traces}
+      # Allow Code nodes to access environment variables (n8n v2.34+)
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=${N8N_BLOCK_ENV_ACCESS_IN_NODE:-false}
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - n8n_network
+    healthcheck:
+      test:
+        ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # n8n-mcp server (connects to n8n above)
+  n8n-mcp:
+    image: ghcr.io/czlonkowski/n8n-mcp:latest
+    container_name: n8n-mcp-local
+    restart: unless-stopped
+    depends_on:
+      n8n:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      - MCP_MODE=http
+      - PORT=3000
+      - HOST=0.0.0.0
+      - LOG_LEVEL=info
+      - NODE_ENV=production
+      # Connect to local n8n instance
+      - N8N_API_URL=http://n8n:5678
+      # API key will be set after n8n starts
+      - N8N_API_KEY=${N8N_API_KEY:-}
+      # Allow localhost webhooks for local development
+      - WEBHOOK_SECURITY_MODE=moderate
+      # Authentication token for MCP clients
+      - AUTH_TOKEN=${N8N_MCP_AUTH_TOKEN:-}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - n8n_network
+
+volumes:
+  n8n_data:
+    driver: local
+
+networks:
+  n8n_network:
+    driver: bridge

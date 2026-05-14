@@ -12,13 +12,20 @@ Integrates with:
 - MCP Toolbox (tool definitions)
 """
 
-from google.adk.tools import ToolContext
-from typing import Dict, Any, List, Optional, Callable
-from pathlib import Path
+try:
+    from google.adk.tools import ToolContext
+except ImportError:
+    # Mock ToolContext for standalone use
+    class ToolContext:
+        def __init__(self):
+            self.state = {}
+
 import json
-import subprocess
+from dataclasses import dataclass
 from datetime import datetime
-from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 import yaml
 
 # Project paths
@@ -55,7 +62,7 @@ class AgentTemplate:
             "tools": self.primary_tools + (self.secondary_tools or []),
             "tags": self.tags or []
         }
-        
+
         markdown = f"""---
 {yaml.dump(frontmatter, default_flow_style=False).rstrip()}
 ---
@@ -115,7 +122,7 @@ class PromptTemplate:
             "tools": self.tools_required or [],
             "tags": self.tags or []
         }
-        
+
         markdown = f"""---
 {yaml.dump(frontmatter, default_flow_style=False).rstrip()}
 ---
@@ -173,7 +180,7 @@ class SkillTemplate:
             "version": "1.0.0",
             "tags": self.tags or []
         }
-        
+
         markdown = f"""---
 {yaml.dump(frontmatter, default_flow_style=False).rstrip()}
 ---
@@ -206,19 +213,19 @@ def generate_agent_library(
 ) -> Dict[str, Any]:
     """
     Generate a library of agent.md files with integrated tools.
-    
+
     Args:
         count: Number of agents to generate (default 50)
         categories: Optional list of agent categories to focus on
         output_dir: Custom output directory (defaults to .github/agents/)
-    
+
     Returns:
         Status with generated agents list
     """
     try:
         target_dir = Path(output_dir) if output_dir else GITHUB_AGENTS_DIR
         target_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Default categories covering major dev domains
         agent_categories = categories or [
             "react-frontend", "nextjs-fullstack", "data-engineering",
@@ -226,9 +233,9 @@ def generate_agent_library(
             "ai-ml", "database", "api-design", "performance",
             "accessibility"
         ]
-        
+
         generated_agents = []
-        
+
         for i, category in enumerate(agent_categories[:count]):
             agent_name = f"{category.replace('-', ' ').title()} Specialist"
             agent = AgentTemplate(
@@ -241,17 +248,17 @@ def generate_agent_library(
                 example_prompt=f"Help me with {category.replace('-', ' ')} best practices and design patterns.",
                 tags=[category, "development", "coding"]
             )
-            
+
             # Write agent file
             agent_file = target_dir / f"{category}-specialist.agent.md"
             agent_file.write_text(agent.to_markdown())
-            
+
             generated_agents.append({
                 "name": agent_name,
                 "id": agent.id,
                 "file": str(agent_file.relative_to(PROJECT_ROOT))
             })
-        
+
         return {
             "status": "success",
             "message": f"Generated {len(generated_agents)} agent files",
@@ -259,7 +266,7 @@ def generate_agent_library(
             "agents": generated_agents,
             "output_dir": str(target_dir)
         }
-    
+
     except Exception as e:
         return {
             "status": "error",
@@ -275,27 +282,27 @@ def generate_prompt_library(
 ) -> Dict[str, Any]:
     """
     Generate a library of prompt.md files for Copilot chat modes.
-    
+
     Args:
         count: Number of prompts to generate
         prompt_types: Optional list of prompt types to focus on
         output_dir: Custom output directory (defaults to .github/prompts/)
-    
+
     Returns:
         Status with generated prompts list
     """
     try:
         target_dir = Path(output_dir) if output_dir else GITHUB_PROMPTS_DIR
         target_dir.mkdir(parents=True, exist_ok=True)
-        
+
         prompt_types_list = prompt_types or [
             "code-gen", "analysis", "testing", "documentation",
             "debugging", "performance", "security", "refactoring",
             "migration", "architecture"
         ]
-        
+
         generated_prompts = []
-        
+
         for prompt_type in prompt_types_list[:count]:
             prompt_name = f"{prompt_type.replace('-', ' ').title()} Guide"
             prompt = PromptTemplate(
@@ -307,18 +314,18 @@ def generate_prompt_library(
                 example_usage=f"Help me with {prompt_type.replace('-', ' ')} in my project",
                 tags=[prompt_type, "guide", "development"]
             )
-            
+
             # Write prompt file
             prompt_file = target_dir / f"{prompt_type}-guide.prompt.md"
             prompt_file.write_text(prompt.to_markdown())
-            
+
             generated_prompts.append({
                 "name": prompt_name,
                 "id": prompt.id,
                 "type": prompt_type,
                 "file": str(prompt_file.relative_to(PROJECT_ROOT))
             })
-        
+
         return {
             "status": "success",
             "message": f"Generated {len(generated_prompts)} prompt files",
@@ -326,7 +333,7 @@ def generate_prompt_library(
             "prompts": generated_prompts,
             "output_dir": str(target_dir)
         }
-    
+
     except Exception as e:
         return {
             "status": "error",
@@ -342,28 +349,28 @@ def generate_skill_library(
 ) -> Dict[str, Any]:
     """
     Generate a library of skill folders with SKILL.md and tools.
-    
+
     Args:
         count: Number of skills to generate
         categories: Optional list of skill categories
         output_dir: Custom output directory (defaults to .github/skills/)
-    
+
     Returns:
         Status with generated skills list
     """
     try:
         target_dir = Path(output_dir) if output_dir else GITHUB_SKILLS_DIR
         target_dir.mkdir(parents=True, exist_ok=True)
-        
+
         skill_categories = categories or [
             "component-gen", "test-automation", "data-fetch",
             "api-integration", "state-management", "performance-opt",
             "accessibility", "security-scan", "documentation-gen",
             "deployment-automation"
         ]
-        
+
         generated_skills = []
-        
+
         for skill_category in skill_categories[:count]:
             skill_name = f"{skill_category.replace('-', ' ').title()} Skill"
             skill = SkillTemplate(
@@ -375,22 +382,22 @@ def generate_skill_library(
                 example_code=f"# Example: {skill_name}\n# Implementation goes here",
                 tags=[skill_category, "reusable"]
             )
-            
+
             # Create skill directory
             skill_dir = target_dir / skill_category
             skill_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Write SKILL.md
             skill_file = skill_dir / "SKILL.md"
             skill_file.write_text(skill.to_skill_md())
-            
+
             generated_skills.append({
                 "name": skill_name,
                 "id": skill.id,
                 "category": skill.category,
                 "dir": str(skill_dir.relative_to(PROJECT_ROOT))
             })
-        
+
         return {
             "status": "success",
             "message": f"Generated {len(generated_skills)} skill folders",
@@ -398,7 +405,7 @@ def generate_skill_library(
             "skills": generated_skills,
             "output_dir": str(target_dir)
         }
-    
+
     except Exception as e:
         return {
             "status": "error",
@@ -413,50 +420,50 @@ def integrate_with_mcp_tools(
 ) -> Dict[str, Any]:
     """
     Wire generated agents with MCP tools from toolsets.json
-    
+
     Args:
         agent_ids: List of agent IDs to integrate
         toolset_file: Path to toolsets.json (default: agent/toolsets.json)
-    
+
     Returns:
         Integration status
     """
     try:
         toolset_path = Path(toolset_file) if toolset_file else AGENT_TOOLSETS
-        
+
         if not toolset_path.exists():
             return {
                 "status": "error",
                 "message": f"Toolsets file not found: {toolset_path}"
             }
-        
+
         # Load existing toolsets
         toolsets = json.loads(toolset_path.read_text())
-        
+
         # For each agent, add relevant tools
         integrations = []
         for agent_id in agent_ids:
             # Extract category from agent_id
             category = agent_id.replace("-specialist", "")
-            
+
             # Find matching tools in toolsets
             matching_tools = []
             for tool_name, tool_def in toolsets.items():
                 if category in tool_name.lower() or "common" in tool_name.lower():
                     matching_tools.append(tool_name)
-            
+
             integrations.append({
                 "agent_id": agent_id,
                 "category": category,
                 "tools_available": matching_tools[:5]  # Limit to 5 per agent
             })
-        
+
         return {
             "status": "success",
             "message": f"Integrated {len(integrations)} agents with MCP tools",
             "integrations": integrations
         }
-    
+
     except Exception as e:
         return {
             "status": "error",
@@ -473,15 +480,15 @@ def generate_full_library(
 ) -> Dict[str, Any]:
     """
     Generate complete agent library with agents, prompts, and skills.
-    
+
     This is the main entry point that orchestrates the full library generation.
-    
+
     Args:
         agent_count: Number of agents to generate
         prompt_count: Number of prompts to generate
         skill_count: Number of skills to generate
         integrate_mcp: Whether to integrate with MCP tools
-    
+
     Returns:
         Comprehensive status of full library generation
     """
@@ -489,36 +496,36 @@ def generate_full_library(
         "timestamp": datetime.utcnow().isoformat(),
         "components": {}
     }
-    
+
     # Generate agents
     agent_result = generate_agent_library(tool_context, count=agent_count)
     results["components"]["agents"] = agent_result
-    
+
     # Generate prompts
     prompt_result = generate_prompt_library(tool_context, count=prompt_count)
     results["components"]["prompts"] = prompt_result
-    
+
     # Generate skills
     skill_result = generate_skill_library(tool_context, count=skill_count)
     results["components"]["skills"] = skill_result
-    
+
     # Integrate with MCP tools if requested
     if integrate_mcp and agent_result.get("status") == "success":
         agent_ids = [a["id"] for a in agent_result.get("agents", [])]
         mcp_result = integrate_with_mcp_tools(tool_context, agent_ids)
         results["components"]["mcp_integration"] = mcp_result
-    
+
     # Calculate totals
     total_generated = (
         agent_result.get("count", 0) +
         prompt_result.get("count", 0) +
         skill_result.get("count", 0)
     )
-    
+
     results["status"] = "success" if total_generated > 0 else "partial"
     results["total_generated"] = total_generated
     results["summary"] = f"Generated {total_generated} items: {agent_result.get('count', 0)} agents, {prompt_result.get('count', 0)} prompts, {skill_result.get('count', 0)} skills"
-    
+
     return results
 
 

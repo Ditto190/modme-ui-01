@@ -168,7 +168,6 @@ tags:
   - frontend
   - development
 ---
-
 # React Frontend Specialist
 ...
 ```
@@ -205,7 +204,6 @@ tags:
   - code-gen
   - react
 ---
-
 # React Code Generation Guide
 ...
 ```
@@ -238,7 +236,6 @@ tags:
   - component-gen
   - reusable
 ---
-
 # Component Generation Skill
 ...
 ```
@@ -472,7 +469,7 @@ Copilot: Based on your project, I recommend:
   • React Frontend Specialist
   • Next.js Full-stack Specialist
   • Component Generation Skill
-  
+
   Install with: @react-frontend-specialist
 ```
 
@@ -487,7 +484,6 @@ permissions: read-all
 safe-outputs:
   add-comment:
 ---
-
 # Auto-analyze with generated agents
 Use the **React Frontend Specialist** agent to analyze UI concerns.
 ```
@@ -564,6 +560,6 @@ For issues or questions:
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: 2026-01-08  
+**Version**: 1.0.0
+**Last Updated**: 2026-01-08
 **Status**: ✓ Working (30 items generated, expandable to 200+)

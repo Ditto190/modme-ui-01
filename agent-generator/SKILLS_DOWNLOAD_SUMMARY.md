@@ -1,8 +1,8 @@
 # Anthropic Skills Download Summary
 
-**Date**: January 2025  
-**Source**: <https://github.com/anthropics/skills>  
-**Branch Used**: `main` (fallback from requested branches)  
+**Date**: January 2025
+**Source**: <https://github.com/anthropics/skills>
+**Branch Used**: `main` (fallback from requested branches)
 **Status**: ✅ **Complete - All 11 skills downloaded successfully**
 
 ---
@@ -11,9 +11,9 @@
 
 Successfully downloaded and converted 11 Anthropic skills from the main branch of the anthropics/skills repository. All skills are now available in `agent-generator/src/skills/` with converted SKILL.md files and preserved bundled resources.
 
-**Total Skills**: 11  
-**Total Files**: ~50+ (SKILL.md files + scripts/references/assets)  
-**Conversion Format**: Anthropic YAML frontmatter → Local Capabilities + Usage Instructions  
+**Total Skills**: 11
+**Total Files**: ~50+ (SKILL.md files + scripts/references/assets)
+**Conversion Format**: Anthropic YAML frontmatter → Local Capabilities + Usage Instructions
 **Fetch Mechanism**: Direct GitHub HTTPS/API via fetch-anthropic-skills.js
 
 ---
@@ -185,8 +185,8 @@ Successfully downloaded and converted 11 Anthropic skills from the main branch o
 ---
 name: skill-creator
 description: |
-  Guide for creating effective skills. This skill should be used when users want to 
-  create a new skill (or update an existing skill) that extends Claude's capabilities 
+  Guide for creating effective skills. This skill should be used when users want to
+  create a new skill (or update an existing skill) that extends Claude's capabilities
   with specialized knowledge, workflows, or tool integrations.
 license: MIT
 ---
@@ -217,7 +217,7 @@ This skill provides guidance for creating effective skills.
 
 ---
 
-**Source**: Converted from anthropics/skills repository (main branch)  
+**Source**: Converted from anthropics/skills repository (main branch)
 **Original**: https://github.com/anthropics/skills/tree/main/skills/skill-creator
 ```
 
@@ -457,18 +457,18 @@ agent-generator/src/skills/
 
 ## Success Metrics
 
-✅ **All skills downloaded successfully** (11/11)  
-✅ **Bundled resources preserved** (scripts/, references/, assets/)  
-✅ **Conversion applied correctly** (YAML frontmatter → local format)  
-✅ **No rate limit errors** (500ms delays effective)  
-✅ **Clear file organization** (one directory per skill)  
+✅ **All skills downloaded successfully** (11/11)
+✅ **Bundled resources preserved** (scripts/, references/, assets/)
+✅ **Conversion applied correctly** (YAML frontmatter → local format)
+✅ **No rate limit errors** (500ms delays effective)
+✅ **Clear file organization** (one directory per skill)
 ✅ **Source attribution added** (GitHub links in footers)
 
 ---
 
 ## Related Documentation
 
-- **Integration Guide**: [docs/ANTHROPIC_SKILLS_INTEGRATION.md](../docs/ANTHROPIC_SKILLS_INTEGRATION.md)
+- **Integration Guide**: [docs/ANTHROPIC_SKILLS_INTEGRATION.md](../docs/inbox/ANTHROPIC_SKILLS_INTEGRATION.md)
 - **Quick Reference**: [SCHEMA_CRAWLER_INTEGRATION_SUMMARY.md](../SCHEMA_CRAWLER_INTEGRATION_SUMMARY.md)
 - **Fetch Script**: [scripts/knowledge-management/fetch-anthropic-skills.js](../scripts/knowledge-management/fetch-anthropic-skills.js)
 - **Validator**: [scripts/knowledge-management/skill-spec-validator.js](../scripts/knowledge-management/skill-spec-validator.js)
@@ -476,6 +476,6 @@ agent-generator/src/skills/
 
 ---
 
-**Last Updated**: January 2025  
-**Maintained by**: ModMe GenUI Team  
+**Last Updated**: January 2025
+**Maintained by**: ModMe GenUI Team
 **Status**: ✅ Production-Ready

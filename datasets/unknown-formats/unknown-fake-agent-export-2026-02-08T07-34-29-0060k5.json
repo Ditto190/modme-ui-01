@@ -1,0 +1,62 @@
+{
+  "sampledAt": "2026-02-08T07:34:29.636Z",
+  "contentHash": "0060k5vr",
+  "sourceLabel": "fake-agent-export",
+  "topLevelSchema": {
+    "version": "string",
+    "metadata": "object{app,exportDate}",
+    "conversation": "array[2]<object{role,content,timestamp}>"
+  },
+  "firstTurnSchema": {
+    "role": "string",
+    "content": "string",
+    "timestamp": "number"
+  },
+  "candidateTurnsPath": "conversation",
+  "candidateTurnsCount": 2,
+  "diagnosticText": "=== Chat Format Detection Diagnostic ===\n\nTop-level structure:\n{\n  \"version\": \"string\",\n  \"metadata\": \"object\",\n  \"conversation\": \"array[2]\"\n}\n\nAttempted formats:\n  copilot-chat: 0/4 rules passed\n    ✗ responderUsername [type_string]\n    ✗ requests [type_array]\n    ✗ requests[0].message [type_object]\n    ✗ requests[0].variableData [type_object]\n\nSample array items (first element keys):\n  conversation[0]: [\"role\",\"content\",\"timestamp\"]",
+  "firstTurnSample": {
+    "role": "user",
+    "content": "Hello, can you help me with TypeScript?",
+    "timestamp": 1705334400000
+  },
+  "deepKeyMap": [
+    {
+      "path": "version",
+      "type": "string",
+      "sample": "2.0"
+    },
+    {
+      "path": "metadata",
+      "type": "object{app,exportDate}"
+    },
+    {
+      "path": "metadata.app",
+      "type": "string",
+      "sample": "SomeNewAgent"
+    },
+    {
+      "path": "metadata.exportDate",
+      "type": "string",
+      "sample": "2025-01-15"
+    },
+    {
+      "path": "conversation",
+      "type": "array[2]<object{role,content,timestamp}>"
+    },
+    {
+      "path": "conversation[0].role",
+      "type": "string",
+      "sample": "user"
+    },
+    {
+      "path": "conversation[0].content",
+      "type": "string",
+      "sample": "Hello, can you help me with TypeScript?"
+    },
+    {
+      "path": "conversation[0].timestamp",
+      "type": "number"
+    }
+  ]
+}

@@ -1,18 +1,15 @@
 # 📦 Collections
 
 Curated collections of related prompts, instructions, and agents organized around specific themes, workflows, or use cases.
-
 ### How to Use Collections
 
 **Browse Collections:**
-
 - ⭐ Featured collections are highlighted and appear at the top of the list
 - Explore themed collections that group related customizations
 - Each collection includes prompts, instructions, and agents for specific workflows
 - Collections make it easy to adopt comprehensive toolkits for particular scenarios
 
 **Install Items:**
-
 - Click install buttons for individual items within collections
 - Or browse to the individual files to copy content manually
 - Collections help you discover related customizations you might have missed
@@ -21,6 +18,7 @@ Curated collections of related prompts, instructions, and agents organized aroun
 | ---- | ----------- | ----- | ---- |
 | [⭐ Awesome Copilot](../collections/awesome-copilot.md) | Meta prompts that help you discover and generate curated GitHub Copilot chat modes, collections, instructions, prompts, and agents. | 6 items | github-copilot, discovery, meta, prompt-engineering, agents |
 | [⭐ Partners](../collections/partners.md) | Custom agents that have been created by GitHub partners | 20 items | devops, security, database, cloud, infrastructure, observability, feature-flags, cicd, migration, performance |
+| [Api Integration Rest Graphql](../collections/api-integration-tools.md) | Collection focused on api, integration, rest, graphql. Auto-generated based on keyword search. | 8 items | api, graphql, integration, rest |
 | [Azure & Cloud Development](../collections/azure-cloud-development.md) | Comprehensive Azure cloud development tools including Infrastructure as Code, serverless functions, architecture patterns, and cost optimization for building scalable cloud applications. | 18 items | azure, cloud, infrastructure, bicep, terraform, serverless, architecture, devops |
 | [C# .NET Development](../collections/csharp-dotnet-development.md) | Essential prompts, instructions, and chat modes for C# and .NET development including testing, documentation, and best practices. | 8 items | csharp, dotnet, aspnet, testing |
 | [C# MCP Server Development](../collections/csharp-mcp-development.md) | Complete toolkit for building Model Context Protocol (MCP) servers in C# using the official SDK. Includes instructions for best practices, a prompt for generating servers, and an expert chat mode for guidance. | 3 items | csharp, mcp, model-context-protocol, dotnet, server-development |
@@ -42,10 +40,13 @@ Curated collections of related prompts, instructions, and agents organized aroun
 | [Python MCP Server Development](../collections/python-mcp-development.md) | Complete toolkit for building Model Context Protocol (MCP) servers in Python using the official SDK with FastMCP. Includes instructions for best practices, a prompt for generating servers, and an expert chat mode for guidance. | 3 items | python, mcp, model-context-protocol, fastmcp, server-development |
 | [Ruby MCP Server Development](../collections/ruby-mcp-development.md) | Complete toolkit for building Model Context Protocol servers in Ruby using the official MCP Ruby SDK gem with Rails integration support. | 3 items | ruby, mcp, model-context-protocol, server-development, sdk, rails, gem |
 | [Rust MCP Server Development](../collections/rust-mcp-development.md) | Build high-performance Model Context Protocol servers in Rust using the official rmcp SDK with async/await, procedural macros, and type-safe implementations. | 3 items | rust, mcp, model-context-protocol, server-development, sdk, tokio, async, macros, rmcp |
+| [Schema Validation Zod Typescript](../collections/mcp-schema-tools.md) | Collection focused on schema, validation, zod, typescript. Auto-generated based on keyword search. | 10 items | schema, typescript, validation, zod |
 | [Security & Code Quality](../collections/security-best-practices.md) | Security frameworks, accessibility guidelines, performance optimization, and code quality best practices for building secure, maintainable, and high-performance applications. | 6 items | security, accessibility, performance, code-quality, owasp, a11y, optimization, best-practices |
 | [Software Engineering Team](../collections/software-engineering-team.md) | 7 specialized agents covering the full software development lifecycle from UX design and architecture to security and DevOps. | 7 items | team, enterprise, security, devops, ux, architecture, product, ai-ethics |
 | [Swift MCP Server Development](../collections/swift-mcp-development.md) | Comprehensive collection for building Model Context Protocol servers in Swift using the official MCP Swift SDK with modern concurrency features. | 3 items | swift, mcp, model-context-protocol, server-development, sdk, ios, macos, concurrency, actor, async-await |
 | [Tasks by microsoft/edge-ai](../collections/edge-ai-tasks.md) | Task Researcher and Task Planner for intermediate to expert users and large codebases - Brought to you by microsoft/edge-ai | 3 items | architecture, planning, research, tasks, implementation |
 | [Technical Spike](../collections/technical-spike.md) | Tools for creation, management and research of technical spikes to reduce unknowns and assumptions before proceeding to specification and implementation of solutions. | 2 items | technical-spike, assumption-testing, validation, research |
-| [Testing & Test Automation](../collections/testing-automation.md) | Comprehensive collection for writing tests, test automation, and test-driven development including unit tests, integration tests, and end-to-end testing strategies. | 11 items | testing, tdd, automation, unit-tests, integration, playwright, jest, nunit |
+| [Test Collection Yaml Metadata](../collections/test-yaml-metadata.md) | Collection focused on test, collection, yaml, metadata. Auto-generated based on keyword search. | 5 items | collection, metadata, test, yaml |
+| [Testing Automation](../collections/testing-automation.md) | Collection focused on testing, automation. Auto-generated based on keyword search. | 5 items | automation, testing |
 | [TypeScript MCP Server Development](../collections/typescript-mcp-development.md) | Complete toolkit for building Model Context Protocol (MCP) servers in TypeScript/Node.js using the official SDK. Includes instructions for best practices, a prompt for generating servers, and an expert chat mode for guidance. | 3 items | typescript, mcp, model-context-protocol, nodejs, server-development |
+| [Workflows Collections Copilot Mcp Toolset Github Collection Agent Development-Tools](../collections/mcp-awesome-copilot.md) | Collection focused on workflows, collections, copilot, mcp, toolset, github, collection, agent, development-tools. Auto-generated based on keyword search. | 10 items | agent, collection, collections, copilot, development-tools, github, mcp, toolset, workflows |

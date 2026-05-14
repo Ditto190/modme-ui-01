@@ -1,0 +1,496 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-02-08T12:00:00.000Z",
+  "topics": [
+    {
+      "id": "esbuild",
+      "name": "ESBuild Integration",
+      "category": "build-tools",
+      "status": "active",
+      "summary": "TypeScript/React build configuration with ESBuild for fast compilation",
+      "keywords": ["esbuild", "build", "typescript", "compilation", "react"],
+      "source_files": [
+        "ESBUILD_CHECKLIST.md",
+        "ESBUILD_CONFIGURED.md",
+        "ESBUILD_INDEX.md",
+        "ESBUILD_INTEGRATION.md",
+        "ESBUILD_NPM_SCRIPTS.md",
+        "ESBUILD_QUICK_START.md",
+        "ESBUILD_REFERENCE.md",
+        "ESBUILD_SETUP.md"
+      ],
+      "consolidated_path": "docs/build-tools/esbuild.md",
+      "key_concepts": {
+        "setup": "Single package.json script for fast builds",
+        "configuration": "esbuild.config.mjs with React/TS presets",
+        "benefits": "10x faster than tsc, sub-second rebuilds",
+        "trade_offs": "No type checking (use tsc separately)"
+      },
+      "commands": {
+        "build": "npm run build:esbuild",
+        "watch": "npm run watch:esbuild",
+        "type_check": "npx tsc --noEmit"
+      },
+      "related_topics": ["typescript", "react", "npm-scripts"],
+      "metadata": {
+        "archived_date": "2026-02-08",
+        "original_size_kb": 120,
+        "compressed_size_kb": 15,
+        "compression_ratio": "8:1"
+      }
+    },
+    {
+      "id": "devcontainers",
+      "name": "DevContainer Setup",
+      "category": "infrastructure",
+      "status": "active",
+      "summary": "VS Code Dev Containers for consistent Linux development environment on Windows",
+      "keywords": ["devcontainer", "docker", "vscode", "linux", "development-environment"],
+      "source_files": [
+        "DEVCONTAINER_IMPLEMENTATION_SUMMARY.md",
+        "DEVCONTAINER_PREFLIGHT.md",
+        "DEVCONTAINER_READINESS_CHECKLIST.md",
+        "DEVCONTAINER_SETUP.md",
+        "DEVCONTAINER_TESTING_GUIDE.md",
+        "DEVCONTAINER_TRANSITION_SUMMARY.md",
+        "DEVCONTAINER_WORKTREE_STRATEGY.md"
+      ],
+      "consolidated_path": "docs/infrastructure/devcontainers.md",
+      "key_concepts": {
+        "purpose": "Cross-platform development consistency",
+        "features": "Python, Node.js, Git, MCP servers pre-configured",
+        "setup_time": "5-10 minutes first run, instant subsequent starts",
+        "benefits": "Identical environment for all developers"
+      },
+      "commands": {
+        "build": "F1 → Dev Containers: Rebuild Container",
+        "attach": "F1 → Dev Containers: Attach to Running Container",
+        "logs": "docker logs vsc-modme-ui-01-test-worktree"
+      },
+      "related_topics": ["docker", "vscode", "python", "nodejs"],
+      "metadata": {
+        "archived_date": "2026-02-08",
+        "original_size_kb": 95,
+        "compressed_size_kb": 12,
+        "compression_ratio": "7.9:1"
+      }
+    },
+    {
+      "id": "genai-toolbox",
+      "name": "GenAI Toolbox Integration",
+      "category": "integrations",
+      "status": "active",
+      "summary": "Google GenAI Toolbox SDK integration for AI-powered features and code generation",
+      "keywords": ["genai", "google", "ai", "toolbox", "gemini", "code-generation"],
+      "source_files": [
+        "GENAI_TOOLBOX_COMPARISON.md",
+        "GENAI_TOOLBOX_INTEGRATION_PLAN.md",
+        "GENAI_TOOLBOX_INTEGRATION_SUMMARY.md"
+      ],
+      "consolidated_path": "docs/integrations/genai-toolbox.md",
+      "key_concepts": {
+        "purpose": "AI-powered code generation and analysis",
+        "features": "Gemini integration, function calling, streaming responses",
+        "architecture": "SDK wrap with MCP server compatibility",
+        "benefits": "Unified AI interface across tools"
+      },
+      "commands": {
+        "test": "npm run test:genai",
+        "integration": "npm run dev:genai"
+      },
+      "related_topics": ["gemini", "mcp", "ai", "code-generation"],
+      "metadata": {
+        "archived_date": "2026-02-08",
+        "original_size_kb": 45,
+        "compressed_size_kb": 8,
+        "compression_ratio": "5.6:1"
+      }
+    },
+    {
+      "id": "implementation-summaries",
+      "name": "Implementation Summaries Archive",
+      "category": "architecture",
+      "status": "archived",
+      "summary": "Historical implementation summaries and integration documentation",
+      "keywords": ["implementation", "summary", "integration", "history", "decisions"],
+      "source_files": [
+        "DEVCONTAINER_IMPLEMENTATION_SUMMARY.md",
+        "AGENT_COLLECTION_IMPLEMENTATION_SUMMARY.md",
+        "GEMMA3N_IMPLEMENTATION_SUMMARY.md",
+        "GREPTIME_IMPLEMENTATION_SUMMARY.md",
+        "GENAI_TOOLBOX_INTEGRATION_SUMMARY.md",
+        "SCHEMA_CRAWLER_INTEGRATION_SUMMARY.md",
+        "SHELL_INTEGRATION_SUMMARY.md",
+        "MARKDOWN_SETUP_SUMMARY.md",
+        "IMPLEMENTATION_SUMMARY.md"
+      ],
+      "consolidated_path": "docs/architecture/implementation-history.md",
+      "key_concepts": {
+        "purpose": "Historical record of major implementation decisions",
+        "coverage": "DevContainer, Agent Collections, GrepTime, GenAI, Schema Crawler, Shell, Markdown",
+        "format": "Implementation summaries with rationale and outcomes",
+        "value": "Learning from past decisions and avoiding rework"
+      },
+      "commands": {},
+      "related_topics": ["architecture", "decisions", "history", "adr"],
+      "metadata": {
+        "archived_date": "2026-02-08",
+        "original_size_kb": 180,
+        "compressed_size_kb": 25,
+        "compression_ratio": "7.2:1"
+      }
+    },
+    {
+      "id": "session-archives",
+      "name": "Session Archives",
+      "category": "archive",
+      "status": "archived",
+      "summary": "Historical session summaries and temporal documentation from 2026-01",
+      "keywords": ["session", "refactoring", "test-results", "temporal", "history"],
+      "source_files": [
+        "SESSION_SUMMARY_2026-01-03.md",
+        "REFACTORING_APPLIED_2026-01-03.md",
+        "TEST_RESULTS_MCP_COLLECTION_GENERATION.md",
+        "TEST_SUMMARY_SKILLS_REF.md"
+      ],
+      "consolidated_path": "docs/archive/sessions/2026-01.md",
+      "key_concepts": {
+        "purpose": "Historical record of development sessions",
+        "period": "January 2026",
+        "coverage": "Refactoring, test results, skills implementation",
+        "value": "Timeline of project evolution"
+      },
+      "commands": {},
+      "related_topics": ["history", "testing", "refactoring"],
+      "metadata": {
+        "archived_date": "2026-02-08",
+        "original_size_kb": 85,
+        "compressed_size_kb": 12,
+        "compression_ratio": "7.1:1"
+      }
+    },
+    {
+      "id": "temporary-files",
+      "name": "Temporary Files Cleanup",
+      "category": "archive",
+      "status": "archived",
+      "summary": "Temporary agent and test files moved to archive",
+      "keywords": ["temporary", "test", "draft", "wip"],
+      "source_files": [
+        "temp-smart-mcp-agent.md",
+        "temp-smart-mcp-clinerules.md",
+        "test_agent_prompt.md"
+      ],
+      "consolidated_path": "docs/archive/temp/temporary-files.md",
+      "key_concepts": {
+        "purpose": "Archive temporary and work-in-progress files",
+        "status": "No longer actively used",
+        "action": "Moved to archive for reference",
+        "cleanup_date": "2026-02-08"
+      },
+      "commands": {},
+      "related_topics": ["cleanup", "archive"],
+      "metadata": {
+        "archived_date": "2026-02-08",
+        "original_size_kb": 25,
+        "compressed_size_kb": 4,
+        "compression_ratio": "6.3:1"
+      }
+    },
+    {
+      "id": "anthropic-skills-integration",
+      "name": "ANTHROPIC_SKILLS_INTEGRATION",
+      "category": "integrations",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["ANTHROPIC_SKILLS_INTEGRATION.md"],
+      "consolidated_path": "docs/integrations/anthropic-skills-integration.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "architecture-update",
+      "name": "ARCHITECTURE_UPDATE",
+      "category": "architecture",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["ARCHITECTURE_UPDATE.md"],
+      "consolidated_path": "docs/architecture/architecture-update.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "chromadb-indexing",
+      "name": "CHROMADB_INDEXING",
+      "category": "integrations",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["CHROMADB_INDEXING.md"],
+      "consolidated_path": "docs/integrations/chromadb-indexing.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "claude-implementation",
+      "name": "Claude_Implementation",
+      "category": "architecture",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["Claude_Implementation.md"],
+      "consolidated_path": "docs/architecture/claude-implementation.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "dependency-optimization-strategy",
+      "name": "DEPENDENCY_OPTIMIZATION_STRATEGY",
+      "category": "build-tools",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["DEPENDENCY_OPTIMIZATION_STRATEGY.md"],
+      "consolidated_path": "docs/build-tools/dependency-optimization-strategy.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "docker-setup",
+      "name": "docker setup",
+      "category": "infrastructure",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["docker-setup.md"],
+      "consolidated_path": "docs/infrastructure/docker-setup.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "generate-schemas-conversion",
+      "name": "GENERATE_SCHEMAS_CONVERSION",
+      "category": "integrations",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["GENERATE_SCHEMAS_CONVERSION.md"],
+      "consolidated_path": "docs/integrations/generate-schemas-conversion.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "index",
+      "name": "INDEX",
+      "category": "integrations",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["INDEX.md"],
+      "consolidated_path": "docs/integrations/index.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "issue-management-system",
+      "name": "ISSUE_MANAGEMENT_SYSTEM",
+      "category": "infrastructure",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["ISSUE_MANAGEMENT_SYSTEM.md"],
+      "consolidated_path": "docs/infrastructure/issue-management-system.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "journal-code-indexing",
+      "name": "JOURNAL_CODE_INDEXING",
+      "category": "integrations",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["JOURNAL_CODE_INDEXING.md"],
+      "consolidated_path": "docs/integrations/journal-code-indexing.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "kb-implementation-summary",
+      "name": "KB_IMPLEMENTATION_SUMMARY",
+      "category": "architecture",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["KB_IMPLEMENTATION_SUMMARY.md"],
+      "consolidated_path": "docs/architecture/kb-implementation-summary.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "kb-memory-graph",
+      "name": "KB_MEMORY_GRAPH",
+      "category": "architecture",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["KB_MEMORY_GRAPH.md"],
+      "consolidated_path": "docs/architecture/kb-memory-graph.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "kb-quick-reference",
+      "name": "KB_QUICK_REFERENCE",
+      "category": "architecture",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["KB_QUICK_REFERENCE.md"],
+      "consolidated_path": "docs/architecture/kb-quick-reference.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "kb-test-fix",
+      "name": "KB_TEST_FIX",
+      "category": "archive",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["KB_TEST_FIX.md"],
+      "consolidated_path": "docs/archive/kb-test-fix.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    },
+    {
+      "id": "readme",
+      "name": "README",
+      "category": "archive",
+      "status": "pending",
+      "summary": "Imported from inbox - needs review",
+      "keywords": [],
+      "source_files": ["README.md"],
+      "consolidated_path": "docs/archive/readme.md",
+      "key_concepts": {},
+      "commands": {},
+      "related_topics": [],
+      "metadata": {
+        "archived_date": "2026-02-07",
+        "imported_from": "inbox"
+      }
+    }
+  ],
+  "index": {
+    "by_category": {
+      "build-tools": ["esbuild", "dependency-optimization-strategy"],
+      "infrastructure": ["devcontainers", "docker-setup", "issue-management-system"],
+      "integrations": [
+        "genai-toolbox",
+        "anthropic-skills-integration",
+        "chromadb-indexing",
+        "generate-schemas-conversion",
+        "index",
+        "journal-code-indexing"
+      ],
+      "architecture": [
+        "implementation-summaries",
+        "architecture-update",
+        "claude-implementation",
+        "kb-implementation-summary",
+        "kb-memory-graph",
+        "kb-quick-reference"
+      ],
+      "archive": ["session-archives", "temporary-files", "kb-test-fix", "readme"]
+    },
+    "by_keyword": {
+      "esbuild": ["esbuild"],
+      "typescript": ["esbuild"],
+      "build": ["esbuild"],
+      "devcontainer": ["devcontainers"],
+      "docker": ["devcontainers"],
+      "vscode": ["devcontainers"],
+      "genai": ["genai-toolbox"],
+      "google": ["genai-toolbox"],
+      "ai": ["genai-toolbox"],
+      "implementation": ["implementation-summaries"],
+      "summary": ["implementation-summaries"],
+      "session": ["session-archives"],
+      "test": ["session-archives", "temporary-files"],
+      "temporary": ["temporary-files"],
+      "archive": ["session-archives", "temporary-files"]
+    }
+  }
+}

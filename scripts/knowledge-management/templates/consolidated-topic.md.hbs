@@ -1,0 +1,45 @@
+# {{name}}
+
+**Category**: {{category}}
+**Status**: {{#if (eq status "active")}}🟢 Active{{else if (eq status "deprecated")}}⚠️ Deprecated{{else}}📦 Archived{{/if}}
+**Last Updated**: {{../last_updated}}
+
+## Summary
+
+{{summary}}
+
+## Quick Start
+
+{{#each commands}}
+**{{@key}}**: `{{this}}`
+{{/each}}
+
+## Key Concepts
+
+{{#each key_concepts}}
+### {{@key}}
+
+{{this}}
+
+{{/each}}
+
+## Related Topics
+
+{{#each related_topics}}
+- [[{{this}}]]
+{{/each}}
+
+## Original Documentation
+
+This document consolidates the following source files:
+
+{{#each source_files}}
+- ~~{{this}}~~ (archived to `docs/archive/{{../category}}/`)
+{{/each}}
+
+**Archived Location**: `docs/archive/{{category}}/`
+
+---
+
+**Compression Stats**: {{metadata.compression_ratio}} reduction ({{metadata.original_size_kb}}KB → {{metadata.compressed_size_kb}}KB)
+**Keywords**: {{#each keywords}}#{{this}} {{/each}}

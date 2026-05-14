@@ -5,15 +5,25 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "generate": "tsx src/scripts/generate.ts"
+    "generate": "tsx src/scripts/generate.ts",
+    "generate:agent-schemas": "tsx src/scripts/generate-agent-schemas.ts",
+    "generate:openapi": "tsx src/chat-formats/openapi.ts",
+    "generate:client": "openapi-ts -i dist/openapi/universal-chat-ingestion.json -o dist/client -c fetch",
+    "generate:all": "npm run generate:openapi && npm run generate:client",
+    "test:pipeline": "tsx src/chat-formats/test-pipeline.ts",
+    "test:pipeline:custom": "tsx src/chat-formats/test-pipeline.ts"
   },
   "dependencies": {
-    "typescript": "^5.3.3",
+    "glob": "^10.3.10",
     "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
     "typescript-json-schema": "^0.62.0",
-    "glob": "^10.3.10"
+    "zod": "^4.3.6",
+    "zod-openapi": "^5.4.6"
   },
   "devDependencies": {
+    "@hey-api/client-fetch": "^0.13.1",
+    "@hey-api/openapi-ts": "^0.92.3",
     "@types/node": "^20.10.6"
   }
 }

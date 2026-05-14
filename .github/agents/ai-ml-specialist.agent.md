@@ -8,10 +8,7 @@ tags:
 - coding
 title: Ai Ml Specialist
 tools:
-- tools_ai-ml
-- mcp_github2_get_toolset_tools
-- fetch_documentation
-- search_code
+['github/search_code', 'github/search_code', 'ms-ossdata.vscode-pgsql/pgsql_listServers', 'ms-ossdata.vscode-pgsql/pgsql_connect', 'ms-ossdata.vscode-pgsql/pgsql_disconnect', 'ms-ossdata.vscode-pgsql/pgsql_open_script', 'ms-ossdata.vscode-pgsql/pgsql_visualizeSchema', 'ms-ossdata.vscode-pgsql/pgsql_query', 'ms-ossdata.vscode-pgsql/pgsql_modifyDatabase', 'ms-ossdata.vscode-pgsql/database', 'ms-ossdata.vscode-pgsql/pgsql_listDatabases', 'ms-ossdata.vscode-pgsql/pgsql_describeCsv', 'ms-ossdata.vscode-pgsql/pgsql_bulkLoadCsv', 'ms-ossdata.vscode-pgsql/pgsql_getDashboardContext', 'ms-ossdata.vscode-pgsql/pgsql_getMetricData', 'ms-ossdata.vscode-pgsql/pgsql_migration_oracle_app', 'ms-ossdata.vscode-pgsql/pgsql_migration_show_report']
 type: agent
 ---
 
@@ -40,4 +37,4 @@ Help me with ai ml best practices and design patterns.
 4. Reference related agents for multi-step workflows
 
 ---
-*Generated: 2026-01-08T08:32:24.489852*
+*Generated: 2026-02-07T09:36:23.861966*

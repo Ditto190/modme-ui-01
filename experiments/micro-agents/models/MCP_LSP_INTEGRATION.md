@@ -2,8 +2,8 @@
 
 > **Comprehensive guide to integrating the transformers.js models library with MCP servers and LSP capabilities**
 
-**Created**: January 7, 2026  
-**Version**: 1.0.0  
+**Created**: January 7, 2026
+**Version**: 1.0.0
 **Tech Stack**: MCP Protocol, LSP, TypeScript, Python, GreptimeDB
 
 ---
@@ -62,7 +62,7 @@
 
 ### Component Inventory
 
-Based on [CODEBASE_INDEX.md](../../../CODEBASE_INDEX.md), here's the complete index of models library components:
+Based on [CODEBASE_INDEX.md](../../../docs/inbox/CODEBASE_INDEX.md), here's the complete index of models library components:
 
 #### Core Modules
 
@@ -1124,10 +1124,10 @@ try {
 - [IMPLEMENTATION_SUMMARY](./IMPLEMENTATION_SUMMARY.md) - Technical details
 - [QUICK_START](./QUICK_START.md) - Getting started guide
 - [Schema Crawler README](../../../agent-generator/SCHEMA_CRAWLER_README.md) - Type generation
-- [CODEBASE_INDEX](../../../CODEBASE_INDEX.md) - Complete codebase inventory
+- [CODEBASE_INDEX](../../../docs/inbox/CODEBASE_INDEX.md) - Complete codebase inventory
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: January 7, 2026  
+**Version**: 1.0.0
+**Last Updated**: January 7, 2026
 **Maintained by**: ModMe GenUI Team

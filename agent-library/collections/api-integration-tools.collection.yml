@@ -1,0 +1,39 @@
+description: Collection focused on api, integration, rest, graphql. Auto-generated
+  based on keyword search.
+display:
+  featured: false
+  ordering: manual
+  show_badge: true
+generation:
+  generated_at: '2026-02-07T23:44:18.995564'
+  keywords:
+  - api
+  - integration
+  - rest
+  - graphql
+  selected_items: 8
+  total_matches: 307
+id: api-integration-tools
+items:
+- kind: instruction
+  path: instructions\azure-logic-apps-power-automate.instructions.md
+- kind: instruction
+  path: instructions\dotnet-maui-9-to-dotnet-maui-10-upgrade.instructions.md
+- kind: instruction
+  path: instructions\springboot-4-migration.instructions.md
+- kind: instruction
+  path: instructions\power-platform-connector.instructions.md
+- kind: agent
+  path: agents\apify-integration-expert.agent.md
+- kind: instruction
+  path: instructions\aspnet-rest-apis.instructions.md
+- kind: agent
+  path: agents\context7.agent.md
+- kind: agent
+  path: agents\pimcore-expert.agent.md
+name: Api Integration Rest Graphql
+tags:
+- api
+- graphql
+- integration
+- rest

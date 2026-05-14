@@ -1,0 +1,84 @@
+{
+  "name": "Copilot Chat \u2192 Phoenix Traces (Webhook)",
+  "nodes": [
+    {
+      "id": "webhook-trigger-001",
+      "name": "Receive Chat JSON",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "copilot-chat-upload",
+      "parameters": {
+        "path": "copilot-chat-upload",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "code-prepare-001",
+      "name": "Prepare Bridge Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Extract chatData and projectName from webhook body\n// The Python bridge handles all OTLP parsing + protobuf serialization\nconst body = $input.first().json.body || $input.first().json;\n\nconst chatData = body.chatData || body;\nconst projectName = body.projectName || 'copilot-research';\n\n// Validate we have requests/turns\nconst requests = chatData.requests || chatData.turns || [];\nif (requests.length === 0) {\n  return [{ json: { error: 'No requests/turns found in chatData' } }];\n}\n\nreturn [{\n  json: {\n    chatData,\n    projectName,\n    turnCount: requests.length\n  }\n}];"
+      }
+    },
+    {
+      "id": "http-bridge-001",
+      "name": "Send to Trace Bridge",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [750, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8787/upload",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ chatData: $json.chatData, projectName: $json.projectName }) }}",
+        "options": {
+          "timeout": 120000
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "respond-webhook-001",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1000, 300],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      }
+    }
+  ],
+  "connections": {
+    "Receive Chat JSON": {
+      "main": [
+        [{ "node": "Prepare Bridge Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Prepare Bridge Payload": {
+      "main": [
+        [{ "node": "Send to Trace Bridge", "type": "main", "index": 0 }]
+      ]
+    },
+    "Send to Trace Bridge": {
+      "main": [
+        [{ "node": "Respond to Webhook", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

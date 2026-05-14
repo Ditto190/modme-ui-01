@@ -1,6 +1,6 @@
 # Dynamic Agent Library - Generation Summary
 
-**Generated**: 2026-01-08T08:32:24.562107
+**Generated**: 2026-02-07T09:36:23.891626
 
 ## Overview
 
@@ -9,19 +9,16 @@ This document summarizes the dynamically generated agent library for ModMe UI.
 ## Generated Components
 
 ### Agents
-
 - **Count**: 12
 - **Location**: `.github/agents/`
 - **Status**: success
 
 ### Prompts
-
 - **Count**: 10
 - **Location**: `.github/prompts/`
 - **Status**: success
 
 ### Skills
-
 - **Count**: 10
 - **Location**: `.github/skills/`
 - **Status**: success
@@ -40,27 +37,21 @@ This document summarizes the dynamically generated agent library for ModMe UI.
 ## How to Use
 
 ### 1. Reference Agents
-
 All generated agents are available in VS Code Copilot Chat:
-
 ```
 @agent-name
 Your prompt here
 ```
 
 ### 2. Use Prompts
-
 Leverage generated prompts in Copilot chat:
-
 ```
 @suggest-awesome-github-copilot-agents
 What agents would help with my task?
 ```
 
 ### 3. Integrate Skills
-
 Copy relevant skills to your workflows:
-
 ```bash
 cp -r .github/skills/<skill-name> agent/skills/
 ```
@@ -97,11 +88,10 @@ cp -r .github/skills/<skill-name> agent/skills/
 ## Support
 
 For questions about:
-
 - **Awesome Copilot**: https://github.com/github/awesome-copilot
 - **MCP Toolbox**: https://googleapis.github.io/genai-toolbox/
 - **GitHub Agentic Workflows**: https://github.com/github/awesome-copilot/blob/main/CONTRIBUTING.md
 
 ---
 
-_This library was dynamically generated and can be regenerated at any time._
+*This library was dynamically generated and can be regenerated at any time.*

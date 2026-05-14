@@ -2,10 +2,10 @@
 
 > **Detailed execution plan for migrating modme-ui-01 to ts-fullstack-based monorepo**
 
-**Created**: 2026-01-03  
-**Strategy**: Hybrid Bootstrap with Progressive Migration  
-**Timeline**: 5 weeks (5 phases)  
-**References**: [BOOTSTRAP_GUIDE.md](./BOOTSTRAP_GUIDE.md), [REPO_COMPARISON.md](./REPO_COMPARISON.md)
+**Created**: 2026-01-03
+**Strategy**: Hybrid Bootstrap with Progressive Migration
+**Timeline**: 5 weeks (5 phases)
+**References**: [BOOTSTRAP_GUIDE.md](./BOOTSTRAP_GUIDE.md), [REPO_COMPARISON.md](docs/inbox/REPO_COMPARISON.md)
 
 ---
 
@@ -771,9 +771,9 @@ modme-monorepo/
 ## 📚 Documentation
 
 - [BOOTSTRAP_GUIDE.md](./BOOTSTRAP_GUIDE.md) - Setup guide
-- [REPO_COMPARISON.md](./REPO_COMPARISON.md) - Template analysis
-- [docs/CHROMADB_INDEXING.md](./docs/CHROMADB_INDEXING.md) - Code indexing
-- [docs/REFACTORING_PATTERNS.md](./docs/REFACTORING_PATTERNS.md) - Code patterns
+- [REPO_COMPARISON.md](docs/inbox/REPO_COMPARISON.md) - Template analysis
+- [docs/CHROMADB_INDEXING.md](docs/inbox/CHROMADB_INDEXING.md) - Code indexing
+- [docs/REFACTORING_PATTERNS.md](docs/inbox/REFACTORING_PATTERNS.md) - Code patterns
 
 ## 🔧 Development
 
@@ -813,7 +813,8 @@ MIT
 EOF
 
 ```
-````
+
+```
 
 #### Step 5.4: Final Validation
 
@@ -832,7 +833,7 @@ npm run format
 
 # Test in Codespaces
 gh codespace create --repo YOUR_ORG/modme-monorepo
-````
+```
 
 **Deliverables**:
 

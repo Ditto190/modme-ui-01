@@ -1,7 +1,7 @@
 # Token Management Implementation Summary
 
-**Date**: January 4, 2026  
-**Issue**: GitLens warning of 127,000 tokens (threshold: 20,000)  
+**Date**: January 4, 2026
+**Issue**: GitLens warning of 127,000 tokens (threshold: 20,000)
 **Solution**: Created comprehensive ignore files and audit tooling
 
 ---
@@ -238,7 +238,7 @@ Script automatically skips:
 
 ### Issue: Still getting warnings after restart
 
-**Cause**: GitLens may have cached indexed files  
+**Cause**: GitLens may have cached indexed files
 **Solution**:
 
 1. Clear cache: `Ctrl+Shift+P → "GitLens: Clear Cache"`
@@ -248,7 +248,7 @@ Script automatically skips:
 
 ### Issue: Audit script shows 0 tokens
 
-**Cause**: Wrong directory or permission issues  
+**Cause**: Wrong directory or permission issues
 **Solution**:
 
 - Run in correct directory: `cd c:\Users\dylan\.claude-worktrees\modme-ui-01\relaxed-hugle`
@@ -257,7 +257,7 @@ Script automatically skips:
 
 ### Issue: Binary files still indexed
 
-**Cause**: GitLens may index before ignore takes effect  
+**Cause**: GitLens may index before ignore takes effect
 **Solution**:
 
 - Close and reopen VS Code (not just reload)
@@ -269,7 +269,7 @@ Script automatically skips:
 
 ### Documentation
 
-- [Token Management Guide](scripts/TOKEN_MANAGEMENT.md)
+- [Token Management Guide](docs/inbox/TOKEN_MANAGEMENT.md)
 - [GitLens Documentation](https://gitlens.amod.io/)
 - [AI Toolkit Best Practices](../.aitk/instructions/tools.instructions.md)
 
@@ -305,10 +305,10 @@ Script automatically skips:
 
 ---
 
-**Status**: ✅ Complete  
-**Verified**: Token audit confirms major exclusions applied  
+**Status**: ✅ Complete
+**Verified**: Token audit confirms major exclusions applied
 **Next Steps**: Restart VS Code and verify warning disappears
 
-**Created by**: AI Assistant  
-**Date**: January 4, 2026  
+**Created by**: AI Assistant
+**Date**: January 4, 2026
 **Version**: 1.0.0

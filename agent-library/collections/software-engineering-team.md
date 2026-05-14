@@ -25,13 +25,11 @@
 This collection of 7 agents is based on learnings from [The AI-Native Engineering Flow](https://medium.com/data-science-at-microsoft/the-ai-native-engineering-flow-5de5ffd7d877) experiments at Microsoft, designed to augment software engineering teams across the entire development lifecycle.
 
 **Key Design Principles:**
-
 - **Standalone**: Each agent works independently without cross-dependencies
 - **Enterprise-ready**: Incorporates OWASP, Zero Trust, WCAG, and Well-Architected frameworks
 - **Lifecycle coverage**: From UX research → Architecture → Development → Security → DevOps
 
 **Agents in this collection:**
-
 - **SE: UX Designer** - Jobs-to-be-Done analysis and user journey mapping
 - **SE: Tech Writer** - Technical documentation, blogs, ADRs, and user guides
 - **SE: DevOps/CI** - CI/CD debugging and deployment troubleshooting
