@@ -1,0 +1,80 @@
+{
+  "id": "report-gen-001",
+  "name": "Generate Executive Report",
+  "description": "Create executive summary dashboard with key metrics and insights",
+  "category": "reporting",
+  "steps": [
+    {
+      "id": "step_1",
+      "tool_name": "clear_canvas",
+      "description": "Clear existing canvas",
+      "parameters": {},
+      "on_error": "continue"
+    },
+    {
+      "id": "step_2",
+      "tool_name": "upsert_ui_element",
+      "description": "Create revenue KPI card",
+      "parameters": {
+        "id": "revenue_kpi",
+        "type": "StatCard",
+        "props": {
+          "title": "Total Revenue",
+          "value": "${total_revenue}",
+          "trend": "${revenue_trend}",
+          "trendDirection": "${revenue_direction}"
+        }
+      },
+      "on_error": "continue"
+    },
+    {
+      "id": "step_3",
+      "tool_name": "upsert_ui_element",
+      "description": "Create users KPI card",
+      "parameters": {
+        "id": "users_kpi",
+        "type": "StatCard",
+        "props": {
+          "title": "Active Users",
+          "value": "${active_users}",
+          "trend": "${users_trend}",
+          "trendDirection": "${users_direction}"
+        }
+      },
+      "on_error": "continue"
+    },
+    {
+      "id": "step_4",
+      "tool_name": "upsert_ui_element",
+      "description": "Create performance chart",
+      "parameters": {
+        "id": "performance_chart",
+        "type": "ChartCard",
+        "props": {
+          "title": "Performance Overview",
+          "chartType": "bar",
+          "data": "${performance_data}"
+        }
+      },
+      "on_error": "continue"
+    }
+  ],
+  "metadata": {
+    "required_variables": [
+      "total_revenue",
+      "revenue_trend",
+      "revenue_direction",
+      "active_users",
+      "users_trend",
+      "users_direction",
+      "performance_data"
+    ],
+    "estimated_duration": "45s",
+    "difficulty": "intermediate"
+  },
+  "created_at": "2026-01-19T00:00:00Z",
+  "updated_at": "2026-01-19T00:00:00Z",
+  "version": "1.0.0",
+  "author": "modme-team",
+  "tags": ["reporting", "executive", "kpi", "metrics"]
+}
