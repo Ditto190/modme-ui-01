@@ -6,7 +6,7 @@
     {
       "id": "ui_elements",
       "name": "UI Elements",
-      "description": "Manage canvas UI elements (StatCards, DataTables, ChartCards)",
+      "description": "Manage canvas UI elements (StatCards, DataTables, ChartCards, SectionHeaders, StatusBadges, ActivityFeeds, ProgressLists, AlertLists)",
       "default": true,
       "icon": "paintbrush",
       "tools": [
