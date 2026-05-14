@@ -1,8 +1,13 @@
 "use client";
 
+import { ActivityFeed } from "@/components/registry/ActivityFeed";
+import { AlertList } from "@/components/registry/AlertList";
 import { ChartCard } from "@/components/registry/ChartCard";
 import { DataTable } from "@/components/registry/DataTable";
+import { ProgressList } from "@/components/registry/ProgressList";
+import { SectionHeader } from "@/components/registry/SectionHeader";
 import { StatCard } from "@/components/registry/StatCard";
+import { StatusBadge } from "@/components/registry/StatusBadge";
 import { AgentState, UIElement } from "@/lib/types";
 import { useCoAgent, useFrontendTool } from "@copilotkit/react-core";
 import { CopilotKitCSSProperties, CopilotSidebar } from "@copilotkit/react-ui";
@@ -104,17 +109,32 @@ function YourMainContent() {
       case "ChartCard":
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return <ChartCard key={el.id} {...(el.props as any)} />;
+      case "SectionHeader":
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return <SectionHeader key={el.id} {...(el.props as any)} />;
+      case "StatusBadge":
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return <StatusBadge key={el.id} {...(el.props as any)} />;
+      case "ActivityFeed":
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return <ActivityFeed key={el.id} {...(el.props as any)} />;
+      case "ProgressList":
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return <ProgressList key={el.id} {...(el.props as any)} />;
+      case "AlertList":
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return <AlertList key={el.id} {...(el.props as any)} />;
       default:
         // Log unknown types for debugging
-        console.error(`Unknown component type: ${el.type}`, el);
+        console.error(`Unknown component type: ${(el as { type: string }).type}`, el);
         return (
           <div
-            key={el.id}
+            key={(el as { id: string }).id}
             className="p-4 bg-red-50 text-red-500 rounded-xl border border-red-200"
           >
-            <p className="font-semibold">Unknown component type: {el.type}</p>
+            <p className="font-semibold">Unknown component type: {(el as { type: string }).type}</p>
             <p className="text-sm mt-1">
-              Expected: StatCard, DataTable, or ChartCard
+              Expected: StatCard, DataTable, ChartCard, SectionHeader, StatusBadge, ActivityFeed, ProgressList, or AlertList
             </p>
             <details className="mt-2">
               <summary className="text-xs cursor-pointer hover:underline">

@@ -39,7 +39,28 @@ from tools.journal_adapter import process_feelings
 load_dotenv()
 
 # Validation constants for type safety
-ALLOWED_TYPES = {"StatCard", "DataTable", "ChartCard"}
+ALLOWED_TYPES = {
+    "StatCard",
+    "DataTable",
+    "ChartCard",
+    "SectionHeader",
+    "StatusBadge",
+    "ActivityFeed",
+    "ProgressList",
+    "AlertList",
+}
+
+# Per-type required prop validation
+_REQUIRED_PROPS: dict[str, list[str]] = {
+    "StatCard":      ["title", "value"],
+    "DataTable":     ["columns", "data"],
+    "ChartCard":     ["title", "chartType", "data"],
+    "SectionHeader": ["title"],
+    "StatusBadge":   ["label", "status"],
+    "ActivityFeed":  ["items"],
+    "ProgressList":  ["items"],
+    "AlertList":     ["items"],
+}
 
 
 def upsert_ui_element(
@@ -68,6 +89,14 @@ def upsert_ui_element(
 
     if not isinstance(props, dict):
         return {"status": "error", "message": "Invalid props: must be a dictionary"}
+
+    # Per-type required prop check
+    missing = [k for k in _REQUIRED_PROPS.get(type, []) if k not in props]
+    if missing:
+        return {
+            "status": "error",
+            "message": f"Missing required props for '{type}': {', '.join(missing)}",
+        }
 
     # Get current state safely
     elements = tool_context.state.get("elements", [])
@@ -183,7 +212,7 @@ Current Canvas Elements:
 {elements_json}
 
 When asked to create or update UI, use 'upsert_ui_element'.
-Available Types: StatCard, DataTable, ChartCard.
+Available Types: StatCard, DataTable, ChartCard, SectionHeader, StatusBadge, ActivityFeed, ProgressList, AlertList.
 
 Code Editing Capabilities (via VT Code MCP):
 - You can edit existing components using 'edit_component'
@@ -215,11 +244,32 @@ workbench_agent = LlmAgent(
     You manage a generative UI workbench. Use tools to create, update or remove elements from the user's view.
     
     Available Components & Props:
-    1. StatCard: { title, value, trend, trendDirection }
-    2. DataTable: { columns: string[], data: object[] }
-    3. ChartCard: { title, chartType, data: object[] }
+    1. StatCard: { title (str), value (str|number), trend? (str), trendDirection? ('up'|'down'|'neutral') }
+       Use for: KPI metrics, headline numbers.
+    2. DataTable: { columns (str[]), data (object[]) }
+       Use for: tabular data, lists of records.
+    3. ChartCard: { title (str), chartType (str), data (object[]) }
+       Use for: visualizations, trend charts.
+    4. SectionHeader: { title (str), subtitle? (str), badge? (str) }
+       Use for: labelling sections of the dashboard, phase headings.
+    5. StatusBadge: { label (str), status ('success'|'warning'|'error'|'info'|'neutral'), description? (str) }
+       Use for: project health, sprint status, build status.
+    6. ActivityFeed: { title? (str), items: [{ id, actor, action, target?, timestamp, icon? }] }
+       Use for: recent activity, audit log, commit feed.
+    7. ProgressList: { title? (str), items: [{ id, label, percent (0-100), status? ('on_track'|'at_risk'|'blocked'|'complete') }] }
+       Use for: epic or milestone progress, task completion rates.
+    8. AlertList: { title? (str), items: [{ id, severity ('critical'|'high'|'medium'|'low'|'info'), title, message?, timestamp? }] }
+       Use for: blockers, risk items, notifications.
     
-    Always use a meaningful unique 'id' for elements (e.g. 'rev_stat', 'user_table').
+    Always use a meaningful unique 'id' for elements (snake_case, e.g. 'rev_stat', 'sprint_progress').
+    
+    For project-management dashboards, a recommended layout is:
+      - SectionHeader at the top of each group
+      - StatCards for headline metrics
+      - ProgressList for milestones / epics
+      - AlertList for blockers and risks
+      - ActivityFeed for recent team activity
+      - StatusBadge for project / sprint health
     
     Code Editing Tools (VT Code MCP Integration):
     - edit_component: Modify existing GenUI components
