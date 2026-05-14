@@ -206,3 +206,22 @@ Suggested panel variants:
 The bootstrap endpoint would pre-populate the first three panels from a Redis cache
 before the agent refines them with live data — exactly the bootstrap-then-lazy-hydrate
 pattern described in the architecture conversation.
+
+---
+
+## Post-merge execution checklist (actionable order)
+
+1. **Ship variant wiring first**  
+   Implement `DASHBOARD_VARIANTS` and filter `PANEL_DEFINITIONS` in `GET /api/bootstrap` by `activeVariant`.
+
+2. **Tighten contract guardrails**  
+   Add unit tests for `renderPanel` and bootstrap response shape, then keep `tests/genui-contract-sync.test.mjs` as the cross-artifact alignment gate.
+
+3. **Add bootstrap placeholder hydration**  
+   Return fast placeholder KPI payloads in bootstrap so the canvas renders immediately before agent refinement.
+
+4. **Introduce cache tiering for expensive agent paths**  
+   Add Redis-backed warm/cold caches around costly agent data generation before adding new panel types.
+
+5. **Add resilience before scale-out**  
+   Implement a circuit breaker/fallback error element path for agent-side generation failures, then add background refresh workers for interval-driven panels.
