@@ -59,7 +59,7 @@ export type ActivityFeedProps = {
 export type ProgressItem = {
   id: string;
   label: string;
-  /** 0–100 */
+  /** 0–100. Enforced at runtime by the Zod schema in ProgressList.tsx. */
   percent: number;
   status?: "on_track" | "at_risk" | "blocked" | "complete";
 };

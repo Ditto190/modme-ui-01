@@ -101,29 +101,21 @@ function YourMainContent() {
   const renderElement = (el: UIElement) => {
     switch (el.type) {
       case "StatCard":
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return <StatCard key={el.id} {...(el.props as any)} />;
+        return <StatCard key={el.id} {...el.props} />;
       case "DataTable":
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return <DataTable key={el.id} {...(el.props as any)} />;
+        return <DataTable key={el.id} {...el.props} />;
       case "ChartCard":
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return <ChartCard key={el.id} {...(el.props as any)} />;
+        return <ChartCard key={el.id} {...el.props} />;
       case "SectionHeader":
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return <SectionHeader key={el.id} {...(el.props as any)} />;
+        return <SectionHeader key={el.id} {...el.props} />;
       case "StatusBadge":
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return <StatusBadge key={el.id} {...(el.props as any)} />;
+        return <StatusBadge key={el.id} {...el.props} />;
       case "ActivityFeed":
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return <ActivityFeed key={el.id} {...(el.props as any)} />;
+        return <ActivityFeed key={el.id} {...el.props} />;
       case "ProgressList":
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return <ProgressList key={el.id} {...(el.props as any)} />;
+        return <ProgressList key={el.id} {...el.props} />;
       case "AlertList":
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return <AlertList key={el.id} {...(el.props as any)} />;
+        return <AlertList key={el.id} {...el.props} />;
       default:
         // Log unknown types for debugging
         console.error(`Unknown component type: ${(el as { type: string }).type}`, el);

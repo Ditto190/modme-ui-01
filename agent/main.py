@@ -98,6 +98,16 @@ def upsert_ui_element(
             "message": f"Missing required props for '{type}': {', '.join(missing)}",
         }
 
+    # For array-typed props, verify the value is a non-empty list
+    _ARRAY_PROPS = {"ActivityFeed": "items", "ProgressList": "items", "AlertList": "items", "DataTable": "data"}
+    list_key = _ARRAY_PROPS.get(type)
+    if list_key and list_key in props:
+        if not isinstance(props[list_key], list) or len(props[list_key]) == 0:
+            return {
+                "status": "error",
+                "message": f"'{type}.{list_key}' must be a non-empty array",
+            }
+
     # Get current state safely
     elements = tool_context.state.get("elements", [])
     new_element = {"id": id, "type": type, "props": props}
