@@ -1,0 +1,36 @@
+import manifestData from "@/lib/element-manifest.json";
+import type {
+  CanvasPreset,
+  ElementTypeManifest,
+  WorkspaceVariant,
+} from "@/lib/types";
+
+type ManifestData = {
+  elements: ElementTypeManifest[];
+  presets: CanvasPreset[];
+  variants: WorkspaceVariant[];
+};
+
+const manifest = manifestData as ManifestData;
+
+export const ELEMENT_MANIFEST = manifest.elements;
+export const CANVAS_PRESETS = manifest.presets;
+export const WORKSPACE_VARIANTS = manifest.variants;
+
+export function getWorkspaceVariant(
+  variantId: string | undefined,
+): WorkspaceVariant {
+  const fallback = WORKSPACE_VARIANTS.find((v) => v.id === "default");
+  return (
+    WORKSPACE_VARIANTS.find((v) => v.id === variantId) ??
+    fallback ??
+    WORKSPACE_VARIANTS[0]
+  );
+}
+
+export function getCanvasPreset(presetId: string | undefined): CanvasPreset {
+  return (
+    CANVAS_PRESETS.find((preset) => preset.id === presetId) ??
+    CANVAS_PRESETS[0]
+  );
+}

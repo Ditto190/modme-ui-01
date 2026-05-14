@@ -14,6 +14,7 @@
 import { ChartCard } from "@/components/registry/ChartCard";
 import { DataTable } from "@/components/registry/DataTable";
 import { StatCard } from "@/components/registry/StatCard";
+import { ELEMENT_MANIFEST } from "@/lib/element-manifest";
 import { PanelDefinition, UIElement } from "@/lib/types";
 import React from "react";
 
@@ -22,25 +23,13 @@ import React from "react";
 // ---------------------------------------------------------------------------
 
 export const PANEL_DEFINITIONS: PanelDefinition[] = [
-  {
-    id: "StatCard",
-    title: "Stat Card",
-    enabled: true,
-    defaultSize: { cols: 1, rows: 1 },
-  },
-  {
-    id: "DataTable",
-    title: "Data Table",
-    enabled: true,
-    defaultSize: { cols: 3, rows: 2 },
-  },
-  {
-    id: "ChartCard",
-    title: "Chart Card",
-    enabled: true,
-    defaultSize: { cols: 2, rows: 2 },
-    refreshIntervalMs: 30_000,
-  },
+  ...ELEMENT_MANIFEST.map((element) => ({
+    id: element.id,
+    title: element.title,
+    enabled: element.enabled,
+    defaultSize: element.defaultSize,
+    refreshIntervalMs: element.refreshIntervalMs,
+  })),
 ];
 
 // ---------------------------------------------------------------------------
