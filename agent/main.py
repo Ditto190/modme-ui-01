@@ -58,11 +58,14 @@ def _load_element_manifest() -> Dict[str, Any]:
 def _load_allowed_types() -> Set[str]:
     manifest = _load_element_manifest()
     elements = manifest.get("elements", [])
-    manifest_types = {
-        entry.get("id")
-        for entry in elements
-        if isinstance(entry, dict) and isinstance(entry.get("id"), str)
-    }
+    manifest_type_values: List[str] = []
+    for entry in elements:
+        if not isinstance(entry, dict):
+            continue
+        entry_id = entry.get("id")
+        if isinstance(entry_id, str):
+            manifest_type_values.append(entry_id)
+    manifest_types = set(manifest_type_values)
     return manifest_types or DEFAULT_ALLOWED_TYPES
 
 
@@ -262,14 +265,17 @@ def on_before_agent(callback_context: CallbackContext):
     """Initialize state."""
     if "elements" not in callback_context.state:
         callback_context.state["elements"] = []
+    preset_elements = (
+        CANVAS_PRESETS.get(DEFAULT_CANVAS_PRESET, [])
+        if DEFAULT_CANVAS_PRESET
+        else []
+    )
     if (
         DEFAULT_CANVAS_PRESET
         and not callback_context.state.get("elements")
-        and DEFAULT_CANVAS_PRESET in CANVAS_PRESETS
+        and len(preset_elements) > 0
     ):
-        callback_context.state["elements"] = _clone_elements(
-            CANVAS_PRESETS[DEFAULT_CANVAS_PRESET]
-        )
+        callback_context.state["elements"] = _clone_elements(preset_elements)
     return None
 
 

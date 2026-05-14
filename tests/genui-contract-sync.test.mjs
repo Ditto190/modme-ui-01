@@ -2,8 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const repoRoot = "/home/runner/work/modme-ui-01/modme-ui-01";
+const currentFilePath = fileURLToPath(import.meta.url);
+const currentDir = path.dirname(currentFilePath);
+const repoRoot = path.resolve(currentDir, "..");
 const manifestPath = path.join(repoRoot, "src/lib/element-manifest.json");
 const panelRegistryPath = path.join(repoRoot, "src/lib/panel-registry.tsx");
 const bootstrapRoutePath = path.join(repoRoot, "src/app/api/bootstrap/route.ts");
@@ -54,7 +57,7 @@ test("agent uses shared manifest and exposes preset bootstrap tool", () => {
   assert.match(agentSource, /def apply_canvas_preset\(/);
 });
 
-test("preset element types are constrained to known manifest element IDs", () => {
+test("preset element types reference known manifest entries", () => {
   const allowedTypes = new Set(manifest.elements.map((element) => element.id));
   for (const preset of manifest.presets ?? []) {
     for (const element of preset.elements ?? []) {
