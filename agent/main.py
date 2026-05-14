@@ -6,7 +6,8 @@ import atexit
 import json
 import os
 from datetime import datetime
-from typing import Any, Dict, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Set
 
 from ag_ui_adk import ADKAgent, add_adk_fastapi_endpoint
 from dotenv import load_dotenv
@@ -38,8 +39,70 @@ from tools.journal_adapter import process_feelings
 
 load_dotenv()
 
-# Validation constants for type safety
-ALLOWED_TYPES = {"StatCard", "DataTable", "ChartCard"}
+DEFAULT_ALLOWED_TYPES: Set[str] = {"StatCard", "DataTable", "ChartCard"}
+MANIFEST_PATH = Path(__file__).resolve().parent.parent / "src/lib/element-manifest.json"
+
+
+def _load_element_manifest() -> Dict[str, Any]:
+    """Load shared UI manifest used by both React and the Python agent."""
+    try:
+        with MANIFEST_PATH.open("r", encoding="utf-8") as manifest_file:
+            manifest = json.load(manifest_file)
+            if isinstance(manifest, dict):
+                return manifest
+    except Exception:
+        pass
+    return {}
+
+
+def _load_allowed_types() -> Set[str]:
+    manifest = _load_element_manifest()
+    elements = manifest.get("elements", [])
+    manifest_type_values: List[str] = []
+    for entry in elements:
+        if not isinstance(entry, dict):
+            continue
+        entry_id = entry.get("id")
+        if isinstance(entry_id, str):
+            manifest_type_values.append(entry_id)
+    manifest_types = set(manifest_type_values)
+    return manifest_types or DEFAULT_ALLOWED_TYPES
+
+
+def _load_canvas_presets() -> Dict[str, List[Dict[str, Any]]]:
+    manifest = _load_element_manifest()
+    presets = manifest.get("presets", [])
+    preset_map: Dict[str, List[Dict[str, Any]]] = {}
+
+    for preset in presets:
+        if not isinstance(preset, dict):
+            continue
+        preset_id = preset.get("id")
+        preset_elements = preset.get("elements")
+        if not isinstance(preset_id, str) or not isinstance(preset_elements, list):
+            continue
+        valid_elements = [
+            el
+            for el in preset_elements
+            if isinstance(el, dict)
+            and isinstance(el.get("id"), str)
+            and isinstance(el.get("type"), str)
+            and isinstance(el.get("props"), dict)
+        ]
+        if valid_elements:
+            preset_map[preset_id] = valid_elements
+
+    return preset_map
+
+
+ALLOWED_TYPES = _load_allowed_types()
+CANVAS_PRESETS = _load_canvas_presets()
+DEFAULT_CANVAS_PRESET = os.getenv("DEFAULT_CANVAS_PRESET")
+
+
+def _clone_elements(elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Deep-copy element payloads to avoid mutating shared preset templates."""
+    return json.loads(json.dumps(elements))
 
 
 def upsert_ui_element(
@@ -63,7 +126,7 @@ def upsert_ui_element(
     if type not in ALLOWED_TYPES:
         return {
             "status": "error",
-            "message": f"Unknown type '{type}'. Allowed types: {', '.join(ALLOWED_TYPES)}",
+            "message": f"Unknown type '{type}'. Allowed types: {', '.join(sorted(ALLOWED_TYPES))}",
         }
 
     if not isinstance(props, dict):
@@ -138,6 +201,52 @@ def clear_canvas(tool_context: ToolContext) -> Dict[str, str]:
     return {"status": "success", "message": "Canvas cleared."}
 
 
+def apply_canvas_preset(
+    tool_context: ToolContext, preset_id: str, replace_existing: bool = True
+) -> Dict[str, Any]:
+    """Apply a named starter preset to the canvas."""
+    if not preset_id or not isinstance(preset_id, str):
+        return {
+            "status": "error",
+            "message": "Invalid preset_id: must be a non-empty string",
+        }
+
+    preset_elements = CANVAS_PRESETS.get(preset_id)
+    if not preset_elements:
+        available_presets = ", ".join(sorted(CANVAS_PRESETS.keys())) or "none"
+        return {
+            "status": "error",
+            "message": f"Unknown preset '{preset_id}'. Available: {available_presets}",
+        }
+
+    filtered_elements = [
+        element for element in preset_elements if element.get("type") in ALLOWED_TYPES
+    ]
+    if not filtered_elements:
+        return {
+            "status": "error",
+            "message": f"Preset '{preset_id}' has no elements with allowed types.",
+        }
+
+    cloned_elements = _clone_elements(filtered_elements)
+    if replace_existing:
+        next_elements = cloned_elements
+    else:
+        current_elements = tool_context.state.get("elements", [])
+        if not isinstance(current_elements, list):
+            current_elements = []
+        next_elements = current_elements + cloned_elements
+
+    tool_context.state["elements"] = next_elements
+
+    return {
+        "status": "success",
+        "message": f"Applied preset '{preset_id}' with {len(filtered_elements)} elements.",
+        "preset_id": preset_id,
+        "element_count": len(next_elements),
+    }
+
+
 def setThemeColor(transaction_context: ToolContext, themeColor: str) -> Dict[str, str]:
     """
     Set the application theme color.
@@ -156,6 +265,17 @@ def on_before_agent(callback_context: CallbackContext):
     """Initialize state."""
     if "elements" not in callback_context.state:
         callback_context.state["elements"] = []
+    preset_elements = (
+        CANVAS_PRESETS.get(DEFAULT_CANVAS_PRESET, [])
+        if DEFAULT_CANVAS_PRESET
+        else []
+    )
+    if (
+        DEFAULT_CANVAS_PRESET
+        and not callback_context.state.get("elements")
+        and len(preset_elements) > 0
+    ):
+        callback_context.state["elements"] = _clone_elements(preset_elements)
     return None
 
 
@@ -178,12 +298,16 @@ def before_model_modifier(
     if not original_instruction.parts:
         original_instruction.parts = [types.Part(text="")]
 
+    available_types = ", ".join(sorted(ALLOWED_TYPES))
+    available_presets = ", ".join(sorted(CANVAS_PRESETS.keys())) or "none"
+
     prefix = f"""You are the Workbench Assistant. You help the user build dashboards and tools.
 Current Canvas Elements:
 {elements_json}
 
 When asked to create or update UI, use 'upsert_ui_element'.
-Available Types: StatCard, DataTable, ChartCard.
+Available Types: {available_types}.
+Available Presets: {available_presets}.
 
 Code Editing Capabilities (via VT Code MCP):
 - You can edit existing components using 'edit_component'
@@ -218,6 +342,7 @@ workbench_agent = LlmAgent(
     1. StatCard: { title, value, trend, trendDirection }
     2. DataTable: { columns: string[], data: object[] }
     3. ChartCard: { title, chartType, data: object[] }
+    4. Apply presets with apply_canvas_preset for starter project management dashboards.
     
     Always use a meaningful unique 'id' for elements (e.g. 'rev_stat', 'user_table').
     
@@ -236,6 +361,7 @@ workbench_agent = LlmAgent(
         upsert_ui_element,
         remove_ui_element,
         clear_canvas,
+        apply_canvas_preset,
         setThemeColor,
         # VT Code integration tools
         edit_component,

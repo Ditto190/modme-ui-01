@@ -12,8 +12,10 @@
 |---|---|---|
 | Panel registration | Extracted inline `renderElement` switch into `panel-registry.tsx` | `src/lib/panel-registry.tsx` |
 | Bootstrap hydration | Added `GET /api/bootstrap` endpoint | `src/app/api/bootstrap/route.ts` |
-| Type contracts | Added `PanelDefinition`, `DashboardVariant`, `BootstrapResponse` | `src/lib/types.ts` |
+| Type contracts | Added `PanelDefinition`, `WorkspaceVariant`, `BootstrapResponse` | `src/lib/types.ts` |
 | Dependency direction | `page.tsx` now imports only from registry — no direct component imports | `src/app/page.tsx` |
+| Central manifest | Added shared element + preset + variant manifest consumed by TS and Python | `src/lib/element-manifest.json`, `src/lib/element-manifest.ts`, `agent/main.py` |
+| Contract guardrails | Added architecture sync tests for manifest/renderer/bootstrap/agent alignment | `tests/genui-contract-sync.test.mjs` |
 
 ---
 

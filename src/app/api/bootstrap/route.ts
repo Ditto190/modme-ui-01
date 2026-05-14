@@ -12,6 +12,13 @@
  * See docs/ARCHITECTURE_IMPROVEMENTS.md §2 for context.
  */
 
+import {
+  CANVAS_PRESETS,
+  ELEMENT_MANIFEST,
+  WORKSPACE_VARIANTS,
+  getCanvasPreset,
+  getWorkspaceVariant,
+} from "@/lib/element-manifest";
 import { PANEL_DEFINITIONS } from "@/lib/panel-registry";
 import { BootstrapResponse } from "@/lib/types";
 import { NextResponse } from "next/server";
@@ -28,18 +35,40 @@ function envFlag(name: string, defaultValue = true): boolean {
 }
 
 export async function GET() {
-  const enabledPanels = PANEL_DEFINITIONS.filter((p) => p.enabled);
+  const variant = getWorkspaceVariant(process.env.DASHBOARD_VARIANT ?? "default");
+  const activePresetId =
+    process.env.DASHBOARD_PRESET ?? variant.recommendedPreset ?? CANVAS_PRESETS[0]?.id;
+  const activePreset = getCanvasPreset(activePresetId);
+
+  const enabledPanels = PANEL_DEFINITIONS.filter(
+    (p) => p.enabled && variant.panels.includes(p.id),
+  );
+  const allowedTypes = enabledPanels.map((p) => p.id);
+  const starterElements = activePreset.elements.filter((el) =>
+    allowedTypes.includes(el.type),
+  );
 
   const payload: BootstrapResponse = {
     panelConfig: enabledPanels,
-    activeVariant: process.env.DASHBOARD_VARIANT ?? "default",
+    elementManifest: ELEMENT_MANIFEST.filter((m) => allowedTypes.includes(m.id)),
+    presets: CANVAS_PRESETS.map((preset) => ({
+      id: preset.id,
+      label: preset.label,
+      category: preset.category,
+      description: preset.description,
+      elementCount: preset.elements.length,
+    })),
+    starterElements,
+    activePreset: activePreset.id,
+    workspaceVariants: WORKSPACE_VARIANTS,
+    activeVariant: variant.id,
     featureFlags: {
       enableChartCard: envFlag("FEATURE_CHART_CARD"),
       enableDataTable: envFlag("FEATURE_DATA_TABLE"),
       enableStatCard: envFlag("FEATURE_STAT_CARD"),
       enableBootstrapHydration: envFlag("FEATURE_BOOTSTRAP_HYDRATION"),
     },
-    allowedTypes: enabledPanels.map((p) => p.id),
+    allowedTypes,
   };
 
   return NextResponse.json(payload, {
