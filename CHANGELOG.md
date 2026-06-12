@@ -61,6 +61,8 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (skills) Sync new agent skills and add gitlab-ai-gateway configuration to support local Duo setup.
+
 - (ci) Pre-commit checks — `scripts/pre-commit-checks.mjs`, `.githooks/pre-commit`, `scripts/install-git-hooks.ps1`; wired into GitHub Actions (`pre-commit-check.yml`) and Buildkite
 - (ci) `scripts/validate-cursor-skills.mjs` for awesome-cursor-skills install integrity (`--project-only` for hooks, full check for setup audits)
 - (ci) Buildkite pipeline for `GenerativeUI_monorepo` — `.buildkite/`, `docs/buildkite-guide.md`, `scripts/buildkite-demo.ps1`

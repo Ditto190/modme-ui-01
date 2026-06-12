@@ -1,0 +1,9 @@
+services:
+  gitlab-ai-gateway:
+    image: registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:self-hosted-v18.2.0-ee
+    ports:
+      - "5052:5052"
+      - "50052:50052"
+    env_file:
+      - .env
+    restart: always

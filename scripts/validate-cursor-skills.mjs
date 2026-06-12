@@ -48,8 +48,7 @@ const SUPERPOWERS_SKILLS = [
 ];
 
 const PROJECT_POINTERS_REQUIRED = [
-  "awesome-cursor-skills",
-  "awesome-agent-skills",
+  "antigravity-awesome-skills"
 ];
 
 const errors = [];
