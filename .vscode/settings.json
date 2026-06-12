@@ -1,4 +1,5 @@
 {
+  "git.path": "C:/Program Files/Git/cmd/git.exe",
   "leanctx.binaryPath": "C:/Users/dylan/.gemini/antigravity/bin/lean-ctx.exe",
   "chat.agent.sandbox.enabled": "allowNetwork",
   "terminal.integrated.env.windows": {
