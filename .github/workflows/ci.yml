@@ -1,212 +1,82 @@
-name: Continuous Integration
+name: CI
 
 on:
   push:
-    branches:
-      - main
-      - develop
-      - "feature/**"
+    branches: [main, master, develop]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "LICENSE"
   pull_request:
-    branches:
-      - main
-      - develop
-  workflow_dispatch:
+    branches: [main, master, develop]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "LICENSE"
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
-  lint-typescript:
-    name: Lint TypeScript
+  secret-guard:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22.9.0"
-
-      - name: Install dependencies
-        run: npm install --ignore-scripts --legacy-peer-deps
-
-      - name: Run ESLint
-        run: npm run lint:ts
-
-  type-check-typescript:
-    name: Type Check TypeScript
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22.9.0"
-
-      - name: Install dependencies
-        run: npm install --ignore-scripts --legacy-peer-deps
-
-      - name: Type check
-        run: npx tsc --noEmit
-
-  lint-python:
-    name: Lint Python
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-
-      - name: Add uv to PATH
-        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        working-directory: ./agent
+      - uses: actions/checkout@v4
+      - name: Block tracked env files
         run: |
-          uv sync
-
-      - name: Run flake8
-        working-directory: ./agent
-        run: |
-          uv run pip install flake8
-          uv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=.venv,__pycache__,.eggs,*.egg,build,dist,node_modules
-          uv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=.venv,__pycache__,.eggs,*.egg,build,dist,node_modules
-
-  build-nextjs:
-    name: Build Next.js Application
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22.9.0"
-
-      - name: Install dependencies
-        run: npm install --ignore-scripts --legacy-peer-deps
-
-      - name: Build application
-        run: npm run build
-        env:
-          SKIP_ENV_VALIDATION: true
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: nextjs-build
-          path: .next
-          retention-days: 7
-
-  test-agent:
-    name: Test Python Agent
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-
-      - name: Add uv to PATH
-        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        working-directory: ./agent
-        run: |
-          uv sync
-
-      - name: Verify agent can start
-        working-directory: ./agent
-        run: |
-          # Start agent in background and check if it starts successfully
-          timeout 10s uv run python main.py &
-          PID=$!
-          sleep 5
-
-          # Check if process is still running
-          if kill -0 $PID 2>/dev/null; then
-            echo "Agent started successfully"
-            kill $PID
-            exit 0
-          else
-            echo "Agent failed to start"
+          set -euo pipefail
+          if git ls-files | grep -E '(^|/)\.env$|\.env\.local$|\.env\.production$' ; then
+            echo "::error::Secret env files must not be committed. Remove from git and add to .gitignore."
             exit 1
           fi
+          echo "No .env files tracked."
 
-  # Language matrix: placeholder checks for TypeScript, Node, Python, and Go.
-  # Replace the echo commands with real checks as each language is adopted.
-  check:
-    name: "Check (${{ matrix.language }})"
+  changelog:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [typescript, node, python, go]
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate CHANGELOG
+        run: node scripts/validate-changelog.mjs
+      - name: Require CHANGELOG update when needed
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/validate-changelog.mjs --require-update
 
-      - name: Setup Node.js (typescript / node)
-        if: matrix.language == 'typescript' || matrix.language == 'node'
+  monorepo:
+    needs: secret-guard
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: GenerativeUI_monorepo
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "20"
+          cache: yarn
+          cache-dependency-path: GenerativeUI_monorepo/yarn.lock
 
-      - name: Setup Python
-        if: matrix.language == 'python'
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Enable Corepack (Yarn 3)
+        run: corepack enable
 
-      - name: Setup Go
-        if: matrix.language == 'go'
-        uses: actions/setup-go@v5
-        with:
-          go-version: "stable"
+      - name: Install dependencies
+        run: yarn install --immutable 2>/dev/null || yarn install
 
-      - name: Verify toolchain
-        run: |
-          case "${{ matrix.language }}" in
-            typescript|node) node --version ;;
-            python)          python --version ;;
-            go)              go version ;;
-          esac
-          echo "No checks defined yet for ${{ matrix.language }}."
+      - name: Lint
+        run: yarn lint
 
-  integration-check:
-    name: Integration Check
-    runs-on: ubuntu-latest
-    needs:
-      [
-        lint-typescript,
-        type-check-typescript,
-        lint-python,
-        build-nextjs,
-        test-agent,
-      ]
+      - name: Test
+        run: yarn test
 
-    steps:
-      - name: All checks passed
-        run: echo "✅ All CI checks passed successfully!"
+      - name: Build
+        run: yarn build

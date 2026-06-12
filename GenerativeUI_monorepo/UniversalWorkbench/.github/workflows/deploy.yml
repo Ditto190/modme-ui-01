@@ -1,0 +1,56 @@
+name: Deploy
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggered on version tags like v1.0.0
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - dev
+          - stg
+          - prd
+
+jobs:
+  deploy:
+    name: Deploy to ${{ matrix.env }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: ${{ github.event.inputs.environment && fromJSON(format('["{0}"]', github.event.inputs.environment)) || fromJSON('["dev"]') }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build packages
+        run: yarn build
+
+      - name: Focus environment workspace
+        run: yarn workspaces focus envs/${{ matrix.env }}
+
+      - name: Deploy to ${{ matrix.env }}
+        run: cd envs/${{ matrix.env }} && yarn deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Notify deployment
+        if: success()
+        run: echo "Successfully deployed to ${{ matrix.env }} from tag ${{ github.ref_name }}"

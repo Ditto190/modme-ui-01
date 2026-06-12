@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibe Coding Playground</title>
+  <!-- Shared Theme stylesheet -->
+  <link rel="stylesheet" href="./theme.css">
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="logo-icon">🛸</span>
+        <h1>Antigravity <span class="gradient-text">Playground</span></h1>
+      </div>
+      <div class="user-greeting" id="userGreeting">
+        Loading vibes...
+      </div>
+    </header>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+      <div class="stat-card glass-card" id="statWorkspace">
+        <div class="stat-icon">📁</div>
+        <div class="stat-details">
+          <h3>Workspace</h3>
+          <p class="stat-value">Active</p>
+        </div>
+      </div>
+      <div class="stat-card glass-card" id="statVibe">
+        <div class="stat-icon">✨</div>
+        <div class="stat-details">
+          <h3>Vibe Level</h3>
+          <p class="stat-value gradient-text">100%</p>
+        </div>
+      </div>
+      <div class="stat-card glass-card" id="statProjects">
+        <div class="stat-icon">🚀</div>
+        <div class="stat-details">
+          <h3>Projects</h3>
+          <p class="stat-value">1 Active</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Grid -->
+    <main class="dashboard-grid">
+      <!-- Card 1: Color Gradient Sandbox -->
+      <section class="glass-card sandbox-card" id="colorSandbox">
+        <div class="card-header">
+          <span class="card-badge">Visuals</span>
+          <h2>Color & Gradient Sandbox</h2>
+          <p>Generate beautiful, harmonized gradient combinations and view their styling tokens.</p>
+        </div>
+        <div class="sandbox-content">
+          <div class="color-preview-box" id="gradientPreview">
+            <span class="preview-placeholder">Click generate to start</span>
+          </div>
+          <div class="color-token-display">
+            <code>
+              background: <span id="gradientValue">linear-gradient(135deg, var(--color-primary), var(--color-secondary))</span>;
+            </code>
+          </div>
+          <button class="btn btn-primary" id="generateColorsBtn">
+            <span>🎨</span> Generate Gradient
+          </button>
+        </div>
+      </section>
+
+      <!-- Card 2: Micro-Interactions -->
+      <section class="glass-card sandbox-card" id="animationsSandbox">
+        <div class="card-header">
+          <span class="card-badge">UI/UX</span>
+          <h2>Micro-Interactions</h2>
+          <p>Click, hover, and toggle these elements to experience interactive feedback animations.</p>
+        </div>
+        <div class="sandbox-content interactions-grid">
+          <div class="interaction-item">
+            <span class="label">Bouncing Button</span>
+            <button class="btn btn-secondary bounce-btn" id="bounceTestBtn">Bounce Me!</button>
+          </div>
+          <div class="interaction-item">
+            <span class="label">Glowing Toggle</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="glowToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="interaction-item">
+            <span class="label">3D Tilt Card</span>
+            <div class="tilt-card-demo" id="tiltCard">
+              Hover & Move
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card 3: Vibe Logger Console -->
+      <section class="glass-card logger-card" id="vibeLogger">
+        <div class="card-header">
+          <span class="card-badge alt">Console</span>
+          <h2>Vibe Logger</h2>
+          <p>Every time you interact with the sandbox widgets above, events are tracked here in real-time.</p>
+        </div>
+        <div class="logger-console" id="consoleLogs">
+          <div class="console-line system">[SYSTEM] Vibe Playground initialised. Ready for coding.</div>
+        </div>
+        <div class="logger-footer">
+          <button class="btn btn-secondary" id="clearLogsBtn">
+            <span>🗑️</span> Clear Logs
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Built with Antigravity IDE and 💜 by Dylan</p>
+      <p class="footer-links">
+        <a href="#">README</a> • 
+        <a href="#">Agent Rules</a> • 
+        <a href="./theme.css">Theme System</a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- Main scripts -->
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{
+  "name": "@adaptiveworx/ts-fullstack",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "yarn@4.10.3",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "envs/*"
+  ],
+  "scripts": {
+    "prepare": "husky",
+    "dev": "turbo run dev --parallel",
+    "dev:api": "yarn workspace @adaptiveworx/api dev",
+    "dev:web": "yarn workspace @adaptiveworx/web dev",
+    "dev:agent": "yarn workspace @adaptiveworx/agent dev",
+    "build": "turbo run build",
+    "type-check": "turbo run type-check",
+    "lint:check": "turbo run lint:check",
+    "lint:fix": "turbo run lint:fix",
+    "test": "vitest run",
+    "test:turbo": "turbo run test",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
+    "db:push": "yarn workspace @adaptiveworx/db push",
+    "db:reset": "yarn workspace @adaptiveworx/db reset",
+    "db:seed": "yarn workspace @adaptiveworx/db seed",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "behaviors:sync": "tsx .flow/behavior-sync.ts",
+    "behaviors:validate": "tsx .flow/behavior-validate.ts",
+    "behaviors:search": "tsx .flow/behavior-search.ts",
+    "behaviors:summary": "tsx .flow/behavior-sync.ts && tsx .flow/behavior-summary.ts",
+    "behaviors:backlog": "tsx .flow/behavior-sync.ts && cat behaviors.json | grep -A 100 '\"byStatus\"' | grep -A 20 '\"PLANNED\"'",
+    "behaviors:stats": "tsx .flow/behavior-sync.ts && cat behaviors.json | grep -A 10 '\"stats\"'",
+    "behaviors:list": "cat behaviors.json | grep '\"id\":' | sed 's/.*\"id\": \"\\(.*\\)\".*/  \\1/'",
+    "vh:summary": "tsx .flow/vh-summary.ts",
+    "vh:dashboard": "tsx .flow/vh-summary.ts && cat .flow/vh-dashboard.md"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.5",
+    "@tsconfig/strictest": "^2.0.6",
+    "@types/node": "^24.5.2",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
+    "husky": "^9.1.7",
+    "tsx": "^4.20.6",
+    "turbo": "^2.5.8",
+    "type-coverage": "^2.29.7",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@infisical/sdk": "^4.0.6",
+    "js-yaml": "^4.1.0",
+    "zod": "^3.25.7"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "yarn": ">=4.0.0"
+  }
+}

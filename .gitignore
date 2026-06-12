@@ -1,119 +1,69 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Secrets and local env
+.env
+.env.*
+!.env.example
 
-# dependencies
+# Dependencies and package managers
 node_modules/
-**/node_modules/
-/.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
+!.yarn/sdks
 !.yarn/versions
 
-# testing
-/coverage
+# Build outputs
+dist/
+build/
+out/
+.next/
+.turbo/
+coverage/
+target/
+*.tsbuildinfo
 
-# next.js
-/.next/
-/out/
+# Tooling caches (lean-ctx, local installs)
+.tools/
+.lean-ctx/
+.node/
 
-# production
-/build
+# Vendored mirrors (re-fetch via scripts)
+.vendor/
 
-# misc
-.DS_Store
-*.pem
-
-# debug
+# Logs and diagnostics
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
-!.env.example
+# OS and IDE
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+*.iml
 
-# vercel
-.vercel
+# Cursor local / ephemeral
+.cursor/**/*.log
+.cursor/**/mcp.json
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# UniversalWorkbench build artifacts
+**/UniversalWorkbench-staging/**/dist/
+**/UniversalWorkbench-dev/**/dist/
+**/UniversalWorkbench/**/dist/
+**/UniversalWorkbench/**/.next/
+**/UniversalWorkbench/**/node_modules/
 
-.mastra/
+# Test and temp
+.tmp/
+temp/
+# lean-ctx machine-local
+.lean-ctx-id
+.lean-ctx.toml
 
-# lock files
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-bun.lockb
 
-.# knowledge management generated files (keep authored markdown under version control)
-# Ignore generated binary assets and export outputs only
-/docs/toolsets/*.svg
-/docs/toolsets/*.png
-/docs/toolsets/*.pdf
-/docs/toolsets/generated/
-.ripgrep-cache/
-
-# python
-agent/venv/
-agent/__pycache__/
-agent/.venv/
-**/__pycache__/
-**/*.pyc
-**/*.pyo
-**/*.pyd
-.Python
-*.egg-info/
-
-# data directory (local client data)
-/data/
-
-# ChromaDB & vector storage
-chroma_data/
-output_chunks/
-
-# Memory & local state
-.vault/
-.logs/
-.memory/
-*.db
-*.sqlite
-*.sqlite3
-artifacts.db
-
-# Large auto-generated docs (prefer source)
-*_SUMMARY.md
-*_IMPLEMENTATION.md
-SESSION_SUMMARY_*.md
-REFACTORING_APPLIED_*.md
-CONVERSION_SUMMARY_*.md
-
-# Log files
-*.log
-lint_errors*.log
-validation_errors.log
-docs_error.log
-
-# Test outputs
-test-mcp-validation/
-
-# Agent generator output
-agent-generator/output/
-
-# DevContainer
-.devcontainer/.env
-
-# Ignore node modules for micro-agent models (built artifact kept in dist/)
-experiments/micro-agents/models/node_modules/
-experiments/**/node_modules/
-agent-generator/node_modules/
-agent-library/node_modules/
-scripts/**/node_modules/
-with-a2a-a2ui/node_modules/
-with-a2a-a2ui/.venv/
-with-a2a-a2ui/pnpm-lock.yaml
-with-a2a-a2ui/yarn.lock
+# Antigravity bulk skill install (curated skills under .agents/skills/<name>/ are tracked)
+.agents/temp_skills/
+.agents/skills/.antigravity-install-manifest.json

@@ -1,0 +1,167 @@
+# Behavior Taxonomy - Lightweight Reference for Agents
+# This is NOT a registry of behaviors - it's a taxonomy reference
+# Actual behaviors are tracked via @behavior headers in code
+# The registry (behaviors.json) is auto-generated from code
+
+version: "2.0.0"
+product: "ts-fullstack"
+description: "Production-ready PERN stack monorepo template with Turborepo, Biome, and multi-environment deployment"
+
+# Personas - Development roles
+personas:
+  ARCHITECT:
+    description: "Designing system architecture and technical decisions"
+    context: "Making high-level technical choices, establishing patterns"
+    needs: "Clear patterns, reusable components, maintainability"
+
+  DEVELOPER:
+    description: "Implementing Behaviors and writing application code"
+    context: "Building Behaviors, fixing bugs, writing tests"
+    needs: "Type safety, good DX, fast feedback loops"
+
+  OPERATOR:
+    description: "Deploying and maintaining production systems"
+    context: "Managing deployments, monitoring, scaling"
+    needs: "Reliable deployments, observability, environment management"
+
+  USER:
+    description: "End users of applications built with this template"
+    context: "Using web applications, APIs, and services"
+    needs: "Fast, reliable, intuitive interfaces"
+
+# Themes - Core value propositions
+themes:
+  SPEED:
+    description: "Fast development cycles and build times"
+    business_value: "Reduced time-to-market through optimized tooling"
+
+  QUALITY:
+    description: "Type safety, testing, and code quality"
+    business_value: "Fewer bugs, easier maintenance, confident refactoring"
+
+  SCALE:
+    description: "Monorepo organization and multi-environment deployment"
+    business_value: "Organized codebase, controlled releases, team collaboration"
+
+  EXPERIENCE:
+    description: "Developer experience and productivity"
+    business_value: "Faster onboarding, happier developers, better code"
+
+# Domains - Major capability areas
+domains:
+  API: "Backend API services (Fastify, routes, middleware)"
+  WEB: "Frontend web applications (React, Vite, TanStack)"
+  DB: "Database layer (Drizzle ORM, schemas, migrations)"
+  UI: "Shared UI component library (React components, Tailwind)"
+  SHARED: "Shared utilities and configuration (types, utils, config)"
+  AGENT: "AI agent services (tools, workflows, MCP)"
+  INFRA: "Infrastructure and deployment (Docker, environments, CI/CD)"
+  TEST: "Testing infrastructure (Vitest, test utilities)"
+  BUILD: "Build system (Turborepo, TypeScript, Biome)"
+
+# Operations
+operations:
+  # Standard CRUD
+  CREATE: "Create new entity"
+  READ: "Retrieve entity"
+  UPDATE: "Modify existing entity"
+  DELETE: "Remove entity"
+  LIST: "Query multiple entities"
+
+  # Development operations
+  IMPLEMENT: "Implement functionality"
+  TEST: "Test functionality"
+  VALIDATE: "Validate implementation"
+  DOCUMENT: "Document functionality"
+
+  # Build operations
+  COMPILE: "Compile TypeScript"
+  BUNDLE: "Bundle assets"
+  OPTIMIZE: "Optimize build output"
+  CACHE: "Cache build artifacts"
+
+  # Deployment operations
+  DEPLOY: "Deploy to environment"
+  MIGRATE: "Run database migrations"
+  CONFIGURE: "Configure environment"
+  MONITOR: "Monitor system health"
+
+  # Code quality operations
+  LINT: "Lint code"
+  FORMAT: "Format code"
+  TYPECHECK: "Type check"
+  ANALYZE: "Analyze code quality"
+
+# Status lifecycle
+status_lifecycle:
+  - PLANNED        # Identified, not started
+  - IN_PROGRESS    # Currently being implemented
+  - DONE           # Implemented and tested
+  - BLOCKED        # Blocked by dependency
+  - DEPRECATED     # No longer needed
+
+# Priority levels
+priorities:
+  CRITICAL: "Template cannot function without this"
+  HIGH: "Essential for production readiness"
+  MEDIUM: "Enhances development experience"
+  LOW: "Nice to have, future enhancement"
+
+# Effort estimates (Agentic Time)
+# Agents operate 10-100x faster than humans
+# These estimates assume agent has proper context and tools
+efforts:
+  TRIVIAL: "< 5 minutes (simple CRUD, obvious patterns)"
+  SMALL: "5-30 minutes (standard Behavior, clear requirements)"
+  MEDIUM: "30 minutes - 2 hours (moderate complexity, some discovery needed)"
+  LARGE: "2-4 hours (complex integration, multiple components)"
+  XLARGE: "> 4 hours (significant architecture, unclear requirements, needs human collaboration)"
+
+# Note on XLARGE: If estimate exceeds 4 hours, break down into smaller behaviors
+
+# Value Classification
+value_domains:
+  DIRECT_BUSINESS:
+    description: "Immediate business impact (revenue, cost, efficiency)"
+    examples: ["Revenue generation", "Cost reduction", "Process efficiency"]
+
+  CAPABILITY:
+    description: "Enables future value creation"
+    examples: ["Infrastructure", "Platform capabilities", "Developer tools"]
+
+  LEARNING:
+    description: "Reduces future uncertainty through knowledge"
+    examples: ["Market validation", "Technical feasibility", "User research"]
+
+  TECHNICAL:
+    description: "Technical infrastructure value"
+    examples: ["Performance", "Scalability", "Reliability", "Security"]
+
+  ORGANIZATIONAL:
+    description: "Organizational capability and culture"
+    examples: ["Team skills", "Process improvement", "Collaboration"]
+
+  EXPERIENTIAL:
+    description: "User and developer experience"
+    examples: ["DX improvements", "UI/UX quality", "Onboarding ease"]
+
+value_types:
+  DIRECT:
+    description: "Immediately measurable value"
+    measurement: "Quantitative metrics with clear baseline/target"
+
+  ENABLING:
+    description: "Unlocks other behaviors or capabilities"
+    measurement: "Count of behaviors/capabilities enabled"
+
+  STRATEGIC:
+    description: "Long-term positioning"
+    measurement: "Qualitative assessment with success criteria"
+
+  LEARNING:
+    description: "Knowledge acquisition and validation"
+    measurement: "Insights gained, hypotheses validated"
+
+  EXPERIENTIAL:
+    description: "User/team experience improvement"
+    measurement: "Satisfaction scores, engagement metrics"

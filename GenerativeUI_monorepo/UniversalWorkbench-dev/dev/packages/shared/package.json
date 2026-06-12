@@ -1,0 +1,32 @@
+{
+  "name": "@adaptiveworx/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./config": "./src/config/index.ts",
+    "./validation": "./src/utils/validation.ts",
+    "./validation-middleware": "./src/validation-middleware.ts",
+    "./types": "./src/types/index.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@adaptiveworx/db": "workspace:*",
+    "@infisical/sdk": "^4.0.6",
+    "zod": "^3.25.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "fastify": "^5.2.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "ids": [
+    "file_explorer",
+    "code_editor",
+    "file_manager",
+    "git_workspace",
+    "git_committer",
+    "sequential_analyzer",
+    "web_fetcher",
+    "custom_search",
+    "read_file"
+  ],
+  "names": [
+    "File Explorer",
+    "Code Editor",
+    "File Manager",
+    "Git Workspace",
+    "Git Committer",
+    "Sequential Analyzer",
+    "Web Fetcher",
+    "Custom Search",
+    "Read File"
+  ],
+  "customSearchMolecule": {
+    "id": "custom_search",
+    "name": "Custom Search",
+    "description": "Search the custom database",
+    "underlyingTools": [
+      "custom_search"
+    ],
+    "parameters": {
+      "_def": {
+        "typeName": "ZodAny"
+      },
+      "_any": true
+    },
+    "parameterSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "semantics": "Search the custom database",
+    "suggestedUseCases": [
+      "General purpose usage"
+    ],
+    "constraints": [
+      "Standard tool safety applies"
+    ],
+    "examples": [],
+    "tags": [
+      "dynamic",
+      "auto-generated"
+    ],
+    "genUItier": "static",
+    "complexity": "simple"
+  }
+}
