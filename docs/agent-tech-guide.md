@@ -28,7 +28,7 @@ Monorepo_ModMe/
 â”œâ”€â”€ .cursor/
 â”‚   â”œâ”€â”€ rules/                   # Always-on MDC rules (lean-ctx, PatrickJS, copilot, â€¦)
 â”‚   â”œâ”€â”€ skills/                  # Project-scoped skills (e.g. awesome-agent-skills)
-â”‚   â””â”€â”€ mcp.json                 # Project MCP: skills-sh
+â”‚   â””â”€â”€ mcp.json                 # Project MCP: skills-sh, buildkite (remote)
 â”œâ”€â”€ .agents/skills/              # Repo skills (Cursor + Copilot compatible)
 â”œâ”€â”€ .github/
 â”‚   â”œâ”€â”€ copilot-instructions.md
@@ -429,7 +429,7 @@ node scripts/validate-launch-json.mjs --require-manifest-sync
 
 ---
 
-*Last updated: 2026-06-12 â€” `/init` command, debug-launch-guide, launch.json CI validation.*
+*Last updated: 2026-06-13 â€” `/init` command, debug-launch-guide, launch.json CI validation.*
 
 ## Continuous integration
 
