@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "apps": [
+    {
+      "id": "web-dashboard",
+      "name": "Web Dashboard (Next.js)",
+      "cwd": "GenerativeUI_monorepo/apps/web-dashboard",
+      "port": 3001,
+      "packageJson": "GenerativeUI_monorepo/apps/web-dashboard/package.json",
+      "devScript": "dev"
+    },
+    {
+      "id": "vibe-web-app",
+      "name": "Vibe Web App (Chrome)",
+      "cwd": "GenerativeUI_monorepo/apps/vibe-web-app",
+      "port": 3000,
+      "packageJson": "GenerativeUI_monorepo/apps/vibe-web-app/package.json",
+      "devScript": "dev"
+    },
+    {
+      "id": "agent-server",
+      "name": "Agent Server (FastAPI)",
+      "cwd": "GenerativeUI_monorepo/apps/agent-server",
+      "port": 8000,
+      "entry": "GenerativeUI_monorepo/apps/agent-server/src/main.py"
+    },
+    {
+      "id": "agent-generator",
+      "name": "Agent Generator: build + current test",
+      "cwd": "GenerativeUI_monorepo/apps/agent-generator",
+      "packageJson": "GenerativeUI_monorepo/apps/agent-generator/package.json",
+      "buildScript": "build"
+    },
+    {
+      "id": "example-next",
+      "name": "Example Next: dev server",
+      "cwd": "GenerativeUI_monorepo/packages/example-next-application",
+      "port": 3002,
+      "packageJson": "GenerativeUI_monorepo/packages/example-next-application/package.json",
+      "devScript": "dev"
+    },
+    {
+      "id": "example-react",
+      "name": "Example React: dev server",
+      "cwd": "GenerativeUI_monorepo/packages/example-react-application",
+      "port": 3003,
+      "packageJson": "GenerativeUI_monorepo/packages/example-react-application/package.json",
+      "devScript": "start"
+    }
+  ],
+  "requiredLaunchNames": [
+    "Web Dashboard (Next.js)",
+    "Vibe Web App (Chrome)",
+    "Agent Server (FastAPI)",
+    "Agent Generator: build + current test",
+    "Example Next: dev server",
+    "Example React: dev server"
+  ],
+  "requiredTasks": ["vibe-web-app: dev", "agent-generator: build"],
+  "requiredCompounds": [
+    "Full Stack: Agent Server + Web Dashboard",
+    "Full Stack: Agent Server + Vibe Web App"
+  ]
+}

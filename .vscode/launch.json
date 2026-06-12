@@ -1,0 +1,166 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    
+    {
+      "name": "Web Dashboard (Next.js)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn dev",
+      "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/web-dashboard",
+      "env": {
+        "PORT": "3001"
+      },
+      "serverReadyAction": {
+        "pattern": "- Local:\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    },
+    {
+      "name": "Web Dashboard (attach Chrome)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3001",
+      "webRoot": "${workspaceFolder}/GenerativeUI_monorepo/apps/web-dashboard"
+    },
+    {
+      "name": "Vibe Web App (Chrome)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/GenerativeUI_monorepo/apps/vibe-web-app/src",
+      "preLaunchTask": "vibe-web-app: dev"
+    },
+    {
+      "name": "Vibe Web App (attach Chrome)",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9222,
+      "webRoot": "${workspaceFolder}/GenerativeUI_monorepo/apps/vibe-web-app/src"
+    },
+    {
+      "name": "Agent Server (FastAPI)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "src.main:app",
+        "--reload",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8000"
+      ],
+      "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-server",
+      "envFile": "${workspaceFolder}/.env",
+      "jinja": true,
+      "justMyCode": true
+    },
+    {
+      "name": "Agent Server (attach)",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "127.0.0.1",
+        "port": 5678
+      },
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-server",
+          "remoteRoot": "."
+        }
+      ]
+    },
+    {
+      "name": "Agent Generator: build + current test",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["--test"],
+      "args": ["${relativeFile}"],
+      "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-generator",
+      "preLaunchTask": "agent-generator: build",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Agent Generator: schema crawler",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-generator/dist/mcp-registry/schema-crawler.js",
+      "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-generator",
+      "preLaunchTask": "agent-generator: build",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Example Next: dev server",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn dev",
+      "cwd": "${workspaceFolder}/GenerativeUI_monorepo/packages/example-next-application",
+      "env": {
+        "PORT": "3002"
+      }
+    },
+    {
+      "name": "Example Next: Jest (current file)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["jest", "--runInBand", "${relativeFile}"],
+      "cwd": "${workspaceFolder}/GenerativeUI_monorepo/packages/example-next-application",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Example React: dev server",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn start",
+      "cwd": "${workspaceFolder}/GenerativeUI_monorepo/packages/example-react-application",
+      "env": {
+        "PORT": "3003",
+        "BROWSER": "none"
+      }
+    },
+    {
+      "name": "Example React: Jest (current file)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["jest", "--runInBand", "${relativeFile}"],
+      "cwd": "${workspaceFolder}/GenerativeUI_monorepo/packages/example-react-application",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Node: current file",
+      "type": "node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${file}",
+      "cwd": "${fileDirname}",
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack: Agent Server + Web Dashboard",
+      "configurations": ["Agent Server (FastAPI)", "Web Dashboard (Next.js)"],
+      "stopAll": true,
+      "presentation": {
+        "order": 1
+      }
+    },
+    {
+      "name": "Full Stack: Agent Server + Vibe Web App",
+      "configurations": ["Agent Server (FastAPI)", "Vibe Web App (Chrome)"],
+      "stopAll": true,
+      "presentation": {
+        "order": 2
+      }
+    }
+  ]
+}

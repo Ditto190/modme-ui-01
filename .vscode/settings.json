@@ -1,0 +1,17 @@
+{
+  "leanctx.binaryPath": "C:/Users/dylan/.gemini/antigravity/bin/lean-ctx.exe",
+  "chat.agent.sandbox.enabled": "allowNetwork",
+  "terminal.integrated.env.windows": {
+    "HTTP_PROXY": null,
+    "HTTPS_PROXY": null
+  },
+  "terminal.integrated.profiles.windows": {
+    "PowerShell (Clean Env)": {
+      "source": "PowerShell",
+      "icon": "terminal-powershell"
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "PowerShell (Clean Env)",
+  "terminal.integrated.rightClickBehavior": "default",
+  "chat.useClaudeHooks": true
+}

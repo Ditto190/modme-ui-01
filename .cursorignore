@@ -1,0 +1,14 @@
+﻿# Keep secrets out of Cursor indexing and agent context
+.env
+.env.*
+**/.env
+**/.env.local
+**/.env.*.local
+
+# Credential files
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials.json

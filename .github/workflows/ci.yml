@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, develop]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "LICENSE"
+  pull_request:
+    branches: [main, master, develop]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "LICENSE"
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  secret-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Block tracked env files
+        run: |
+          set -euo pipefail
+          if git ls-files | grep -E '(^|/)\.env$|\.env\.local$|\.env\.production$' ; then
+            echo "::error::Secret env files must not be committed. Remove from git and add to .gitignore."
+            exit 1
+          fi
+          echo "No .env files tracked."
+
+  changelog:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate CHANGELOG
+        run: node scripts/validate-changelog.mjs
+      - name: Require CHANGELOG update when needed
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/validate-changelog.mjs --require-update
+
+  monorepo:
+    needs: secret-guard
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: GenerativeUI_monorepo
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: yarn
+          cache-dependency-path: GenerativeUI_monorepo/yarn.lock
+
+      - name: Enable Corepack (Yarn 3)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable 2>/dev/null || yarn install
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Test
+        run: yarn test
+
+      - name: Build
+        run: yarn build
