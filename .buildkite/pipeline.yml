@@ -9,10 +9,15 @@ steps:
     command: .buildkite/scripts/secret-guard.sh
     key: secret-guard
 
+  - label: ":mag: Pre-commit checks"
+    command: .buildkite/scripts/pre-commit-check.sh
+    key: pre-commit
+    depends_on: secret-guard
+
   - label: ":yarn: Install dependencies"
     command: .buildkite/scripts/install.sh
     key: install
-    depends_on: secret-guard
+    depends_on: pre-commit
 
   - group: ":hammer_and_wrench: Verify"
     key: verify

@@ -409,6 +409,15 @@ alwaysApply: false
     Set-Content -Path $path -Value $content -Encoding UTF8
 }
 
+function Install-GitHooks {
+    $installer = Join-Path $RepoRoot 'scripts\install-git-hooks.ps1'
+    if (-not (Test-Path $installer)) {
+        Write-Warning 'scripts/install-git-hooks.ps1 not found — skipping hook install'
+        return
+    }
+    & $installer
+}
+
 # --- main ---
 Write-Host "=== Cursor AI setup ===" -ForegroundColor Cyan
 Write-Host "Repo: $RepoRoot"
@@ -419,6 +428,7 @@ Install-CursorRules
 Write-MonorepoRule
 Install-AwesomeCopilot
 Write-AgentsMd
+Install-GitHooks
 Write-Host ''
 Write-Host 'Done. Restart Cursor to reload rules and skills.' -ForegroundColor Green
 Write-Host 'Global skills: ' $GlobalSkills

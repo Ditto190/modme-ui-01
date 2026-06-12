@@ -41,7 +41,10 @@ Monorepo_ModMe/
 â””â”€â”€ scripts/
     â”œâ”€â”€ cursor-ai/setup.ps1      # Refresh rules, skills, vendor copies
     â”œâ”€â”€ launch-manifest.json     # Debug target source of truth (ports, cwds)
+    â”œâ”€â”€ pre-commit-checks.mjs      # Hook + CI orchestrator
+    â”œâ”€â”€ install-git-hooks.ps1    # Install .githooks/pre-commit
     â”œâ”€â”€ validate-changelog.mjs   # CI/local CHANGELOG validator
+    â”œâ”€â”€ validate-cursor-skills.mjs
     â””â”€â”€ validate-launch-json.mjs # CI/local launch.json validator
 ```
 
@@ -280,9 +283,13 @@ Use `doc-coauthoring` for long-form guides; use `documentation-writer` for API/r
 ### Local validation
 
 ```powershell
+node scripts/pre-commit-checks.mjs          # same suite as the git hook
+.\scripts\install-git-hooks.ps1             # one-time: enable pre-commit hook
 node scripts/validate-changelog.mjs
 node scripts/validate-changelog.mjs --require-update   # after editing monitored paths
 ```
+
+Pre-commit runs automatically on `git commit` after hook install (`setup.ps1` also installs hooks). CI: `.github/workflows/pre-commit-check.yml` and Buildkite step `:mag: Pre-commit checks`.
 
 ### CI
 

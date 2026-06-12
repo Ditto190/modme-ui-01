@@ -1,0 +1,29 @@
+name: Pre-commit checks
+
+on:
+  pull_request:
+    branches: [main, master, develop, chore/**]
+  push:
+    branches: [main, master, develop, chore/**]
+
+permissions:
+  contents: read
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run pre-commit checks
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/pre-commit-checks.mjs --ci
