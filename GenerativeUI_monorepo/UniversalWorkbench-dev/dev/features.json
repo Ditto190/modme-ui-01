@@ -1,0 +1,162 @@
+{
+  "version": "1.0.0",
+  "generated": "2025-10-12T22:53:40.256Z",
+  "features": {
+    "USER.ITEM.LIST": {
+      "id": "USER.ITEM.LIST",
+      "domain": "USER",
+      "entity": "ITEM",
+      "operation": "LIST",
+      "qualifiers": [],
+      "layers": [
+        "API"
+      ],
+      "dependencies": [
+        "DB.USERS.SCHEMA",
+        "DB.POSTS.SCHEMA"
+      ],
+      "implements": [
+        "GET /api/users endpoint",
+        "Aggregate posts count per user",
+        "Order by creation date descending"
+      ],
+      "files": [
+        "apps/api/src/routes/users.ts"
+      ],
+      "tests": [
+        "Integration: List users with counts"
+      ]
+    },
+    "USER.ITEM.READ": {
+      "id": "USER.ITEM.READ",
+      "domain": "USER",
+      "entity": "ITEM",
+      "operation": "READ",
+      "qualifiers": [],
+      "layers": [
+        "API"
+      ],
+      "dependencies": [
+        "DB.USERS.SCHEMA",
+        "DB.POSTS.SCHEMA"
+      ],
+      "implements": [
+        "GET /api/users/:id endpoint",
+        "Fetch single user with posts count",
+        "404 if user not found"
+      ],
+      "files": [
+        "apps/api/src/routes/users.ts"
+      ],
+      "tests": [
+        "Integration: Get user by ID",
+        "Integration: 404 for non-existent user"
+      ]
+    },
+    "USER.ITEM.CREATE": {
+      "id": "USER.ITEM.CREATE",
+      "domain": "USER",
+      "entity": "ITEM",
+      "operation": "CREATE",
+      "qualifiers": [],
+      "layers": [
+        "API"
+      ],
+      "dependencies": [
+        "DB.USERS.SCHEMA"
+      ],
+      "implements": [
+        "POST /api/users endpoint",
+        "Zod validation via middleware",
+        "Insert user into database",
+        "Return created user"
+      ],
+      "files": [
+        "apps/api/src/routes/users.ts"
+      ],
+      "tests": [
+        "Integration: Create valid user",
+        "Integration: Reject invalid email",
+        "Integration: Enforce email uniqueness"
+      ]
+    },
+    "USER.ITEM.DELETE": {
+      "id": "USER.ITEM.DELETE",
+      "domain": "USER",
+      "entity": "ITEM",
+      "operation": "DELETE",
+      "qualifiers": [],
+      "layers": [
+        "API"
+      ],
+      "dependencies": [
+        "DB.USERS.SCHEMA"
+      ],
+      "implements": [
+        "DELETE /api/users/:id endpoint",
+        "Remove user from database",
+        "Cascade delete related posts",
+        "404 if user not found"
+      ],
+      "files": [
+        "apps/api/src/routes/users.ts"
+      ],
+      "tests": [
+        "Integration: Delete existing user",
+        "Integration: 404 for non-existent user",
+        "Integration: Verify cascade delete of posts"
+      ]
+    },
+    "DB.POSTS.SCHEMA": {
+      "id": "DB.POSTS.SCHEMA",
+      "domain": "DB",
+      "entity": "POSTS",
+      "operation": "SCHEMA",
+      "qualifiers": [],
+      "layers": [
+        "DB"
+      ],
+      "dependencies": [
+        "DB.USERS.SCHEMA"
+      ],
+      "implements": [
+        "Post table with title, content, published status",
+        "Foreign key to users (author)",
+        "Cascade delete when user is deleted",
+        "Indexes on authorId and published status",
+        "Zod validation schemas"
+      ],
+      "files": [
+        "packages/db/src/schema/posts.ts"
+      ],
+      "tests": [
+        "Unit: Schema validation",
+        "Integration: Foreign key constraints"
+      ]
+    },
+    "DB.USERS.SCHEMA": {
+      "id": "DB.USERS.SCHEMA",
+      "domain": "DB",
+      "entity": "USERS",
+      "operation": "SCHEMA",
+      "qualifiers": [],
+      "layers": [
+        "DB"
+      ],
+      "dependencies": [],
+      "implements": [
+        "User table with id, email, name, timestamps",
+        "Email uniqueness constraint",
+        "Email index for fast lookups",
+        "Zod validation schemas"
+      ],
+      "files": [
+        "packages/db/src/schema/users.ts"
+      ],
+      "tests": [
+        "Unit: Schema validation",
+        "Integration: Database operations"
+      ]
+    }
+  }
+}

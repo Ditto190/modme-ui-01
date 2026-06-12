@@ -1,0 +1,35 @@
+{
+  "name": "@adaptiveworx/agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tools": "./src/tools/index.ts",
+    "./workflows": "./src/workflows/index.ts"
+  },
+  "scripts": {
+    "dev": "tsx watch --clear-screen=false --env-file=../../.env src/index.ts",
+    "build": "tsc",
+    "start": "node --env-file=../../.env dist/index.js",
+    "type-check": "tsc --noEmit",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest --passWithNoTests",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@adaptiveworx/db": "workspace:*",
+    "@adaptiveworx/shared": "workspace:*",
+    "fastify": "^5.2.0",
+    "pino": "^9.5.0",
+    "zod": "^3.25.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

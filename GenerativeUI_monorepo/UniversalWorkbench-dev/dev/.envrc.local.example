@@ -1,0 +1,17 @@
+# Personal Infisical Configuration (direnv)
+# Copy to .envrc.local and customize
+
+# Hierarchical project configuration
+export INFISICAL_APP_PROJECT_ID=""  # Optional: app-specific overrides
+export INFISICAL_APPS_PROJECT_ID="10b63b16-515c-4ea4-adfc-1da96d654fe8"  # worx-apps baseline
+export INFISICAL_PLATFORM_PROJECT_ID="667de60a-6297-4ef7-ac35-4199a6cbbc02"  # worx-platform fallback
+
+# Project slug (for CLI commands)
+export INFISICAL_PROJECT_SLUG="worx-apps"
+
+# Environment
+export NODE_ENV="dev"
+
+# Optional: Set app-specific project for this library
+# export INFISICAL_APP_PROJECT_ID="your-app-project-id-here"
+# export INFISICAL_PROJECT_SLUG="worx-your-app-name"

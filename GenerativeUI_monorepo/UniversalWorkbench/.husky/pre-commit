@@ -1,0 +1,36 @@
+# Prevent commits with failing validation
+echo "Running pre-commit validation..."
+
+# Sync and validate behaviors
+echo "→ Syncing behaviors from test files..."
+yarn behaviors:sync || exit 1
+
+echo "→ Validating behaviors against taxonomy..."
+yarn behaviors:validate || exit 1
+
+# Run type check
+echo "→ Type checking..."
+yarn type-check || exit 1
+
+# Run linter
+echo "→ Linting..."
+yarn lint:check || exit 1
+
+# Run tests
+echo "→ Testing..."
+yarn test || exit 1
+
+# Generate behavior dashboards and VH summary
+# (These are regenerated on each commit but not committed - they're in .gitignore)
+echo "→ Generating behavior dashboards..."
+yarn behaviors:summary || exit 1
+
+echo "→ Generating value hypothesis dashboard..."
+yarn vh:summary || exit 1
+
+echo ""
+echo "✅ Pre-commit validation passed!"
+echo "📊 Generated files (not committed):"
+echo "   - behaviors.json"
+echo "   - .flow/behaviors.md, roadmap.md, progress.md, backlog.md"
+echo "   - .flow/vh-dashboard.md"

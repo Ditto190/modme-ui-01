@@ -1,0 +1,11 @@
+# Core dependencies
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+websockets>=12.0
+pydantic>=2.5.0
+python-dotenv>=1.0.0
+
+# AG2 (AutoGen) - optional, will fallback to mock mode if not installed
+# ag2>=0.2.0
+
+# Development dependencies (install with: pip install -r requirements.txt -r requirements-dev.txt)

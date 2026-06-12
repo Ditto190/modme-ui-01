@@ -1,0 +1,59 @@
+# GitLab CI for GenerativeUI_monorepo (Yarn 3 + Turbo + TypeScript)
+# Mirrors .github/workflows/index.yml: install → eslint → test
+
+stages:
+  - install
+  - test
+
+default:
+  image: node:20-bookworm
+  before_script:
+    - corepack enable
+    - node --version
+    - yarn --version
+
+variables:
+  YARN_ENABLE_GLOBAL_CACHE: "false"
+  FF_USE_FASTZIP: "true"
+
+.yarn_cache: &yarn_cache
+  cache:
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - .yarn/cache
+    policy: pull-push
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+install:
+  stage: install
+  <<: *yarn_cache
+  script:
+    - yarn install --immutable
+  artifacts:
+    paths:
+      - .yarn/
+      - .pnp.cjs
+      - .pnp.loader.mjs
+    expire_in: 1 hour
+
+eslint:
+  stage: test
+  <<: *yarn_cache
+  needs: [install]
+  script:
+    - yarn install --immutable
+    - yarn eslint
+
+test:
+  stage: test
+  <<: *yarn_cache
+  needs: [install]
+  script:
+    - yarn install --immutable
+    - yarn test

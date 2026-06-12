@@ -1,0 +1,17 @@
+{
+  "name": "@adaptiveworx/prd-env",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Production environment configuration",
+  "dependencies": {
+    "@adaptiveworx/agent": "0.1.0",
+    "@adaptiveworx/api": "0.1.0",
+    "@adaptiveworx/web": "0.1.0"
+  },
+  "scripts": {
+    "deploy": "echo 'Deploy to production environment'",
+    "infra:preview": "pulumi preview",
+    "infra:up": "pulumi up",
+    "infra:destroy": "pulumi destroy"
+  }
+}
