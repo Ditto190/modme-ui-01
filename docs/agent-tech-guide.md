@@ -117,6 +117,81 @@ Browse `.tools/awesome-agent-skills/README.md` for curated links. Project skill 
 
 ---
 
+## 3.5 Buildkite MCP (remote)
+
+This repo uses Buildkite's **remote** MCP server (recommended for Cursor on Windows). No local binary or Docker install is required; authentication is handled via OAuth when you first connect.
+
+### Project config
+
+`.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "buildkite": {
+      "url": "https://mcp.buildkite.com/mcp"
+    }
+  }
+}
+```
+
+The Buildkite Cursor plugin (`.cursor/settings.json` → `plugins.buildkite.enabled`) can also install MCP + skills from the Cursor Marketplace. The project `mcp.json` entry keeps the server portable for all contributors.
+
+### First-time connect (manual)
+
+1. Restart Cursor after changing MCP config.
+2. Open **Cursor Settings → MCP & Integrations** and enable **buildkite**.
+3. On first use, authorize the Buildkite MCP application in your browser.
+4. Select your **Buildkite organization** on the authorization page.
+
+No `BUILDKITE_API_TOKEN` is required for the remote server. OAuth tokens are short-lived (12 hours; refresh tokens 7 days).
+
+### Optional: read-only or scoped toolsets
+
+Read-only remote server:
+
+```json
+"buildkite-readonly": {
+  "url": "https://mcp.buildkite.com/mcp/readonly"
+}
+```
+
+Limit toolsets via header (example: user, pipelines, builds):
+
+```json
+"buildkite-readonly-toolsets": {
+  "url": "https://mcp.buildkite.com/mcp/readonly",
+  "headers": {
+    "X-Buildkite-Toolsets": "user,pipelines,builds"
+  }
+}
+```
+
+### Local MCP (CI / agents only)
+
+Use the **local** server only for automated pipelines or pinned versions—not for interactive Cursor use. Requires `BUILDKITE_API_TOKEN` (scopes: at minimum `read_builds`, `read_pipelines`, `read_user`). See [Installing the Buildkite MCP server locally](https://buildkite.com/docs/apis/mcp-server/local/installing).
+
+| Variable | Remote MCP | Local MCP |
+|----------|------------|-----------|
+| `BUILDKITE_API_TOKEN` | Not used (OAuth) | Required (`bkua_…`) |
+| Org selection | OAuth authorize screen | Implicit from token |
+
+Create API tokens: [Buildkite → Personal Settings → API Access Tokens](https://buildkite.com/user/api-access-tokens).
+
+### Repo pipeline
+
+Monorepo CI is defined in [`.buildkite/pipeline.yml`](../.buildkite/pipeline.yml) (Buildkite) and [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) (GitHub Actions). See [buildkite-guide.md](./buildkite-guide.md) for setup and the local demo (`scripts/buildkite-demo.ps1`, `/dev/buildkite`).
+
+### Docs
+
+- [Types of MCP servers](https://buildkite.com/docs/apis/mcp-server#types-of-mcp-servers)
+- [Configuring AI tools (remote)](https://buildkite.com/docs/apis/mcp-server/remote/configuring-ai-tools)
+- [Installing locally](https://buildkite.com/docs/apis/mcp-server/local/installing)
+
+If your organization uses an **API IP allowlist**, add Buildkite egress IPs so the remote MCP server can call your org's API.
+
+---
+
 ## 4. Installed skills (documentation & changelog)
 
 ### Repo-local (`.agents/skills/`)
@@ -264,7 +339,7 @@ Skills to use by phase:
 
 | File | Servers | Notes |
 |------|---------|-------|
-| `.cursor/mcp.json` | `skills-sh` | Search/install skills from Cursor |
+| `.cursor/mcp.json` | `skills-sh`, `buildkite` (remote HTTP) | Skills catalog; Buildkite pipelines/builds (OAuth) |
 | `.github/mcp.json` | `GitLab` (http) | Copilot / GitHub MCP integration |
 | `~/.cursor/mcp.json` | User-defined | May duplicate skills-sh, context7, lean-ctx, etc. |
 
@@ -340,6 +415,13 @@ node scripts/validate-changelog.mjs --require-update
 
 # Validate VS Code launch configs
 node scripts/validate-launch-json.mjs --require-manifest-sync
+
+# Refresh awesome-cursor-skills + global Cursor skills
+.\scripts\cursor-ai\setup.ps1
+
+# direnv (PowerShell 7+ required for auto-hook)
+.\scripts\install-direnv-hook.ps1
+# then in pwsh: cd <repo> && direnv allow
 
 # Project onboarding (beads + debug + docs)
 # In Cursor chat: /init

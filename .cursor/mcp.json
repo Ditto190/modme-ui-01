@@ -1,0 +1,13 @@
+﻿{
+  "mcpServers": {
+    "skills-sh": {
+      "command": "node",
+      "args": [
+        "C:/Users/dylan/Monorepo_ModMe/.tools/skillsh-mcp/dist/index.js"
+      ]
+    },
+    "buildkite": {
+      "url": "https://mcp.buildkite.com/mcp"
+    }
+  }
+}

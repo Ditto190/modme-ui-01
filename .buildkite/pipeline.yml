@@ -1,0 +1,36 @@
+# Monorepo_ModMe CI — mirrors .github/workflows/ci.yml for GenerativeUI_monorepo
+# Docs: docs/buildkite-guide.md
+
+env:
+  MONOREPO_DIR: "GenerativeUI_monorepo"
+
+steps:
+  - label: ":shield: Secret guard"
+    command: .buildkite/scripts/secret-guard.sh
+    key: secret-guard
+
+  - label: ":yarn: Install dependencies"
+    command: .buildkite/scripts/install.sh
+    key: install
+    depends_on: secret-guard
+
+  - group: ":hammer_and_wrench: Verify"
+    key: verify
+    depends_on: install
+    steps:
+      - label: ":eslint: Lint"
+        command: .buildkite/scripts/lint.sh
+        key: lint
+
+      - label: ":test_tube: Test"
+        command: .buildkite/scripts/test.sh
+        key: test
+
+  - label: ":package: Build"
+    command: .buildkite/scripts/build.sh
+    key: build
+    depends_on: verify
+
+  - label: ":rocket: CI green"
+    command: cat .buildkite/annotation.md | buildkite-agent annotate --style "success" --context "modme-ci"
+    depends_on: build

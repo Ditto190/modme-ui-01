@@ -103,8 +103,18 @@ function Install-GlobalSkills {
     }
 
     $acs = Join-Path $VendorRoot 'awesome-cursor-skills-main\resources'
-    foreach ($name in @('systematic-debugging', 'visual-qa-testing', 'creating-pr', 'grinding-until-pass')) {
-        Install-SkillFolder (Join-Path $acs $name) $GlobalSkills $name
+    $acsSkills = @(
+        'systematic-debugging', 'visual-qa-testing', 'creating-pr', 'grinding-until-pass',
+        'verifying-in-browser', 'finding-dev-server-url', 'detecting-port-conflicts',
+        'suggesting-cursor-rules', 'suggesting-cursor-hooks', 'suggesting-skills',
+        'auto-type-checking', 'babysitting-pr', 'writing-commit-messages',
+        'parallel-exploring', 'best-of-n-solving', 'monitoring-terminal-errors',
+        'parallel-code-review', 'codebase-onboarding', 'writing-tests'
+    )
+    foreach ($name in $acsSkills) {
+        $src = Join-Path $acs $name
+        if (-not (Test-Path $src)) { Write-Warning "missing awesome-cursor-skills resource: $name"; continue }
+        Install-SkillFolder $src $GlobalSkills $name
     }
 
     # Prefer npx skills when git works (dedupes superpowers systematic-debugging)
@@ -124,6 +134,9 @@ function Install-GlobalSkills {
         try {
             npx --yes skills add spencerpauly/awesome-cursor-skills `
                 --skill visual-qa-testing --skill creating-pr --skill grinding-until-pass `
+                --skill verifying-in-browser --skill finding-dev-server-url `
+                --skill detecting-port-conflicts --skill suggesting-cursor-rules `
+                --skill suggesting-cursor-hooks --skill suggesting-skills `
                 -a cursor -g -y 2>&1 | Write-Host
         } catch {
             Write-Warning "npx skills (awesome-cursor-skills) failed; manual copies kept: $_"
