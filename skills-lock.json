@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "skills": {
+    "create-voltagent": {
+      "source": "VoltAgent/skills",
+      "sourceType": "github",
+      "skillPath": "skills/create-voltagent/SKILL.md",
+      "computedHash": "c128fdcdf93d5e40fe87e044ba4ca6b78b0251cf4c51b6179699c282906e5a8a"
+    },
+    "supabase": {
+      "source": "supabase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/supabase/SKILL.md",
+      "computedHash": "61638e85394d2e39d1109cbf607593afb9733e0de19cdf0b52ec9bc32d95ea74"
+    },
+    "supabase-postgres-best-practices": {
+      "source": "supabase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/supabase-postgres-best-practices/SKILL.md",
+      "computedHash": "3639bed1f40b3fbadae79fee631c42c89b2d1f5c30b05d5aa3cca06422a6bbbc"
+    },
+    "voltagent-best-practices": {
+      "source": "VoltAgent/skills",
+      "sourceType": "github",
+      "skillPath": "skills/voltagent-best-practices/SKILL.md",
+      "computedHash": "25b89b5fb67aa54bdc900f4ea188ac7b87042fafd5a0dcbae1ee0ea5a3c23140"
+    },
+    "voltagent-docs-bundle": {
+      "source": "VoltAgent/skills",
+      "sourceType": "github",
+      "skillPath": "skills/voltagent-docs-bundle/SKILL.md",
+      "computedHash": "ac3ec8239897928883fb7451066796bb4e46903ee77558fb51621c1680617e25"
+    }
+  }
+}

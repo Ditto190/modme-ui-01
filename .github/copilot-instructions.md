@@ -1,4 +1,4 @@
-﻿# Monorepo_ModMe â€” GitHub Copilot instructions
+﻿# Monorepo_ModMe — GitHub Copilot instructions
 
 Primary codebase: `GenerativeUI_monorepo/` (Turborepo + Yarn workspaces).
 

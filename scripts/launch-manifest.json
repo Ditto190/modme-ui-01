@@ -46,6 +46,46 @@
       "port": 3003,
       "packageJson": "GenerativeUI_monorepo/packages/example-react-application/package.json",
       "devScript": "start"
+    },
+    {
+      "id": "forge-app",
+      "name": "next-forge App (SaaS)",
+      "cwd": "next-forge/apps/app",
+      "port": 3100,
+      "packageJson": "next-forge/apps/app/package.json",
+      "devScript": "dev"
+    },
+    {
+      "id": "forge-web",
+      "name": "next-forge Web (Marketing)",
+      "cwd": "next-forge/apps/web",
+      "port": 3101,
+      "packageJson": "next-forge/apps/web/package.json",
+      "devScript": "dev"
+    },
+    {
+      "id": "forge-api",
+      "name": "next-forge API",
+      "cwd": "next-forge/apps/api",
+      "port": 3102,
+      "packageJson": "next-forge/apps/api/package.json",
+      "devScript": "dev"
+    },
+    {
+      "id": "forge-docs",
+      "name": "next-forge Docs (Mintlify)",
+      "cwd": "next-forge/apps/docs",
+      "port": 3104,
+      "packageJson": "next-forge/apps/docs/package.json",
+      "devScript": "dev"
+    },
+    {
+      "id": "forge-storybook",
+      "name": "next-forge Storybook (Workshop)",
+      "cwd": "next-forge/apps/storybook",
+      "port": 6106,
+      "packageJson": "next-forge/apps/storybook/package.json",
+      "devScript": "dev"
     }
   ],
   "requiredLaunchNames": [

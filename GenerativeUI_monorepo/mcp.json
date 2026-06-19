@@ -36,6 +36,14 @@
       "url": "https://api.githubcopilot.com/mcp/",
       "gallery": "https://api.mcp.github.com",
       "version": "1.2.0"
+    },
+    "mantine": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@mantine/mcp-server"],
+      "env": {
+        "PATH": "${env:PATH}"
+      }
     }
   },
   "inputs": [

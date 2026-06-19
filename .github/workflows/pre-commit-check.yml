@@ -2,9 +2,9 @@ name: Pre-commit checks
 
 on:
   pull_request:
-    branches: [main, master, develop, chore/**]
+    branches: [main, master, develop, dev, chore/**]
   push:
-    branches: [main, master, develop, chore/**]
+    branches: [main, master, develop, dev, chore/**]
 
 permissions:
   contents: read

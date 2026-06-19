@@ -1,0 +1,31 @@
+---
+title: Introduction
+description: ModMe next-forge documentation
+---
+
+## Welcome
+
+This documentation site is part of the **next-forge** monorepo in Monorepo_ModMe — the primary place to build apps, publish docs, and run the frontend workshop (Storybook).
+
+## Quick links
+
+<CardGroup cols={2}>
+  <Card title="Architecture" icon="sitemap" href="/modme-architecture">
+    Dual-monorepo layout and ports
+  </Card>
+  <Card title="Workshop" icon="palette" href="/workshop">
+    Storybook design system
+  </Card>
+  <Card title="Generative UI" icon="robot" href="/generative-ui-legacy">
+    Legacy agent stack
+  </Card>
+  <Card title="Development" icon="code" href="/development">
+    Local development guide
+  </Card>
+</CardGroup>
+
+## Get started
+
+1. Install dependencies: `cd next-forge && npx bun install`
+2. Set `DATABASE_URL` in `packages/database/.env`
+3. Run docs: `yarn dev:forge:docs` from the repository root

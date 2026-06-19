@@ -66,7 +66,7 @@
       "enabled": true
     },
     "continual-learning": {
-      "enabled": true
+      "enabled": false
     },
     "thermos": {
       "enabled": true
@@ -75,7 +75,7 @@
       "enabled": true
     },
     "ralph-loop": {
-      "enabled": true
+      "enabled": false
     },
     "agent-compatibility": {
       "enabled": true

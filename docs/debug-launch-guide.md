@@ -32,6 +32,18 @@ scripts/
 
 ## 2. Available debug configurations
 
+### next-forge (`next-forge/apps/`)
+
+| Name | Port | Notes |
+|------|------|-------|
+| next-forge App (SaaS) | **3100** | Main authenticated app |
+| next-forge Web (Marketing) | **3101** | Marketing site |
+| next-forge API | **3102** | Webhooks / API routes |
+| next-forge Docs (Mintlify) | **3104** | Documentation site |
+| next-forge Storybook (Workshop) | **6106** | Design system workshop |
+
+Run from repo root: `yarn dev:forge`, `yarn dev:forge:docs`, or `yarn dev:forge:storybook`. Worktrees offset these via `FORGE_*_PORT` in `.worktree-ports.env`.
+
 ### Primary apps (`GenerativeUI_monorepo/apps/`)
 
 | Name | Type | Port | Notes |

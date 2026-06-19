@@ -61,13 +61,17 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
-- (cursor-plugins) Official [cursor/plugins](https://github.com/cursor/plugins) marketplace enabled in `.cursor/settings.json` with `scripts/install-cursor-plugins.ps1` for project-scoped install via `agents-pkg`
-- (cursor-plugins) Ralph Loop and continual-learning stop hooks wired in `.cursor/hooks.json` with scripts under `.cursor/hooks/`
-- (cursor-cookbook) Cursor Hooks from [cursor/cookbook](https://github.com/cursor/cookbook) — `.cursor/hooks.json`, audit/sensitive-prompt/model-repo guards, skill-update follow-up on `stop`
+- (ci) next-forge CI job in `.github/workflows/ci.yml` — path-filtered `check`, `test`, `build` on Bun; `dev` branch added to workflow triggers
+- (ci) Root scripts `yarn check:forge`, `fix:forge`, `verify:forge`, `pre-commit:check`, `hooks:install`; `scripts/verify-forge-ci.ps1`
+- (ci) Pre-commit runs `ultracite check` when staged paths include `next-forge/`; changelog monitoring extended to next-forge apps/packages
+- (agents) ModMe overlay `.agents/skills/smart-git-automation/SKILL.md` and `scripts/vibe-session-finish.ps1` for worktree session end (commit/PR to `dev`)
+- (cursor) Security-only Cursor hooks — audit-log, sensitive-prompt-guard, block-models-by-repo-origin in `.cursor/hooks.json` (stop/focus-stealing hooks removed)
+- (next-forge) Root scripts `yarn dev:forge:core`, `dev:forge:workshop`, `dev:forge:supabase`
 - (cursor-cookbook) `dag-task-runner` skill at `.cursor/skills/dag-task-runner/` with Cursor SDK runner scripts
 - (cursor-cookbook) SDK examples vendored at `.vendor/cursor-cookbook/sdk/` (quickstart, app-builder, agent-kanban, coding-agent-cli, dag-task-runner)
 - (cursor-cookbook) `scripts/install-cursor-cookbook.ps1` to refresh hooks, skill, and SDK from upstream
 - (cursor-ai) `agent-workbench-orchestration` skill — multi-agent workflow for agent panel work (schemas → hook → UI → WebSocket → verify) with goal contract template
+- (contextarch) [contextarch-cli](https://github.com/ksoventures/contextarch-cli) — install/bootstrap scripts, `yarn contextarch` / `yarn contextarch:bootstrap`; generated `next-forge` AI context files (AGENTS.md, CLAUDE.md, `.cursorrules`, `.github/copilot-instructions.md`)
 - (shared-schemas) WebSocket stream event payloads: `token`, `tool_start`, `tool_result`, `done`, plus `OptimisticMessage` schema
 - (web-dashboard) `AgentPanelSkeleton`, `StreamingText`, optimistic send/cancel/retry in `useAgentState`, glass agent panel in `GenerativeCanvas`
 - (agent-server) Token/tool streaming over `/ws/agent` with cancel support
@@ -89,9 +93,14 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 - (dev) `init-worktrees.ps1` — use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
 - (dev) `new-agent-worktree.ps1` — usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`
+- (vscode) Set `git.path` in `.vscode/settings.json` so Cursor Agent Review finds Git on Windows when it is not on PATH
+- Add `install-direnv.ps1` helper script to install direnv on Windows to resolve "direnv: command not found" terminal errors.
+- (agent-server) WebSocket message handling uses `asyncio.create_task` + lock so cancel does not block the receive loop
 
 ### Changed
 
+- (ci) Worktree bootstrap (`setup-worktree-windows.ps1`, `setup-worktree-unix.sh`, `new-agent-worktree.ps1`) auto-installs git pre-commit hooks
+- (next-forge) Replace Clerk with Auth.js credentials in `@repo/auth`; replace Neon adapter with Supabase local Postgres + Prisma
 - (docs/ci) Post-restart agent tooling validation: lean-ctx 3.7.5, skills-sh MCP, global skills, changelog-check CI â€” all verified; installed `internal-comms` globally
 
 ### Deprecated
@@ -100,12 +109,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Removed
 
-- (none)
-
-### Fixed
-
-- (vscode) Set `git.path` in `.vscode/settings.json` so Cursor Agent Review finds Git on Windows when it is not on PATH
-- Add `install-direnv.ps1` helper script to install direnv on Windows to resolve "direnv: command not found" terminal errors.
+- (cursor) Removed focus-stealing stop hooks (`update-skills-on-stop`, ralph `stop-hook`, continual-learning stop, `capture-response`); disabled `continual-learning` and `ralph-loop` plugins
 
 ### Security
 

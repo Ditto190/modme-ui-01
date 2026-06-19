@@ -38,6 +38,8 @@ const MONITORED_PREFIXES = [
   ".cursor/",
   "GenerativeUI_monorepo/apps/",
   "GenerativeUI_monorepo/packages/",
+  "next-forge/apps/",
+  "next-forge/packages/",
   "scripts/",
   "docs/",
 ];

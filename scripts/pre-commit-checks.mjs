@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const isCi = process.argv.includes("--ci");
+const isWindows = process.platform === "win32";
 
 function fail(message) {
   console.error(`pre-commit: ${message}`);
@@ -28,6 +29,43 @@ function runNode(script, args = []) {
     cwd: ROOT,
     stdio: "inherit",
   });
+  if (result.status !== 0) {
+    process.exit(result.status ?? 1);
+  }
+}
+
+function runPowerShell(script, args = []) {
+  if (!isWindows) {
+    ok(`skipped ${script} (non-Windows; CI uses Bun directly)`);
+    return;
+  }
+
+  const psArgs = [
+    "-NoProfile",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    resolve(ROOT, script),
+    ...args,
+  ];
+  const result = spawnSync(
+    "powershell.exe",
+    psArgs,
+    { cwd: ROOT, stdio: "inherit" },
+  );
+  if (result.status !== 0) {
+    process.exit(result.status ?? 1);
+  }
+}
+
+function runForgeBun(args) {
+  if (isWindows) {
+    runPowerShell("scripts/run-forge-bun.ps1", args);
+    return;
+  }
+
+  const forgeRoot = resolve(ROOT, "next-forge");
+  const result = spawnSync("bun", args, { cwd: forgeRoot, stdio: "inherit" });
   if (result.status !== 0) {
     process.exit(result.status ?? 1);
   }
@@ -56,6 +94,11 @@ function secretGuard() {
 
 function stagedFiles() {
   if (isCi) {
+    const base = process.env.GITHUB_BASE_SHA;
+    const head = process.env.GITHUB_SHA ?? "HEAD";
+    if (base && head) {
+      return gitLines(`git diff --name-only ${base} ${head}`);
+    }
     return gitLines("git diff --name-only HEAD~1 HEAD");
   }
   return gitLines("git diff --cached --name-only");
@@ -63,6 +106,41 @@ function stagedFiles() {
 
 function matchesAny(file, prefixes) {
   return prefixes.some((p) => file.startsWith(p));
+}
+
+const MONITORED_PREFIXES = [
+  ".agents/",
+  ".cursor/",
+  "scripts/",
+  "docs/",
+  "GenerativeUI_monorepo/apps/",
+  "GenerativeUI_monorepo/packages/",
+  "next-forge/apps/",
+  "next-forge/packages/",
+];
+
+const FORGE_PREFIX = "next-forge/";
+
+function runForgeCheckIfNeeded(files) {
+  if (!files.some((f) => f.startsWith(FORGE_PREFIX))) {
+    return;
+  }
+
+  ok("running next-forge ultracite check (staged paths)");
+  runForgeBun(["run", "check"]);
+  ok("next-forge check passed");
+}
+
+function runForgeCiSuite(files) {
+  if (!files.some((f) => f.startsWith(FORGE_PREFIX))) {
+    return;
+  }
+
+  ok("running next-forge CI suite (check, test, build)");
+  runForgeBun(["run", "check"]);
+  runForgeBun(["run", "test"]);
+  runForgeBun(["run", "build"]);
+  ok("next-forge CI suite passed");
 }
 
 function main() {
@@ -74,6 +152,10 @@ function main() {
     runNode("scripts/validate-launch-json.mjs");
     runNode("scripts/validate-launch-json.mjs", ["--require-manifest-sync"]);
     runNode("scripts/validate-cursor-skills.mjs", ["--project-only"]);
+
+    const ciFiles = stagedFiles();
+    runForgeCiSuite(ciFiles);
+
     ok("all CI pre-commit checks passed");
     return;
   }
@@ -81,22 +163,18 @@ function main() {
   runNode("scripts/validate-changelog.mjs");
 
   const files = stagedFiles();
-  const monitoredPrefixes = [
-    ".agents/",
-    ".cursor/",
-    "scripts/",
-    "docs/",
-    "GenerativeUI_monorepo/apps/",
-    "GenerativeUI_monorepo/packages/",
-  ];
-  const monitoredChanged = files.some((f) => matchesAny(f, monitoredPrefixes));
+  const monitoredChanged = files.some((f) => matchesAny(f, MONITORED_PREFIXES));
   const changelogStaged = files.includes("CHANGELOG.md");
 
   if (monitoredChanged && !changelogStaged) {
     runNode("scripts/validate-changelog.mjs", ["--require-update"]);
   }
 
-  const launchPaths = [".vscode/launch.json", ".vscode/tasks.json", "scripts/launch-manifest.json"];
+  const launchPaths = [
+    ".vscode/launch.json",
+    ".vscode/tasks.json",
+    "scripts/launch-manifest.json",
+  ];
   if (files.some((f) => launchPaths.includes(f))) {
     runNode("scripts/validate-launch-json.mjs");
     runNode("scripts/validate-launch-json.mjs", ["--require-manifest-sync"]);
@@ -106,6 +184,8 @@ function main() {
   if (files.some((f) => matchesAny(f, skillsPaths))) {
     runNode("scripts/validate-cursor-skills.mjs", ["--project-only"]);
   }
+
+  runForgeCheckIfNeeded(files);
 
   ok("staged changes passed pre-commit checks");
 }

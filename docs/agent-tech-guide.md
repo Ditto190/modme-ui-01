@@ -195,6 +195,36 @@ If your organization uses an **API IP allowlist**, add Buildkite egress IPs so t
 
 ---
 
+## 3.6 Mantine MCP (stdio)
+
+[Mantine](https://mantine.dev/) component and docs lookup for UI work. Runs via `npx` — no API key.
+
+### Project config
+
+`.cursor/mcp.json` (and mirrored in `.vscode/mcp.json`, `.github/mcp.json`, `GenerativeUI_monorepo/mcp.json`):
+
+```json
+"mantine": {
+  "command": "npx",
+  "args": ["-y", "@mantine/mcp-server"]
+}
+```
+
+### Tools
+
+| Tool | Purpose |
+|------|---------|
+| `list_items` | List Mantine components/hooks |
+| `get_item_doc` | Full documentation for a component |
+| `get_item_props` | Props table for a component |
+| `search_docs` | Search Mantine docs |
+
+Restart Cursor / VS Code after editing MCP config. On Windows Antigravity, use `"command": "npx.cmd"` if spawn fails (see root `AGENTS.md`).
+
+**Conda on pwsh:** If terminal shows `conda hook skipped` warnings, run `.\scripts\install-pwsh-terminal-hooks.ps1` — it dot-sources `conda-hook.ps1` instead of `conda shell.powershell hook` (which runs broken `conda activate base` on conda 23.x). Run `conda activate base` manually after shell starts if you need the base env.
+
+---
+
 ## 4. Installed skills (documentation & changelog)
 
 ### Repo-local (`.agents/skills/`)
@@ -284,12 +314,23 @@ Use `doc-coauthoring` for long-form guides; use `documentation-writer` for API/r
 
 ```powershell
 node scripts/pre-commit-checks.mjs          # same suite as the git hook
-.\scripts\install-git-hooks.ps1             # one-time: enable pre-commit hook
+yarn pre-commit:check                       # alias (root package.json)
+yarn hooks:install                          # install .githooks/pre-commit → .git/hooks/
 node scripts/validate-changelog.mjs
 node scripts/validate-changelog.mjs --require-update   # after editing monitored paths
 ```
 
-Pre-commit runs automatically on `git commit` after hook install (`setup.ps1` also installs hooks). CI: `.github/workflows/pre-commit-check.yml` and Buildkite step `:mag: Pre-commit checks`.
+**next-forge (Ultracite/Biome):**
+
+```powershell
+yarn check:forge                            # fast lint (also runs on commit when next-forge/ staged)
+yarn fix:forge                              # auto-fix
+yarn verify:forge                           # CI parity: check + test + build
+```
+
+Pre-commit runs automatically on `git commit` after hook install (`setup.ps1`, worktree bootstrap, and `new-agent-worktree.ps1` also install hooks). Staged `next-forge/**` changes trigger `ultracite check`; test/build run in CI only.
+
+CI: `.github/workflows/pre-commit-check.yml`, `.github/workflows/ci.yml` (path-filtered `next-forge` job), and Buildkite step `:mag: Pre-commit checks`. PRs to **`dev`** run the same gates as `main`/`develop`.
 
 ### CI
 
@@ -346,9 +387,12 @@ Skills to use by phase:
 
 | File | Servers | Notes |
 |------|---------|-------|
-| `.cursor/mcp.json` | `skills-sh`, `buildkite` (remote HTTP) | Skills catalog; Buildkite pipelines/builds (OAuth) |
-| `.github/mcp.json` | `GitLab` (http) | Copilot / GitHub MCP integration |
-| `~/.cursor/mcp.json` | User-defined | May duplicate skills-sh, context7, lean-ctx, etc. |
+| `.cursor/mcp.json` | `skills-sh`, `buildkite` (remote HTTP), `mantine` (stdio) | Skills catalog; Buildkite pipelines/builds (OAuth); Mantine component docs |
+| `.vscode/mcp.json` | `mantine` (stdio) | VS Code MCP extension |
+| `.github/mcp.json` | `GitLab` (http), `mantine` (stdio) | Copilot / GitHub MCP integration |
+| `GenerativeUI_monorepo/mcp.json` | context7, playwright, markitdown, github, `mantine` | Turborepo-scoped VS Code MCP registry |
+| `.gitlab/duo/mcp.json` | `mantine` (stdio) | GitLab Duo MCP |
+| `~/.cursor/mcp.json` | User-defined | May duplicate skills-sh, context7, lean-ctx, mantine, etc. |
 
 After editing MCP JSON, restart the host (Cursor / VS Code).
 
@@ -413,6 +457,11 @@ yarn dev
 # Refresh Cursor AI assets
 .\scripts\cursor-ai\setup.ps1
 
+# ContextArch — generate AI context files for new packages
+yarn contextarch:install
+yarn contextarch init -C <package-dir>
+yarn contextarch:bootstrap next-forge   # non-interactive; edit scripts/contextarch-targets.json
+
 # Find & install a skill
 npx skills find changelog
 npx skills add wshobson/agents@changelog-automation --agent cursor -g -y
@@ -436,7 +485,26 @@ node scripts/validate-launch-json.mjs --require-manifest-sync
 
 ---
 
-*Last updated: 2026-06-13 â€” `/init` command, debug-launch-guide, launch.json CI validation.*
+## 11. Multi-agent worktrees
+
+Full guide: **[docs/multi-agent-worktrees.md](./multi-agent-worktrees.md)**.
+
+| Layer | Files | Who |
+|-------|-------|-----|
+| Cursor auto-bootstrap | `.cursor/worktrees.json`, `setup-worktree-*.ps1/.sh` | Cursor Agents Window, `/worktree` |
+| Explicit Git worktrees | `scripts/init-worktrees.ps1`, `new-agent-worktree.ps1` | Copilot, Claude, Antigravity, humans |
+
+```powershell
+.\scripts\init-worktrees.ps1
+.\scripts\new-agent-worktree.ps1 -Name "task" -Owner cursor
+.\scripts\list-worktrees.ps1
+```
+
+Debug Cursor setup: **Output → Worktrees Setup**. Cleanup: `cursor.worktreeMaxCount` / `remove-agent-worktree.ps1`.
+
+---
+
+*Last updated: 2026-06-19 — multi-agent worktrees, port allocation, Cursor worktrees.json.*
 
 ## Continuous integration
 

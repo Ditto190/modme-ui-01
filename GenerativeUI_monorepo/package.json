@@ -30,7 +30,8 @@
     "prepack": "yarn workspaces foreach --parallel --topological-dev run prepack",
     "prepublish": "yarn run eslint && yarn run test && yarn workspaces foreach --no-private --parallel --topological-dev run prepublish",
     "test": "monorepo-template-test",
-    "up": "monorepo-template-up"
+    "up": "monorepo-template-up",
+    "agenttrace": "cd .. && .tools/agenttrace.exe"
   },
   "workspaces": [
     "apps/*",

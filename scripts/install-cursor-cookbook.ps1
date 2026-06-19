@@ -4,9 +4,9 @@
   Install or refresh Cursor Cookbook hooks, dag-task-runner skill, and SDK examples.
 
 .DESCRIPTION
-  Sources https://github.com/cursor/cookbook (hooks, SDK examples, dag-task-runner skill).
-  Skips self-hosted-cloud-agent. Does not overwrite customized hook mappings in
-  .cursor/hooks/update-skills-on-stop.mjs unless -ForceSkillMappings is set.
+  Sources https://github.com/cursor/cookbook (dag-task-runner skill, SDK examples).
+  Hook scripts are opt-in via -IncludeHooks; this repo keeps .cursor/hooks.json empty by default.
+  Does not overwrite customized hook mappings unless -ForceSkillMappings and -IncludeHooks are set.
 
 .EXAMPLE
   .\scripts\install-cursor-cookbook.ps1
@@ -15,7 +15,8 @@
 [CmdletBinding()]
 param(
     [switch]$SkipSdk,
-    [switch]$ForceSkillMappings
+    [switch]$ForceSkillMappings,
+    [switch]$IncludeHooks
 )
 
 Set-StrictMode -Version Latest
@@ -34,10 +35,30 @@ try {
     git clone --depth 1 $CookbookUrl $TempClone | Out-Null
 
     $hooksDest = Join-Path $RepoRoot '.cursor\hooks'
-    New-Item -ItemType Directory -Force -Path $hooksDest | Out-Null
-    Copy-Item -Path (Join-Path $TempClone 'hooks\.cursor\hooks\*') -Destination $hooksDest -Force
-    Copy-Item -Path (Join-Path $TempClone 'hooks\README.md') -Destination (Join-Path $hooksDest 'README.md') -Force
-    Write-Step "Updated hook scripts in .cursor/hooks/"
+    if ($IncludeHooks) {
+        New-Item -ItemType Directory -Force -Path $hooksDest | Out-Null
+        Copy-Item -Path (Join-Path $TempClone 'hooks\.cursor\hooks\*') -Destination $hooksDest -Force
+        Copy-Item -Path (Join-Path $TempClone 'hooks\README.md') -Destination (Join-Path $hooksDest 'README.md') -Force
+        # Windows Git Bash: upstream uses </dev/stdin> which fails under MSYS pipes
+        $blockModels = Join-Path $hooksDest 'block-models-by-repo-origin.sh'
+        if (Test-Path $blockModels) {
+            $blockContent = Get-Content $blockModels -Raw
+            if ($blockContent -match '</dev/stdin>') {
+                $blockContent = $blockContent -replace 'payload="\$\(</dev/stdin\)"', @'
+# Use `cat` — `</dev/stdin` is unavailable in some Windows Git Bash / MSYS environments.
+payload="$(cat)"
+if [[ -z "${payload//[[:space:]]/}" ]]; then
+  payload="{}"
+fi
+'@
+                [System.IO.File]::WriteAllText($blockModels, $blockContent, [System.Text.UTF8Encoding]::new($false))
+                Write-Step 'Patched block-models-by-repo-origin.sh for Windows stdin'
+            }
+        }
+        Write-Step "Updated hook scripts in .cursor/hooks/ (opt-in via -IncludeHooks)"
+    } else {
+        Write-Step 'Skipped hook scripts (project hooks disabled; pass -IncludeHooks to refresh upstream scripts)'
+    }
 
     $skillDest = Join-Path $RepoRoot '.cursor\skills\dag-task-runner'
     Copy-Item -Path (Join-Path $TempClone '.cursor\skills\dag-task-runner') -Destination (Join-Path $RepoRoot '.cursor\skills') -Recurse -Force
@@ -50,7 +71,7 @@ try {
         Write-Step "Updated .vendor/cursor-cookbook/sdk/"
     }
 
-    if ($ForceSkillMappings) {
+    if ($ForceSkillMappings -and $IncludeHooks) {
         Copy-Item -Path (Join-Path $TempClone 'hooks\.cursor\hooks\update-skills-on-stop.mjs') -Destination (Join-Path $hooksDest 'update-skills-on-stop.mjs') -Force
         Write-Step "Reset update-skills-on-stop.mjs from upstream (custom mappings removed)"
     }
@@ -68,7 +89,7 @@ try {
         Pop-Location
     }
 
-    Write-Step "Done. Project hooks load from .cursor/hooks.json (trusted workspace required)."
+    Write-Step "Done. Project hooks are disabled in .cursor/hooks.json unless you opt in with -IncludeHooks."
     Write-Step "Hook scripts need bash + jq (Git for Windows). Set CURSOR_API_KEY for DAG runs."
 }
 finally {

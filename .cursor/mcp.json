@@ -8,6 +8,10 @@
     },
     "buildkite": {
       "url": "https://mcp.buildkite.com/mcp"
+    },
+    "mantine": {
+      "command": "npx",
+      "args": ["-y", "@mantine/mcp-server"]
     }
   }
 }

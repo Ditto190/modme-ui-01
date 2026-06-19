@@ -38,6 +38,7 @@ Curated install set includes browser QA, port-conflict detection, cursor rules/h
 |--------|--------|------|
 | `skills-sh` | `.cursor/mcp.json` (stdio) | None |
 | `buildkite` | `.cursor/mcp.json` (remote `https://mcp.buildkite.com/mcp`) | OAuth on first connect — no `BUILDKITE_API_TOKEN` in repo |
+| `mantine` | `.cursor/mcp.json`, `.vscode/mcp.json`, `.github/mcp.json` | Mantine docs/components (`list_items`, `get_item_doc`, `get_item_props`, `search_docs`) |
 
 After editing `.cursor/mcp.json`, restart Cursor. First Buildkite use: authorize in browser and pick your organization. Details: `docs/agent-tech-guide.md` § Buildkite MCP.
 
@@ -49,6 +50,19 @@ Requires [uv](https://github.com/astral-sh/uv) and API keys in `.vendor/awesome-
 .\scripts\cursor-ai\generate-mdc-rules.ps1
 .\scripts\cursor-ai\setup.ps1   # re-sync into .cursor/rules/
 ```
+
+## ContextArch (AI context files)
+
+[contextarch-cli](https://github.com/ksoventures/contextarch-cli) — one wizard generates `.cursorrules`, `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md`.
+
+```powershell
+yarn contextarch:install              # vendor source + verify CLI
+yarn contextarch init                 # interactive wizard (review before --overwrite at root)
+yarn contextarch init -C next-forge   # bootstrap a sub-project
+yarn contextarch:bootstrap next-forge # non-interactive (scripts/contextarch-targets.json)
+```
+
+Root `AGENTS.md` and `.cursor/rules/` are custom; prefer contextarch for new packages or greenfield sub-trees.
 
 ## Refresh vendored sources
 

@@ -60,6 +60,13 @@ Thumbs.db
 # Test and temp
 .tmp/
 temp/
+**/debug-test-output.json
+**/docs/inbox/
+.agents/temp_skills/
+*.bak
+
+# Local agent runtime (SQLite)
+**/.voltagent/*.db
 # lean-ctx machine-local
 .lean-ctx-id
 .lean-ctx.toml
