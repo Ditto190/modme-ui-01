@@ -61,6 +61,8 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (cursor-plugins) Official [cursor/plugins](https://github.com/cursor/plugins) marketplace enabled in `.cursor/settings.json` with `scripts/install-cursor-plugins.ps1` for project-scoped install via `agents-pkg`
+- (cursor-plugins) Ralph Loop and continual-learning stop hooks wired in `.cursor/hooks.json` with scripts under `.cursor/hooks/`
 - (cursor-cookbook) Cursor Hooks from [cursor/cookbook](https://github.com/cursor/cookbook) — `.cursor/hooks.json`, audit/sensitive-prompt/model-repo guards, skill-update follow-up on `stop`
 - (cursor-cookbook) `dag-task-runner` skill at `.cursor/skills/dag-task-runner/` with Cursor SDK runner scripts
 - (cursor-cookbook) SDK examples vendored at `.vendor/cursor-cookbook/sdk/` (quickstart, app-builder, agent-kanban, coding-agent-cli, dag-task-runner)

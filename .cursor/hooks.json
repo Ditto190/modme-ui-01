@@ -48,6 +48,18 @@
         "timeout": 10,
         "loop_limit": 1,
         "failClosed": false
+      },
+      {
+        "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/continual-learning-stop.ts"
+      },
+      {
+        "command": ".cursor/hooks/stop-hook.sh",
+        "loop_limit": null
+      }
+    ],
+    "afterAgentResponse": [
+      {
+        "command": ".cursor/hooks/capture-response.sh"
       }
     ]
   }
