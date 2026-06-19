@@ -48,6 +48,7 @@ Thumbs.db
 # Cursor local / ephemeral
 .cursor/**/*.log
 .cursor/**/mcp.json
+.cursor/hook-logs/
 
 # UniversalWorkbench build artifacts
 **/UniversalWorkbench-staging/**/dist/
@@ -63,3 +64,7 @@ temp/
 .lean-ctx-id
 .lean-ctx.toml
 
+# agenttrace
+.agenttrace/
+agenttrace-report.*
+agenttrace-baseline.*

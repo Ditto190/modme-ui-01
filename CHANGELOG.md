@@ -61,6 +61,15 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (cursor-cookbook) Cursor Hooks from [cursor/cookbook](https://github.com/cursor/cookbook) — `.cursor/hooks.json`, audit/sensitive-prompt/model-repo guards, skill-update follow-up on `stop`
+- (cursor-cookbook) `dag-task-runner` skill at `.cursor/skills/dag-task-runner/` with Cursor SDK runner scripts
+- (cursor-cookbook) SDK examples vendored at `.vendor/cursor-cookbook/sdk/` (quickstart, app-builder, agent-kanban, coding-agent-cli, dag-task-runner)
+- (cursor-cookbook) `scripts/install-cursor-cookbook.ps1` to refresh hooks, skill, and SDK from upstream
+- (cursor-ai) `agent-workbench-orchestration` skill — multi-agent workflow for agent panel work (schemas → hook → UI → WebSocket → verify) with goal contract template
+- (shared-schemas) WebSocket stream event payloads: `token`, `tool_start`, `tool_result`, `done`, plus `OptimisticMessage` schema
+- (web-dashboard) `AgentPanelSkeleton`, `StreamingText`, optimistic send/cancel/retry in `useAgentState`, glass agent panel in `GenerativeCanvas`
+- (agent-server) Token/tool streaming over `/ws/agent` with cancel support
+
 - (ci) Pre-commit checks — `scripts/pre-commit-checks.mjs`, `.githooks/pre-commit`, `scripts/install-git-hooks.ps1`; wired into GitHub Actions (`pre-commit-check.yml`) and Buildkite
 - (ci) `scripts/validate-cursor-skills.mjs` for awesome-cursor-skills install integrity (`--project-only` for hooks, full check for setup audits)
 - (ci) Buildkite pipeline for `GenerativeUI_monorepo` — `.buildkite/`, `docs/buildkite-guide.md`, `scripts/buildkite-demo.ps1`
@@ -68,8 +77,16 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - Agent documentation stack: `docs/agent-tech-guide.md`, root `CHANGELOG.md`, and `changelog-check` CI workflow
 - Globally installed Cursor skills: `changelog-automation`, `documentation-writer`, `doc-coauthoring`, `agents-md`, `changelog-generator`
 - (cursor-ai) Remote Buildkite MCP server in `.cursor/mcp.json` with OAuth setup documented in `docs/agent-tech-guide.md`
+- (mcp) Mantine MCP server (`@mantine/mcp-server`) in `.cursor/mcp.json`, `.vscode/mcp.json`, `.github/mcp.json`, `GenerativeUI_monorepo/mcp.json`, and `.gitlab/duo/mcp.json`
 - (cursor-ai) Expanded [awesome-cursor-skills](https://github.com/spencerpauly/awesome-cursor-skills) global install set and project pointer at `.cursor/skills/awesome-cursor-skills/`
 - (dev) `scripts/install-direnv-hook.ps1`, root `.envrc`, and PowerShell 7 direnv hook for auto-loading `.env`
+- (agents) Multi-agent Git worktrees — `.cursor/worktrees.json`, `scripts/init-worktrees.ps1`, `scripts/new-agent-worktree.ps1`, per-worktree port allocation, `docs/multi-agent-worktrees.md`
+- (dev) `scripts/install-pwsh-terminal-hooks.ps1` — safe Cursor/VS Code shell integration + direnv hook; fixes pwsh startup errors
+
+### Fixed
+
+- (dev) `init-worktrees.ps1` — use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
+- (dev) `new-agent-worktree.ps1` — usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`
 
 ### Changed
 
