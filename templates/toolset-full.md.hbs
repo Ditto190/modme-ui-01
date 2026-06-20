@@ -1,0 +1,65 @@
+# Toolset Reference
+
+Complete reference for all available toolsets in the ModifyMe GenUI project.
+
+**Last Updated**: {{updated}}  
+**Version**: {{version}}  
+**Total Toolsets**: {{toolsets.length}}
+
+---
+
+## Overview
+
+{{#if active_toolsets}}
+{{#if active_toolsets.length}}
+### Active Toolsets ({{active_toolsets.length}})
+
+{{#each active_toolsets}}
+- **[{{name}}]({{id}}.md)** (`{{id}}`)  
+  {{description}}  
+  *Tools*: {{tools.length}} | *Category*: {{metadata.category}}
+{{/each}}
+{{/if}}
+{{/if}}
+
+{{#if deprecated_toolsets}}
+{{#if deprecated_toolsets.length}}
+
+### Deprecated Toolsets ({{deprecated_toolsets.length}})
+
+{{#each deprecated_toolsets}}
+- **[{{name}}]({{id}}.md)** (`{{id}}`) ⚠️ DEPRECATED  
+  {{description}}  
+  *Superseded by*: {{metadata.deprecated.superseded_by}}
+{{/each}}
+{{/if}}
+{{/if}}
+
+---
+
+## By Category
+
+{{#each categories}}
+### {{@key}}
+
+{{#each this}}
+- [{{name}}]({{id}}.md) - {{description}}
+{{/each}}
+
+{{/each}}
+
+---
+
+## Toolset Relationships
+
+{{#if mermaid_diagram}}
+```mermaid
+{{mermaid_diagram}}
+```
+{{else}}
+See [toolset-relationships.svg](toolset-relationships.svg) for visual diagram.
+{{/if}}
+
+---
+
+*Auto-generated from [agent/toolsets.json](../../agent/toolsets.json)*

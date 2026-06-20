@@ -1,0 +1,11 @@
+{
+  "logLevel": "info",
+  "skipLoggingEnvVar": "SKIP_LOGGING",
+  "logsDir": "logs\\copilot",
+  "trackedFiles": [
+    "GenerativeUI_monorepo\\UniversalWorkbench\\.flow\\README.md",
+    "GenerativeUI_monorepo\\UniversalWorkbench\\.flow\\behavior-management.md",
+    "GenerativeUI_monorepo\\UniversalWorkbench\\docs\\FEATURE-TAXONOMY.md"
+  ],
+  "powershellWrapper": "session-logger.ps1"
+}

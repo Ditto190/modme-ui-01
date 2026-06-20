@@ -1,6 +1,8 @@
-# next-forge setup (ModMe — local-first)
+# next-forge setup (ModMe — cloud-first Supabase)
 
-Run from repository root after installing [Bun](https://bun.sh) and [Supabase CLI](https://supabase.com/docs/guides/cli) (Docker required).
+Run from repository root after installing [Bun](https://bun.sh) and [Supabase CLI](https://supabase.com/docs/guides/cli).
+
+**Database:** Hosted project `modme-next-forge` — see [`docs/supabase-cloud-setup.md`](../docs/supabase-cloud-setup.md) for keys and linking.
 
 ## 1. Dependencies
 
@@ -10,26 +12,26 @@ bun install
 bun run check
 ```
 
-## 2. Local database (Supabase)
+## 2. Cloud database (Supabase)
 
-1. Start local Supabase (Postgres on `:54322`):
-
-```powershell
-bun run db:start
-```
-
-2. Copy `packages/database/.env.example` → `packages/database/.env` (defaults target local Supabase)
-3. Push schema:
+1. Link CLI: `npx supabase link --project-ref aevemmmmouxqlfyxthzf`
+2. Create `packages/database/.env` from dashboard (see cloud setup doc)
+3. Push schema and SQL migrations:
 
 ```powershell
 bun run db:push
+npx supabase db push
 ```
 
-From repo root: `yarn dev:forge:supabase` also runs `supabase start`.
+**Optional local Docker** (offline only): `bun run db:start` — superseded by [ADR-0002](./docs/adr/0002-cloud-first-supabase-with-prisma.md).
 
 ## 3. App environment
 
-Copy each app's `.env.example` → `.env.local`:
+Copy `apps/app/.env.example` → `apps/app/.env.local` and set Supabase publishable key from the [dashboard](https://supabase.com/dashboard/project/aevemmmmouxqlfyxthzf/settings/api).
+
+Supabase client: `@repo/supabase` (`createBrowserSupabaseClient`, `createServerSupabaseClient`).
+
+Also configure (if not already):
 
 - `apps/app/.env.local`
 - `apps/web/.env.local`
@@ -47,10 +49,7 @@ No Clerk, Neon, Stripe, or Resend keys are required for local prototyping.
 ## 4. Dev servers (ModMe ports)
 
 ```powershell
-# Terminal 1 — database (if not already running)
-cd next-forge && bun run db:start
-
-# Terminal 2 — core apps (from repo root)
+# Core apps (from repo root) — cloud DB, no Docker required
 yarn dev:forge:core        # app:3100 web:3101 api:3102
 
 # Optional
@@ -72,6 +71,6 @@ powershell -ExecutionPolicy Bypass -File ../scripts/smoke-forge-local.ps1
 ## Notes
 
 - **Auth:** Auth.js credentials provider (`@repo/auth`), not Clerk
-- **Database:** Supabase local Postgres + Prisma; cloud Neon optional later
+- **Database:** Hosted Supabase (`modme-next-forge`) + Prisma; local Docker optional
 - **Stripe:** API `dev` no longer starts Stripe CLI; use `bun run dev:payments --filter api` when testing webhooks
 - **Storybook PnP:** Root scripts use [`scripts/run-forge-bun.ps1`](../scripts/run-forge-bun.ps1) to hide root Yarn PnP during Bun runs

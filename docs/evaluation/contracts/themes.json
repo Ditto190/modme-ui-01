@@ -1,0 +1,102 @@
+{
+  "meta": {
+    "description": "Agent friction themes for ModMe eval pipeline (feedback-themes pattern)",
+    "version": "1.0.0"
+  },
+  "themes": [
+    {
+      "id": "worktree-discipline",
+      "label": "Worktree Discipline",
+      "description": "Parallel agents editing main checkout, port conflicts, or wrong-folder commits.",
+      "aliases": [
+        "worktree",
+        "main checkout",
+        "EADDRINUSE",
+        "wrong folder"
+      ],
+      "taxonomy_code": "AGENT.WORKTREE.BOUNDARY"
+    },
+    {
+      "id": "plan-adherence",
+      "label": "Plan Adherence",
+      "description": "Editing plan files, recreating todos, or ignoring attached plan constraints.",
+      "aliases": [
+        "plan file",
+        "do not edit plan",
+        "todo recreate"
+      ],
+      "taxonomy_code": "AGENT.PLAN.ADHERE"
+    },
+    {
+      "id": "orchestrator-reliability",
+      "label": "Orchestrator Reliability",
+      "description": "Intake/catalogue orchestrator failures, skipped audit tables, dry-run vs live mismatches.",
+      "aliases": [
+        "intake-orchestrator",
+        "catalogue-orchestrator",
+        "intake_events"
+      ],
+      "taxonomy_code": "PIPELINE.INTAKE.RUN"
+    },
+    {
+      "id": "capture-compliance",
+      "label": "Inbox Capture Compliance",
+      "description": "Architecture decisions or significant research without inbox drop.",
+      "aliases": [
+        "inbox",
+        "inbox capture",
+        "docs/inbox"
+      ],
+      "taxonomy_code": "KNOWLEDGE.INBOX.CAPTURE"
+    },
+    {
+      "id": "retry-loops",
+      "label": "Retry & Tool Loops",
+      "description": "Repeated tool failures, blocked shell allowlist loops, hung subagents.",
+      "aliases": [
+        "retry",
+        "allowlist",
+        "tool error",
+        "subagent"
+      ],
+      "taxonomy_code": "AGENT.TOOL.RETRY"
+    },
+    {
+      "id": "human-override",
+      "label": "Human Override",
+      "description": "Explicit user corrections, reverts, or gesture-style rejections of agent output.",
+      "aliases": [
+        "correction",
+        "instead",
+        "don't",
+        "revert",
+        "override"
+      ],
+      "taxonomy_code": "AGENT.HUMAN.OVERRIDE"
+    },
+    {
+      "id": "session-continuity",
+      "label": "Session Continuity",
+      "description": "Interrupted sessions missing resume context (where-was-i pattern).",
+      "aliases": [
+        "where was i",
+        "resume",
+        "handoff",
+        "orphan session"
+      ],
+      "taxonomy_code": "AGENT.SESSION.RESUME"
+    },
+    {
+      "id": "verify-gate",
+      "label": "Verification Gate",
+      "description": "Claims of completion without dry-run evidence or grind-until-pass verification.",
+      "aliases": [
+        "done without",
+        "verify",
+        "dry-run",
+        "grind"
+      ],
+      "taxonomy_code": "AGENT.VERIFY.GATE"
+    }
+  ]
+}

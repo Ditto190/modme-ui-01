@@ -1,0 +1,46 @@
+{
+  "name": "@modme/models-library",
+  "version": "1.0.0",
+  "description": "Unified embedding models library with transformers.js integration",
+  "type": "module",
+  "main": "./embeddings.ts",
+  "types": "./types/index.ts",
+  "exports": {
+    ".": "./embeddings.ts",
+    "./types": "./types/index.ts",
+    "./types/gemma3n": "./types/gemma3n-config.ts"
+  },
+  "scripts": {
+    "test": "node --test",
+    "index:gemma3n": "node ../scripts/index-model-architecture.js gemma3n",
+    "index:all": "node ../scripts/index-model-architecture.js --all",
+    "generate:types": "tsx ../agent-generator/src/mcp-registry/schema-crawler.ts",
+    "validate": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.8.1",
+    "pg": "^8.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.0.0",
+    "tsx": "^4.0.0",
+    "zod": "^3.23.0",
+    "@types/pg": "^8.6.6"
+  },
+  "keywords": [
+    "embeddings",
+    "transformers",
+    "gemma3n",
+    "semantic-search",
+    "code-indexing",
+    "machine-learning"
+  ],
+  "author": "ModMe GenUI Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/modme-ui-01.git",
+    "directory": "experiments/micro-agents/models"
+  }
+}

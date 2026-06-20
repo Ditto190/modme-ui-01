@@ -1,0 +1,3 @@
+[submodule "external/awesome-Antigravity"]
+	path = external/awesome-Antigravity
+	url = https://github.com/ZhangYu-zjut/awesome-Antigravity.git

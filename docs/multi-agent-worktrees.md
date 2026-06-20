@@ -83,10 +83,11 @@ Setup steps (automatic):
 1. Port allocation → `.worktree-ports.env`
 2. `corepack enable`
 3. `yarn install` in `GenerativeUI_monorepo/`
-4. Copy `.env` files from `ROOT_WORKTREE_PATH` (main checkout)
-5. `poetry install` in `apps/agent-server/`
-6. Optional `lean-ctx doctor` (non-fatal)
-7. Git pre-commit hook install (`scripts/install-git-hooks.ps1`)
+4. `npx bun install` in `next-forge/`
+5. Copy `.env` files from `ROOT_WORKTREE_PATH` (main checkout)
+6. `poetry install` in `apps/agent-server/`
+7. Optional `lean-ctx doctor` (non-fatal)
+8. Git pre-commit hook install (`scripts/install-git-hooks.ps1`)
 
 Debug setup failures: **Output → Worktrees Setup**.
 
@@ -95,9 +96,13 @@ Debug setup failures: **Output → Worktrees Setup**.
 When finishing a prototype session:
 
 ```powershell
-yarn check:forge                    # fast next-forge lint during iteration
-yarn verify:forge                   # full CI parity before opening PR
-.\scripts\vibe-session-finish.ps1   # group → pre-commit → commit → push → PR to dev
+yarn worktree:doctor              # optional pre-flight in worktree
+yarn check:forge                  # fast next-forge lint during iteration
+yarn verify:forge                 # full CI parity before opening PR
+.\scripts\vibe-session-finish.ps1 # prefer direct script in worktrees
+# Agents (non-interactive):
+.\scripts\vibe-session-finish.ps1 -Yes -CommitMessage "feat(scope): summary" -Push -CreatePr
+# Preview: .\scripts\vibe-session-finish.ps1 -DryRun -SkipPull
 ```
 
 See [`.agents/skills/smart-git-automation/SKILL.md`](../.agents/skills/smart-git-automation/SKILL.md). Branch creation stays on `new-agent-worktree.ps1` / `/worktree` — smart-git is for commit/PR only.
@@ -159,17 +164,21 @@ Example (slot 3): dashboard `3031`, agent server `8030`.
 
 ### Loading ports before dev
 
-**PowerShell:**
+**PowerShell (recommended):**
+
+```powershell
+. .\scripts\load-worktree-ports.ps1
+# or: yarn worktree:ports   # prints loaded vars; dot-source for env in same shell
+
+yarn dev:forge:core
+```
+
+**Manual (same effect):**
 
 ```powershell
 Get-Content .worktree-ports.env | ForEach-Object {
   if ($_ -match '^([A-Z_]+)=(.+)$') { Set-Item -Path "env:$($Matches[1])" -Value $Matches[2] }
 }
-
-# Then start services with worktree ports, e.g.:
-$env:PORT = $env:WEB_DASHBOARD_PORT
-cd GenerativeUI_monorepo/apps/web-dashboard
-yarn dev
 ```
 
 **Unix / WSL:**
@@ -192,6 +201,12 @@ Main checkout debugging uses [`.vscode/launch.json`](../.vscode/launch.json) bas
 | [`remove-agent-worktree.ps1`](../scripts/remove-agent-worktree.ps1) | Safe removal; optional `-DeleteBranch` |
 | [`worktree-allocate-ports.ps1`](../scripts/worktree-allocate-ports.ps1) | Regenerate `.worktree-ports.env` |
 | [`worktree-copy-env.ps1`](../scripts/worktree-copy-env.ps1) | Copy `.env` by name from main checkout |
+| [`ensure-worktree.ps1`](../scripts/ensure-worktree.ps1) | Fail (or warn with `-WarnOnly`) if cwd is main checkout |
+| [`migrate-main-to-worktree.ps1`](../scripts/migrate-main-to-worktree.ps1) | Stash main-checkout changes → new worktree → stash pop |
+| [`worktree-doctor.ps1`](../scripts/worktree-doctor.ps1) | Pre-flight: checkout, yarn.lock, ports, gh, Supabase env (`-Fix`, `-Json`) |
+| [`load-worktree-ports.ps1`](../scripts/load-worktree-ports.ps1) | Dot-source `.worktree-ports.env` into current pwsh session |
+| [`agent-workspace-tmux.sh`](../scripts/agent-workspace-tmux.sh) | WSL/Linux tmux dashboard: `status`, `layout`, `attach` |
+| [`vibe-session-finish.ps1`](../scripts/vibe-session-finish.ps1) | Session end: sync, group, pre-commit, commit, push, PR to `dev` |
 
 List all worktrees:
 
@@ -231,6 +246,104 @@ Mirror [UniversalWorkbench GIT_WORKFLOW](../GenerativeUI_monorepo/UniversalWorkb
 5. **Never** merge/rebase manually across worktrees
 
 Main checkout is for review, merge, and release — not active feature development.
+
+### Main checkout policy
+
+Agents and humans should **not** implement features in `Monorepo_ModMe/` (the main checkout). Use a worktree under `../Monorepo_ModMe-dev/` instead.
+
+Verify before starting feature work:
+
+```powershell
+yarn worktree:ensure          # exits 1 on main checkout
+.\scripts\ensure-worktree.ps1 -WarnOnly   # warning only
+```
+
+### Recovering uncommitted work on main
+
+If you already have uncommitted changes on the main checkout, migrate them into a new worktree (does not commit):
+
+```powershell
+# From main checkout Monorepo_ModMe/
+.\scripts\migrate-main-to-worktree.ps1 -Name "my-task" -Owner cursor
+# or: yarn worktree:migrate -- -Name "my-task" -Owner cursor
+```
+
+If main is not on `dev`, prefer `-FromCurrentBranch` to attach the worktree to the current HEAD and reduce stash conflicts:
+
+```powershell
+.\scripts\migrate-main-to-worktree.ps1 -Name "my-task" -Owner cursor -FromCurrentBranch
+
+cd ..\Monorepo_ModMe-dev\dev-agent-cursor-my-task
+yarn vibe:finish
+```
+
+The script stashes all changes (including untracked), creates the worktree via `new-agent-worktree.ps1`, then `git stash pop` in the new folder. On failure it attempts to restore the stash on main.
+
+Use `-DryRun` to preview steps without mutating Git.
+
+---
+
+## Working directory matrix (human + agents)
+
+Run commands from the **correct checkout and folder**. Wrong cwd is the most common terminal failure in shared codespaces.
+
+| Goal | Checkout | Directory | Command |
+|------|----------|-----------|---------|
+| Feature implementation | worktree under `Monorepo_ModMe-dev/` | worktree root | `yarn worktree:ensure` then edit |
+| Pre-flight / fix yarn in worktree | worktree | worktree root | `yarn worktree:doctor` / `yarn worktree:doctor:fix` |
+| Load dev ports | worktree | worktree root | `. .\scripts\load-worktree-ports.ps1` |
+| next-forge dev / verify | worktree | **repo root** | `yarn dev:forge:core`, `yarn verify:forge` |
+| next-forge package scripts | worktree | `next-forge/` | `npx bun run …` (Bun, not root yarn) |
+| Prisma / database package | worktree | `next-forge/packages/database/` | `npx bun run db:push` (needs `.env` there) |
+| Root intake / catalogue | worktree | **repo root** | `yarn intake` (needs root `.env` Supabase vars) |
+| Supabase CLI status | worktree | `next-forge/` | `npx bunx supabase status -o env` |
+| Session finish (commit/PR) | worktree | worktree root | `.\scripts\vibe-session-finish.ps1` (prefer over `yarn vibe:finish` if yarn.lock missing) |
+| Review / merge only | main `Monorepo_ModMe/` | main root | no feature edits |
+
+**Package managers:** root = Yarn 3; `next-forge/` = Bun. Never run `yarn install` inside `next-forge/` or `bun install` at repo root.
+
+---
+
+## Agent-friendly CLI contract
+
+Scripts follow [cli-for-agents](https://github.com/cursor/plugins/tree/main/cli-for-agents) patterns: flags first, layered `--help`, dry-run, machine output where useful.
+
+| Script | Non-interactive flags | Help |
+|--------|----------------------|------|
+| `ensure-worktree.ps1` | `-WarnOnly` | `-Help` |
+| `migrate-main-to-worktree.ps1` | `-DryRun` | `-Help` |
+| `worktree-doctor.ps1` | `-Fix`, `-Json`, `-Quiet` | `-Help` |
+| `vibe-session-finish.ps1` | `-DryRun`, `-Yes`, `-CommitMessage`, `-Push`, `-CreatePr` | `-Help` |
+| `remove-agent-worktree.ps1` | `-Yes`, `-Force` | `-Help` |
+
+**Agent session finish (headless):**
+
+```powershell
+.\scripts\vibe-session-finish.ps1 -Yes -CommitMessage "feat(next-forge): add catalogue route" -Push -CreatePr
+```
+
+Requires `gh` auth (`gh auth refresh -h github.com`) or `GH_TOKEN` / `GITHUB_TOKEN` for `gh pr create`.
+
+**Doctor JSON (pipelines):**
+
+```powershell
+.\scripts\worktree-doctor.ps1 -Json | ConvertFrom-Json
+```
+
+---
+
+## tmux dashboard (WSL / Linux / Git Bash)
+
+For humans monitoring multiple worktrees, or agents on Unix shells:
+
+```bash
+./scripts/agent-workspace-tmux.sh status
+./scripts/agent-workspace-tmux.sh layout    # detached session modme-agents
+./scripts/agent-workspace-tmux.sh attach
+yarn worktree:tmux -- attach                # from repo root
+```
+
+Windows pwsh: use `worktree-doctor` + `list-worktrees.ps1` instead (tmux optional via WSL).
 
 ---
 
@@ -273,8 +386,8 @@ For multi-agent review of audit/report artifacts, see [Cursor canvas sharing](ht
 2. **Per task:** `.\scripts\new-agent-worktree.ps1 -Name "<task>" -Owner <ide>`
 3. **Cursor:** Agents Window or `/worktree`
 4. **Other IDEs:** File → Open Folder → worktree path
-5. **Verify:** load ports, run targeted `yarn lint` / tests
-6. **Finish:** commit → PR to `dev` → `remove-agent-worktree.ps1`
+5. **Verify:** `yarn worktree:doctor`, load ports, run targeted lint / tests
+6. **Finish:** `.\scripts\vibe-session-finish.ps1` → PR to `dev` → `remove-agent-worktree.ps1 -Yes`
 
 ---
 

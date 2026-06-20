@@ -1,0 +1,34 @@
+{
+  "mcpServers": {
+    "smart-coding-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "smart-coding-mcp",
+        "--workspace",
+        "${workspaceFolder}"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "${workspaceFolder}"
+      ]
+    },
+    "git": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-git",
+        "--repository",
+        "${workspaceFolder}"
+      ]
+    }
+  },
+  "transport": "stdio"
+}

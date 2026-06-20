@@ -7,6 +7,7 @@
   "npm.packageManager": "yarn@3.3.0",
   "npm.exclude": [
     "**/.vendor/**",
+    "!**/.vendor/awesome-copilot-main/**",
     "**/.tools/**",
     "**/.cursor/skills/**/scripts/**",
     "**/GenerativeUI_monorepo/UniversalWorkbench*/**",
@@ -39,9 +40,6 @@
   },
   "terminal.integrated.defaultProfile.windows": "PowerShell 7",
   "terminal.integrated.rightClickBehavior": "default",
-  "chat.useClaudeHooks": true,
-  "cursor.worktreeMaxCount": 25,
-  "cursor.worktreeCleanupIntervalHours": 6,
   "debug.focusWindowOnBreak": false,
   "debug.focusEditorOnBreak": false,
   "files.autoSave": "afterDelay",

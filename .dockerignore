@@ -1,0 +1,78 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+agent/.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Logs
+.logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lint_errors*.log
+docs_error.log
+validation_errors.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.specify/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+test_output/
+test-mcp-validation/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Memory & Session Data
+.memory/
+.vault/
+.claude/
+
+# Cache
+.ruff_cache/
+.pytest_cache/
+.next/
+
+# Output files
+agent-generator/output/
+
+# Docs (include only essential docs)
+*.md
+!README.md
+!.devcontainer/README.md
+!.devcontainer/QUICKSTART.md
+!DEVCONTAINER_SETUP.md
+!CONTRIBUTING.md

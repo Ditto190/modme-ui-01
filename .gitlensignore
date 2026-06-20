@@ -1,0 +1,190 @@
+# GitLens Token Management Ignore File
+
+# Excludes token-heavy directories and files from GitLens AI indexing
+
+# Reduces context from ~127k to <20k tokens for Copilot/AI tools
+
+# =====================================================
+
+# Dependencies & Build Artifacts (Largest Contributors)
+
+# =====================================================
+
+# Node.js dependencies (tens of thousands of files)
+
+node_modules/
+\*\*/node_modules/
+
+# Build outputs and bundled code
+
+.next/
+out/
+build/
+dist/
+.turbo/
+.mastra/
+
+# Python virtual environments and caches
+
+.venv/
+venv/
+**pycache**/
+_.pyc
+_.pyo
+_.pyd
+.Python
+_.egg-info/
+.eggs/
+agent/.venv/
+
+# Lock files (massive JSON, auto-generated)
+
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+uv.lock
+poetry.lock
+
+# =====================================================
+
+# Data & Storage (Client Data, Never Index)
+
+# =====================================================
+
+# Local data directories
+
+data/
+data/\*\*
+.vault/
+.logs/
+.memory/
+
+# ChromaDB persistent storage
+
+chroma_data/
+chroma_data/**
+output_chunks/
+output_chunks/**
+
+# SQLite databases (binary + potentially large)
+
+_.db
+_.sqlite
+\*.sqlite3
+artifacts.db
+
+# =====================================================
+
+# Generated Documentation & Summaries
+
+# =====================================================
+
+# Auto-generated markdown summaries (redundant with source)
+
+_\_SUMMARY.md
+__IMPLEMENTATION.md
+SESSION_SUMMARY__.md
+REFACTORING*APPLIED*_.md
+CONVERSION*SUMMARY*\*.md
+
+# Large documentation files (reference, not active dev)
+
+CODEBASE_INDEX.md
+COMPONENT_MANIFEST.json
+TOOLSET_README.md
+Project_Overview.md
+PORTING_GUIDE.md
+BOOTSTRAP_GUIDE.md
+AGENT_SKILLS_IMPLEMENTATION.md
+
+# =====================================================
+
+# Logs & Debugging Output
+
+# =====================================================
+
+# Error and debug logs
+
+_.log
+lint_errors_.log
+validation_errors.log
+docs_error.log
+
+# Jupyter notebook outputs
+
+\*.ipynb_checkpoints/
+
+# =====================================================
+
+# Configuration & Secrets (Exclude for Security)
+
+# =====================================================
+
+# Environment files
+
+.env
+.env.local
+.env.\*.local
+.claude/settings.local.json
+
+# =====================================================
+
+# Git & Version Control Metadata
+
+# =====================================================
+
+# Git internals (huge binary blobs)
+
+.git/
+.git/\*\*
+
+# GitHub workflow artifacts
+
+.github/workflows/\*.log
+
+# =====================================================
+
+# Testing & Temporary Files
+
+# =====================================================
+
+# Test output directories
+
+test-mcp-validation/
+coverage/
+.nyc_output/
+
+# Temporary files
+
+_.tmp
+_.temp
+.DS_Store
+Thumbs.db
+
+# =====================================================
+
+# Specific Large Files (Add Per-Repo Analysis)
+
+# =====================================================
+
+# Agent generator output (large generated schemas)
+
+agent-generator/output/
+
+# Templates (reference only)
+
+templates/
+
+# =====================================================
+
+# END OF FILE
+
+# =====================================================
+
+# Additional exclusions from token audit (2026-01-04)
+agent-generator/src/skills/
+*.ico
+*.tar.gz
+*.zip
+MIGRATION_IMPLEMENTATION_PLAN.md

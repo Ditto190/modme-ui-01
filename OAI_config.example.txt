@@ -1,0 +1,180 @@
+# OAI_config.example.txt
+# Example LLM / OpenAI / ADK config for ModMe GenUI Workbench
+# Copy to .env or adapt for your deployment. Remove comments when using in env files.
+
+# ---------- Environment variables (dotenv style) ----------
+# OpenAI (if used)
+OPENAI_API_KEY=sk-REPLACE_WITH_YOUR_KEY
+OPENAI_ORG=org-REPLACE_IF_NEEDED
+
+# Google ADK / Gemini (preferred for ADK agent in this repo)
+GOOGLE_API_KEY=REPLACE_WITH_GOOGLE_API_KEY
+GEMINI_MODEL=gemini-2.5-flash
+
+# ADK / Agent endpoint (FastAPI agent)
+ADK_AGENT_URL=http://localhost:8000/       # ADK FastAPI endpoint (agent/main.py)
+
+# CopilotKit runtime / frontend API
+COPILOTKIT_API_ENDPOINT=http://localhost:3000/api/copilotkit
+
+# App runtime
+NODE_ENV=development
+PORT=3000
+AGENT_PORT=8000
+LOG_LEVEL=info
+
+# ---------- Optional model tuning ----------
+DEFAULT_TEMPERATURE=0.2
+DEFAULT_MAX_TOKENS=1024
+DEFAULT_TOP_P=0.95
+
+# ---------- JSON-style provider config (example for runtime.json) ----------
+# Place this JSON in a runtime config file if your runtime supports provider chaining.
+# Adapt keys to your runtime loader (CopilotKit / custom adapter).
+{
+    "providers": [
+        {
+            "name": "google_adk",
+            "type": "adk_http",
+            "endpoint": "${ADK_AGENT_URL}",
+            "apiKeyEnv": "GOOGLE_API_KEY",
+            "model": "${GEMINI_MODEL}",
+            "default": true,
+            "options": {
+                "temperature": ${DEFAULT_TEMPERATURE},
+                "maxTokens": ${DEFAULT_MAX_TOKENS}
+            }
+        },
+        {
+            "name": "openai",
+            "type": "openai",
+            "apiKeyEnv": "OPENAI_API_KEY",
+            "model": "gpt-4o",
+            "options": {
+                "temperature": 0.3,
+                "max_tokens": 1500
+            }
+        }
+    ],
+    "tools": {
+        "upsert_ui_element": {
+            "description": "Add or update UI elements on canvas",
+            "required": ["id","type","props"]
+        },
+        "remove_ui_element": {
+            "description": "Remove an element by id",
+            "required": ["id"]
+        },
+        "clear_canvas": {
+            "description": "Clear all elements from canvas"
+        }
+    },
+    "defaults": {
+        "response_timeout_seconds": 60,
+        "trace_enabled": false,
+        "log_level": "${LOG_LEVEL}"
+    }
+}
+
+# ---------- Sample quick test (curl) ----------
+# Health check for agent:
+# curl http://localhost:8000/health
+
+# Post a simple tool call to ADK agent (JSON body depends on ADK endpoint contract)
+# curl -X POST ${ADK_AGENT_URL} -H "Content-Type: application/json" -d '{"tool":"upsert_ui_element","params":{"id":"test_stat","type":"StatCard","props":{"title":"Test","value":42}}}'
+
+# ---------- Notes ----------
+# - Replace placeholder keys before use.
+# - Use secrets manager for production; do not commit keys.
+# - Align "model" strings with provider capabilities.
+# - For CopilotKit + Next.js, keep COPILOTKIT_API_ENDPOINT pointing to Next route that proxies agent runtime.
+
+## Placeholder settings.json values
+
+## .env placeholders
+
+# DeepSeek / Claude Flow
+ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
+ANTHROPIC_API_KEY=REPLACE_WITH_DEEPSEEK_API_KEY
+CLAUDE_MODEL=deepseek-chat
+
+# Google / Gemini / AI Studio
+GEMINI_API_KEY=REPLACE_WITH_GEMINI_API_KEY
+GOOGLE_AI_KEY=REPLACE_WITH_GOOGLE_AI_KEY
+GOOGLE_AI_PROJECT=projects/150923270302
+GOOGLE_AI_PROJECT_NO=150923270302
+
+# Jules
+JULES_API_KEY=REPLACE_WITH_JULES_API_KEY
+JULES_RENDR_KEY=REPLACE_WITH_JULES_RENDR_KEY
+
+# Hugging Face
+HUGGINGFACE_TOKEN=${HUGGINGFACE_TOKEN}
+
+# GitHub
+GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PERSONAL_ACCESS_TOKEN}
+GITHUB_PAT_ALT=${GITHUB_PAT_ALT}
+
+# Agentmode MCP
+AGENTMODE_MCP_API_KEY=${AGENTMODE_MCP_API_KEY}
+MCP_SERVER_URL=http://localhost:8080
+
+# Context7
+CONTEXT7_API_KEY=${CONTEXT7_API_KEY}
+
+# GitLens
+GITLENS_KEY=${GITLENS_KEY}
+
+# GitLab
+GITLAB_PAT=${GITLAB_PAT}
+GLAB_FEED_TOKEN=${GLAB_FEED_TOKEN}
+GLAB_INCOMING_EMAIL_TOKEN=${GLAB_INCOMING_EMAIL_TOKEN}
+
+# Supabase
+SUPABASE_URL=${SUPABASE_URL}
+SUPABASE_PUBLISHABLE_KEY=${SUPABASE_PUBLISHABLE_KEY}
+SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY}
+SUPABASE_JWT_SIGNING_KEY=${SUPABASE_JWT_SIGNING_KEY}
+SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
+SUPABASE_PAT=${SUPABASE_PAT}
+
+## Sanitized bash snippets
+
+# Replace literal export lines with references to the .env variables or load 
+# the .env file at runtime
+
+
+# load .env (example using bash built-in 'source' safely)
+set -a; . .env; set +a
+
+# DeepSeek / Claude Flow
+export ANTHROPIC_BASE_URL="${ANTHROPIC_BASE_URL}"
+export ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY}"
+export CLAUDE_MODEL="${CLAUDE_MODEL}"
+
+# Google
+export GEMINI_API_KEY="${GEMINI_API_KEY}"
+export GOOGLE_AI_KEY="${GOOGLE_AI_KEY}"
+
+# MCP server
+export MCP_SERVER_URL="${MCP_SERVER_URL}"
+
+# Sanitized PowerShell snippets
+
+	# Use environment variables from the system or a local .env loader.
+
+# Example: validate environment after loading .env securely
+if (-not $env:ANTHROPIC_BASE_URL) {
+    throw "ANTHROPIC_BASE_URL is not set. Ensure .env has been loaded."
+}
+if (-not $env:ANTHROPIC_API_KEY) {
+    throw "ANTHROPIC_API_KEY is not set. Ensure .env has been loaded."
+}
+if (-not $env:CLAUDE_MODEL) {
+    throw "CLAUDE_MODEL is not set. Ensure .env has been loaded."
+}
+if (-not $env:MCP_SERVER_URL) {
+    throw "MCP_SERVER_URL is not set. Ensure .env has been loaded."
+}
+
+

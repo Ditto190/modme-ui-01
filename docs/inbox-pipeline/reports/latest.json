@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-06-20T19:37:24.941Z",
+  "source": "test",
+  "lens": "funnel",
+  "strict": false,
+  "passed": true,
+  "summary": {
+    "files": 1,
+    "errors": 0,
+    "warnings": 0,
+    "total": 0,
+    "automatable": 0,
+    "byLens": {},
+    "byCode": {}
+  },
+  "findings": [],
+  "automation": {
+    "fixAllDryRun": "yarn inbox:fix",
+    "fixAllApply": "yarn inbox:fix:apply",
+    "revalidate": "yarn inbox:audit",
+    "test": "yarn inbox:test",
+    "orchestrate": "yarn intake:orchestrate"
+  },
+  "paths": {
+    "json": "docs/inbox-pipeline/reports/latest.json",
+    "markdown": "docs/inbox-pipeline/reports/latest.md",
+    "jsonl": ".cursor/hooks/state/inbox-errors.jsonl"
+  },
+  "root": "C:\\Users\\dylan\\Monorepo_ModMe"
+}

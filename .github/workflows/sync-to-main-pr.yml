@@ -1,0 +1,18 @@
+name: Create PR from integration to main
+
+on:
+  workflow_dispatch:
+
+jobs:
+  open-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Sync integration -> main"
+          title: "chore: sync integration branch to main"
+          body: "Automated PR to sync `feature/genui-workbench-refactor` into `main`. Review CI before merging."
+          base: main
+          head: feature/genui-workbench-refactor

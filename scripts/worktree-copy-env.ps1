@@ -32,3 +32,24 @@ foreach ($relativePath in $envPaths) {
     Write-Host "   Skipped $relativePath (not present in source)" -ForegroundColor DarkYellow
   }
 }
+
+# Yarn 3 needs yarn.lock in the worktree root (dev branch may not track it).
+$yarnBootstrapPaths = @(
+  "yarn.lock",
+  ".yarnrc.yml"
+)
+foreach ($relativePath in $yarnBootstrapPaths) {
+  $source = Join-Path $SourceRoot $relativePath
+  $target = Join-Path $TargetRoot $relativePath
+  if (Test-Path $source) {
+    Copy-Item $source $target -Force
+    Write-Host "   Copied $relativePath" -ForegroundColor Green
+  }
+}
+
+$yarnDir = Join-Path $SourceRoot ".yarn"
+if (Test-Path $yarnDir) {
+  $targetYarn = Join-Path $TargetRoot ".yarn"
+  Copy-Item $yarnDir $targetYarn -Recurse -Force
+  Write-Host "   Copied .yarn/" -ForegroundColor Green
+}

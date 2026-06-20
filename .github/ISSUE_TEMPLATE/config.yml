@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/Ditto190/modme-ui-01/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📚 Documentation
+    url: https://github.com/Ditto190/modme-ui-01/blob/main/README.md
+    about: Read the project documentation
+  - name: 🛠️ Toolset Management Guide
+    url: https://github.com/Ditto190/modme-ui-01/blob/main/docs/TOOLSET_MANAGEMENT.md
+    about: Learn about toolset lifecycle automation

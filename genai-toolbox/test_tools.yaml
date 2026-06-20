@@ -1,0 +1,141 @@
+# yaml-language-server: $schema=./genai-toolbox/schemas/test_tools.schema.json
+$schema: "./genai-toolbox/schemas/test_tools.schema.json"
+# genai-toolbox/test_tools.yaml
+# Declarative tests asserting expected tools and key properties in genai-toolbox/tools.yaml
+
+expected_tools:
+  generate_tool_schemas:
+    kind: python
+    module: agent.tools.generate_schemas
+    function: generate_tool_schemas
+    parameters:
+      - name: tools_dir
+        type: string
+        required: false
+      - name: output_file
+        type: string
+        required: false
+
+  generate_agent_prompt:
+    kind: python
+    module: agent.tools.generate_schemas
+    function: generate_agent_prompt
+    parameters:
+      - name: skills_dir
+        type: string
+        required: false
+      - name: output_file
+        type: string
+        required: false
+      - name: include_instructions
+        type: boolean
+        required: false
+
+  generate_all:
+    kind: python
+    module: agent.tools.generate_schemas
+    function: generate_all
+    parameters:
+      - name: tools_dir
+        type: string
+        required: false
+      - name: skills_dir
+        type: string
+        required: false
+      - name: output_dir
+        type: string
+        required: false
+
+  validate_skill:
+    kind: python
+    module: agent.tools.skills_ref_tools
+    function: validate_skill
+    parameters:
+      - name: skill_path
+        type: string
+        required: true
+
+  read_skill_properties:
+    kind: python
+    module: agent.tools.skills_ref_tools
+    function: read_skill_properties
+    parameters:
+      - name: skill_path
+        type: string
+        required: true
+
+  generate_skills_prompt:
+    kind: python
+    module: agent.tools.skills_ref_tools
+    function: generate_skills_prompt
+    parameters:
+      - name: skill_paths
+        type: array
+        required: true
+      - name: output_file
+        type: string
+        required: false
+
+  generate_zod_schema:
+    kind: python
+    module: agent.tools.schema_crawler_tool
+    function: generate_zod_from_json_schema
+    parameters:
+      - name: json_schema
+        type: object
+        required: true
+      - name: schema_name
+        type: string
+        required: true
+      - name: output_path
+        type: string
+        required: false
+
+  generate_zod_module:
+    kind: python
+    module: agent.tools.schema_crawler_tool
+    function: generate_zod_module
+    parameters:
+      - name: tool_name
+        type: string
+        required: true
+      - name: input_schema
+        type: object
+        required: true
+      - name: output_schema
+        type: object
+        required: false
+      - name: output_path
+        type: string
+        required: false
+
+  upsert_ui_element:
+    kind: python
+    module: agent.main
+    function: upsert_ui_element
+    parameters:
+      - name: id
+        type: string
+        required: true
+      - name: type
+        type: string
+        required: true
+      - name: props
+        type: object
+        required: true
+
+  remove_ui_element:
+    kind: python
+    module: agent.main
+    function: remove_ui_element
+    parameters:
+      - name: id
+        type: string
+        required: true
+
+  clear_canvas:
+    kind: python
+    module: agent.main
+    function: clear_canvas
+    parameters: []
+    # no parameters

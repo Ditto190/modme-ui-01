@@ -1,0 +1,14 @@
+id: mcp-tools-basics
+name: MCP Tools Basics
+description: Essential Model Context Protocol tools for agent development
+items:
+- path: agents/github-mcp-agent.agent.md
+  kind: agent
+  usage: GitHub MCP integration agent
+- path: instructions/mcp-server-setup.instructions.md
+  kind: instruction
+  usage: Set up MCP servers in your workspace
+tags:
+- mcp
+- github
+- tools

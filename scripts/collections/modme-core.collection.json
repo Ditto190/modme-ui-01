@@ -1,0 +1,24 @@
+{
+  "id": "modme-core",
+  "name": "ModMe Core Agent Collection",
+  "description": "Essential agents and skills for the Monorepo_ModMe project — covering architecture decisions, CI/CD, code quality, accessibility, and full-stack Next.js development.",
+  "tags": ["modme", "core", "nextjs", "cicd", "quality", "architecture"],
+  "display": { "ordering": "manual", "featured": true },
+  "items": [
+    { "path": "agents/github-actions-expert.agent.md", "kind": "agent", "usage": "CI/CD pipeline design, workflow security, GitHub Actions best practices" },
+    { "path": "agents/adr-generator.agent.md", "kind": "agent", "usage": "Architecture Decision Records — generate and maintain ADRs" },
+    { "path": "agents/se-security-reviewer.agent.md", "kind": "agent", "usage": "Security audit on code changes, OWASP top 10, secret scanning" },
+    { "path": "agents/accessibility.agent.md", "kind": "agent", "usage": "WCAG 2.2 AA accessibility audit and remediation" },
+    { "path": "agents/api-architect.agent.md", "kind": "agent", "usage": "REST/GraphQL API design, OpenAPI spec generation" },
+    { "path": "agents/gem-reviewer.agent.md", "kind": "agent", "usage": "High-signal code review focused on bugs and security" },
+    { "path": "agents/gem-devops.agent.md", "kind": "agent", "usage": "DevOps automation, deployment pipelines, infrastructure" },
+    { "path": "agents/gem-documentation-writer.agent.md", "kind": "agent", "usage": "Technical documentation, READMEs, and API docs" },
+    { "path": "skills/quality-playbook/SKILL.md", "kind": "skill", "usage": "Full quality engineering audit — spec tests, code review, Council of Three" },
+    { "path": "skills/acquire-codebase-knowledge/SKILL.md", "kind": "skill", "usage": "Map and onboard into an unfamiliar codebase" },
+    { "path": "skills/doublecheck/SKILL.md", "kind": "skill", "usage": "Three-layer AI output verification with citations" },
+    { "path": "skills/github-actions-efficiency/SKILL.md", "kind": "skill", "usage": "Audit and optimize GitHub Actions CI minutes and cost" },
+    { "path": "skills/security-review/SKILL.md", "kind": "skill", "usage": "Security-focused code review — CRITICAL/HIGH/MEDIUM findings" },
+    { "path": "skills/create-agentsmd/SKILL.md", "kind": "skill", "usage": "Generate AGENTS.md documentation for any repo" },
+    { "path": "skills/memory-merger/SKILL.md", "kind": "skill", "usage": "Merge mature lessons from domain memory into instruction files" }
+  ]
+}

@@ -1,0 +1,9 @@
+graph TD
+    ui_elements["UI Elements<br/>🟢 active"];
+    theme["Theme Management<br/>🟢 active"];
+
+    ui_elements -.->|related| theme;
+    theme -.->|related| ui_elements;
+
+    style ui_elements fill:#4ade80,stroke:#16a34a,color:#000;
+    style theme fill:#4ade80,stroke:#16a34a,color:#000;

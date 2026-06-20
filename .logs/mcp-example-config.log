@@ -1,0 +1,30 @@
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 2: mcpServers:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 3: filesystem:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 4: command:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 5: args:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 6: description:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 7: env:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 8: ALLOWED_DIRECTORIES:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 10: },: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 11: github:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 12: command:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 13: args:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 14: description:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 15: env:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 16: GITHUB_PERSONAL_ACCESS_TOKEN:: not found
+/workspaces/modme-ui-01/.copilot/mcp-servers/example-config.json: 17: Syntax error: "}" unexpected
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 2: mcpServers:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 3: filesystem:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 4: command:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 5: args:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 6: description:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 7: env:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 8: ALLOWED_DIRECTORIES:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 10: },: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 11: github:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 12: command:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 13: args:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 14: description:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 15: env:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 16: GITHUB_PERSONAL_ACCESS_TOKEN:: not found
+/workspaces/relaxed-hugle/.copilot/mcp-servers/example-config.json: 17: Syntax error: "}" unexpected

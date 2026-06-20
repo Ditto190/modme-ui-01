@@ -1,0 +1,13 @@
+
+> adk-starter@0.1.0 validate:toolsets
+> node scripts/toolset-management/validate-toolsets.js
+
+============================================================
+Toolset Validation Report
+============================================================
+
+❌ Found 1 validation errors
+
+Tool Reference Errors:
+  - [theme] Tool setThemeColor not found in agent code
+

@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Toolset Alias Configuration",
+  "description": "Schema for toolset alias and deprecation metadata in ModMe GenUI workspace",
+  "type": "object",
+  "required": ["version", "updated", "aliases", "deprecation_metadata"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the alias configuration"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last update"
+    },
+    "aliases": {
+      "type": "object",
+      "description": "Map of alias names to canonical toolset IDs",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$"
+      }
+    },
+    "deprecation_metadata": {
+      "type": "object",
+      "description": "Metadata about deprecated toolsets or tools",
+      "additionalProperties": {
+        "$ref": "#/definitions/deprecation_info"
+      }
+    }
+  },
+  "definitions": {
+    "deprecation_info": {
+      "type": "object",
+      "required": ["deprecated_since", "removal_date", "reason"],
+      "properties": {
+        "deprecated_since": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the item was deprecated"
+        },
+        "removal_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Planned removal date (typically 180 days after deprecation)"
+        },
+        "superseded_by": {
+          "type": "string",
+          "description": "ID of replacement toolset or tool"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Explanation for deprecation"
+        },
+        "migration_guide": {
+          "type": "string",
+          "description": "Path or URL to migration documentation"
+        }
+      }
+    }
+  }
+}

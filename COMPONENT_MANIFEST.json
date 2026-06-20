@@ -1,0 +1,626 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "version": "1.1.0",
+  "generated": "2026-01-03T00:00:00Z",
+  "repository": "modme-ui-01",
+  "description": "Machine-readable component registry for porting and indexing",
+  
+  "bootstrapStrategy": {
+    "recommendation": "hybrid",
+    "primaryBase": {
+      "repo": "AdaptiveWorX/ts-fullstack",
+      "url": "https://github.com/AdaptiveWorX/ts-fullstack",
+      "reason": "Turborepo + Biome + Agent package + strict TypeScript",
+      "features": ["turborepo", "biome", "@adaptiveworx/agent", "@tsconfig/strictest", "multi-env-deploy"]
+    },
+    "aiAutomation": {
+      "repo": "Insajin/AutonomusCompany",
+      "url": "https://github.com/Insajin/AutonomusCompany",
+      "reason": "Claude Code OAuth + 14 deployment platforms + semantic release",
+      "features": ["claude-code-oauth", "deploy-workflows", "semantic-release", "ai-feature-suggestions"]
+    },
+    "mcpPatterns": {
+      "repo": "giridamodaran/ai-native-ux-template",
+      "url": "https://github.com/giridamodaran/ai-native-ux-template",
+      "reason": "Native MCP server + Claude Desktop bundling",
+      "features": ["stdio-http-transport", "mcpb-bundling", "tool-use-chat"]
+    },
+    "collaboration": {
+      "repo": "zyahav/monorepo-template",
+      "url": "https://github.com/zyahav/monorepo-template",
+      "reason": "Git worktrees for human/AI parallel work",
+      "features": ["git-worktrees", "feature-isolation", "mysay-agent"]
+    },
+    "componentLibrary": {
+      "repo": "adobe/react-spectrum",
+      "url": "https://github.com/adobe/react-spectrum",
+      "reason": "React Aria accessible hooks - use as npm dependency",
+      "features": ["react-aria", "accessibility", "component-primitives"]
+    },
+    "criticalGaps": [
+      "Python/ADK support (only modme-ui-01 has this)",
+      "GenUI state sync patterns (modme-ui-01 specific)",
+      "ChromaDB integration (modme-ui-01 specific)"
+    ],
+    "portingOrder": [
+      {"phase": 1, "week": 1, "task": "Foundation: Fork ts-fullstack, copy AutonomusCompany workflows"},
+      {"phase": 2, "week": 2, "task": "Python Integration: Create packages/python-agent/ for ADK"},
+      {"phase": 3, "week": 3, "task": "TypeScript Tools: Port schema-crawler, Knowledge Base"},
+      {"phase": 4, "week": 4, "task": "Workflows: Port build-code-index.yml, add Git worktrees"},
+      {"phase": 5, "week": 5, "task": "Documentation: Unify docs, testing, validation"}
+    ],
+    "referenceDoc": "REPO_COMPARISON.md"
+  },
+  
+  "portableComponents": {
+    "knowledge_base_system": {
+      "id": "knowledge_base_system",
+      "name": "Knowledge Base Context Mapper",
+      "category": "automation",
+      "portability": "standalone",
+      "location": "scripts/knowledge-management/",
+      "entryPoint": "issue-context-mapper.ts",
+      "linesOfCode": 1200,
+      "dependencies": {
+        "runtime": ["Node.js 22+", "TypeScript 5.3+"],
+        "npm": [],
+        "external": []
+      },
+      "files": [
+        "scripts/knowledge-management/issue-context-mapper.ts",
+        "scripts/knowledge-management/test-kb-mapper.js",
+        "scripts/knowledge-management/sync-docs.js",
+        "scripts/knowledge-management/generate-diagram.js",
+        "scripts/knowledge-management/package.json",
+        "scripts/knowledge-management/tsconfig.json",
+        "scripts/knowledge-management/README.md"
+      ],
+      "exports": {
+        "analyzeIssue": {
+          "signature": "function analyzeIssue(issueText: string): KnowledgeBaseAnalysis",
+          "description": "Analyze GitHub issue text for semantic concepts"
+        }
+      },
+      "customization": {
+        "points": ["KNOWLEDGE_BASE constant (concepts)", "Label suggestion logic", "Test cases"],
+        "difficulty": "medium"
+      },
+      "integration": {
+        "targetProjects": ["GitHub repos with issues"],
+        "setupTime": "30 minutes",
+        "documentation": ["docs/KNOWLEDGE_BASE_INTEGRATION.md", "docs/KB_QUICK_REFERENCE.md"]
+      },
+      "bootstrapCompatibility": {
+        "ts-fullstack": {"compatible": true, "location": "packages/knowledge-management/", "notes": "Add as Turborepo package"},
+        "AutonomusCompany": {"compatible": true, "location": ".github/workflows/", "notes": "Integrate with Claude Code workflows"},
+        "ai-native-ux-template": {"compatible": true, "location": "scripts/", "notes": "Use for MCP tool analysis"}
+      }
+    },
+
+    "component_registry": {
+      "id": "component_registry",
+      "name": "React Component Registry",
+      "category": "ui",
+      "portability": "standalone",
+      "location": "src/components/registry/",
+      "entryPoint": "StatCard.tsx",
+      "linesOfCode": 800,
+      "dependencies": {
+        "runtime": ["React 19+", "TypeScript"],
+        "npm": ["zod@^3.23.0"],
+        "external": ["@mui/material@^5.15.0 (optional)"]
+      },
+      "files": [
+        "src/components/registry/StatCard.tsx",
+        "src/components/registry/DataTable.tsx",
+        "src/components/registry/ChartCard.tsx",
+        "src/lib/types.ts"
+      ],
+      "components": [
+        {
+          "name": "StatCard",
+          "file": "StatCard.tsx",
+          "props": {
+            "title": {"type": "string", "required": true},
+            "value": {"type": "string | number", "required": true},
+            "trend": {"type": "string", "required": false},
+            "trendDirection": {"type": "'up' | 'down'", "required": false}
+          },
+          "usage": "<StatCard title=\"Revenue\" value={120000} trend=\"+12%\" trendDirection=\"up\" />"
+        },
+        {
+          "name": "DataTable",
+          "file": "DataTable.tsx",
+          "props": {
+            "columns": {"type": "string[]", "required": true},
+            "data": {"type": "object[]", "required": true},
+            "pageSize": {"type": "number", "required": false},
+            "sortable": {"type": "boolean", "required": false}
+          },
+          "usage": "<DataTable columns={['Name', 'Email']} data={[...]} />"
+        },
+        {
+          "name": "ChartCard",
+          "file": "ChartCard.tsx",
+          "props": {
+            "title": {"type": "string", "required": true},
+            "chartType": {"type": "'line' | 'bar' | 'pie'", "required": true},
+            "data": {"type": "object[]", "required": true},
+            "xKey": {"type": "string", "required": false},
+            "yKey": {"type": "string", "required": false}
+          },
+          "usage": "<ChartCard title=\"Weekly Growth\" chartType=\"line\" data={[...]} />"
+        }
+      ],
+      "customization": {
+        "points": ["Styling (Tailwind/MUI)", "Validation schemas", "Prop interfaces"],
+        "difficulty": "easy"
+      },
+      "integration": {
+        "targetProjects": ["React 19+ projects", "Next.js apps", "Design systems"],
+        "setupTime": "15 minutes",
+        "documentation": ["PORTING_GUIDE.md#component-registry"]
+      },
+      "bootstrapCompatibility": {
+        "ts-fullstack": {"compatible": true, "location": "apps/web/components/", "notes": "Fits existing React/Next.js structure"},
+        "AutonomusCompany": {"compatible": false, "location": null, "notes": "No frontend package"},
+        "ai-native-ux-template": {"compatible": true, "location": "src/components/", "notes": "Native component support"}
+      }
+    },
+
+    "toolset_management": {
+      "id": "toolset_management",
+      "name": "Toolset Lifecycle Management",
+      "category": "infrastructure",
+      "portability": "standalone",
+      "location": "agent/toolsets.json, scripts/toolset-management/",
+      "entryPoint": "validate-toolsets.js",
+      "linesOfCode": 900,
+      "dependencies": {
+        "runtime": ["Node.js 22+"],
+        "npm": ["ajv@^8.12.0", "ajv-formats@^2.1.1"],
+        "external": []
+      },
+      "files": [
+        "agent/toolsets.json",
+        "agent/toolset_aliases.json",
+        "agent/toolset-schema.json",
+        "agent/toolset_manager.py",
+        "scripts/toolset-management/validate-toolsets.js",
+        "scripts/toolset-management/detect-toolset-changes.js",
+        "scripts/toolset-management/create-alias.js",
+        "scripts/toolset-management/generate-migration-guide.js"
+      ],
+      "workflows": [
+        ".github/workflows/toolset-validate.yml",
+        ".github/workflows/toolset-deprecate.yml",
+        ".github/workflows/toolset-update.yml"
+      ],
+      "exports": {
+        "python": {
+          "initialize_toolsets": "function initialize_toolsets() -> None",
+          "get_toolset": "function get_toolset(name: str) -> dict"
+        },
+        "javascript": {
+          "validateToolsets": "function validateToolsets(toolsetsPath: string) -> boolean"
+        }
+      },
+      "customization": {
+        "points": ["Toolset definitions", "Deprecation policies", "Documentation templates"],
+        "difficulty": "medium"
+      },
+      "integration": {
+        "targetProjects": ["MCP servers", "Tool registries", "Plugin systems"],
+        "setupTime": "45 minutes",
+        "documentation": ["docs/TOOLSET_MANAGEMENT.md", "docs/TOOLSET_QUICKSTART.md"]
+      },
+      "bootstrapCompatibility": {
+        "ts-fullstack": {"compatible": true, "location": "packages/agent/", "notes": "Merge with @adaptiveworx/agent package"},
+        "AutonomusCompany": {"compatible": true, "location": ".github/", "notes": "Add validation to CI workflows"},
+        "ai-native-ux-template": {"compatible": false, "location": null, "notes": "Different MCP architecture"}
+      }
+    },
+
+    "schema_crawler": {
+      "id": "schema_crawler",
+      "name": "JSON Schema to Zod Converter",
+      "category": "codegen",
+      "portability": "standalone",
+      "location": "agent-generator/src/mcp-registry/",
+      "entryPoint": "schema-crawler.ts",
+      "linesOfCode": 600,
+      "dependencies": {
+        "runtime": ["TypeScript 5+"],
+        "npm": ["zod@^3.23.0"],
+        "external": []
+      },
+      "files": [
+        "agent-generator/src/mcp-registry/schema-crawler.ts",
+        "agent-generator/SCHEMA_CRAWLER_README.md",
+        "agent/tools/schema_crawler_tool.py"
+      ],
+      "exports": {
+        "generateZodFromJSONSchema": {
+          "signature": "function generateZodFromJSONSchema(schema: JSONSchema, typeName: string): ZodSchemaOutput",
+          "description": "Convert JSON Schema to Zod validation + TypeScript types"
+        },
+        "generateZodModule": {
+          "signature": "function generateZodModule(toolName: string, inputSchema: JSONSchema, outputSchema?: JSONSchema): string",
+          "description": "Generate complete TypeScript module with types and validators"
+        },
+        "generateZodModulesBatch": {
+          "signature": "function generateZodModulesBatch(tools: ToolDefinition[]): Map<string, string>",
+          "description": "Batch process multiple tools"
+        }
+      },
+      "customization": {
+        "points": ["Type mapping", "Validation refinements", "Output format"],
+        "difficulty": "low"
+      },
+      "integration": {
+        "targetProjects": ["TypeScript projects", "MCP clients", "API clients", "Form validation"],
+        "setupTime": "10 minutes",
+        "documentation": ["agent-generator/SCHEMA_CRAWLER_README.md"]
+      },
+      "bootstrapCompatibility": {
+        "ts-fullstack": {"compatible": true, "location": "packages/codegen/", "notes": "Create new Turborepo package"},
+        "AutonomusCompany": {"compatible": true, "location": "tools/", "notes": "Generate types for Claude workflows"},
+        "ai-native-ux-template": {"compatible": true, "location": "src/lib/", "notes": "MCP tool type generation"}
+      }
+    },
+
+    "chromadb_indexing": {
+      "id": "chromadb_indexing",
+      "name": "ChromaDB Code Indexing",
+      "category": "rag",
+      "portability": "requires_chromadb",
+      "location": "scripts/",
+      "entryPoint": "ingest_chunks.py",
+      "linesOfCode": 500,
+      "dependencies": {
+        "runtime": ["Python 3.12+"],
+        "pip": ["chromadb", "google-generativeai", "pykomodo (optional)"],
+        "external": ["Google Gemini API", "ChromaDB server (optional)"]
+      },
+      "files": [
+        "scripts/ingest_chunks.py",
+        "scripts/start_chroma_server.py"
+      ],
+      "exports": {
+        "configure_genai": "function configure_genai(api_key: str) -> None",
+        "get_chroma_client": "function get_chroma_client(mode: str, host: str, port: int) -> chromadb.Client",
+        "embed_texts": "function embed_texts(texts: list[str], task_type: str) -> list[list[float]]",
+        "ingest_to_collection": "function ingest_to_collection(client: chromadb.Client, collection_name: str, chunks: list[dict]) -> None"
+      },
+      "customization": {
+        "points": ["Embedding dimensions", "Task types", "Collection names", "Chunking strategy"],
+        "difficulty": "medium"
+      },
+      "integration": {
+        "targetProjects": ["Codebases with RAG", "Code search systems", "Documentation Q&A"],
+        "setupTime": "30 minutes (with API keys)",
+        "documentation": ["PORTING_GUIDE.md#chromadb-indexing"]
+      },
+      "bootstrapCompatibility": {
+        "ts-fullstack": {"compatible": false, "location": "packages/python-indexing/", "notes": "Requires new Python package creation"},
+        "AutonomusCompany": {"compatible": false, "location": null, "notes": "No RAG/embedding support"},
+        "ai-native-ux-template": {"compatible": false, "location": null, "notes": "No Python support"},
+        "modme-exclusive": true,
+        "portingNotes": "Must create packages/python-indexing/ with pyproject.toml in target repo"
+      }
+    },
+
+    "genai_toolbox": {
+      "id": "genai_toolbox",
+      "name": "GenAI Toolbox",
+      "category": "configuration",
+      "portability": "standalone",
+      "location": "genai-toolbox/",
+      "entryPoint": "tools.yaml",
+      "linesOfCode": 150,
+      "dependencies": {
+        "runtime": ["YAML parser"],
+        "npm": [],
+        "external": []
+      },
+      "files": [
+        "genai-toolbox/tools.yaml"
+      ],
+      "customization": {
+        "points": ["Tool definitions", "Parameter schemas"],
+        "difficulty": "easy"
+      },
+      "integration": {
+        "targetProjects": ["GenAI systems", "LLM agents", "Tool registries"],
+        "setupTime": "5 minutes",
+        "documentation": ["PORTING_GUIDE.md#genai-toolbox"]
+      },
+      "bootstrapCompatibility": {
+        "ts-fullstack": {"compatible": true, "location": "configs/", "notes": "YAML config support"},
+        "AutonomusCompany": {"compatible": true, "location": ".claude/", "notes": "Claude workflow tool definitions"},
+        "ai-native-ux-template": {"compatible": true, "location": "config/", "notes": "MCP tool configuration"}
+      }
+    },
+
+    "python_agent": {
+      "id": "python_agent",
+      "name": "Python ADK Agent",
+      "category": "agent",
+      "portability": "requires_adk",
+      "location": "agent/",
+      "entryPoint": "main.py",
+      "linesOfCode": 420,
+      "dependencies": {
+        "runtime": ["Python 3.12+"],
+        "pip": ["google-adk>=0.1.0", "ag-ui-adk>=0.1.0", "fastapi>=0.115.0", "uvicorn>=0.32.0"],
+        "external": ["Google Gemini API"]
+      },
+      "files": [
+        "agent/main.py",
+        "agent/toolset_manager.py",
+        "agent/pyproject.toml"
+      ],
+      "tools": [
+        {
+          "name": "upsert_ui_element",
+          "signature": "function upsert_ui_element(tool_context: ToolContext, id: str, type: str, props: dict) -> dict",
+          "description": "Add or update UI element on canvas"
+        },
+        {
+          "name": "remove_ui_element",
+          "signature": "function remove_ui_element(tool_context: ToolContext, id: str) -> dict",
+          "description": "Remove UI element from canvas"
+        },
+        {
+          "name": "clear_canvas",
+          "signature": "function clear_canvas(tool_context: ToolContext) -> dict",
+          "description": "Clear all elements from canvas"
+        }
+      ],
+      "customization": {
+        "points": ["Tool definitions", "State schema", "Lifecycle hooks", "Health checks"],
+        "difficulty": "high"
+      },
+      "integration": {
+        "targetProjects": ["GenUI systems", "Agentic UIs", "Custom ADK agents"],
+        "setupTime": "60 minutes",
+        "documentation": [".github/copilot-instructions.md", "docs/REFACTORING_PATTERNS.md"]
+      },
+      "bootstrapCompatibility": {
+        "ts-fullstack": {"compatible": false, "location": "packages/python-agent/", "notes": "Requires new Python package with ADK integration"},
+        "AutonomusCompany": {"compatible": false, "location": null, "notes": "No Python/ADK support"},
+        "ai-native-ux-template": {"compatible": false, "location": null, "notes": "No Python support"},
+        "modme-exclusive": true,
+        "portingNotes": "Critical gap - must create packages/python-agent/ with FastAPI+ADK setup, port state sync patterns"
+      }
+    }
+  },
+
+  "integrationPatterns": {
+    "standalone_kb": {
+      "name": "Standalone Knowledge Base",
+      "targetComponents": ["knowledge_base_system"],
+      "targetProjects": ["Any GitHub repo with issues"],
+      "dependencies": "None (Node.js only)",
+      "steps": [
+        "Copy scripts/knowledge-management/ directory",
+        "Update KNOWLEDGE_BASE constant",
+        "Add workflow step to .github/workflows/",
+        "Create test cases",
+        "Deploy"
+      ]
+    },
+    
+    "component_registry_custom_backend": {
+      "name": "Component Registry + Custom Backend",
+      "targetComponents": ["component_registry"],
+      "targetProjects": ["React apps with Redux/MobX/Zustand"],
+      "dependencies": "React 19+, Zod",
+      "steps": [
+        "Copy src/components/registry/ directory",
+        "Adapt props interfaces to state shape",
+        "Remove CopilotKit-specific props",
+        "Use with state management"
+      ]
+    },
+    
+    "toolset_management_mcp": {
+      "name": "Toolset Management for MCP Servers",
+      "targetComponents": ["toolset_management"],
+      "targetProjects": ["MCP server projects"],
+      "dependencies": "ajv, ajv-formats",
+      "steps": [
+        "Copy agent/toolsets.json structure",
+        "Define MCP tools as toolsets",
+        "Use validation scripts for CI/CD",
+        "Generate documentation"
+      ]
+    },
+    
+    "schema_crawler_api_clients": {
+      "name": "Schema Crawler for API Clients",
+      "targetComponents": ["schema_crawler"],
+      "targetProjects": ["TypeScript API clients"],
+      "dependencies": "Zod, TypeScript",
+      "steps": [
+        "Copy schema-crawler.ts",
+        "Generate Zod schemas from OpenAPI/JSON Schema",
+        "Use in API client for validation",
+        "Export types"
+      ]
+    },
+    
+    "chromadb_data_pipeline": {
+      "name": "ChromaDB Indexing for Data Pipelines",
+      "targetComponents": ["chromadb_indexing"],
+      "targetProjects": ["Data pipelines (Airflow, Prefect)"],
+      "dependencies": "chromadb, google-generativeai",
+      "steps": [
+        "Copy ingest_chunks.py",
+        "Add batch processing logic",
+        "Integrate with orchestrator",
+        "Create collections"
+      ]
+    }
+  },
+
+  "dependencies": {
+    "npm": {
+      "next": "^16.0.0",
+      "react": "^19.0.0",
+      "@copilotkit/react-core": "^1.50.0",
+      "@copilotkit/react-ui": "^1.50.0",
+      "zod": "^3.23.0",
+      "ajv": "^8.12.0",
+      "ajv-formats": "^2.1.1",
+      "typescript": "^5.3.3"
+    },
+    "pip": {
+      "google-adk": ">=0.1.0",
+      "ag-ui-adk": ">=0.1.0",
+      "fastapi": ">=0.115.0",
+      "uvicorn": ">=0.32.0",
+      "chromadb": "latest",
+      "google-generativeai": "latest"
+    },
+    "runtime": {
+      "Node.js": "22+",
+      "Python": "3.12+",
+      "TypeScript": "5.3+"
+    }
+  },
+
+  "apiContracts": {
+    "agent_state": {
+      "python": {
+        "tool_context.state['elements']": [
+          {"id": "string", "type": "string", "props": "dict"}
+        ]
+      },
+      "typescript": {
+        "UIElement": {
+          "id": "string",
+          "type": "string",
+          "props": "any"
+        },
+        "AgentState": {
+          "elements": "UIElement[]"
+        }
+      }
+    },
+    
+    "tool_response": {
+      "format": {
+        "status": "'success' | 'error' | 'warning'",
+        "message": "string",
+        "element_count": "number (optional)"
+      }
+    },
+    
+    "kb_analysis": {
+      "format": {
+        "concepts": "string[]",
+        "labels": "string[]",
+        "relatedFiles": "Array<{path: string, description: string}>",
+        "relatedDocs": "string[]"
+      }
+    },
+    
+    "toolset_schema": {
+      "format": {
+        "id": "string",
+        "name": "string",
+        "description": "string",
+        "default": "boolean",
+        "icon": "string",
+        "tools": "string[]",
+        "metadata": {
+          "status": "'active' | 'deprecated'",
+          "category": "string",
+          "version": "string",
+          "requires": "string[]",
+          "related_toolsets": "string[]"
+        }
+      }
+    },
+    
+    "chromadb_chunks": {
+      "format": {
+        "id": "string",
+        "text": "string",
+        "metadata": {
+          "file": "string",
+          "type": "'function' | 'class' | 'component' | 'doc'",
+          "name": "string",
+          "line_start": "number (optional)",
+          "line_end": "number (optional)",
+          "imports": "string[] (optional)",
+          "exports": "string[] (optional)"
+        }
+      }
+    }
+  },
+
+  "codeMetrics": {
+    "totalFiles": 100,
+    "totalLinesOfCode": 26700,
+    "byCategory": {
+      "pythonAgent": {"files": 5, "linesOfCode": 1200},
+      "typescriptAgentGenerator": {"files": 15, "linesOfCode": 2500},
+      "reactFrontend": {"files": 12, "linesOfCode": 1800},
+      "scripts": {"files": 20, "linesOfCode": 3500},
+      "documentation": {"files": 25, "linesOfCode": 15000},
+      "configuration": {"files": 15, "linesOfCode": 1500},
+      "workflows": {"files": 8, "linesOfCode": 1200}
+    },
+    "byLanguage": {
+      "TypeScript": {"files": 30, "linesOfCode": 4300},
+      "Python": {"files": 15, "linesOfCode": 3000},
+      "Markdown": {"files": 25, "linesOfCode": 15000},
+      "JSON/YAML": {"files": 23, "linesOfCode": 2700},
+      "Shell": {"files": 15, "linesOfCode": 1700}
+    }
+  },
+
+  "portingChecklist": {
+    "preMigration": [
+      "Identify target components",
+      "Review dependencies",
+      "Check Node.js/Python versions",
+      "Review API keys needed",
+      "Plan integration points"
+    ],
+    "duringMigration": [
+      "Copy relevant directories",
+      "Update file paths in configuration",
+      "Update import statements",
+      "Customize constants",
+      "Install dependencies",
+      "Run validation scripts",
+      "Update documentation"
+    ],
+    "postMigration": [
+      "Run tests",
+      "Verify GitHub Actions workflows",
+      "Test ChromaDB ingestion",
+      "Generate documentation",
+      "Create PR with changes",
+      "Monitor first production run"
+    ]
+  },
+
+  "externalResources": {
+    "copilotkit": "https://docs.copilotkit.ai/",
+    "googleADK": "https://ai.google.dev/adk/docs",
+    "agUIClient": "https://www.npmjs.com/package/@ag-ui/client",
+    "chromaDB": "https://docs.trychroma.com/",
+    "zod": "https://zod.dev/"
+  },
+
+  "metadata": {
+    "maintainer": "ModMe GenUI Team",
+    "license": "See LICENSE file",
+    "lastUpdated": "2026-01-03",
+    "repository": "https://github.com/your-org/modme-ui-01"
+  }
+}

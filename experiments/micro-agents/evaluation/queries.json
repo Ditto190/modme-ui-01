@@ -1,0 +1,44 @@
+[
+  {
+    "id": "q1",
+    "query": "List all TypeScript files in the current directory",
+    "context": {
+      "workspace": "/workspaces/modme-ui-01",
+      "expected_tool": "bash"
+    }
+  },
+  {
+    "id": "q2",
+    "query": "Create a new file called test.md with the text 'Hello World'",
+    "context": {
+      "workspace": "/workspaces/modme-ui-01",
+      "expected_tool": "bash",
+      "expected_file": "test.md"
+    }
+  },
+  {
+    "id": "q3",
+    "query": "Show me the first 10 lines of package.json",
+    "context": {
+      "workspace": "/workspaces/modme-ui-01",
+      "expected_tool": "bash"
+    }
+  },
+  {
+    "id": "q4",
+    "query": "Find all files containing the word 'embedding' in the scripts directory",
+    "context": {
+      "workspace": "/workspaces/modme-ui-01",
+      "expected_tool": "bash",
+      "expected_pattern": "embedding"
+    }
+  },
+  {
+    "id": "q5",
+    "query": "Count how many .ts files exist in the src directory",
+    "context": {
+      "workspace": "/workspaces/modme-ui-01",
+      "expected_tool": "bash"
+    }
+  }
+]

@@ -1,0 +1,50 @@
+name: Inbox Embeddings Generator
+
+on:
+  workflow_run:
+    workflows: ['Inbox Ingest Pipeline']
+    types: [completed]
+    branches: [main, dev, 'chore/**', 'feat/**', 'fix/**']
+  workflow_dispatch:
+    inputs:
+      reindex_all:
+        description: 'Reindex all entries (not just new ones)'
+        type: boolean
+        default: false
+
+jobs:
+  generate-embeddings:
+    name: Generate semantic embeddings
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install embedding dependencies
+        run: |
+          npm install --save-dev @xenova/transformers
+          npm install --save @supabase/supabase-js
+
+      - name: Run embedding generation
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          REINDEX_ALL: ${{ inputs.reindex_all || 'false' }}
+        run: node scripts/inbox-embeddings.mjs
+
+      - name: Trigger MDA categorization
+        if: success()
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: mda-categorize.yml
+          ref: ${{ github.ref_name || github.event.workflow_run.head_branch }}
+          token: ${{ secrets.GITHUB_TOKEN }}

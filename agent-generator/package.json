@@ -1,0 +1,19 @@
+{
+  "name": "agent-generator",
+  "version": "1.0.0",
+  "description": "Prototype for generating AI agents, prompts, and tool definitions",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "generate": "tsx src/scripts/generate.ts"
+  },
+  "dependencies": {
+    "typescript": "^5.3.3",
+    "tsx": "^4.7.0",
+    "typescript-json-schema": "^0.62.0",
+    "glob": "^10.3.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6"
+  }
+}

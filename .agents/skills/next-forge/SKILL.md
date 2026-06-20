@@ -34,15 +34,21 @@ From repo root:
 ```bash
 yarn dev:forge:supabase   # start local Supabase (Docker)
 yarn dev:forge:core       # app:3100 web:3101 api:3102
-# or
+```
+
+Or from `next-forge/`:
+
+```bash
 cd next-forge && bun install && bun run dev:core
 ```
 
-1. `bun run db:start` then copy `packages/database/.env.example` → `.env`
-2. `bun run db:push`
-3. Copy app `.env.example` → `.env.local` (Auth.js `AUTH_SECRET` + ModMe URLs)
+Run the setup steps from `next-forge/` unless noted otherwise:
+
+1. `cd next-forge && bun run db:start`, then copy `next-forge/packages/database/.env.example` → `next-forge/packages/database/.env`
+2. `cd next-forge && bun run db:push`
+3. From `next-forge/`, copy app `.env.example` → `.env.local` (Auth.js `AUTH_SECRET` + ModMe URLs)
 4. Sign in with `dev@modme.local` / `devpassword`
-5. Optional: `yarn dev:forge:workshop` for docs + storybook
+5. From repo root, optional: `yarn dev:forge:workshop` for docs + storybook
 
 **Auth:** Auth.js credentials (no Clerk). **Database:** Supabase local Postgres (no Neon required).
 

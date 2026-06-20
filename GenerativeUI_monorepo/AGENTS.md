@@ -1,5 +1,8 @@
 # AI Agent Instructions for Generative UI Monorepo
 
+**Legacy stack** — maintained until GenerativeUI → next-forge migration cutover (Phase 4).  
+**Primary product stack:** `next-forge/` — see [`.agents/skills/modme-generative-ui-migrate/SKILL.md`](../.agents/skills/modme-generative-ui-migrate/SKILL.md) and [`../docs/agent-index.md`](../docs/agent-index.md).
+
 This Turborepo-powered monorepo contains AI-driven generative UI applications with frontend (Next.js + CopilotKit) and backend (Python FastAPI + AG2) components.
 
 ## Quick Navigation
@@ -11,7 +14,7 @@ This Turborepo-powered monorepo contains AI-driven generative UI applications wi
 | Run linting | `yarn eslint` | Root |
 | Fix linting issues | `yarn eslint:fix` | Root |
 | Run tests | `yarn test` | Root |
-| Frontend dev | `yarn workspace @monorepo-template/web-dashboard dev` | Root |
+| Frontend dev | `yarn workspace @generative-ui/web-dashboard dev` | Root (port **3001** in ModMe) |
 | Backend dev | `cd apps/agent-server && poetry run uvicorn src.main:app --reload` | `apps/agent-server/` |
 
 ## Workspace docs (Monorepo_ModMe root)
@@ -19,7 +22,9 @@ This Turborepo-powered monorepo contains AI-driven generative UI applications wi
 External and automated agents should also read:
 
 - [`../docs/agent-tech-guide.md`](../docs/agent-tech-guide.md) — lean-ctx, skills, MCP, changelog workflow
+- [`../docs/inbox-pipeline/README.md`](../docs/inbox-pipeline/README.md) — **Inbox → Knowledge pipeline** (architecture, feature taxonomy, all scripts + DB + workflows)
 - [`../CHANGELOG.md`](../CHANGELOG.md) — append under `[Unreleased]` per Agent Update Protocol
+- [`docs/inbox/README.md`](docs/inbox/README.md) — Inbox funnel guide + agent capture protocol
 
 ## Monorepo Structure
 
@@ -208,9 +213,9 @@ yarn build
 
 ### Running Only One Service
 ```bash
-# Frontend only (runs on port 3000)
+# Frontend only (ModMe port 3001; default next dev uses 3000)
 cd apps/web-dashboard
-yarn dev
+PORT=3001 yarn dev
 
 # Backend only (runs on port 8000)
 cd apps/agent-server
@@ -258,5 +263,33 @@ See [Getting Started](docs/GETTING_STARTED.md) for detailed setup.
 
 ---
 
-**Last Updated:** 2024  
-**For questions:** See [Debugging](docs/DEBUGGING.md) or check the workspace structure
+**Last Updated:** 2026-06-20  
+**For questions:** See [Debugging](docs/DEBUGGING.md) or [`../docs/agent-index.md`](../docs/agent-index.md)
+
+---
+
+## Inbox Capture Protocol
+
+When making significant design decisions, architectural changes, code reviews, or research worth keeping, **drop a note in the inbox**:
+
+**Location**: `GenerativeUI_monorepo/docs/inbox/`
+
+**Filename**: `YYYY-MM-DDTHH-MM-SS_{type}_{agent-role}_{summary-slug}.{ext}`
+
+**Minimum frontmatter** (`.md` files):
+```yaml
+---
+timestamp: <ISO 8601>        # e.g. 2026-06-20T13:08:52Z
+agent: copilot               # your agent name
+agent_role: backend          # frontend|backend|devops|architect|reviewer|researcher
+type: architecture           # architecture|design|code-review|solution|research|snippet|link|component
+severity: high               # low|medium|high|critical
+tags: [fastapi, decision]
+branch: <current branch>
+---
+```
+
+For non-`.md` formats (links, PDFs, code snippets, React components), just drop the file — the ingestor handles extraction automatically.
+
+The pipeline runs on every push to `docs/inbox/` and ingests entries into Supabase.
+See `docs/inbox/README.md` for full documentation.

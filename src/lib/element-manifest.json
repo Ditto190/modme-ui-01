@@ -1,0 +1,125 @@
+{
+  "elements": [
+    {
+      "id": "StatCard",
+      "title": "Stat Card",
+      "enabled": true,
+      "category": "kpi",
+      "requiredProps": ["title", "value"],
+      "promptHint": "Use for headline KPI metrics such as active projects, at-risk count, and blockers.",
+      "defaultSize": { "cols": 1, "rows": 1 }
+    },
+    {
+      "id": "DataTable",
+      "title": "Data Table",
+      "enabled": true,
+      "category": "operations",
+      "requiredProps": ["columns", "data"],
+      "promptHint": "Use for tabular operational data like blocked tasks, milestones, or owner assignments.",
+      "defaultSize": { "cols": 3, "rows": 2 }
+    },
+    {
+      "id": "ChartCard",
+      "title": "Chart Card",
+      "enabled": true,
+      "category": "analytics",
+      "requiredProps": ["title", "chartType", "data"],
+      "promptHint": "Use for trend visualizations such as burndown, throughput, and utilization over time.",
+      "defaultSize": { "cols": 2, "rows": 2 },
+      "refreshIntervalMs": 30000
+    }
+  ],
+  "presets": [
+    {
+      "id": "project_management_starter",
+      "label": "Project Management Starter",
+      "category": "project-management",
+      "description": "Starter canvas with portfolio KPIs, blocker feed, and delivery trend.",
+      "elements": [
+        {
+          "id": "portfolio_health",
+          "type": "StatCard",
+          "props": {
+            "title": "Active Projects",
+            "value": 12,
+            "trend": "+2 this month",
+            "trendDirection": "up"
+          }
+        },
+        {
+          "id": "blockers_table",
+          "type": "DataTable",
+          "props": {
+            "columns": ["Project", "Issue", "Owner", "Age"],
+            "data": [
+              { "Project": "Apollo", "Issue": "API migration", "Owner": "Sam", "Age": "3d" },
+              { "Project": "Nova", "Issue": "QA backlog", "Owner": "Priya", "Age": "2d" }
+            ]
+          }
+        },
+        {
+          "id": "delivery_trend",
+          "type": "ChartCard",
+          "props": {
+            "title": "Delivery Throughput",
+            "chartType": "line",
+            "data": [
+              { "week": "W1", "completed": 18 },
+              { "week": "W2", "completed": 22 },
+              { "week": "W3", "completed": 20 },
+              { "week": "W4", "completed": 27 }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "executive_snapshot",
+      "label": "Executive Snapshot",
+      "category": "executive",
+      "description": "Lean KPI-first preset for quick portfolio health checks.",
+      "elements": [
+        {
+          "id": "exec_risk",
+          "type": "StatCard",
+          "props": {
+            "title": "At-Risk Projects",
+            "value": 3,
+            "trend": "stable",
+            "trendDirection": "up"
+          }
+        },
+        {
+          "id": "exec_blocked",
+          "type": "StatCard",
+          "props": {
+            "title": "Blocked Workstreams",
+            "value": 2,
+            "trend": "-1 week over week",
+            "trendDirection": "down"
+          }
+        }
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "id": "default",
+      "label": "Default Workspace",
+      "panels": ["StatCard", "DataTable", "ChartCard"],
+      "recommendedPreset": "project_management_starter"
+    },
+    {
+      "id": "project_management",
+      "label": "Project Management Workspace",
+      "panels": ["StatCard", "DataTable", "ChartCard"],
+      "recommendedPreset": "project_management_starter"
+    },
+    {
+      "id": "executive",
+      "label": "Executive Workspace",
+      "panels": ["StatCard", "ChartCard"],
+      "recommendedPreset": "executive_snapshot"
+    }
+  ]
+}

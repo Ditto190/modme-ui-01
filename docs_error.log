@@ -1,0 +1,4 @@
+
+> adk-starter@0.1.0 docs:json-to-md
+> node scripts/knowledge-management/sync-docs.js --direction json-to-md
+

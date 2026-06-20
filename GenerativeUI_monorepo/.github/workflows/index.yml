@@ -75,6 +75,24 @@ jobs:
       - name: Test
         run: yarn test
 
+  quality:
+    name: Quality Playbook
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          cache: yarn
+          check-latest: true
+          node-version: 'lts/*'
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Run Quality Playbook
+        run: npm run quality
+
 on:
   pull_request:
   push:

@@ -1,0 +1,90 @@
+
+> adk-starter@0.1.0 lint
+> eslint . && ruff check .
+
+
+C:\Users\dylan\modme-ui-01\.copilot\templates\component-template.tsx
+  21:6  warning  'props' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\agent-generator\src\mcp-registry\molecule-generator.ts
+   18:24  warning  'JSONSchema' is defined but never used    @typescript-eslint/no-unused-vars
+   34:35  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   50:25  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  363:44  warning  'tools' is defined but never used         @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\agent-generator\src\mcp-registry\schema-crawler.ts
+   12:10  warning  'z' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+  281:5   error    Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+  307:5   error    Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+  340:3   warning  'zodCode' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+  341:3   warning  'testData' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\agent-generator\src\scripts\generate.ts
+  55:33  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\dylan\modme-ui-01\agent-generator\src\skills\pptx\scripts\html2pptx.js
+   28:22  error    A `require()` style import is forbidden     @typescript-eslint/no-require-imports
+   29:14  error    A `require()` style import is forbidden     @typescript-eslint/no-require-imports
+   30:7   warning  'sharp' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   30:15  error    A `require()` style import is forbidden     @typescript-eslint/no-require-imports
+  121:54  warning  'tmpDir' is defined but never used          @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\knowledge-management\anthropic-skill-converter.js
+  18:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  19:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  20:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  21:21  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\dylan\modme-ui-01\scripts\knowledge-management\fetch-anthropic-skills.js
+   17:12  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   18:14  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   19:15  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  223:16  warning  'err' is defined but never used          @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\knowledge-management\generate-diagram.js
+   6:12  error    A `require()` style import is forbidden          @typescript-eslint/no-require-imports
+   7:14  error    A `require()` style import is forbidden          @typescript-eslint/no-require-imports
+   8:22  error    A `require()` style import is forbidden          @typescript-eslint/no-require-imports
+  15:7   warning  'OUTPUT_SVG' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\knowledge-management\skill-spec-validator.js
+   18:12  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   19:14  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   20:14  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  116:12  warning  'error' is defined but never used        @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\knowledge-management\sync-docs.js
+   7:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   8:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   9:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  10:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  11:13  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  12:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\dylan\modme-ui-01\scripts\knowledge-management\test-kb-mapper.js
+  9:57  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\dylan\modme-ui-01\scripts\toolset-management\create-alias.js
+  18:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  19:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\dylan\modme-ui-01\scripts\toolset-management\detect-toolset-changes.js
+  18:12  error    A `require()` style import is forbidden       @typescript-eslint/no-require-imports
+  19:14  error    A `require()` style import is forbidden       @typescript-eslint/no-require-imports
+  63:25  warning  'toolDef' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\dylan\modme-ui-01\scripts\toolset-management\generate-migration-guide.js
+  14:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  15:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\dylan\modme-ui-01\scripts\toolset-management\validate-toolsets.js
+  24:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  25:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  26:13  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  27:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\dylan\modme-ui-01\src\lib\types.ts
+  4:10  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+Γ£û 51 problems (39 errors, 12 warnings)
+

@@ -1,0 +1,36 @@
+name: MCP Starter (CI)
+
+on:
+  workflow_dispatch:
+    inputs:
+      run-script:
+        description: 'Run the starter script on the runner (true/false)'
+        required: false
+        default: 'true'
+  push:
+    branches: [ main, feature/* ]
+
+jobs:
+  start-mcp-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PowerShell
+        uses: PowerShell/PowerShell@v2
+
+      - name: Make starter script executable (if present)
+        run: |
+          chmod +x ./scripts/start-mcp-servers.ps1 || true
+
+      - name: Run MCP starter script
+        if: ${{ github.event.inputs['run-script'] == 'true' || github.event_name == 'push' }}
+        run: |
+          pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/start-mcp-servers.ps1
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-logs
+          path: .logs/**

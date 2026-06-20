@@ -1,0 +1,137 @@
+{
+  "name": "ModMe GenUI Workspace",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1":  { 
+      "version": "22.9.0",
+      "nodeGypDependencies":  true,
+      "nvmVersion": "latest"
+    },
+    "ghcr.io/wxw-matt/devcontainer-features/script_runner:0": {},
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12",
+      "installTools": true
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "dockerComposeVersion":  "v2"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "GitHub.vscode-github-actions",
+        "ms-azuretools.vscode-docker",
+        "usernamehw.errorlens",
+        "christian-kohler.path-intellisense",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "always",
+          "source.fixAll.eslint": "explicit",
+          "source.sortImports": "explicit"
+        },
+        "files.autoSave": "afterDelay",
+        "files.autoSaveDelay": 1000,
+        "python.defaultInterpreterPath": "${workspaceFolder}/agent/.venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": false,
+        "python.linting.flake8Enabled": true,
+        "python.formatting.provider": "black",
+        "tailwindCSS.experimental.classRegex": [
+          [
+            "cva\\(([^)]*)\\)",
+            "[\"'`]([^\"'`]*).*?[\"'`]"
+          ],
+          [
+            "cx\\(([^)]*)\\)",
+            "(?:'|\"|`)([^']*)(?:'|\"|`)"
+          ]
+        ],
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.python",
+          "editor.formatOnSave": true
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "editor.lightbulb.enable": true
+      },
+      "keybindings": [
+        {
+          "key": "ctrl+shift+r",
+          "command": "editor.action.codeAction",
+          "args": {
+            "kind": "refactor"
+          }
+        },
+        {
+          "key": "ctrl+shift+r ctrl+e",
+          "command": "editor.action.codeAction",
+          "args": {
+            "kind": "refactor.extract.function",
+            "apply": "first"
+          }
+        }
+      ]
+    }
+  },
+
+  "forwardPorts": [3000, 8000, 8001, 8002],
+  "portsAttributes": {
+    "3000": {
+      "label": "Next.js UI",
+      "onAutoForward": "notify"
+    },
+    "8000": {
+      "label": "Python ADK Agent",
+      "onAutoForward": "notify"
+    },
+    "8001": {
+      "label": "ChromaDB",
+      "onAutoForward": "notify"
+    },
+    "8002": {
+      "label": "Session Memory",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+
+  "remoteEnv": {
+    "NODE_ENV": "development",
+    "PYTHONPATH": "${containerWorkspaceFolder}/agent"
+  },
+  "remoteUser": "vscode",
+
+  "mounts": [
+    "source=${localWorkspaceFolder}/data,target=${containerWorkspaceFolder}/data,type=bind,consistency=cached",
+    "source=${localWorkspaceFolder}/.devcontainer/mcp-servers,target=/home/vscode/.config/mcp,type=bind,consistency=cached"
+  ],
+  "containerEnv": {
+    "WORKSPACE_TYPE": "genui-devcontainer-multiworktree"
+  }
+}

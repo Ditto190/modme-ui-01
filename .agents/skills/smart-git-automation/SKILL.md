@@ -17,7 +17,7 @@ Extends the global [smart-git-automation](https://github.com/mskadu/opencode-age
 
 - Creating branches or worktrees (use `new-agent-worktree.ps1` or Cursor `/worktree`)
 - Main checkout `Monorepo_ModMe/` feature work (forbidden)
-- Cross-stack changes without reviewing split-to-prs first
+- Cross-stack changes without first splitting them into separate next-forge and GenerativeUI PR scopes
 
 ## ModMe overrides (non-negotiable)
 
@@ -26,7 +26,7 @@ Extends the global [smart-git-automation](https://github.com/mskadu/opencode-age
 | `git checkout -b feature/add-auth` | Branches only via `.\scripts\new-agent-worktree.ps1 -Name "<task>" -Owner <owner>` → `feature/<owner>/<task>` |
 | PR base `main` | **`gh pr create --base dev`** |
 | Auto-commit | **User must confirm** each commit/push/PR step |
-| One blob commit | If both `next-forge/` and `GenerativeUI_monorepo/` changed → use **split-to-prs** skill first |
+| One blob commit | If both `next-forge/` and `GenerativeUI_monorepo/` changed → split the work into separate PR scopes before committing |
 
 ## Recommended flow
 
@@ -94,4 +94,3 @@ PR body must include test plan with `yarn check:forge` / `yarn verify:forge` whe
 
 - [`docs/multi-agent-worktrees.md`](../../docs/multi-agent-worktrees.md)
 - [`.agents/skills/next-forge/SKILL.md`](../next-forge/SKILL.md)
-- `.cursor/skills-cursor/split-to-prs/SKILL.md` — cross-stack commits

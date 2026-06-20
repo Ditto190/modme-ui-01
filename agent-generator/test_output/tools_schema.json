@@ -1,0 +1,43 @@
+{
+  "GetWeather": {
+    "description": "Get the current weather for a given location.",
+    "type": "object",
+    "properties": {
+      "location": {
+        "description": "The city and state, e.g. San Francisco, CA",
+        "type": "string"
+      },
+      "unit": {
+        "description": "The unit of temperature to return",
+        "enum": [
+          "celsius",
+          "fahrenheit"
+        ],
+        "type": "string"
+      }
+    },
+    "required": [
+      "location"
+    ],
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  },
+  "GetForecast": {
+    "description": "Get the weather forecast for a given location.",
+    "type": "object",
+    "properties": {
+      "location": {
+        "description": "The city and state, e.g. San Francisco, CA",
+        "type": "string"
+      },
+      "days": {
+        "description": "Number of days to forecast",
+        "type": "number"
+      }
+    },
+    "required": [
+      "days",
+      "location"
+    ],
+    "$schema": "http://json-schema.org/draft-07/schema#"
+  }
+}

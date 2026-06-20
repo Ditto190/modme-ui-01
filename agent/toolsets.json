@@ -1,0 +1,49 @@
+{
+  "$schema": "./toolset-schema.json",
+  "version": "1.0.0",
+  "updated": "2025-01-15T10:30:00Z",
+  "toolsets": [
+    {
+      "id": "ui_elements",
+      "name": "UI Elements",
+      "description": "Manage canvas UI elements (StatCards, DataTables, ChartCards)",
+      "default": true,
+      "icon": "paintbrush",
+      "tools": [
+        "upsert_ui_element",
+        "remove_ui_element",
+        "clear_canvas"
+      ],
+      "metadata": {
+        "status": "active",
+        "category": "generative_ui",
+        "version": "1.0.0",
+        "authors": ["modme-team"],
+        "last_modified": "2025-01-15T10:30:00Z",
+        "created": "2025-01-01T00:00:00Z",
+        "requires": [],
+        "related_toolsets": ["theme"]
+      }
+    },
+    {
+      "id": "theme",
+      "name": "Theme Management",
+      "description": "Control application theme colors",
+      "default": true,
+      "icon": "palette",
+      "tools": [
+        "setThemeColor"
+      ],
+      "metadata": {
+        "status": "active",
+        "category": "frontend",
+        "version": "1.0.0",
+        "authors": ["modme-team"],
+        "last_modified": "2025-01-15T10:30:00Z",
+        "created": "2025-01-01T00:00:00Z",
+        "requires": [],
+        "related_toolsets": ["ui_elements"]
+      }
+    }
+  ]
+}

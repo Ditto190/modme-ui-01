@@ -45,25 +45,36 @@ const arcjetMiddleware = async (request: NextRequest) => {
   }
 };
 
-// Compose non-Clerk middleware with Nemo
-const composedMiddleware = createNEMO(
-  {},
-  {
-    before: [internationalizationMiddleware, arcjetMiddleware],
+// Default middleware chain - simplified for development
+export default authMiddleware(async (auth, request, _event) => {
+  try {
+    // Authentication enforcement: redirect unauthenticated users to sign-in on protected routes
+    const pathname = request.nextUrl.pathname;
+    const isSignInPage = pathname.startsWith("/sign-in");
+    const isPublicRoute = isSignInPage || pathname.startsWith("/api") || pathname.startsWith("/_next");
+    
+    if (!auth?.user && !isPublicRoute) {
+      const signInUrl = new URL("/sign-in", request.nextUrl.origin);
+      signInUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(signInUrl);
+    }
+    
+    // Run security headers (primary security layer)
+    const headersResponse = securityHeaders();
+    
+    // Apply Arcjet if configured
+    if (env.ARCJET_KEY) {
+      try {
+        await arcjetMiddleware(request);
+      } catch (arcjetError) {
+        console.warn("Arcjet validation failed (continuing):", arcjetError);
+      }
+    }
+    
+    // Return secure response
+    return headersResponse;
+  } catch (error) {
+    console.error("Middleware error:", error);
+    return NextResponse.next();
   }
-);
-
-// Clerk middleware wraps other middleware in its callback
-export default authMiddleware(async (_auth, request, event) => {
-  // Run security headers first
-  const headersResponse = securityHeaders();
-
-  // Then run composed middleware (i18n + arcjet)
-  const middlewareResponse = await composedMiddleware(
-    request as unknown as NextRequest,
-    event
-  );
-
-  // Return middleware response if it exists, otherwise headers response
-  return middlewareResponse || headersResponse;
 }) as unknown as NextProxy;

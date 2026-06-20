@@ -126,3 +126,4 @@ Short best-practice recipes live in the embedded docs:
 - https://voltagent.dev/docs
 - https://github.com/voltagent/voltagent
 - https://github.com/voltagent/voltagent/tree/main/examples
+- [Quality Playbook Automation](file:///C:/Users/dylan/Monorepo_ModMe/GenerativeUI_monorepo/quality/run_quality_playbook.sh)

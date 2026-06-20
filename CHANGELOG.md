@@ -61,23 +61,34 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (repo) Inbox pipeline v1 — contracts (`docs/inbox-pipeline/contracts/`), audit/fix scripts, Supabase migrations, and `@repo/schemas` inbox types
+- (repo) GitHub Agentic Workflows assets (`.github/aw/`, agent definitions, workflow-health and inbox-pipeline-check CI)
+- (repo) GenerativeUI devops-voltagent app, intake-pipeline Python orchestrator, and Playwright test scaffolding
+- (repo) Evaluation pipeline docs (`docs/evaluation/`), agent eval collect/report scripts, and catalog e2e tests in next-forge
+- (repo) Root inbox tooling — `yarn inbox:audit`, `inbox:fix`, `inbox:test`, `intake:orchestrate`, and beads starter scripts
 - (cursor) Cursor marketplace plugin skills under `.cursor/skills/` — thermos, fix-ci, orchestrate, principle-*, voltagent, and related agent workflows
 - (copilot) Expanded root `.github/copilot-instructions.md` for dual-monorepo (next-forge + GenerativeUI) commands and verification workflow
 - (cursor) Additional Claude plugin enables in `.cursor/settings.json` (commit-commands, supabase, typescript-lsp, rust-analyzer-lsp, agent-sdk-dev)
 
 ### Changed
 
-- (gitignore) Ignore local hook state (`.cursor/hooks/state/`), IDE-local dirs (`.claude/`, `.copilot/`), and install manifests; remove erroneous `.cursor/hooks.json` ignore
+- (repo) **Reconcile `main` with Monorepo_ModMe** — GenUI Workbench (`modme-ui-01` legacy layout) superseded by dual-monorepo stack (`next-forge/` + `GenerativeUI_monorepo/`); unrelated GenUI history retired on default branch
+- (gitignore) Ignore Playwright artifacts, beads embedded Dolt state, local hook state (`.cursor/hooks/state/`), IDE-local dirs (`.claude/`, `.copilot/`), and install manifests; remove erroneous `.cursor/hooks.json` ignore
 
 - (ci) next-forge CI job in `.github/workflows/ci.yml` — path-filtered `check`, `test`, `build` on Bun; `dev` branch added to workflow triggers
 - (ci) Root scripts `yarn check:forge`, `fix:forge`, `verify:forge`, `pre-commit:check`, `hooks:install`; `scripts/verify-forge-ci.ps1`
 - (ci) Pre-commit runs `ultracite check` when staged paths include `next-forge/`; changelog monitoring extended to next-forge apps/packages
 - (agents) ModMe overlay `.agents/skills/smart-git-automation/SKILL.md` and `scripts/vibe-session-finish.ps1` for worktree session end (commit/PR to `dev`)
-- (cursor) Security-only Cursor hooks — audit-log, sensitive-prompt-guard, block-models-by-repo-origin in `.cursor/hooks.json` (stop/focus-stealing hooks removed)
+- (cursor) Cursor hook configuration simplified to prevent failClosed blocking issues
 - (next-forge) Root scripts `yarn dev:forge:core`, `dev:forge:workshop`, `dev:forge:supabase`
 - (cursor-cookbook) `dag-task-runner` skill at `.cursor/skills/dag-task-runner/` with Cursor SDK runner scripts
 - (cursor-cookbook) SDK examples vendored at `.vendor/cursor-cookbook/sdk/` (quickstart, app-builder, agent-kanban, coding-agent-cli, dag-task-runner)
 - (cursor-cookbook) `scripts/install-cursor-cookbook.ps1` to refresh hooks, skill, and SDK from upstream
+
+### Removed
+
+- (cursor) Problematic hooks removed from project — `audit-log.sh`, `block-models-by-repo-origin.sh`, `sensitive-prompt-guard.sh` were causing `ERROR_HOOKS_BLOCKED` in Cursor due to `failClosed: true` configuration and missing dependencies
+- (cursor) Hook patching logic from `install-cursor-cookbook.ps1` — hooks no longer available upstream
 - (cursor-ai) `agent-workbench-orchestration` skill — multi-agent workflow for agent panel work (schemas → hook → UI → WebSocket → verify) with goal contract template
 - (contextarch) [contextarch-cli](https://github.com/ksoventures/contextarch-cli) — install/bootstrap scripts, `yarn contextarch` / `yarn contextarch:bootstrap`; generated `next-forge` AI context files (AGENTS.md, CLAUDE.md, `.cursorrules`, `.github/copilot-instructions.md`)
 - (shared-schemas) WebSocket stream event payloads: `token`, `tool_start`, `tool_result`, `done`, plus `OptimisticMessage` schema

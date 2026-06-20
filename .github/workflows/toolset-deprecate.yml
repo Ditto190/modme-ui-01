@@ -1,0 +1,300 @@
+name: Toolset Deprecation
+
+on:
+  workflow_dispatch:
+    inputs:
+      old_toolset:
+        description: 'Name of the toolset to deprecate'
+        required: true
+        type: string
+      new_toolset:
+        description: 'Name of the replacement toolset (canonical name)'
+        required: true
+        type: string
+      reason:
+        description: 'Reason for deprecation'
+        required: true
+        type: string
+      removal_date:
+        description: 'Planned removal date (YYYY-MM-DD)'
+        required: false
+        type: string
+      create_issue:
+        description: 'Create GitHub issue for tracking'
+        required: false
+        type: boolean
+        default: true
+
+env:
+  NODE_VERSION: '22.9.0'
+  DEPRECATION_PERIOD_DAYS: 180  # 6 months default
+
+jobs:
+  validate-deprecation:
+    name: Validate Deprecation Request
+    runs-on: ubuntu-latest
+    outputs:
+      is_valid: ${{ steps.validate.outputs.is_valid }}
+      removal_date: ${{ steps.validate.outputs.removal_date }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Validate toolsets exist
+        id: validate
+        run: |
+          # Check that old_toolset exists
+          # Check that new_toolset exists
+          # Verify new_toolset is not already deprecated
+          # Calculate removal date if not provided
+          node scripts/validate-deprecation.js \
+            --old "${{ github.event.inputs.old_toolset }}" \
+            --new "${{ github.event.inputs.new_toolset }}" \
+            --removal-date "${{ github.event.inputs.removal_date }}"
+      
+      - name: Check for existing deprecation
+        run: |
+          # Fail if toolset is already deprecated
+          if grep -q '"${{ github.event.inputs.old_toolset }}"' agent/toolset_aliases.json; then
+            echo "Error: Toolset '${{ github.event.inputs.old_toolset }}' is already deprecated"
+            exit 1
+          fi
+
+  create-alias:
+    name: Create Deprecation Alias
+    needs: validate-deprecation
+    if: needs.validate-deprecation.outputs.is_valid == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Create alias mapping
+        run: |
+          # Add deprecation entry to toolset_aliases.json
+          node scripts/create-alias.js \
+            --old "${{ github.event.inputs.old_toolset }}" \
+            --new "${{ github.event.inputs.new_toolset }}" \
+            --reason "${{ github.event.inputs.reason }}" \
+            --removal-date "${{ needs.validate-deprecation.outputs.removal_date }}"
+      
+      - name: Update agent code
+        run: |
+          # Add deprecation warning logic to agent/main.py
+          node scripts/inject-deprecation-warning.js \
+            --toolset "${{ github.event.inputs.old_toolset }}"
+      
+      - name: Commit alias changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add agent/toolset_aliases.json agent/main.py
+          git commit -m "chore: deprecate toolset '${{ github.event.inputs.old_toolset }}' → '${{ github.event.inputs.new_toolset }}'"
+          git push
+
+  generate-migration-guide:
+    name: Generate Migration Documentation
+    needs: [validate-deprecation, create-alias]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Generate migration guide
+        run: |
+          node scripts/generate-migration-guide.js \
+            --old "${{ github.event.inputs.old_toolset }}" \
+            --new "${{ github.event.inputs.new_toolset }}" \
+            --reason "${{ github.event.inputs.reason }}" \
+            --removal-date "${{ needs.validate-deprecation.outputs.removal_date }}" \
+            --output "docs/migration/${{ github.event.inputs.old_toolset }}_to_${{ github.event.inputs.new_toolset }}.md"
+      
+      - name: Update deprecation registry
+        run: |
+          # Add entry to docs/DEPRECATED_TOOLSETS.md
+          node scripts/update-deprecation-registry.js \
+            --old "${{ github.event.inputs.old_toolset }}" \
+            --new "${{ github.event.inputs.new_toolset }}" \
+            --removal-date "${{ needs.validate-deprecation.outputs.removal_date }}"
+      
+      - name: Update CHANGELOG
+        run: |
+          # Add deprecation notice to CHANGELOG.md
+          node scripts/update-changelog.js \
+            --type deprecation \
+            --old "${{ github.event.inputs.old_toolset }}" \
+            --new "${{ github.event.inputs.new_toolset }}"
+      
+      - name: Commit documentation
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/ CHANGELOG.md
+          git commit -m "docs: add migration guide for '${{ github.event.inputs.old_toolset }}' deprecation"
+          git push
+
+  test-alias-resolution:
+    name: Test Alias Resolution
+    needs: [create-alias, generate-migration-guide]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd agent && pip install -r requirements.txt
+      
+      - name: Test alias resolution
+        run: |
+          # Test that old toolset name resolves to new toolset
+          node scripts/test-alias-resolution.js \
+            --toolset "${{ github.event.inputs.old_toolset }}"
+      
+      - name: Test Python agent with deprecated toolset
+        run: |
+          cd agent
+          python -m pytest tests/test_deprecation.py \
+            --old-toolset "${{ github.event.inputs.old_toolset }}" \
+            --new-toolset "${{ github.event.inputs.new_toolset }}" \
+            -v
+      
+      - name: Verify deprecation warning
+        run: |
+          # Start agent and verify warning is logged
+          node scripts/verify-deprecation-warning.js \
+            --toolset "${{ github.event.inputs.old_toolset }}"
+
+  create-tracking-issue:
+    name: Create Deprecation Tracking Issue
+    needs: [validate-deprecation, test-alias-resolution]
+    if: github.event.inputs.create_issue == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Create GitHub issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const oldToolset = '${{ github.event.inputs.old_toolset }}';
+            const newToolset = '${{ github.event.inputs.new_toolset }}';
+            const reason = '${{ github.event.inputs.reason }}';
+            const removalDate = '${{ needs.validate-deprecation.outputs.removal_date }}';
+            
+            const issueBody = `## Toolset Deprecation Notice
+            
+            **Deprecated Toolset**: \`${oldToolset}\`  
+            **Replacement**: \`${newToolset}\`  
+            **Planned Removal**: ${removalDate}
+            
+            ### Reason
+            ${reason}
+            
+            ### Migration Guide
+            See [migration guide](../docs/migration/${oldToolset}_to_${newToolset}.md) for detailed migration steps.
+            
+            ### Checklist
+            - [x] Deprecation alias created
+            - [x] Migration guide generated
+            - [x] CHANGELOG updated
+            - [ ] Monitor usage metrics (6 months)
+            - [ ] Send final deprecation notice (1 month before removal)
+            - [ ] Remove deprecated toolset
+            
+            ### Migration Support
+            If you need help migrating, please comment on this issue.
+            
+            ---
+            *Automated deprecation tracking issue*`;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Deprecation] ${oldToolset} → ${newToolset}`,
+              body: issueBody,
+              labels: ['deprecation', 'toolset-management']
+            });
+
+  notify-completion:
+    name: Notify Deprecation Complete
+    needs: [create-alias, generate-migration-guide, test-alias-resolution, create-tracking-issue]
+    if: always()
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Create summary
+        run: |
+          echo "## Toolset Deprecation Complete ⚠️" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Old Toolset**: ${{ github.event.inputs.old_toolset }}" >> $GITHUB_STEP_SUMMARY
+          echo "**New Toolset**: ${{ github.event.inputs.new_toolset }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Removal Date**: ${{ needs.validate-deprecation.outputs.removal_date }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review migration guide: \`docs/migration/${{ github.event.inputs.old_toolset }}_to_${{ github.event.inputs.new_toolset }}.md\`" >> $GITHUB_STEP_SUMMARY
+          echo "2. Monitor usage metrics for 6 months" >> $GITHUB_STEP_SUMMARY
+          echo "3. Send final notice 1 month before removal" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Send notification
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data '{"text":"⚠️ Toolset Deprecated: `${{ github.event.inputs.old_toolset }}` → `${{ github.event.inputs.new_toolset }}`\nRemoval: ${{ needs.validate-deprecation.outputs.removal_date }}"}' \
+            $SLACK_WEBHOOK_URL

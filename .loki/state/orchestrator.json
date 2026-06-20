@@ -1,0 +1,37 @@
+{
+  "version": "2.35.0",
+  "projectName": "Monorepo_ModMe — Inbox → MDA → Supabase Knowledge Pipeline",
+  "currentPhase": "QA",
+  "phaseHistory": [
+    { "phase": "Bootstrap",      "status": "done", "completedAt": "2026-06-20" },
+    { "phase": "Discovery",      "status": "done", "completedAt": "2026-06-20" },
+    { "phase": "Architecture",   "status": "done", "completedAt": "2026-06-20" },
+    { "phase": "Infrastructure", "status": "done", "completedAt": "2026-06-20" },
+    { "phase": "Development",    "status": "done", "completedAt": "2026-06-20" },
+    { "phase": "QA",             "status": "in-progress", "startedAt": "2026-06-20" },
+    { "phase": "Deployment",     "status": "pending" },
+    { "phase": "BusinessOps",    "status": "pending" },
+    { "phase": "GrowthLoop",     "status": "pending" }
+  ],
+  "completionPromise": "End-to-end Inbox→MDA→Supabase pipeline live; Knowledge Query UI in next-forge/apps/app",
+  "metrics": {
+    "tasksCompleted": 8,
+    "agentsInstalled": 41,
+    "workflowsCreated": 4,
+    "scriptsCreated": 5,
+    "adrDocuments": 3
+  },
+  "constraints": {
+    "defaultModel": "haiku",
+    "developmentModel": "sonnet",
+    "architectureModel": "opus",
+    "costConstraint": "STRICT: Haiku for all ops/tests/monitoring"
+  },
+  "sdlcRoles": {
+    "orchestrator": "se-system-architecture-reviewer (Copilot Sonnet 4.6)",
+    "implementation": "ai-team-dev (Sonnet)",
+    "testing": "ai-team-qa (Haiku)",
+    "planning": "ai-team-producer (Haiku)"
+  },
+  "updatedAt": "2026-06-20T23:09:00Z"
+}

@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "7.4.2",
     "@prisma/client-runtime-utils": "^7.4.2",
     "@t3-oss/env-nextjs": "^0.13.10",

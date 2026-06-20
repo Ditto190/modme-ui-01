@@ -2,15 +2,22 @@ name: CI
 
 on:
   push:
-    branches: [main, master, develop, dev]
+    branches:
+      - main
+      - master
+      - develop
+      - dev
     paths-ignore:
       - "**.md"
       - "docs/**"
       - "LICENSE"
   pull_request:
-    branches: [main, master, develop, dev]
+    branches:
+      - main
+      - master
+      - develop
+      - dev
     paths-ignore:
-      - "**.md"
       - "docs/**"
       - "LICENSE"
 
@@ -29,8 +36,8 @@ jobs:
       - name: Block tracked env files
         run: |
           set -euo pipefail
-          if git ls-files | grep -E '(^|/)\.env$|\.env\.local$|\.env\.production$' ; then
-            echo "::error::Secret env files must not be committed. Remove from git and add to .gitignore."
+          if git ls-files | grep -E '(^|/)\.env$|\.env\.local$|\.env\.prod$' ; then
+            echo "::err::Secret env files must not be committed. Remove from git and add to .gitignore."
             exit 1
           fi
           echo "No .env files tracked."
@@ -66,7 +73,7 @@ jobs:
           GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
         run: node scripts/validate-changelog.mjs --require-update
 
-  monorepo:
+  generative-ui:
     needs: [secret-guard, changes]
     if: needs.changes.outputs.generative == 'true'
     runs-on: ubuntu-latest
@@ -75,26 +82,20 @@ jobs:
         working-directory: GenerativeUI_monorepo
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: yarn
           cache-dependency-path: GenerativeUI_monorepo/yarn.lock
-
       - name: Enable Corepack (Yarn 3)
         run: corepack enable
-
-      - name: Install dependencies
+      - name: Install deps
         run: yarn install --immutable 2>/dev/null || yarn install
-
       - name: Lint
         run: yarn lint
-
       - name: Test
         run: yarn test
-
       - name: Build
         run: yarn build
 
@@ -107,20 +108,15 @@ jobs:
         working-directory: next-forge
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version-file: next-forge/package.json
-
-      - name: Install dependencies
+          bun-version-file: next-forge/pkg.json
+      - name: Install deps
         run: bun install --frozen-lockfile
-
       - name: Check (Ultracite/Biome)
         run: bun run check
-
       - name: Test
         run: bun run test
-
       - name: Build
         run: bun run build

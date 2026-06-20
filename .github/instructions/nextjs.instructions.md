@@ -1,4 +1,12 @@
 ---
+<<<<<<< HEAD
+applyTo: '**'
+---
+
+# Next.js Best Practices for LLMs (2025)
+
+_Last updated: July 2025_
+=======
 description: "Best practices for building Next.js (App Router) apps with modern caching, tooling, and server/client boundaries (aligned with Next.js 16.1.1)."
 applyTo: "**/*.tsx, **/*.ts, **/*.jsx, **/*.js, **/*.css"
 ---
@@ -6,6 +14,7 @@ applyTo: "**/*.tsx, **/*.ts, **/*.jsx, **/*.js, **/*.css"
 # Next.js Best Practices for LLMs (2026)
 
 _Last updated: January 2026 (aligned to Next.js 16.1.1)_
+>>>>>>> chore/adr-readme-pipeline
 
 This document summarizes the latest, authoritative best practices for building, structuring, and maintaining Next.js applications. It is intended for use by LLMs and developers to ensure code quality, maintainability, and scalability.
 
@@ -26,17 +35,28 @@ This document summarizes the latest, authoritative best practices for building, 
 - **Colocation:** Place files (components, styles, tests) near where they are used, but avoid deeply nested structures.
 - **Route Groups:** Use parentheses (e.g., `(admin)`) to group routes without affecting the URL path.
 - **Private Folders:** Prefix with `_` (e.g., `_internal`) to opt out of routing and signal implementation details.
+<<<<<<< HEAD
+
+- **Feature Folders:** For large apps, group by feature (e.g., `app/dashboard/`, `app/auth/`).
+- **Use `src/`** (optional): Place all source code in `src/` to separate from config files.
+
+## 2.1. Server and Client Component Integration (App Router)
+=======
 - **Feature Folders:** For large apps, group by feature (e.g., `app/dashboard/`, `app/auth/`).
 - **Use `src/`** (optional): Place all source code in `src/` to separate from config files.
 
 ## 2. Next.js 16+ App Router Best Practices
 
 ### 2.1. Server and Client Component Integration (App Router)
+>>>>>>> chore/adr-readme-pipeline
 
 **Never use `next/dynamic` with `{ ssr: false }` inside a Server Component.** This is not supported and will cause a build/runtime error.
 
 **Correct Approach:**
+<<<<<<< HEAD
+=======
 
+>>>>>>> chore/adr-readme-pipeline
 - If you need to use a Client Component (e.g., a component that uses hooks, browser APIs, or client-only libraries) inside a Server Component, you must:
   1. Move all client-only logic/UI into a dedicated Client Component (with `'use client'` at the top).
   2. Import and use that Client Component directly in the Server Component (no need for `next/dynamic`).
@@ -46,7 +66,11 @@ This document summarizes the latest, authoritative best practices for building, 
 
 ```tsx
 // Server Component
+<<<<<<< HEAD
+import DashboardNavbar from '@/components/DashboardNavbar';
+=======
 import DashboardNavbar from "@/components/DashboardNavbar";
+>>>>>>> chore/adr-readme-pipeline
 
 export default async function DashboardPage() {
   // ...server logic...
@@ -60,13 +84,21 @@ export default async function DashboardPage() {
 ```
 
 **Why:**
+<<<<<<< HEAD
+=======
 
+>>>>>>> chore/adr-readme-pipeline
 - Server Components cannot use client-only features or dynamic imports with SSR disabled.
 - Client Components can be rendered inside Server Components, but not the other way around.
 
 **Summary:**
 Always move client-only UI into a Client Component and import it directly in your Server Component. Never use `next/dynamic` with `{ ssr: false }` in a Server Component.
 
+<<<<<<< HEAD
+---
+
+## 2. Component Best Practices
+=======
 ### 2.2. Next.js 16+ async request APIs (App Router)
 
 - **Assume request-bound data is async in Server Components and Route Handlers.** In Next.js 16, APIs like `cookies()`, `headers()`, and `draftMode()` are async in the App Router.
@@ -76,6 +108,7 @@ Always move client-only UI into a Client Component and import it directly in you
 ---
 
 ## 3. Component Best Practices
+>>>>>>> chore/adr-readme-pipeline
 
 - **Component Types:**
   - **Server Components** (default): For data fetching, heavy logic, and non-interactive UI.
@@ -102,7 +135,11 @@ Always move client-only UI into a Client Component and import it directly in you
 - **Testing:**
   - Co-locate tests with components (e.g., `UserCard.test.tsx`).
 
+<<<<<<< HEAD
+## 3. Naming Conventions (General)
+=======
 ## 4. Naming Conventions (General)
+>>>>>>> chore/adr-readme-pipeline
 
 - **Folders:** `kebab-case` (e.g., `user-profile/`)
 - **Files:** `PascalCase` for components, `camelCase` for utilities/hooks, `kebab-case` for static assets
@@ -110,7 +147,11 @@ Always move client-only UI into a Client Component and import it directly in you
 - **Types/Interfaces:** `PascalCase`
 - **Constants:** `UPPER_SNAKE_CASE`
 
+<<<<<<< HEAD
+## 4. API Routes (Route Handlers)
+=======
 ## 5. API Routes (Route Handlers)
+>>>>>>> chore/adr-readme-pipeline
 
 - **Prefer API Routes over Edge Functions** unless you need ultra-low latency or geographic distribution.
 - **Location:** Place API routes in `app/api/` (e.g., `app/api/users/route.ts`).
@@ -121,6 +162,13 @@ Always move client-only UI into a Client Component and import it directly in you
 - **Error Handling:** Return appropriate HTTP status codes and error messages.
 - **Authentication:** Protect sensitive routes using middleware or server-side session checks.
 
+<<<<<<< HEAD
+## 5. General Best Practices
+
+- **TypeScript:** Use TypeScript for all code. Enable `strict` mode in `tsconfig.json`.
+- **ESLint & Prettier:** Enforce code style and linting. Use the official Next.js ESLint config.
+- **Environment Variables:** Store secrets in `.env.local`. Never commit secrets to version control.
+=======
 ### Route Handler usage note (performance)
 
 - **Do not call your own Route Handlers from Server Components** (e.g., `fetch('/api/...')`) just to reuse logic. Prefer extracting shared logic into modules (e.g., `lib/`) and calling it directly to avoid extra server hops.
@@ -133,22 +181,42 @@ Always move client-only UI into a Client Component and import it directly in you
   - In Next.js 16, `serverRuntimeConfig` / `publicRuntimeConfig` are removed. Use environment variables instead.
   - `NEXT_PUBLIC_` variables are **inlined at build time** (changing them after build won’t affect a deployed build).
   - If you truly need runtime evaluation of env in a dynamic context, follow Next.js guidance (e.g., call `connection()` before reading `process.env`).
+>>>>>>> chore/adr-readme-pipeline
 - **Testing:** Use Jest, React Testing Library, or Playwright. Write tests for all critical logic and components.
 - **Accessibility:** Use semantic HTML and ARIA attributes. Test with screen readers.
 - **Performance:**
   - Use built-in Image and Font optimization.
+<<<<<<< HEAD
+=======
   - Prefer **Cache Components** (`cacheComponents` + `use cache`) over legacy caching patterns.
+>>>>>>> chore/adr-readme-pipeline
   - Use Suspense and loading states for async data.
   - Avoid large client bundles; keep most logic in Server Components.
 - **Security:**
   - Sanitize all user input.
   - Use HTTPS in production.
   - Set secure HTTP headers.
+<<<<<<< HEAD
+=======
   - Prefer server-side authorization for Server Actions and Route Handlers; never trust client input.
+>>>>>>> chore/adr-readme-pipeline
 - **Documentation:**
   - Write clear README and code comments.
   - Document public APIs and components.
 
+<<<<<<< HEAD
+# Avoid Unnecessary Example Files
+
+Do not create example/demo files (like ModalExample.tsx) in the main codebase unless the user specifically requests a live example, Storybook story, or explicit documentation component. Keep the repository clean and production-focused by default.
+
+# Always use the latest documentation and guides
+- For every nextjs related request, begin by searching for the most current nextjs documentation, guides, and examples.
+- Use the following tools to fetch and search documentation if they are available:
+  - `resolve_library_id` to resolve the package/library name in the docs.
+  - `get_library_docs` for up to date documentation.
+
+
+=======
 ## 7. Caching & Revalidation (Next.js 16 Cache Components)
 
 - **Prefer Cache Components for memoization/caching** in the App Router.
@@ -178,3 +246,4 @@ Do not create example/demo files (like ModalExample.tsx) in the main codebase un
 - Use the following tools to fetch and search documentation if they are available:
   - `resolve_library_id` to resolve the package/library name in the docs.
   - `get_library_docs` for up-to-date documentation.
+>>>>>>> chore/adr-readme-pipeline

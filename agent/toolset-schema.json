@@ -1,0 +1,163 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Toolset Configuration",
+  "description": "Schema for toolset definitions in ModMe GenUI workspace",
+  "type": "object",
+  "required": ["version", "updated", "toolsets"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the toolset configuration"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last update"
+    },
+    "toolsets": {
+      "type": "array",
+      "description": "Array of toolset definitions",
+      "items": {
+        "$ref": "#/definitions/toolset"
+      }
+    }
+  },
+  "definitions": {
+    "toolset": {
+      "type": "object",
+      "required": ["id", "name", "description", "tools"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Unique identifier (lowercase with underscores)"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 50,
+          "description": "Human-readable name"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 200,
+          "description": "Brief description of toolset purpose"
+        },
+        "default": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether toolset is enabled by default"
+        },
+        "icon": {
+          "type": "string",
+          "description": "Octicon name for documentation"
+        },
+        "tools": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-zA-Z0-9_]*$"
+          },
+          "description": "Array of tool names in this toolset"
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": ["active", "deprecated", "experimental", "beta"],
+              "default": "active",
+              "description": "Current status of the toolset"
+            },
+            "category": {
+              "type": "string",
+              "enum": [
+                "generative_ui",
+                "data_analysis",
+                "frontend",
+                "backend",
+                "system",
+                "integration",
+                "testing",
+                "knowledge_management"
+              ],
+              "description": "Toolset category"
+            },
+            "last_modified": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Last modification timestamp"
+            },
+            "created": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Creation timestamp"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^\\d+\\.\\d+\\.\\d+$",
+              "description": "Toolset version (semantic versioning)"
+            },
+            "authors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of contributors"
+            },
+            "documentation_url": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL to detailed documentation"
+            },
+            "related_toolsets": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "IDs of related toolsets"
+            },
+            "requires": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Array of required toolset IDs"
+            },
+            "deprecated": {
+              "type": "object",
+              "properties": {
+                "deprecated_since": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "When toolset was deprecated"
+                },
+                "removal_date": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Planned removal date (180 days grace period)"
+                },
+                "superseded_by": {
+                  "type": "string",
+                  "description": "ID of replacement toolset"
+                },
+                "reason": {
+                  "type": "string",
+                  "description": "Deprecation reason"
+                },
+                "migration_guide": {
+                  "type": "string",
+                  "description": "Path to migration guide"
+                }
+              },
+              "required": ["deprecated_since", "removal_date", "superseded_by", "reason"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

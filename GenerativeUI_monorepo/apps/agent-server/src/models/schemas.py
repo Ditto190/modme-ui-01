@@ -57,3 +57,53 @@ class WebSocketMessage(BaseModel):
         default_factory=lambda: datetime.now().timestamp(),
         description="Unix timestamp"
     )
+
+
+class InboxEntryInput(BaseModel):
+    """Inbox entry payload accepted by the MDA inbox pipeline."""
+
+    content_hash: str
+    source_file: str
+    source_format: str  # md | txt | pdf | url | jsx | snippet | html | csv
+    raw_content: Optional[str] = None
+    extracted_text: Optional[str] = None
+    title: Optional[str] = None
+    summary: Optional[str] = None
+    agent_name: Optional[str] = None
+    agent_role: Optional[str] = None
+    session_id: Optional[str] = None
+    branch_name: Optional[str] = None
+    tags: List[str] = Field(default_factory=list)
+    severity: str = "medium"  # low | medium | high | critical
+    entry_type: Optional[str] = None  # architecture | design | code-review | solution | research | component | link | snippet
+    storage_url: Optional[str] = None
+    category_id: Optional[str] = None
+
+
+class CategorizeResult(BaseModel):
+    """Result of taxonomy and relation processing for a single entry."""
+
+    entry_id: str
+    tags: List[str]
+    category_id: Optional[str] = None
+    severity: str
+    relations: List[Dict[str, Any]] = Field(default_factory=list)
+    confidence: float = 1.0
+    processed_at: float = Field(default_factory=lambda: datetime.now().timestamp())
+
+
+class PipelineRequest(BaseModel):
+    """Request model for batch inbox pipeline operations."""
+
+    entry_ids: List[str]
+    mode: Literal["ingest", "categorize", "relate", "all"] = "all"
+    dry_run: bool = False
+
+
+class PipelineResponse(BaseModel):
+    """Batch response emitted by the MDA inbox pipeline."""
+
+    processed: int
+    results: List[CategorizeResult]
+    errors: List[str] = Field(default_factory=list)
+    duration_ms: float

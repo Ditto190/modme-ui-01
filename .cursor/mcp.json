@@ -11,7 +11,17 @@
     },
     "mantine": {
       "command": "npx",
-      "args": ["-y", "@mantine/mcp-server"]
+      "args": [
+        "-y",
+        "@mantine/mcp-server"
+      ]
+    },
+    "next-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "next-devtools-mcp@latest"
+      ]
     }
   }
 }

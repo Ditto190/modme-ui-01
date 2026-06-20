@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GenAI Toolbox Tools",
+  "type": "object",
+  "properties": {
+    "sources": { "type": "object" },
+    "tools": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "kind": { "type": "string" },
+          "module": { "type": "string" },
+          "function": { "type": "string" },
+          "description": { "type": "string" },
+          "parameters": { "type": "array" }
+        }
+      }
+    }
+  },
+  "required": ["tools"]
+}

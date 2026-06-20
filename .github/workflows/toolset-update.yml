@@ -1,0 +1,245 @@
+name: Toolset Update & Registration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'agent/main.py'
+      - 'agent/toolsets.json'
+      - 'src/lib/types.ts'
+      - 'src/components/registry/**'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force update even if no changes detected'
+        required: false
+        default: 'false'
+      auto_commit:
+        description: 'Automatically commit changes'
+        required: false
+        default: 'true'
+
+env:
+  NODE_VERSION: '22.9.0'
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  detect-toolset-changes:
+    name: Detect Toolset Changes
+    runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.check.outputs.has_changes }}
+      new_toolsets: ${{ steps.check.outputs.new_toolsets }}
+      modified_toolsets: ${{ steps.check.outputs.modified_toolsets }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Need previous commit for diff
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Detect toolset changes
+        id: check
+        run: |
+          # Parse agent/main.py for toolset definitions
+          # Compare with existing registry
+          # Output changes as JSON
+          node scripts/detect-toolset-changes.js
+      
+      - name: Upload detection results
+        uses: actions/upload-artifact@v4
+        with:
+          name: toolset-changes
+          path: .toolset-changes.json
+          retention-days: 7
+
+  validate-toolsets:
+    name: Validate Toolset Definitions
+    needs: detect-toolset-changes
+    if: needs.detect-toolset-changes.outputs.has_changes == 'true' || github.event.inputs.force == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd agent && pip install -r requirements.txt
+      
+      - name: Download detection results
+        uses: actions/download-artifact@v4
+        with:
+          name: toolset-changes
+      
+      - name: Run schema validation
+        run: npm run validate:toolsets
+      
+      - name: Check naming conventions
+        run: node scripts/validate-naming.js
+      
+      - name: Verify tool existence
+        run: node scripts/verify-tools.js
+      
+      - name: Test Python agent initialization
+        run: |
+          cd agent
+          python -m pytest tests/test_toolsets.py -v
+      
+      - name: Check for circular dependencies
+        run: node scripts/check-circular-deps.js
+
+  update-registry:
+    name: Update Toolset Registry
+    needs: [detect-toolset-changes, validate-toolsets]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Download detection results
+        uses: actions/download-artifact@v4
+        with:
+          name: toolset-changes
+      
+      - name: Update toolset registry
+        id: update
+        run: |
+          node scripts/update-toolset-registry.js
+          echo "updated_files=$(git diff --name-only)" >> $GITHUB_OUTPUT
+      
+      - name: Generate TypeScript types
+        run: npm run generate:types
+      
+      - name: Run type check
+        run: npm run type-check
+      
+      - name: Commit changes
+        if: github.event.inputs.auto_commit != 'false'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add agent/toolsets.json src/lib/types.ts
+          git commit -m "chore: update toolset registry [skip ci]" || echo "No changes to commit"
+          git push
+      
+      - name: Create Pull Request
+        if: github.event.inputs.auto_commit == 'false'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update toolset registry"
+          title: "Update Toolset Registry"
+          body: |
+            ## Toolset Registry Update
+            
+            This PR automatically updates the toolset registry based on detected changes.
+            
+            ### Changes
+            ${{ steps.update.outputs.updated_files }}
+            
+            ### New Toolsets
+            ${{ needs.detect-toolset-changes.outputs.new_toolsets }}
+            
+            ### Modified Toolsets
+            ${{ needs.detect-toolset-changes.outputs.modified_toolsets }}
+            
+            ---
+            *Generated by toolset-update workflow*
+          branch: toolset-update-${{ github.run_number }}
+          delete-branch: true
+
+  generate-documentation:
+    name: Generate Documentation
+    needs: [update-registry]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main  # Ensure we have latest changes
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Generate toolset documentation
+        run: node scripts/generate-toolset-docs.js
+      
+      - name: Update README
+        run: node scripts/update-readme-toolsets.js
+      
+      - name: Update CHANGELOG
+        run: node scripts/update-changelog.js
+      
+      - name: Commit documentation updates
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/ README.md CHANGELOG.md
+          git commit -m "docs: update toolset documentation [skip ci]" || echo "No doc changes"
+          git push
+
+  notify-completion:
+    name: Notify Completion
+    needs: [generate-documentation]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Create summary
+        run: |
+          echo "## Toolset Update Complete 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Send notification
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\"Toolset update workflow completed: ${{ job.status }}\"}" \
+            $SLACK_WEBHOOK_URL

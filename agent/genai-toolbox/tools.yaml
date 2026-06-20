@@ -1,0 +1,230 @@
+# GenAI Toolbox Configuration with GreptimeDB Observability
+
+# Service metadata
+service:
+  name: genai-toolbox
+  version: 0.24.0
+  environment: development
+
+# GreptimeDB Observability Configuration
+observability:
+  enabled: true
+  backend: greptime
+  greptime:
+    host: ${GREPTIME_HOST:-localhost:4000}
+    database: ${GREPTIME_DB:-public}
+    username: ${GREPTIME_USERNAME:-}
+    password: ${GREPTIME_PASSWORD:-}
+    # TLS configuration (for production/GreptimeCloud)
+    tls:
+      enabled: false
+      # cert_file: /path/to/cert.pem
+      # key_file: /path/to/key.pem
+
+  # Telemetry settings
+  telemetry:
+    metrics:
+      enabled: true
+      export_interval_seconds: 15
+      instruments:
+        - database_queries_total
+        - database_query_duration_seconds
+        - connection_pool_active
+        - connection_pool_idle
+        - tool_invocations_total
+        - mcp_requests_total
+
+    traces:
+      enabled: true
+      sampling_rate: 1.0 # 100% for development, 0.1 for production
+      attributes:
+        - service.name
+        - service.version
+        - db.system
+        - db.operation
+        - tool.name
+
+    logs:
+      enabled: true
+      level: info # debug, info, warn, error
+      structured: true
+
+# Database sources configuration
+sources:
+  # PostgreSQL local development
+  postgres_local:
+    kind: postgres
+    host: ${POSTGRES_HOST:-localhost}
+    port: ${POSTGRES_PORT:-5432}
+    database: ${POSTGRES_DB:-modme_db}
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    # Connection pool settings
+    pool:
+      max_connections: 10
+      min_connections: 2
+      connection_lifetime_seconds: 3600
+    # SSL mode
+    ssl_mode: ${POSTGRES_SSL_MODE:-disable}
+
+  # Example: BigQuery (uncomment to enable)
+  # bigquery_analytics:
+  #   kind: bigquery
+  #   project: ${GCP_PROJECT}
+  #   dataset: analytics
+  #   credentials_file: ${GOOGLE_APPLICATION_CREDENTIALS}
+
+  # Example: Cloud SQL PostgreSQL (uncomment to enable)
+  # cloudsql_pg:
+  #   kind: cloudsqlpg
+  #   instance: ${CLOUDSQL_INSTANCE}  # project:region:instance
+  #   database: ${CLOUDSQL_DB}
+  #   user: ${CLOUDSQL_USER}
+  #   password: ${CLOUDSQL_PASSWORD}
+
+  # Example: Spanner (uncomment to enable)
+  # spanner_db:
+  #   kind: spanner
+  #   project: ${GCP_PROJECT}
+  #   instance: ${SPANNER_INSTANCE}
+  #   database: ${SPANNER_DATABASE}
+
+# Tools configuration
+tools:
+  # Database query tools
+  - name: query_postgres
+    source: postgres_local
+    description: Execute SQL queries on local PostgreSQL database
+    parameters:
+      - name: query
+        type: string
+        required: true
+        description: SQL query to execute
+      - name: parameters
+        type: array
+        required: false
+        description: Query parameters for prepared statements
+    observability:
+      track_query_duration: true
+      log_query: true # Set to false in production for sensitive queries
+
+  # Schema inspection tool
+  - name: get_schema
+    source: postgres_local
+    description: Get database schema information (tables, columns, types)
+    parameters:
+      - name: schema_name
+        type: string
+        required: false
+        default: public
+        description: Database schema name
+    observability:
+      track_query_duration: true
+
+  # Table metadata tool
+  - name: describe_table
+    source: postgres_local
+    description: Get detailed information about a specific table
+    parameters:
+      - name: table_name
+        type: string
+        required: true
+        description: Name of the table to describe
+      - name: schema_name
+        type: string
+        required: false
+        default: public
+        description: Schema containing the table
+    observability:
+      track_query_duration: true
+
+# Prompts configuration (for agent system instructions)
+prompts:
+  - name: database_expert
+    description: Expert at writing SQL queries and analyzing database schemas
+    content: |
+      You are a database expert assistant with access to PostgreSQL database tools.
+
+      Available tools:
+      - query_postgres: Execute SQL queries
+      - get_schema: View database schema
+      - describe_table: Get table details
+
+      Best practices:
+      - Always use prepared statements with parameters for user input
+      - Start with get_schema to understand available tables
+      - Use EXPLAIN ANALYZE for query optimization
+      - Limit results with LIMIT clause for exploratory queries
+
+      Example workflow:
+      1. User asks about data
+      2. Call get_schema to understand structure
+      3. Call describe_table for specific table details
+      4. Execute query_postgres with appropriate SQL
+
+# Security settings
+security:
+  # Query restrictions
+  query_restrictions:
+    max_execution_time_seconds: 30
+    max_rows_returned: 10000
+    allowed_statements:
+      - SELECT
+      - WITH
+    # Prohibited statements (safety)
+    prohibited_statements:
+      - DROP
+      - DELETE
+      - TRUNCATE
+      - ALTER
+      - CREATE
+      - INSERT
+      - UPDATE
+
+  # Access control (optional - requires authentication setup)
+  # authentication:
+  #   enabled: false
+  #   method: api_key  # api_key, oauth, jwt
+  #   api_keys:
+  #     - key: ${API_KEY_1}
+  #       name: development_key
+
+# Rate limiting (optional)
+rate_limiting:
+  enabled: false
+  requests_per_minute: 100
+  burst: 20
+
+# Caching (optional - improves performance)
+caching:
+  enabled: false
+  backend: redis
+  redis:
+    host: ${REDIS_HOST:-localhost}
+    port: ${REDIS_PORT:-6379}
+    password: ${REDIS_PASSWORD:-}
+    ttl_seconds: 300
+
+# Health check configuration
+health_check:
+  enabled: true
+  interval_seconds: 30
+  endpoints:
+    - path: /health
+      port: 8080
+    - path: /ready
+      port: 8080
+
+# Logging configuration
+logging:
+  level: ${LOG_LEVEL:-info}
+  format: json # json or text
+  outputs:
+    - stdout
+    # - file: /var/log/genai-toolbox/server.log
+
+# Performance tuning
+performance:
+  max_concurrent_queries: 50
+  query_timeout_seconds: 30
+  connection_timeout_seconds: 10

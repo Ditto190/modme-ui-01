@@ -1,0 +1,23 @@
+id: genui-workbench
+name: GenUI Workbench
+description: Generative UI patterns for building AI-powered dashboards with CopilotKit
+  and Google ADK
+items:
+- path: agents/genui-workbench-agent.agent.md
+  kind: agent
+  usage: Main agent for GenUI workbench operations
+- path: instructions/genui-best-practices.instructions.md
+  kind: instruction
+  usage: Best practices for GenUI implementation
+- path: prompts/component-generation.prompt.md
+  kind: prompt
+  usage: Generate UI components from natural language
+tags:
+- genui
+- copilotkit
+- adk
+- dashboards
+display:
+  ordering: manual
+  show_badge: true
+  featured: true

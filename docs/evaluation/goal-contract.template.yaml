@@ -1,0 +1,40 @@
+# Copy → goal-contract.yaml before eval pipeline work (agent-workbench-orchestration Phase 0)
+
+goal: Agent evaluation pipeline — behavioral insight + AI metrics
+owner: modme-eval
+environment: local-first (logs/copilot, optional Supabase)
+
+acceptance_criteria:
+  - id: collect
+    description: agent-eval-collect merges session-logger JSONL into eval-events.jsonl
+    evidence: yarn eval:collect --dry-run exits 0 with event count
+
+  - id: themes
+    description: Signals grouped into themes (feedback-themes pattern) with impact sort
+    evidence: yarn eval:report JSON includes themes[] with signalCount
+
+  - id: contracts
+    description: Offline contract replay reports pass/fail per must/must-not rule
+    evidence: yarn eval:report shows behavioral.contracts[]
+
+  - id: report
+    description: Self-contained reports/agent-eval/index.html with embedded raw-data JSON
+    evidence: file opens via file://; script#raw-data valid JSON
+
+  - id: resume
+    description: where-was-i-style resume packet for interrupted sessions
+    evidence: reports/agent-eval/resume.json generated when orphan sessions detected
+
+  - id: popularity
+    description: behavioural_score merged into catalogue popularity composite (when Supabase live)
+    evidence: catalogue_popularity_snapshots row with source=agent_eval
+
+baseline:
+  session_logger_events_per_week: null
+  agenttrace_p95_ms: null
+  eval_pass_rate: null
+
+verify_commands:
+  - yarn eval:collect --dry-run
+  - yarn eval:report:dry-run
+  - yarn eval:report --output=reports/agent-eval/index.html

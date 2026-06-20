@@ -1,0 +1,64 @@
+name: MDA Categorization Pipeline
+
+on:
+  workflow_run:
+    workflows: ['Inbox Embeddings Generator']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      entry_ids:
+        description: 'Comma-separated entry IDs to categorize (leave blank for all uncategorized)'
+        required: false
+
+jobs:
+  categorize:
+    name: MDA parallel categorization
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --save @supabase/supabase-js
+
+      - name: Run MDA taxonomy team (parallel)
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ENTRY_IDS: ${{ inputs.entry_ids || '' }}
+        run: |
+          echo "🧠 Running taxonomy classification..."
+          node scripts/mda-categorize.mjs --team taxonomy
+
+      - name: Run MDA relations team (parallel)
+        if: success()
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          echo "🔗 Running relations detection..."
+          node scripts/mda-categorize.mjs --team relations
+
+  output-generate:
+    name: Trigger output generation
+    needs: categorize
+    if: success()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger output generation
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: output-generate.yml
+          ref: ${{ github.ref_name || github.event.workflow_run.head_branch }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          inputs: '{"source": "mda-pipeline"}'

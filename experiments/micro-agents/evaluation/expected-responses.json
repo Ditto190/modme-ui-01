@@ -1,0 +1,48 @@
+[
+  {
+    "query_id": "q1",
+    "expected": {
+      "tool_calls": ["bash"],
+      "command_contains": ["ls", ".ts"],
+      "success": true,
+      "output_contains": [".ts"]
+    }
+  },
+  {
+    "query_id": "q2",
+    "expected": {
+      "tool_calls": ["bash"],
+      "command_contains": ["echo", ">", "test.md"],
+      "success": true,
+      "file_created": "test.md",
+      "file_contains": "Hello World"
+    }
+  },
+  {
+    "query_id": "q3",
+    "expected": {
+      "tool_calls": ["bash"],
+      "command_contains": ["head", "package.json"],
+      "success": true,
+      "output_contains": ["name", "version"]
+    }
+  },
+  {
+    "query_id": "q4",
+    "expected": {
+      "tool_calls": ["bash"],
+      "command_contains": ["grep", "embedding", "scripts"],
+      "success": true,
+      "output_contains": ["embedding"]
+    }
+  },
+  {
+    "query_id": "q5",
+    "expected": {
+      "tool_calls": ["bash"],
+      "command_contains": ["find", "src", ".ts", "wc"],
+      "success": true,
+      "output_is_number": true
+    }
+  }
+]

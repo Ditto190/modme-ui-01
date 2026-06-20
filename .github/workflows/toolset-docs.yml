@@ -1,0 +1,244 @@
+name: Generate Toolset Documentation
+
+on:
+  workflow_run:
+    workflows: ["Toolset Update & Registration", "Toolset Deprecation"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Run weekly to keep docs fresh
+    - cron: '0 0 * * 0'  # Every Sunday at midnight
+
+env:
+  NODE_VERSION: '22.9.0'
+
+jobs:
+  generate-toolset-docs:
+    name: Generate Toolset Reference Documentation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Generate toolset reference docs
+        run: |
+          # Generate comprehensive toolset documentation
+          node scripts/generate-toolset-docs.js \
+            --output docs/toolsets/ \
+            --format markdown \
+            --include-examples
+      
+      - name: Generate deprecation table
+        run: |
+          # Generate table of deprecated toolsets
+          node scripts/generate-deprecation-table.js \
+            --output docs/DEPRECATED_TOOLSETS.md
+      
+      - name: Generate migration index
+        run: |
+          # Create index of all migration guides
+          node scripts/generate-migration-index.js \
+            --output docs/migration/README.md
+      
+      - name: Upload documentation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-docs
+          path: docs/
+          retention-days: 30
+
+  update-readme:
+    name: Update README with Toolsets
+    needs: generate-toolset-docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Download generated docs
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-docs
+          path: docs/
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Update README toolset section
+        run: |
+          # Replace toolset table in README.md
+          node scripts/update-readme-toolsets.js
+      
+      - name: Update README statistics
+        run: |
+          # Update toolset count and other stats
+          node scripts/update-readme-stats.js
+
+  update-changelog:
+    name: Update CHANGELOG
+    needs: generate-toolset-docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Generate changelog entry
+        run: |
+          # Add toolset changes to CHANGELOG.md
+          node scripts/update-changelog.js --auto
+      
+      - name: Validate changelog format
+        run: |
+          # Ensure changelog follows Keep a Changelog format
+          node scripts/validate-changelog.js
+
+  commit-docs:
+    name: Commit Documentation Updates
+    needs: [update-readme, update-changelog]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Download all updates
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-docs
+          path: docs/
+      
+      - name: Check for changes
+        id: check
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit and push
+        if: steps.check.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/ README.md CHANGELOG.md
+          git commit -m "docs: update toolset documentation [skip ci]"
+          git push
+
+  validate-docs:
+    name: Validate Generated Documentation
+    needs: commit-docs
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main  # Get latest changes
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Check for broken links
+        run: npm run validate:docs-links
+      
+      - name: Lint markdown files
+        run: npm run lint:markdown
+      
+      - name: Verify completeness
+        run: |
+          # Ensure all toolsets have documentation
+          node scripts/verify-doc-completeness.js
+
+  publish-docs:
+    name: Publish Documentation
+    needs: validate-docs
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build documentation site
+        run: |
+          # If using a docs generator like VitePress
+          npm run docs:build
+      
+      - name: Deploy to GitHub Pages
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/.vitepress/dist
+
+  notify-completion:
+    name: Notify Documentation Updated
+    needs: [publish-docs]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Create summary
+        run: |
+          echo "## Documentation Generation Complete 📚" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Updated Files" >> $GITHUB_STEP_SUMMARY
+          echo "- Toolset reference docs" >> $GITHUB_STEP_SUMMARY
+          echo "- README.md" >> $GITHUB_STEP_SUMMARY
+          echo "- CHANGELOG.md" >> $GITHUB_STEP_SUMMARY
+          echo "- Deprecation table" >> $GITHUB_STEP_SUMMARY
+          echo "- Migration guides index" >> $GITHUB_STEP_SUMMARY

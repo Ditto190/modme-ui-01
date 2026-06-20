@@ -276,3 +276,7 @@ packages/database/generated
 .contentlayer
 .content-collections
 .source
+
+# Playwright
+playwright-report/
+test-results/
