@@ -18,6 +18,8 @@
     "check:forge": "powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run check",
     "fix:forge": "powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run fix",
     "verify:forge": "powershell -ExecutionPolicy Bypass -File ./scripts/verify-forge-ci.ps1",
+    "verify:generative": "powershell -ExecutionPolicy Bypass -File ./scripts/verify-generative-ci.ps1",
+    "beads:init": "powershell -ExecutionPolicy Bypass -File ./scripts/init-beads-starter-issues.ps1",
     "pre-commit:check": "node scripts/pre-commit-checks.mjs",
     "hooks:install": "powershell -ExecutionPolicy Bypass -File ./scripts/install-git-hooks.ps1"
   }

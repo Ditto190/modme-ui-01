@@ -65,8 +65,9 @@ Jest configs use `yarn jest --runInBand` on the **current file** in each package
 
 ### Compounds
 
-- **Full Stack: Agent Server + Web Dashboard** — backend + Next UI
-- **Full Stack: Agent Server + Vibe Web App** — backend + Vite playground
+- **Full Stack: Forge Core + Agent Server** — next-forge App (3100) + Web (3101) + API (3102) + Agent Server (8000)
+- **Full Stack: Agent Server + Web Dashboard** — backend + Next UI (legacy)
+- **Full Stack: Agent Server + Vibe Web App** — backend + Vite playground (legacy)
 
 ### Utility
 

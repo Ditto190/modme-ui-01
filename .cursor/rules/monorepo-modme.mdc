@@ -1,27 +1,40 @@
 ﻿---
-description: "Monorepo_ModMe project context â€” Turborepo layout, package boundaries, and verification expectations."
+name: monorepo-modme
+description: Monorepo_ModMe layout — next-forge primary, GenerativeUI legacy
 globs: GenerativeUI_monorepo/**/*
 alwaysApply: false
 ---
 
-# Monorepo_ModMe
+# Monorepo_ModMe — GenerativeUI (legacy stack)
 
 ## Layout
-- Primary work happens under `GenerativeUI_monorepo/`.
+
+- **Primary product stack:** `next-forge/` (Bun, `@repo/*`) — new features land here.
+- **Legacy agent stack:** `GenerativeUI_monorepo/` (Yarn 3.3, Turbo) — maintained until migration cutover.
 - Yarn 3 workspaces: `apps/*`, `packages/*`.
-- Turbo orchestrates `dev`, `build`, `lint`, `test` from the monorepo root.
+- Turbo orchestrates `dev`, `build`, `lint`, `test` from the GenerativeUI monorepo root.
 
 ## Editing rules
+
 - Change only packages affected by the task.
 - Prefer `workspace:*` for internal dependencies.
 - Match the linter/formatter already configured in each package (ESLint or Biome).
 - UniversalWorkbench has its own root `package.json`; do not assume scripts from the template monorepo root.
+- Do **not** add cross-monorepo imports to `next-forge/` — see `monorepo-boundaries.mdc`.
+
+## Migration pointer
+
+Porting GenerativeUI UI to next-forge: [`.agents/skills/modme-generative-ui-migrate/SKILL.md`](../../.agents/skills/modme-generative-ui-migrate/SKILL.md).
 
 ## Verification
+
 - Run the nearest package's `test`, `lint:check` or `lint`, and `type-check` when available.
+- Root: `yarn verify:generative` for CI parity.
 - For UI changes in Vite apps, run `dev` or `build` in that app package.
 
 ## AI asset locations
+
 - Rules: `.cursor/rules/`
 - Skills: `.agents/skills/` and `.cursor/skills/`
 - Copilot: `.github/copilot-instructions.md`
+- Index: [`docs/agent-index.md`](../../docs/agent-index.md)

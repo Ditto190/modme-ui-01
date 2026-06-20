@@ -60,9 +60,10 @@ Document-first migration. **Do not** cross-import monorepos. GenerativeUI stays 
 
 - [ ] Storybook stories match GenerativeCanvas UX
 - [ ] WebSocket connects to agent-server on worktree port
-- [ ] `@repo/schemas` types match shared-schemas
+- [x] `@repo/schemas` types match shared-schemas
 - [ ] `yarn dev:generative` and `yarn dev:forge` run concurrently without port clash
 - [ ] `bun run build` passes in next-forge
+- [x] Client island at `apps/app/(authenticated)/generative-ui/`
 
 ## References
 

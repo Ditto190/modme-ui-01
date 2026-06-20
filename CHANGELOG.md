@@ -61,71 +61,48 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (docs) [`docs/agent-index.md`](docs/agent-index.md) — dual-monorepo agent onboarding index (ports, skills, migration status, drift register)
+- (cursor) Expanded `/init` command — beads fallback, next-forge debug targets, worktree/migration/CI doc map, Phase 4 starter issues
+- (debug) next-forge launch.json configs (app, web, api, docs, storybook) + compound `Full Stack: Forge Core + Agent Server`
+- (next-forge) `@repo/schemas` package — Zod types ported from GenerativeUI shared-schemas
+- (next-forge) Generative UI client island at `apps/app/(authenticated)/generative-ui/` with WebSocket hook
+- (ci) `yarn verify:generative` and `scripts/verify-generative-ci.ps1` for GenerativeUI CI parity
+- (ci) agent-server pytest job in `ci.yml` (path-filtered)
+- (docs) [`docs/beads-workflow.md`](docs/beads-workflow.md) — beads starter issues and `modme` prefix init guide
 - (cursor) Cursor marketplace plugin skills under `.cursor/skills/` — thermos, fix-ci, orchestrate, principle-*, voltagent, and related agent workflows
-- (copilot) Expanded root `.github/copilot-instructions.md` for dual-monorepo (next-forge + GenerativeUI) commands and verification workflow
-- (cursor) Additional Claude plugin enables in `.cursor/settings.json` (commit-commands, supabase, typescript-lsp, rust-analyzer-lsp, agent-sdk-dev)
+- (copilot) Expanded root `.github/copilot-instructions.md` for dual-monorepo commands and verification workflow
+- (cursor) Additional Claude plugin enables in `.cursor/settings.json`
 
 ### Changed
 
-- (gitignore) Ignore local hook state (`.cursor/hooks/state/`), IDE-local dirs (`.claude/`, `.copilot/`), and install manifests; remove erroneous `.cursor/hooks.json` ignore
-
-- (ci) next-forge CI job in `.github/workflows/ci.yml` — path-filtered `check`, `test`, `build` on Bun; `dev` branch added to workflow triggers
-- (ci) Root scripts `yarn check:forge`, `fix:forge`, `verify:forge`, `pre-commit:check`, `hooks:install`; `scripts/verify-forge-ci.ps1`
-- (ci) Pre-commit runs `ultracite check` when staged paths include `next-forge/`; changelog monitoring extended to next-forge apps/packages
-- (agents) ModMe overlay `.agents/skills/smart-git-automation/SKILL.md` and `scripts/vibe-session-finish.ps1` for worktree session end (commit/PR to `dev`)
-- (cursor) Cursor hook configuration simplified to prevent failClosed blocking issues
-- (next-forge) Root scripts `yarn dev:forge:core`, `dev:forge:workshop`, `dev:forge:supabase`
-- (cursor-cookbook) `dag-task-runner` skill at `.cursor/skills/dag-task-runner/` with Cursor SDK runner scripts
-- (cursor-cookbook) SDK examples vendored at `.vendor/cursor-cookbook/sdk/` (quickstart, app-builder, agent-kanban, coding-agent-cli, dag-task-runner)
-- (cursor-cookbook) `scripts/install-cursor-cookbook.ps1` to refresh hooks, skill, and SDK from upstream
-
-### Removed
-
-- (cursor) Problematic hooks removed from project — `audit-log.sh`, `block-models-by-repo-origin.sh`, `sensitive-prompt-guard.sh` were causing `ERROR_HOOKS_BLOCKED` in Cursor due to `failClosed: true` configuration and missing dependencies
-- (cursor) Hook patching logic from `install-cursor-cookbook.ps1` — hooks no longer available upstream
-- (cursor-ai) `agent-workbench-orchestration` skill — multi-agent workflow for agent panel work (schemas → hook → UI → WebSocket → verify) with goal contract template
-- (contextarch) [contextarch-cli](https://github.com/ksoventures/contextarch-cli) — install/bootstrap scripts, `yarn contextarch` / `yarn contextarch:bootstrap`; generated `next-forge` AI context files (AGENTS.md, CLAUDE.md, `.cursorrules`, `.github/copilot-instructions.md`)
-- (shared-schemas) WebSocket stream event payloads: `token`, `tool_start`, `tool_result`, `done`, plus `OptimisticMessage` schema
-- (web-dashboard) `AgentPanelSkeleton`, `StreamingText`, optimistic send/cancel/retry in `useAgentState`, glass agent panel in `GenerativeCanvas`
-- (agent-server) Token/tool streaming over `/ws/agent` with cancel support
-
-- (ci) Pre-commit checks — `scripts/pre-commit-checks.mjs`, `.githooks/pre-commit`, `scripts/install-git-hooks.ps1`; wired into GitHub Actions (`pre-commit-check.yml`) and Buildkite
-- (ci) `scripts/validate-cursor-skills.mjs` for awesome-cursor-skills install integrity (`--project-only` for hooks, full check for setup audits)
-- (ci) Buildkite pipeline for `GenerativeUI_monorepo` — `.buildkite/`, `docs/buildkite-guide.md`, `scripts/buildkite-demo.ps1`
-- (web-dashboard) Interactive Buildkite explainer at `/dev/buildkite`
-- Agent documentation stack: `docs/agent-tech-guide.md`, root `CHANGELOG.md`, and `changelog-check` CI workflow
-- Globally installed Cursor skills: `changelog-automation`, `documentation-writer`, `doc-coauthoring`, `agents-md`, `changelog-generator`
-- (cursor-ai) Remote Buildkite MCP server in `.cursor/mcp.json` with OAuth setup documented in `docs/agent-tech-guide.md`
-- (mcp) Mantine MCP server (`@mantine/mcp-server`) in `.cursor/mcp.json`, `.vscode/mcp.json`, `.github/mcp.json`, `GenerativeUI_monorepo/mcp.json`, and `.gitlab/duo/mcp.json`
-- (cursor-ai) Expanded [awesome-cursor-skills](https://github.com/spencerpauly/awesome-cursor-skills) global install set and project pointer at `.cursor/skills/awesome-cursor-skills/`
-- (dev) `scripts/install-direnv-hook.ps1`, root `.envrc`, and PowerShell 7 direnv hook for auto-loading `.env`
-- (agents) Multi-agent Git worktrees — `.cursor/worktrees.json`, `scripts/init-worktrees.ps1`, `scripts/new-agent-worktree.ps1`, per-worktree port allocation, `docs/multi-agent-worktrees.md`
-- (dev) `scripts/install-pwsh-terminal-hooks.ps1` — safe Cursor/VS Code shell integration + direnv hook; fixes pwsh startup errors
+- (agents) `AGENTS.md` — link agent-index, dedupe worktrees, clarify next-forge as primary stack, add verify:generative
+- (agents) `.cursor/rules/monorepo-modme.mdc` — legacy stack wording; pointer to next-forge for new features
+- (ci) Remove duplicate changelog job from `ci.yml`; secret-guard runs on all pushes/PRs (no doc-only skip)
+- (ci) `pre-commit-checks.mjs --ci` policy-only; stack builds stay in `ci.yml`
+- (ci) agenttrace-ci triggers on `dev` branch in addition to `main`
+- (ci) next-forge CI job in `.github/workflows/ci.yml` — path-filtered check, test, build on Bun
+- (ci) Root scripts `yarn check:forge`, `fix:forge`, `verify:forge`, `pre-commit:check`, `hooks:install`
+- (agents) ModMe overlay `smart-git-automation` skill and `vibe-session-finish.ps1` for worktree session end
+- (next-forge) Auth.js credentials + Supabase local Postgres (replaces Clerk/Neon for local dev)
+- (gitignore) Ignore local hook state, IDE-local dirs, and install manifests
 
 ### Fixed
 
-- (dev) `init-worktrees.ps1` — use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
-- (dev) `new-agent-worktree.ps1` — usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`
-- (vscode) Set `git.path` in `.vscode/settings.json` so Cursor Agent Review finds Git on Windows when it is not on PATH
-- Add `install-direnv.ps1` helper script to install direnv on Windows to resolve "direnv: command not found" terminal errors.
-- (agent-server) WebSocket message handling uses `asyncio.create_task` + lock so cancel does not block the receive loop
-
-### Changed
-
-- (ci) Worktree bootstrap (`setup-worktree-windows.ps1`, `setup-worktree-unix.sh`, `new-agent-worktree.ps1`) auto-installs git pre-commit hooks
-- (next-forge) Replace Clerk with Auth.js credentials in `@repo/auth`; replace Neon adapter with Supabase local Postgres + Prisma
-- (docs/ci) Post-restart agent tooling validation: lean-ctx 3.7.5, skills-sh MCP, global skills, changelog-check CI â€” all verified; installed `internal-comms` globally
-
-### Deprecated
-
-- (none)
+- (dev) Worktree scripts — `$LASTEXITCODE` for git branch detection; `DIRENV_DISABLE` during setup
+- (vscode) `git.path` in settings for Cursor Agent Review on Windows
+- (agent-server) WebSocket cancel uses asyncio.create_task + lock
 
 ### Removed
 
-- (cursor) Removed focus-stealing stop hooks (`update-skills-on-stop`, ralph `stop-hook`, continual-learning stop, `capture-response`); disabled `continual-learning` and `ralph-loop` plugins
+- (cursor) Problematic hooks removed — `audit-log.sh`, `block-models-by-repo-origin.sh`, `sensitive-prompt-guard.sh`
+- (cursor) Hook patching logic from `install-cursor-cookbook.ps1`
+
+### Deprecated
+
+- (GenerativeUI) `web-dashboard` — migrate to `next-forge/apps/app/(authenticated)/generative-ui/` per migration skill Phase 4
 
 ### Security
 
 - (none)
 
-<!-- Version compare links added on first tagged release, e.g. [1.0.0]: https://github.com/org/repo/compare/v0.9.0...v1.0.0 -->
+<!-- Version compare links added on first tagged release -->

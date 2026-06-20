@@ -143,6 +143,48 @@
       "program": "${file}",
       "cwd": "${fileDirname}",
       "console": "integratedTerminal"
+    },
+    {
+      "name": "next-forge App (SaaS)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bun run dev",
+      "cwd": "${workspaceFolder}/next-forge/apps/app",
+      "serverReadyAction": {
+        "pattern": "- Local:\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    },
+    {
+      "name": "next-forge Web (Marketing)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bun run dev",
+      "cwd": "${workspaceFolder}/next-forge/apps/web"
+    },
+    {
+      "name": "next-forge API",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bun run dev",
+      "cwd": "${workspaceFolder}/next-forge/apps/api"
+    },
+    {
+      "name": "next-forge Docs (Mintlify)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bun run dev",
+      "cwd": "${workspaceFolder}/next-forge/apps/docs",
+      "preLaunchTask": "forge-docs: dev"
+    },
+    {
+      "name": "next-forge Storybook (Workshop)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bun run dev",
+      "cwd": "${workspaceFolder}/next-forge/apps/storybook",
+      "preLaunchTask": "forge-storybook: dev"
     }
   ],
   "compounds": [
@@ -160,6 +202,19 @@
       "stopAll": true,
       "presentation": {
         "order": 2
+      }
+    },
+    {
+      "name": "Full Stack: Forge Core + Agent Server",
+      "configurations": [
+        "Agent Server (FastAPI)",
+        "next-forge App (SaaS)",
+        "next-forge Web (Marketing)",
+        "next-forge API"
+      ],
+      "stopAll": true,
+      "presentation": {
+        "order": 3
       }
     }
   ]

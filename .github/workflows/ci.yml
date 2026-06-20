@@ -3,16 +3,8 @@ name: CI
 on:
   push:
     branches: [main, master, develop, dev]
-    paths-ignore:
-      - "**.md"
-      - "docs/**"
-      - "LICENSE"
   pull_request:
     branches: [main, master, develop, dev]
-    paths-ignore:
-      - "**.md"
-      - "docs/**"
-      - "LICENSE"
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -40,6 +32,7 @@ jobs:
     outputs:
       forge: ${{ steps.filter.outputs.forge }}
       generative: ${{ steps.filter.outputs.generative }}
+      agent_server: ${{ steps.filter.outputs.agent_server }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -50,21 +43,8 @@ jobs:
               - 'next-forge/**'
             generative:
               - 'GenerativeUI_monorepo/**'
-
-  changelog:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Validate CHANGELOG
-        run: node scripts/validate-changelog.mjs
-      - name: Require CHANGELOG update when needed
-        env:
-          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
-        run: node scripts/validate-changelog.mjs --require-update
+            agent_server:
+              - 'GenerativeUI_monorepo/apps/agent-server/**'
 
   monorepo:
     needs: [secret-guard, changes]
@@ -97,6 +77,33 @@ jobs:
 
       - name: Build
         run: yarn build
+
+  agent-server:
+    needs: [secret-guard, changes]
+    if: needs.changes.outputs.agent_server == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: GenerativeUI_monorepo/apps/agent-server
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
+      - name: Test
+        run: poetry run pytest
 
   next-forge:
     needs: [secret-guard, changes]

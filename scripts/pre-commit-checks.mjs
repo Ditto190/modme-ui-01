@@ -132,15 +132,10 @@ function runForgeCheckIfNeeded(files) {
 }
 
 function runForgeCiSuite(files) {
-  if (!files.some((f) => f.startsWith(FORGE_PREFIX))) {
-    return;
+  // Stack builds run in ci.yml only; pre-commit CI runs policy checks.
+  if (files.some((f) => f.startsWith(FORGE_PREFIX))) {
+    ok("next-forge build suite deferred to ci.yml (policy checks only here)");
   }
-
-  ok("running next-forge CI suite (check, test, build)");
-  runForgeBun(["run", "check"]);
-  runForgeBun(["run", "test"]);
-  runForgeBun(["run", "build"]);
-  ok("next-forge CI suite passed");
 }
 
 function main() {

@@ -46,6 +46,50 @@
         "reveal": "always",
         "panel": "shared"
       }
+    },
+    {
+      "label": "forge-docs: dev",
+      "type": "shell",
+      "command": "bun run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/next-forge/apps/docs"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "mintlify",
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "(ready|Local:\\s+http://localhost:3104)"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "forge-storybook: dev",
+      "type": "shell",
+      "command": "bun run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/next-forge/apps/storybook"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "storybook",
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "(Local:\\s+http://localhost:6106|ready in \\d+)"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
     }
   ]
 }

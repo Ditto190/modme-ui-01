@@ -4,7 +4,7 @@ Canonical reference for **AI agents** and **humans** working in this repository:
 
 | Audience | Start here |
 |----------|------------|
-| New agent session | `/init` in Cursor â†’ `AGENTS.md` â†’ this guide â†’ `CHANGELOG.md` (Agent Update Protocol) |
+| New agent session | `/init` in Cursor → `AGENTS.md` → [`docs/agent-index.md`](./agent-index.md) → this guide → `CHANGELOG.md` (Agent Update Protocol) |
 | Human contributor | `/init`, `AGENTS.md`, `docs/debug-launch-guide.md`, `scripts/cursor-ai/README.md` |
 | CI / cloud agent | `CHANGELOG.md` (protocol), `scripts/validate-changelog.mjs`, `.github/workflows/changelog-check.yml` |
 | Local debugging | `docs/debug-launch-guide.md`, `.vscode/launch.json`, `scripts/validate-launch-json.mjs` |
@@ -231,11 +231,20 @@ Restart Cursor / VS Code after editing MCP config. On Windows Antigravity, use `
 
 | Skill | Use when |
 |-------|----------|
+| `next-forge` | Bun dev, ModMe ports, Supabase, verify commands |
+| `modme-generative-ui-migrate` | GenerativeUI → next-forge migration phases |
+| `framework-migration-code-migrate` | Router to modme-generative-ui-migrate |
+| `cicd-automation-workflow-automate` | CI/CD pipeline design and consolidation |
+| `smart-git-automation` | Worktree session end, PR to `dev` |
 | `create-agentsmd` | Generate or refresh `AGENTS.md` |
 | `acquire-codebase-knowledge` | Map architecture, onboarding docs |
 | `quality-playbook` | Spec-traced audits, defect hunting |
 | `github-actions-efficiency` | CI cost/efficiency review |
 | `doublecheck` | Verify agent claims with sources |
+| `supabase` / `supabase-postgres-best-practices` | Database guidance |
+| `voltagent-*` / `create-voltagent` | VoltAgent workflows |
+| `react18-dep-compatibility` | React 18 compat during migration |
+| `memory-merger` | Memory tooling |
 
 ### Global (`~/.agents/skills/`) â€” installed for this initiative
 

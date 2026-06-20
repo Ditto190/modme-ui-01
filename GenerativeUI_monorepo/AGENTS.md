@@ -22,9 +22,7 @@ This Turborepo-powered monorepo contains AI-driven generative UI applications wi
 External and automated agents should also read:
 
 - [`../docs/agent-tech-guide.md`](../docs/agent-tech-guide.md) — lean-ctx, skills, MCP, changelog workflow
-- [`../docs/inbox-pipeline/README.md`](../docs/inbox-pipeline/README.md) — **Inbox → Knowledge pipeline** (architecture, feature taxonomy, all scripts + DB + workflows)
 - [`../CHANGELOG.md`](../CHANGELOG.md) — append under `[Unreleased]` per Agent Update Protocol
-- [`docs/inbox/README.md`](docs/inbox/README.md) — Inbox funnel guide + agent capture protocol
 
 ## Monorepo Structure
 

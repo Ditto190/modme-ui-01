@@ -122,7 +122,6 @@ Root `AGENTS.md` and `.cursor/rules/` are hand-maintained — use contextarch fo
 - [`docs/agent-tech-guide.md`](docs/agent-tech-guide.md) — lean-ctx, skills, changelog, CI, debug
 - [`docs/debug-launch-guide.md`](docs/debug-launch-guide.md) — VS Code `launch.json`, ports, CI validation
 - [`docs/multi-agent-worktrees.md`](docs/multi-agent-worktrees.md) — mandatory for feature work
-- [`docs/inbox-pipeline/README.md`](docs/inbox-pipeline/README.md) — **Inbox → Knowledge pipeline** (feature taxonomy, mermaid architecture, all scripts + DB + UI + workflows)
 - [`CHANGELOG.md`](CHANGELOG.md) — append under `[Unreleased]` per Agent Update Protocol
 - [`docs/codebase/STACK.md`](docs/codebase/STACK.md) — dual-monorepo dependency scorecard and ports
 - [`.agents/skills/next-forge/SKILL.md`](.agents/skills/next-forge/SKILL.md) — next-forge agent skill

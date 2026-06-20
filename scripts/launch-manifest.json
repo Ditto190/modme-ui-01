@@ -94,7 +94,12 @@
     "Agent Server (FastAPI)",
     "Agent Generator: build + current test",
     "Example Next: dev server",
-    "Example React: dev server"
+    "Example React: dev server",
+    "next-forge App (SaaS)",
+    "next-forge Web (Marketing)",
+    "next-forge API",
+    "next-forge Docs (Mintlify)",
+    "next-forge Storybook (Workshop)"
   ],
   "requiredTasks": ["vibe-web-app: dev", "agent-generator: build"],
   "requiredCompounds": [
