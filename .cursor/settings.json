@@ -124,6 +124,21 @@
     },
     "claude-plugins-official/frontend-design": {
       "enabled": true
+    },
+    "claude-code-plugins/commit-commands": {
+      "enabled": true
+    },
+    "claude-plugins-official/supabase": {
+      "enabled": true
+    },
+    "claude-plugins-official/typescript-lsp": {
+      "enabled": true
+    },
+    "claude-plugins-official/rust-analyzer-lsp": {
+      "enabled": true
+    },
+    "claude-plugins-official/agent-sdk-dev": {
+      "enabled": true
     }
   }
 }

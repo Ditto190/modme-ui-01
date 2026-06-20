@@ -61,6 +61,14 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (cursor) Cursor marketplace plugin skills under `.cursor/skills/` — thermos, fix-ci, orchestrate, principle-*, voltagent, and related agent workflows
+- (copilot) Expanded root `.github/copilot-instructions.md` for dual-monorepo (next-forge + GenerativeUI) commands and verification workflow
+- (cursor) Additional Claude plugin enables in `.cursor/settings.json` (commit-commands, supabase, typescript-lsp, rust-analyzer-lsp, agent-sdk-dev)
+
+### Changed
+
+- (gitignore) Ignore local hook state (`.cursor/hooks/state/`), IDE-local dirs (`.claude/`, `.copilot/`), and install manifests; remove erroneous `.cursor/hooks.json` ignore
+
 - (ci) next-forge CI job in `.github/workflows/ci.yml` — path-filtered `check`, `test`, `build` on Bun; `dev` branch added to workflow triggers
 - (ci) Root scripts `yarn check:forge`, `fix:forge`, `verify:forge`, `pre-commit:check`, `hooks:install`; `scripts/verify-forge-ci.ps1`
 - (ci) Pre-commit runs `ultracite check` when staged paths include `next-forge/`; changelog monitoring extended to next-forge apps/packages
