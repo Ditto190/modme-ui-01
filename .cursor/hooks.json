@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [
+      {
+        "command": ".cursor/hooks/block-models-by-repo-origin.sh",
+        "matcher": "UserPromptSubmit",
+        "timeout": 5,
+        "failClosed": true
+      },
+      {
+        "command": ".cursor/hooks/sensitive-prompt-guard.sh",
+        "matcher": "UserPromptSubmit",
+        "timeout": 5,
+        "failClosed": true
+      },
+      {
+        "command": ".cursor/hooks/audit-log.sh",
+        "matcher": "UserPromptSubmit",
+        "timeout": 5,
+        "failClosed": false
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": ".cursor/hooks/audit-log.sh",
+        "timeout": 5,
+        "failClosed": false
+      }
+    ],
+    "afterShellExecution": [
+      {
+        "command": ".cursor/hooks/audit-log.sh",
+        "timeout": 5,
+        "failClosed": false
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": ".cursor/hooks/audit-log.sh",
+        "timeout": 5,
+        "failClosed": false
+      }
+    ]
+  }
+}

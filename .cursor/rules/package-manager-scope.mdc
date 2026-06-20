@@ -1,0 +1,28 @@
+---
+description: Package manager scope per monorepo root
+alwaysApply: true
+---
+
+# Package manager scope
+
+| Directory | Manager | Lockfile |
+|-----------|---------|----------|
+| `Monorepo_ModMe/` (root) | Yarn 3.3 (orchestration only) | `yarn.lock` |
+| `GenerativeUI_monorepo/` | Yarn 3.3 | `GenerativeUI_monorepo/yarn.lock` |
+| `next-forge/` | Bun | `next-forge/bun.lock` |
+| `UniversalWorkbench*/` | Yarn 4.10 | per-copy `yarn.lock` |
+| `.cursor/skills/*/scripts/` | pnpm (isolated skill runtimes) | gitignored |
+
+## IDE
+
+- Workspace setting: `"npm.packageManager": "yarn@3.3.0"` at repo root.
+- Exclude vendor, tools, and nested monorepo node_modules via `npm.exclude`.
+
+## Commands
+
+```powershell
+yarn dev:generative   # GenerativeUI_monorepo
+yarn dev:forge        # next-forge (uses npx bun)
+```
+
+Never run `yarn install` inside `next-forge/` or `bun install` inside `GenerativeUI_monorepo/`.
