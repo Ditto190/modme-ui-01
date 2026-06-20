@@ -93,3 +93,26 @@ export const WebSocketMessageSchema = z.object({
 });
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;
+
+export {
+  INBOX_CONTRACT_VERSION,
+  INBOX_EMBEDDING_DIMENSIONS,
+  InboxAgentRoleSchema,
+  InboxEntryRecordSchema,
+  InboxEntryTypeSchema,
+  InboxFrontmatterOptionalSchema,
+  InboxFrontmatterSchema,
+  InboxFunnelFileSchema,
+  InboxIndexEntrySchema,
+  InboxIndexManifestSchema,
+  InboxPipelineStageSchema,
+  InboxSeveritySchema,
+  InboxSourceFormatSchema,
+} from "./inbox.js";
+
+export type {
+  InboxEntryRecord,
+  InboxFrontmatter,
+  InboxFunnelFile,
+  InboxIndexManifest,
+} from "./inbox.js";

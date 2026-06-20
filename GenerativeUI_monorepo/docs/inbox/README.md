@@ -63,7 +63,16 @@ pr_number: null                         # Optional: PR number if related
 ---
 ```
 
-Minimum required: `timestamp`, `agent`, `type`. Everything else is optional and will be inferred by the pipeline.
+Minimum required for `.md` files: `timestamp`, `agent`, `type`. Everything else is optional and will be inferred by the pipeline.
+
+**Data contract v1:** [`docs/inbox-pipeline/contracts/inbox-contract.v1.json`](../../../docs/inbox-pipeline/contracts/inbox-contract.v1.json)
+
+Validate before commit:
+
+```powershell
+yarn inbox:audit:funnel       # funnel-only audit
+yarn inbox:fix                # preview safe frontmatter fixes
+```
 
 ---
 

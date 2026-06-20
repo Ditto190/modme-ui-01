@@ -1,0 +1,54 @@
+{
+  "version": "1.0",
+  "suite": "pipeline",
+  "expectations": [
+    {
+      "id": "db.id.not_null",
+      "code": "INBOX.DB.MISSING_ID",
+      "dimension": "completeness",
+      "severity": "error",
+      "automatable": false,
+      "rule": "inbox_entries.id must not be null"
+    },
+    {
+      "id": "db.content_hash.unique",
+      "code": "INBOX.DB.DUPLICATE_HASH",
+      "dimension": "uniqueness",
+      "severity": "error",
+      "automatable": false,
+      "rule": "content_hash must be unique"
+    },
+    {
+      "id": "db.embedding.dim",
+      "code": "INBOX.DB.DIM_MISMATCH",
+      "dimension": "validity",
+      "severity": "error",
+      "automatable": false,
+      "rule": "embedding vector length must be 384"
+    },
+    {
+      "id": "db.category.valid",
+      "code": "INBOX.DB.ORPHAN_CATEGORY",
+      "dimension": "validity",
+      "severity": "error",
+      "automatable": false,
+      "rule": "category_id must reference categories.id when set"
+    },
+    {
+      "id": "db.status.valid",
+      "code": "INBOX.DB.INVALID_STATUS",
+      "dimension": "validity",
+      "severity": "error",
+      "automatable": false,
+      "rule": "status must be in pipelineStage enum"
+    },
+    {
+      "id": "manifest.drift",
+      "code": "INBOX.MANIFEST.DRIFT",
+      "dimension": "consistency",
+      "severity": "warning",
+      "automatable": false,
+      "rule": "_index.json entry_count should match DB row count (soft)"
+    }
+  ]
+}

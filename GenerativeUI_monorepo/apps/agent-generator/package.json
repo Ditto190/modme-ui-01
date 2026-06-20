@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "scripts": {"generate:adr-readme": "node scripts/update-adr-readme.mjs",
+  "scripts": {
+    "generate:adr-readme": "node scripts/update-adr-readme.mjs",
     "build": "tsc",
     "test": "node --test dist/**/*.test.js",
     "generate:zod": "node dist/mcp-registry/schema-crawler.js"

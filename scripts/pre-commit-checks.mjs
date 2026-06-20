@@ -120,14 +120,48 @@ const MONITORED_PREFIXES = [
 ];
 
 const FORGE_PREFIX = "next-forge/";
+const FORGE_ROOT = resolve(ROOT, "next-forge");
 
-function runForgeCheckIfNeeded(files) {
-  if (!files.some((f) => f.startsWith(FORGE_PREFIX))) {
+function spawnForgeBun(args, cwd = FORGE_ROOT) {
+  const result = spawnSync("bun", args, {
+    cwd,
+    stdio: "inherit",
+  });
+  if (result.status !== 0) {
+    process.exit(result.status ?? 1);
+  }
+}
+
+function stagedForgePaths(files) {
+  return files
+    .filter((f) => f.startsWith(FORGE_PREFIX))
+    .map((f) => f.slice(FORGE_PREFIX.length))
+    .filter((f) => /\.(?:tsx?|jsx?|jsonc?|json|css|md)$/.test(f));
+}
+
+function runUltraciteOnForgePath(mode, relPath) {
+  if (relPath.includes("[")) {
+    const segments = relPath.split("/");
+    const fileName = segments.pop();
+    const subDir = resolve(FORGE_ROOT, ...segments);
+    spawnForgeBun(["x", "ultracite", mode, fileName], subDir);
     return;
   }
 
-  ok("running next-forge ultracite check (staged paths)");
-  runForgeBun(["run", "check"]);
+  spawnForgeBun(["x", "ultracite", mode, relPath]);
+}
+
+function runForgeCheckIfNeeded(files) {
+  const forgePaths = stagedForgePaths(files);
+  if (forgePaths.length === 0) {
+    return;
+  }
+
+  ok(`running next-forge ultracite fix+check (${forgePaths.length} staged paths)`);
+  for (const relPath of forgePaths) {
+    runUltraciteOnForgePath("fix", relPath);
+    runUltraciteOnForgePath("check", relPath);
+  }
   ok("next-forge check passed");
 }
 
@@ -155,6 +189,10 @@ function main() {
 
     const ciFiles = stagedFiles();
     runForgeCiSuite(ciFiles);
+
+    if (ciFiles.some((f) => matchesAny(f, ["GenerativeUI_monorepo/docs/inbox/"]))) {
+      runNode("scripts/inbox-audit.mjs", ["--lens", "funnel", "--strict"]);
+    }
 
     ok("all CI pre-commit checks passed");
     return;
@@ -186,6 +224,11 @@ function main() {
   }
 
   runForgeCheckIfNeeded(files);
+
+  const inboxPaths = ["GenerativeUI_monorepo/docs/inbox/"];
+  if (files.some((f) => matchesAny(f, inboxPaths))) {
+    runNode("scripts/inbox-audit.mjs", ["--lens", "funnel"]);
+  }
 
   ok("staged changes passed pre-commit checks");
 }

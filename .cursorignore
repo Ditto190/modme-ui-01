@@ -12,3 +12,8 @@
 *.pfx
 secrets/
 credentials.json
+
+# Vendored mirrors stay in .gitignore; expose awesome-copilot for catalogue/eval reference
+**/.vendor/**
+!**/.vendor/awesome-copilot-main
+!**/.vendor/awesome-copilot-main/**

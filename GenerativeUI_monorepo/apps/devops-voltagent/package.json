@@ -1,0 +1,32 @@
+{
+  "name": "devops-voltagent",
+  "version": "1.0.0",
+  "description": "DevOps Expert VoltAgent",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch --env-file=.env ./src",
+    "build": "tsdown",
+    "start": "node dist/index.js",
+    "lint": "biome check ./src",
+    "lint:fix": "biome check --write ./src",
+    "typecheck": "tsc --noEmit",
+    "volt": "volt"
+  },
+  "dependencies": {
+    "@voltagent/cli": "latest",
+    "@voltagent/core": "latest",
+    "@voltagent/libsql": "latest",
+    "@voltagent/logger": "latest",
+    "@voltagent/server-hono": "latest",
+    "ai": "^6.0.0",
+    "dotenv": "^16.4.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.1",
+    "@types/node": "^20.14.2",
+    "tsdown": "^0.3.0",
+    "tsx": "^4.15.2",
+    "typescript": "^5.4.5"
+  }
+}

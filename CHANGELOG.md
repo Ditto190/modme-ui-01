@@ -61,13 +61,19 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (repo) Inbox pipeline v1 — contracts (`docs/inbox-pipeline/contracts/`), audit/fix scripts, Supabase migrations, and `@repo/schemas` inbox types
+- (repo) GitHub Agentic Workflows assets (`.github/aw/`, agent definitions, workflow-health and inbox-pipeline-check CI)
+- (repo) GenerativeUI devops-voltagent app, intake-pipeline Python orchestrator, and Playwright test scaffolding
+- (repo) Evaluation pipeline docs (`docs/evaluation/`), agent eval collect/report scripts, and catalog e2e tests in next-forge
+- (repo) Root inbox tooling — `yarn inbox:audit`, `inbox:fix`, `inbox:test`, `intake:orchestrate`, and beads starter scripts
 - (cursor) Cursor marketplace plugin skills under `.cursor/skills/` — thermos, fix-ci, orchestrate, principle-*, voltagent, and related agent workflows
 - (copilot) Expanded root `.github/copilot-instructions.md` for dual-monorepo (next-forge + GenerativeUI) commands and verification workflow
 - (cursor) Additional Claude plugin enables in `.cursor/settings.json` (commit-commands, supabase, typescript-lsp, rust-analyzer-lsp, agent-sdk-dev)
 
 ### Changed
 
-- (gitignore) Ignore local hook state (`.cursor/hooks/state/`), IDE-local dirs (`.claude/`, `.copilot/`), and install manifests; remove erroneous `.cursor/hooks.json` ignore
+- (repo) **Reconcile `main` with Monorepo_ModMe** — GenUI Workbench (`modme-ui-01` legacy layout) superseded by dual-monorepo stack (`next-forge/` + `GenerativeUI_monorepo/`); unrelated GenUI history retired on default branch
+- (gitignore) Ignore Playwright artifacts, beads embedded Dolt state, local hook state (`.cursor/hooks/state/`), IDE-local dirs (`.claude/`, `.copilot/`), and install manifests; remove erroneous `.cursor/hooks.json` ignore
 
 - (ci) next-forge CI job in `.github/workflows/ci.yml` — path-filtered `check`, `test`, `build` on Bun; `dev` branch added to workflow triggers
 - (ci) Root scripts `yarn check:forge`, `fix:forge`, `verify:forge`, `pre-commit:check`, `hooks:install`; `scripts/verify-forge-ci.ps1`

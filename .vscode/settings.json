@@ -1,12 +1,11 @@
 {
-  "cursor.worktreeMaxCount": 25,
-  "cursor.worktreeCleanupIntervalHours": 6,
   "git.path": "C:/Program Files/Git/cmd/git.exe",
   "leanctx.binaryPath": "C:/Users/dylan/.gemini/antigravity/bin/lean-ctx.exe",
   "chat.agent.sandbox.enabled": "allowNetwork",
   "npm.packageManager": "yarn@3.3.0",
   "npm.exclude": [
     "**/.vendor/**",
+    "!**/.vendor/awesome-copilot-main/**",
     "**/.tools/**",
     "**/.cursor/skills/**/scripts/**",
     "**/GenerativeUI_monorepo/UniversalWorkbench*/**",
@@ -39,9 +38,6 @@
   },
   "terminal.integrated.defaultProfile.windows": "PowerShell 7",
   "terminal.integrated.rightClickBehavior": "default",
-  "chat.useClaudeHooks": true,
-  "cursor.worktreeMaxCount": 25,
-  "cursor.worktreeCleanupIntervalHours": 6,
   "debug.focusWindowOnBreak": false,
   "debug.focusEditorOnBreak": false,
   "files.autoSave": "afterDelay",

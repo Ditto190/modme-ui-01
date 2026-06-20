@@ -141,6 +141,7 @@ Root `AGENTS.md` and `.cursor/rules/` are hand-maintained — use contextarch fo
 ## Observability (Agenttrace)
 
 **agenttrace** is used to monitor agent session costs, performance, and anomalies.
+**session-logger** is a lighter weight version of agenttrace that is used to monitor agent session costs, performance, and anomalies.
 
 - **Install/Update**: Run `.\scripts\install-agenttrace.ps1`
 - **Dashboard**: Run `yarn agenttrace --overview` (or `.\agenttrace` at the root) to view the global overview.
@@ -204,7 +205,8 @@ The pipeline runs on every push to `docs/inbox/` and ingests new entries into Su
 - Root intake scripts need `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`; Prisma DB URLs live in `next-forge/packages/database/.env`.
 - Worktrees branched from `dev` may lack `yarn.lock`; `worktree-copy-env.ps1` copies `yarn.lock`, `.yarnrc.yml`, and `.yarn/` from main.
 - `vibe-session-finish.ps1 -DryRun` skips interactive `Read-Host` and pre-commit; use `yarn vibe:finish:dry-run` or the script with `-DryRun -SkipPull`.
-- `yarn intake` from repo root runs `scripts/run-intake.mjs` (ingest only); full embed/MDA/output is CI-chained or manual. `intake-orchestrator.mjs` / `catalogue-orchestrator.mjs` are documented but not implemented.
+- `yarn intake` from repo root runs `scripts/run-intake.mjs` (ingest only); `yarn intake:orchestrate` runs audit → ingest → embed → MDA with quality gates.
+- Inbox data contract v1: `docs/inbox-pipeline/contracts/inbox-contract.v1.json` (ADR-0009). Quality: `yarn inbox:audit`, `yarn inbox:fix`, `yarn inbox:test`. Reports: `docs/inbox-pipeline/reports/latest.md`.
 - Schema deploy order: `bun run db:push` (Prisma) before `bunx supabase db push` — SQL migration 001 expects Prisma tables.
 - Supabase CLI config lives at `next-forge/supabase/`; use `bunx supabase` from `next-forge/packages/database` with `--workdir ../.. --dns-resolver https` on Windows.
 - next-forge default ports: app 3100, web 3101, api 3102, docs 3104, storybook 6106 (avoids GenerativeUI 3000–3004 block).

@@ -32,10 +32,32 @@
     "supabase:local:setup": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-supabase-local.ps1",
     "supabase:local:env": "powershell -ExecutionPolicy Bypass -File ./scripts/sync-supabase-local-env.ps1",
     "intake": "node scripts/run-intake.mjs",
-    "intake:dry-run": "node scripts/run-intake.mjs --dry-run"
+    "intake:dry-run": "node scripts/run-intake.mjs --dry-run",
+    "intake:orchestrate": "node scripts/intake-orchestrator.mjs --mode=session",
+    "inbox:audit": "node scripts/inbox-audit.mjs --lens all",
+    "inbox:audit:funnel": "node scripts/inbox-audit.mjs --lens funnel",
+    "inbox:fix": "node scripts/inbox-fix.mjs --dry-run",
+    "inbox:fix:apply": "node scripts/inbox-fix.mjs --apply",
+    "inbox:test": "vitest run scripts/__tests__",
+    "inbox:export-contract": "node next-forge/packages/schemas/scripts/export-inbox-contract.mjs",
+    "eval:collect": "node scripts/agent-eval-collect.mjs",
+    "eval:collect:dry-run": "node scripts/agent-eval-collect.mjs --dry-run",
+    "eval:report": "node scripts/agent-eval-report.mjs",
+    "eval:report:dry-run": "node scripts/agent-eval-report.mjs --dry-run",
+    "beads:init": "powershell -ExecutionPolicy Bypass -File ./scripts/init-beads-starter-issues.ps1",
+    "beads:ready": "npx --yes @beads/bd ready",
+    "beads:list": "npx --yes @beads/bd list --all",
+    "beads:push": "npx --yes @beads/bd dolt push",
+    "beads:pull": "npx --yes @beads/bd dolt pull",
+    "beads:compact": "npx --yes @beads/bd admin compact --analyze"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",
-    "@supabase/supabase-js": "^2.108.2"
+    "@supabase/supabase-js": "^2.108.2",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "prisma": "^7.8.0",
+    "vitest": "^4.0.18"
   }
 }

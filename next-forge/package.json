@@ -35,6 +35,9 @@
     "db:local:setup": "powershell -ExecutionPolicy Bypass -File ../scripts/setup-supabase-local.ps1",
     "intake": "node ../scripts/run-intake.mjs",
     "intake:dry-run": "node ../scripts/run-intake.mjs --dry-run",
+    "intake:orchestrate": "node ../scripts/intake-orchestrator.mjs --mode=session",
+    "inbox:audit": "node ../scripts/inbox-audit.mjs --lens all",
+    "inbox:fix": "node ../scripts/inbox-fix.mjs --dry-run",
     "migrate": "cd packages/database && bunx prisma format && bunx prisma generate && bunx prisma migrate dev",
     "migrate:deploy": "cd packages/database && bunx prisma generate && bunx prisma migrate deploy",
     "db:push": "cd packages/database && bunx prisma format && bunx prisma generate && bunx prisma db push",
@@ -46,6 +49,7 @@
   "devDependencies": {
     "@auto-it/first-time-contributor": "^11.3.6",
     "@biomejs/biome": "2.4.6",
+    "@playwright/test": "^1.61.0",
     "@repo/typescript-config": "workspace:*",
     "@turbo/gen": "^2.8.14",
     "@types/node": "^25.3.5",

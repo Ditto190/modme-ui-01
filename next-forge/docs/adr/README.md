@@ -18,6 +18,7 @@ Architecture Decision Records provide:
 |---|-------|--------|------|------|
 | **0001** | [Supabase Local Development with Hybrid Cloud Architecture](./0001-supabase-local-development-with-hybrid-cloud.md) | **Superseded** | 2026-06-20 | Database & Infrastructure |
 | **0002** | [Cloud-First Supabase with Prisma](./0002-cloud-first-supabase-with-prisma.md) | **Accepted** | 2026-06-20 | Database & Infrastructure |
+| **0009** | [Inbox Data Contract and Quality Gates](./0009-inbox-data-contract-and-quality-gates.md) | **Accepted** | 2026-06-20 | Inbox Pipeline |
 
 ## Creating a New ADR
 

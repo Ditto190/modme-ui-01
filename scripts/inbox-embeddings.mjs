@@ -9,7 +9,7 @@
  *
  * inbox-embeddings.mjs
  *
- * Generates 256-dim embeddings for inbox entries using google/embedding-001
+ * Generates 384-dim embeddings for inbox entries using Xenova/all-MiniLM-L6-v2
  * (via @xenova/transformers ONNX runtime — runs locally, no API key needed).
  *
  * Usage:

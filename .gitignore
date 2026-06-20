@@ -62,6 +62,9 @@ Thumbs.db
 # Test and temp
 .tmp/
 temp/
+**/playwright-report/
+**/test-results/
+**/intake-pipeline/outgoing/
 **/debug-test-output.json
 # Inbox is a local drafts funnel — keep content private but commit the manifest and README
 **/docs/inbox/*
@@ -91,6 +94,17 @@ temp/
 # Misc local artifacts
 quality/
 1.1.0
+-w
 *.backup
 .agents/skills/.antigravity-install-manifest.json
 
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+.beads/embeddeddolt/
+.beads/interactions.jsonl
+*.db
+.beads-credential-key
+.beads/proxieddb/
+
+/generated/prisma

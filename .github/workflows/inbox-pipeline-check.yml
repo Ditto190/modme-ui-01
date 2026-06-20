@@ -1,0 +1,99 @@
+name: Inbox Pipeline Quality Check
+
+on:
+  pull_request:
+    branches: [main, dev, master, develop]
+    paths:
+      - 'GenerativeUI_monorepo/docs/inbox/**'
+      - 'scripts/inbox-*.mjs'
+      - 'scripts/intake-orchestrator.mjs'
+      - 'scripts/lib/inbox-*.mjs'
+      - 'docs/inbox-pipeline/**'
+  push:
+    branches: [main, dev]
+    paths:
+      - 'GenerativeUI_monorepo/docs/inbox/**'
+      - 'scripts/inbox-*.mjs'
+      - 'scripts/intake-orchestrator.mjs'
+      - 'scripts/lib/inbox-*.mjs'
+      - 'docs/inbox-pipeline/**'
+  workflow_dispatch:
+
+concurrency:
+  group: inbox-pipeline-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pr-validate:
+    name: PR validate (no Supabase writes)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Inbox contract tests
+        run: yarn inbox:test
+
+      - name: Funnel audit (strict)
+        run: node scripts/inbox-audit.mjs --lens funnel --strict
+
+      - name: PR validate orchestrator
+        run: node scripts/intake-orchestrator.mjs --mode=pr-validate --dry-run
+
+      - name: Upload quality report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: inbox-quality-report-pr
+          path: |
+            docs/inbox-pipeline/reports/latest.json
+            docs/inbox-pipeline/reports/latest.md
+
+  staging-dry-run:
+    name: Staging dry-run (merge to dev/main)
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Inbox contract tests
+        run: yarn inbox:test
+
+      - name: Full audit
+        run: node scripts/inbox-audit.mjs --lens all
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Staging dry-run orchestrator
+        run: node scripts/intake-orchestrator.mjs --mode=staging-dry-run --dry-run
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Upload quality report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: inbox-quality-report-staging
+          path: |
+            docs/inbox-pipeline/reports/latest.json
+            docs/inbox-pipeline/reports/latest.md

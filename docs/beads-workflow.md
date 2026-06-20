@@ -2,14 +2,18 @@
 
 Git-backed task memory for multi-session agent work. Prefix: **`modme`**.
 
+**Canonical git remote:** [https://github.com/Ditto190/modme-ui-01](https://github.com/Ditto190/modme-ui-01) (`origin` and `upstream` should both point here).
+
+**Run all beads commands from the monorepo root** (`Monorepo_ModMe/`), not from `next-forge/` or `.beads/`.
+
 ## Initialize (once)
 
 ```powershell
+cd C:\Users\dylan\Monorepo_ModMe
 yarn beads:init
-# or: powershell -ExecutionPolicy Bypass -File ./scripts/init-beads-starter-issues.ps1
 ```
 
-Uses `npx @beads/bd` (no global install). Idempotent — skips init/seed if `.beads/` or issues already exist.
+Uses `npx @beads/bd` (no global `bd` install). Idempotent — skips init/seed if `.beads/metadata.json` or issues already exist.
 
 Manual alternative:
 
@@ -17,17 +21,27 @@ Manual alternative:
 npx @beads/bd init --prefix modme --non-interactive --skip-agents
 ```
 
-If beads MCP is enabled in Cursor, run `/init` Phase 1 or use the beads MCP `init` tool with prefix `modme`.
+## Daily commands
 
-## Starter issues (create after init)
+```powershell
+yarn beads:ready      # unblocked work
+yarn beads:list       # all issues
+yarn beads:push       # Dolt push to modme-ui-01 remote
+yarn beads:pull       # Dolt pull
+yarn beads:compact    # preview compaction candidates
+```
 
-| ID | Title | Type |
-|----|-------|------|
-| modme-1 | chore: Verify compound Full Stack: Forge Core + Agent Server | chore |
-| modme-2 | chore: CI Phase A — confirm pre-commit vs ci.yml split | chore |
-| modme-3 | task: Migration Phase 4 — feature-flag cutover for generative-ui | task |
-| modme-4 | chore: Document yarn verify:forge + yarn verify:generative in onboarding | chore |
-| modme-5 | task: Complete Storybook workshop parity with GenerativeCanvas | task |
+Issue IDs use **hash suffixes** (e.g. `modme-aqu`), not sequential `modme-1`.
+
+## Starter issues (seeded on first init)
+
+| Title | Type |
+|-------|------|
+| chore: Verify compound Full Stack: Forge Core + Agent Server | chore |
+| chore: CI Phase A — confirm pre-commit vs ci.yml split | chore |
+| task: Migration Phase 4 — feature-flag cutover for generative-ui | task |
+| chore: Document yarn verify:forge + yarn verify:generative in onboarding | chore |
+| task: Complete Storybook workshop parity with GenerativeCanvas | task |
 
 ## When to use beads vs chat todos
 

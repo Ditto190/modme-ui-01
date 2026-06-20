@@ -58,7 +58,22 @@ Monorepo_ModMe/
 
 ---
 
-## 2. lean-ctx setup
+## 2. Inbox data contract and quality
+
+Inbox captures in `GenerativeUI_monorepo/docs/inbox/` are validated against **contract v1** before ingest.
+
+| Command | Purpose |
+|---------|---------|
+| `yarn inbox:audit:funnel` | Structural validation (frontmatter, enums) |
+| `yarn inbox:fix` / `yarn inbox:fix:apply` | Safe auto-fixes (timestamp, agent, type) |
+| `yarn intake:orchestrate` | Audit → ingest → embed → MDA |
+| `yarn inbox:test` | Contract unit tests |
+
+Reports: `docs/inbox-pipeline/reports/latest.md` · ADR: `next-forge/docs/adr/0009-inbox-data-contract-and-quality-gates.md`
+
+---
+
+## 3. lean-ctx setup
 
 This repo uses **lean-ctx** as the context compression layer (see `.cursor/rules/lean-ctx.mdc`).
 

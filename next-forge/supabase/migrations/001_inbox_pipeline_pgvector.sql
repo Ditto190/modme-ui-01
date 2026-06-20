@@ -5,9 +5,9 @@
 -- Enable pgvector extension
 CREATE EXTENSION IF NOT EXISTS vector;
 
--- Add 256-dim embedding column (google/embeddinggemma-300m)
+-- Add 384-dim embedding column (Xenova/all-MiniLM-L6-v2; see migration 005)
 ALTER TABLE inbox_entries
-  ADD COLUMN IF NOT EXISTS embedding vector(256);
+  ADD COLUMN IF NOT EXISTS embedding vector(384);
 
 -- IVFFlat index for approximate nearest-neighbor search
 -- Tune lists based on row count: sqrt(row_count) is a good starting point
@@ -100,7 +100,7 @@ CREATE POLICY "authenticated_read_artefacts"
 
 -- ─── Semantic search helper function ────────────────────────────────────────
 CREATE OR REPLACE FUNCTION match_inbox_entries(
-  query_embedding vector(256),
+  query_embedding vector(384),
   match_threshold float DEFAULT 0.7,
   match_count int DEFAULT 10
 )

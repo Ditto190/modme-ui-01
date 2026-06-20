@@ -402,7 +402,9 @@ EOF
 
 - ✅ 19 agents installed in `.github/agents/`
 - ✅ Inbox funnel: `GenerativeUI_monorepo/docs/inbox/` with README + `_index.json`
-- ✅ `scripts/inbox-ingest.mjs` — SHA-256 dedup, format detection, Supabase upsert
+- ✅ **Data contract v1** + quality engine (`inbox-audit`, `inbox-fix`, `intake-orchestrator`)
+- ✅ **CI quality gates** (`inbox-pipeline-check.yml`)
+- ✅ `scripts/inbox-ingest.mjs` — contract validation, SHA-256 dedup, Supabase upsert
 - ✅ `scripts/inbox-embeddings.mjs` — 384-dim MiniLM embeddings (ONNX local)
 - ✅ `scripts/mda-categorize.mjs` — taxonomy + relations teams
 - ✅ `scripts/output-generate.mjs` — skills, storybook, ADR generation
@@ -433,6 +435,38 @@ EOF
 - [ ] Storybook story generation from real JSX components
 - [ ] Skills catalogue loader (on-demand schema reconstruction)
 - [ ] GenerativeUI → next-forge migration tracking via inbox
+
+---
+
+## Data Contract and Quality Gates (v1)
+
+**ADR:** [`next-forge/docs/adr/0009-inbox-data-contract-and-quality-gates.md`](../next-forge/docs/adr/0009-inbox-data-contract-and-quality-gates.md)
+
+| Artifact | Path |
+|----------|------|
+| Contract JSON | `docs/inbox-pipeline/contracts/inbox-contract.v1.json` |
+| Funnel expectations | `docs/inbox-pipeline/contracts/expectations/funnel.v1.json` |
+| Pipeline expectations | `docs/inbox-pipeline/contracts/expectations/pipeline.v1.json` |
+| Latest report | `docs/inbox-pipeline/reports/latest.md` |
+| Event log | `.cursor/hooks/state/inbox-errors.jsonl` |
+
+### Commands (repo root)
+
+```powershell
+yarn inbox:audit              # audit funnel + pipeline + manifest
+yarn inbox:fix                # preview safe frontmatter fixes
+yarn inbox:fix:apply          # apply safe fixes
+yarn intake:orchestrate       # audit → ingest → embed → MDA
+yarn inbox:test               # contract unit tests
+```
+
+### CI gates
+
+- **PR:** validate-only (`inbox-pipeline-check.yml`) — no Supabase writes
+- **Merge to dev/main:** staging dry-run with Supabase secrets
+- **Push inbox paths:** funnel audit before ingest (`inbox-ingest.yml`)
+
+Human owns semantic quality (titles, tags, research value). Automation owns structural quality (schema, enums, dedup, embedding dimensions).
 
 ---
 

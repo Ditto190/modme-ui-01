@@ -52,8 +52,11 @@ jobs:
 
       - name: Install dependencies
         if: steps.changes.outputs.has_new == 'true' || github.event_name == 'workflow_dispatch'
-        run: |
-          npm install -g @supabase/supabase-js --silent
+        run: yarn install --immutable
+
+      - name: Funnel audit (pre-ingest)
+        if: steps.changes.outputs.has_new == 'true' || github.event_name == 'workflow_dispatch'
+        run: node scripts/inbox-audit.mjs --lens funnel --strict
 
       - name: Run inbox ingest
         if: steps.changes.outputs.has_new == 'true' || github.event_name == 'workflow_dispatch'
@@ -69,6 +72,15 @@ jobs:
           node scripts/inbox-ingest.mjs \
             --inbox-dir GenerativeUI_monorepo/docs/inbox \
             $DRY_RUN_FLAG
+
+      - name: Upload quality report
+        if: always() && (steps.changes.outputs.has_new == 'true' || github.event_name == 'workflow_dispatch')
+        uses: actions/upload-artifact@v4
+        with:
+          name: inbox-ingest-report
+          path: |
+            docs/inbox-pipeline/reports/latest.json
+            docs/inbox-pipeline/reports/latest.md
 
       - name: Commit updated _index.json
         if: |
