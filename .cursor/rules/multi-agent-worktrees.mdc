@@ -1,0 +1,59 @@
+---
+description: Multi-agent Git worktree workflow — isolated checkouts per agent/IDE
+alwaysApply: true
+---
+
+# Multi-Agent Worktrees
+
+Feature work **must not** happen in the main `Monorepo_ModMe` checkout. Use an isolated worktree so parallel agents do not contend on files, Git state, or dev-server ports.
+
+## Quick start
+
+| IDE / agent | How to start |
+|-------------|--------------|
+| **Cursor Agents Window** | Start an agent — Cursor auto-creates a worktree and runs `.cursor/worktrees.json` setup |
+| **Cursor Editor** | `/worktree <task>`, `/best-of-n`, `/apply-worktree`, `/delete-worktree` |
+| **VS Code Copilot** | `.\scripts\new-agent-worktree.ps1 -Name "<task>" -Owner copilot` → open that folder |
+| **Claude Code** | Same script with `-Owner claude` |
+| **Antigravity** | Same script with `-Owner antigravity` |
+| **Human** | Same script with `-Owner human` |
+
+## One-time setup
+
+```powershell
+.\scripts\init-worktrees.ps1
+```
+
+Creates `../Monorepo_ModMe-dev/dev` (persistent `dev` branch checkout).
+
+## Per-task workflow
+
+```powershell
+.\scripts\new-agent-worktree.ps1 -Name "auth-fix" -Owner cursor
+# → branch feature/cursor/auth-fix
+# → path ../Monorepo_ModMe-dev/dev-agent-cursor-auth-fix
+```
+
+## Ports
+
+Before `yarn dev` or starting debug sessions in a worktree, load ports from `.worktree-ports.env`:
+
+```powershell
+# PowerShell
+Get-Content .worktree-ports.env | ForEach-Object {
+  if ($_ -match '^([A-Z_]+)=(.+)$') { Set-Item -Path "env:$($Matches[1])" -Value $Matches[2] }
+}
+```
+
+Main checkout uses `scripts/launch-manifest.json` defaults (3000, 3001, 8000). Worktrees get slot offsets (0–9 × 10).
+
+## Rules
+
+- **Never** commit secrets; `.env` files are copied by name only from the root checkout.
+- **Never** merge or rebase manually across worktrees; open PRs to `dev` only.
+- **Never** edit `UniversalWorkbench-staging` or `UniversalWorkbench-dev` unless explicitly tasked.
+- List worktrees: `.\scripts\list-worktrees.ps1`
+- Remove when done: `.\scripts\remove-agent-worktree.ps1 -Path <worktree-path>`
+- Session end (commit/PR): `.\scripts\vibe-session-finish.ps1` — smart-git overlay; branches via scripts only
+
+Full guide: [`docs/multi-agent-worktrees.md`](../../docs/multi-agent-worktrees.md)

@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "skills-sh": {
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/.tools/skillsh-mcp/dist/index.js"
+      ]
+    },
+    "buildkite": {
+      "url": "https://mcp.buildkite.com/mcp"
+    },
+    "mantine": {
+      "command": "npx",
+      "args": ["-y", "@mantine/mcp-server"]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+---
+description: Cursor project hooks — disabled by default (focus-safe)
+globs: .cursor/hooks/**,.cursor/hooks.json
+---
+
+# Cursor project hooks
+
+- **Project hooks are disabled.** `.cursor/hooks.json` uses an empty `hooks` map to avoid focus-stealing side effects from audit/stop scripts.
+- Do **not** re-enable `audit-log.sh`, `stop-hook.sh`, `capture-response.sh`, or plugin stop hooks without an explicit user request.
+- `continual-learning` and `ralph-loop` plugins stay **disabled** in `.cursor/settings.json` because they register their own stop hooks.
+- `scripts/install-cursor-cookbook.ps1` skips hook scripts unless `-IncludeHooks` is passed.
+- `scripts/install-cursor-plugins.ps1` no longer copies ralph-loop hook scripts into `.cursor/hooks/`.
+- If hooks are re-enabled intentionally, every script must print valid JSON to stdout; on Windows use `cat` for stdin, not `</dev/stdin>`.

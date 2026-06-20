@@ -1,0 +1,144 @@
+{
+  "npm.packageManager": "yarn@3.3.0",
+  "npm.exclude": [
+    "**/.vendor/**",
+    "**/.tools/**",
+    "**/.cursor/skills/**/scripts/**",
+    "**/GenerativeUI_monorepo/UniversalWorkbench*/**",
+    "**/next-forge/node_modules/**"
+  ],
+  "plugins": {
+    "superpowers": {
+      "enabled": true
+    },
+    "claude-code-plugins/hookify": {
+      "enabled": true
+    },
+    "anthropic-agent-skills/document-skills": {
+      "enabled": true
+    },
+    "anthropic-agent-skills/example-skills": {
+      "enabled": true
+    },
+    "beads-marketplace/beads": {
+      "enabled": true
+    },
+    "claude-code-plugins/pr-review-toolkit": {
+      "enabled": true
+    },
+    "claude-code-plugins/feature-dev": {
+      "enabled": true
+    },
+    "claude-code-plugins/frontend-design": {
+      "enabled": true
+    },
+    "claude-code-plugins/agent-sdk-dev": {
+      "enabled": true
+    },
+    "claude-code-plugins/code-review": {
+      "enabled": true
+    },
+    "claude-plugins-official/context7": {
+      "enabled": true
+    },
+    "claude-plugins-official/github": {
+      "enabled": true
+    },
+    "claude-plugins-official/lua-lsp": {
+      "enabled": true
+    },
+    "claude-code-plugins/plugin-dev": {
+      "enabled": true
+    },
+    "claude-plugins-official/playwright": {
+      "enabled": true
+    },
+    "claude-plugins-official/claude-code-setup": {
+      "enabled": true
+    },
+    "claude-plugins-official/claude-md-management": {
+      "enabled": true
+    },
+    "cursor-team-kit": {
+      "enabled": true
+    },
+    "teaching": {
+      "enabled": true
+    },
+    "continual-learning": {
+      "enabled": false
+    },
+    "thermos": {
+      "enabled": true
+    },
+    "create-plugin": {
+      "enabled": true
+    },
+    "ralph-loop": {
+      "enabled": false
+    },
+    "agent-compatibility": {
+      "enabled": true
+    },
+    "cli-for-agent": {
+      "enabled": true
+    },
+    "pr-review-canvas": {
+      "enabled": true
+    },
+    "docs-canvas": {
+      "enabled": true
+    },
+    "cursor-sdk": {
+      "enabled": true
+    },
+    "orchestrate": {
+      "enabled": true
+    },
+    "pstack": {
+      "enabled": true
+    },
+    "huggingface-skills": {
+      "enabled": true
+    },
+    "supabase": {
+      "enabled": true
+    },
+    "prisma": {
+      "enabled": true
+    },
+    "gitlab": {
+      "enabled": true
+    },
+    "buildkite": {
+      "enabled": true
+    },
+    "context7-plugin": {
+      "enabled": true
+    },
+    "claude-code-plugins/learning-output-style": {
+      "enabled": true
+    },
+    "claude-plugins-official/feature-dev": {
+      "enabled": true
+    },
+    "claude-plugins-official/frontend-design": {
+      "enabled": true
+    },
+    "claude-code-plugins/commit-commands": {
+      "enabled": true
+    },
+    "claude-plugins-official/supabase": {
+      "enabled": true
+    },
+    "claude-plugins-official/typescript-lsp": {
+      "enabled": true
+    },
+    "claude-plugins-official/rust-analyzer-lsp": {
+      "enabled": true
+    },
+    "claude-plugins-official/agent-sdk-dev": {
+      "enabled": true
+    }
+  }
+}
