@@ -5,7 +5,7 @@ Param(
 )
 
 $HookDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$RepoRoot = Resolve-Path (Join-Path $HookDir "..\..\..").Path
+$RepoRoot = (Resolve-Path (Join-Path $HookDir "..\..\..")).Path
 $ConfigPath = Join-Path $HookDir 'config.json'
 $Config = @{}
 if (Test-Path $ConfigPath) { $Config = Get-Content $ConfigPath -Raw | ConvertFrom-Json }
