@@ -1,0 +1,294 @@
+{
+  "version": 1,
+  "installed": [
+    {
+      "slug": "github-actions-expert",
+      "kind": "agent",
+      "path": "agents/github-actions-expert.agent.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\github-actions-expert\\SKILL.md",
+      "hash": "9a113142559959683041c85c094ca32541fa7e0db42d3510acf6d79a68bbb597",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.429Z"
+    },
+    {
+      "slug": "adr-generator",
+      "kind": "agent",
+      "path": "agents/adr-generator.agent.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\adr-generator\\SKILL.md",
+      "hash": "abbf07c6a768a21baa94a1aed858510c8038cb89866461d47ab64817e9f347ac",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.432Z"
+    },
+    {
+      "slug": "se-security-reviewer",
+      "kind": "agent",
+      "path": "agents/se-security-reviewer.agent.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\se-security-reviewer\\SKILL.md",
+      "hash": "3b5fec1f93bf21e20b865493ceca30708738642887d00c68e0bd0051f2d0e1fc",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.433Z"
+    },
+    {
+      "slug": "accessibility",
+      "kind": "agent",
+      "path": "agents/accessibility.agent.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\accessibility\\SKILL.md",
+      "hash": "739ed64a0ef2e7f560ef16329e7f6d7fedfdfbcc3f00382a926d33f978e614d0",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.435Z"
+    },
+    {
+      "slug": "api-architect",
+      "kind": "agent",
+      "path": "agents/api-architect.agent.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\api-architect\\SKILL.md",
+      "hash": "0a503c0c0d18b1e78645262e12d70857978f14463e1bbb1db8fc80451ed50e41",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.437Z"
+    },
+    {
+      "slug": "gem-reviewer",
+      "kind": "agent",
+      "path": "agents/gem-reviewer.agent.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\gem-reviewer\\SKILL.md",
+      "hash": "1351bf4c1216f6f0628ebdd3197864807f5e4d41d2b9c2c97ef08f61c54c3de1",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.439Z"
+    },
+    {
+      "slug": "gem-devops",
+      "kind": "agent",
+      "path": "agents/gem-devops.agent.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\gem-devops\\SKILL.md",
+      "hash": "80c7a1069b2fc53f68ad275ee4999ead6d68a6725bf78799a7eab6c829f70bd6",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.441Z"
+    },
+    {
+      "slug": "gem-documentation-writer",
+      "kind": "agent",
+      "path": "agents/gem-documentation-writer.agent.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\gem-documentation-writer\\SKILL.md",
+      "hash": "f247e086cf213235478877f14c76e488c4f33aaeda2e0d8abd8d556c7b465e8c",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.443Z"
+    },
+    {
+      "slug": "quality-playbook",
+      "kind": "skill",
+      "path": "skills/quality-playbook/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\quality-playbook",
+      "hash": "2b6f0e36e5427d81d94b2ac35ec6e657c57fb9434ba0d9a011b0e462b04ae729",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.482Z"
+    },
+    {
+      "slug": "acquire-codebase-knowledge",
+      "kind": "skill",
+      "path": "skills/acquire-codebase-knowledge/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\acquire-codebase-knowledge",
+      "hash": "7ca01711e1615171b26ce9e2729bedf041348d7fd0f24bc04e0d400dc93e41b9",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.495Z"
+    },
+    {
+      "slug": "doublecheck",
+      "kind": "skill",
+      "path": "skills/doublecheck/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\doublecheck",
+      "hash": "ea16d7eb9d144a1f8d6287695a71be900a37efda468e899af4016361b233bdc7",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.499Z"
+    },
+    {
+      "slug": "github-actions-efficiency",
+      "kind": "skill",
+      "path": "skills/github-actions-efficiency/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\github-actions-efficiency",
+      "hash": "9c41e860468e5c88d83ab6eec70c585b0f122facec2632ea65497b3389139e43",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.506Z"
+    },
+    {
+      "slug": "security-review",
+      "kind": "skill",
+      "path": "skills/security-review/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\security-review",
+      "hash": "002392d88637b89e4cbc409a0531834970937f3b57c0b448a17e04b5ca6d356c",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.517Z"
+    },
+    {
+      "slug": "create-agentsmd",
+      "kind": "skill",
+      "path": "skills/create-agentsmd/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\create-agentsmd",
+      "hash": "97b71d3f7c5e30e9f1740fcd7a45d4bf107b7887947cfd3ab92ac99dee294855",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.521Z"
+    },
+    {
+      "slug": "memory-merger",
+      "kind": "skill",
+      "path": "skills/memory-merger/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\memory-merger",
+      "hash": "a98f9bbd157755bfcaa8914095990d13a8d614afa18c882f3892f81e257e221c",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:44:53.524Z"
+    },
+    {
+      "slug": "accessibility-runtime-tester",
+      "kind": "agent",
+      "path": "agents/accessibility-runtime-tester.agent.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\accessibility-runtime-tester\\SKILL.md",
+      "hash": "53d57ab559cf81776e794a1858f14990f7e8ef953c439fbc1673efef5ebdb75a",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.150Z"
+    },
+    {
+      "slug": "se-system-architecture-reviewer",
+      "kind": "agent",
+      "path": "agents/se-system-architecture-reviewer.agent.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\se-system-architecture-reviewer\\SKILL.md",
+      "hash": "b50b7f02658270ba4ec70413ff57c7ec628cc7e710e3d0b4646544d438dfd5fd",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.155Z"
+    },
+    {
+      "slug": "react18-dep-compatibility",
+      "kind": "skill",
+      "path": "skills/react18-dep-compatibility/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\react18-dep-compatibility",
+      "hash": "1578a05b72d487c3ff55256d9824f8f60dc47bb421e669d1705c977d86ab81c7",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.161Z"
+    },
+    {
+      "slug": "react-audit-grep-patterns",
+      "kind": "skill",
+      "path": "skills/react-audit-grep-patterns/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\react-audit-grep-patterns",
+      "hash": "786b14c055e6182ed04e606bae7c7489cf9a4dc83f866f3f2c317d032cdaf023",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.171Z"
+    },
+    {
+      "slug": "react18-batching-patterns",
+      "kind": "skill",
+      "path": "skills/react18-batching-patterns/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\react18-batching-patterns",
+      "hash": "f4bdb6d5b817c19b00062392ff51965d42fe185facbb5724653dd9aa39c3140e",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.181Z"
+    },
+    {
+      "slug": "playwright-generate-test",
+      "kind": "skill",
+      "path": "skills/playwright-generate-test/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\playwright-generate-test",
+      "hash": "79dbb1a49fc5a6502788ccba1a4bd30769a017a1cc31d9db329d1326ea3d898f",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.185Z"
+    },
+    {
+      "slug": "playwright-automation-fill-in-form",
+      "kind": "skill",
+      "path": "skills/playwright-automation-fill-in-form/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\playwright-automation-fill-in-form",
+      "hash": "ed10ea649ed942b29707738ceb78de7f1a5bfddafe348d23b2ef81e8e3a4b80b",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.188Z"
+    },
+    {
+      "slug": "playwright-explore-website",
+      "kind": "skill",
+      "path": "skills/playwright-explore-website/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\playwright-explore-website",
+      "hash": "1496280e250b5b79c2c3081f093fa1fea22ac19a2fdc05074589875cdd9f55d3",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.191Z"
+    },
+    {
+      "slug": "premium-frontend-ui",
+      "kind": "skill",
+      "path": "skills/premium-frontend-ui/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\premium-frontend-ui",
+      "hash": "b7edf35b33931d15ea0c1d271f3c05d469e2b6923ed4df1c955d4da86287d9fb",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.195Z"
+    },
+    {
+      "slug": "ui-screenshots",
+      "kind": "skill",
+      "path": "skills/ui-screenshots/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\ui-screenshots",
+      "hash": "b496e7967ad7d88e9c99a7c23a7544375c24ae483b82415c6440946a3ce68c9d",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.198Z"
+    },
+    {
+      "slug": "devops-expert",
+      "kind": "agent",
+      "path": "agents/devops-expert.agent.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\devops-expert\\SKILL.md",
+      "hash": "63197c5250702760e79fb3ccb4e2b154b1a52b41ac62e7d45ae2def6eea23952",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.273Z"
+    },
+    {
+      "slug": "mcp-security-audit",
+      "kind": "skill",
+      "path": "skills/mcp-security-audit/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\mcp-security-audit",
+      "hash": "2bbe95278d4ca17d1f836b8c66ec19189ffce7e939f53c400e7ab79e7490a1f7",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.279Z"
+    },
+    {
+      "slug": "dependabot",
+      "kind": "skill",
+      "path": "skills/dependabot/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\dependabot",
+      "hash": "85179928b0838c542078747ed9f749209fa656590df593abeb9853ee43426edf",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.287Z"
+    },
+    {
+      "slug": "secret-scanning",
+      "kind": "skill",
+      "path": "skills/secret-scanning/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\secret-scanning",
+      "hash": "ebbaf8a49777e8be6d8c220b91bbee935b2aaab81b3ee976562484a339d750db",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.295Z"
+    },
+    {
+      "slug": "multi-stage-dockerfile",
+      "kind": "skill",
+      "path": "skills/multi-stage-dockerfile/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\multi-stage-dockerfile",
+      "hash": "7dfea7d31f3744930cb07869e15a79f90dbd47d2ddc56d165715fbd257db9ba7",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.298Z"
+    },
+    {
+      "slug": "postgresql-optimization",
+      "kind": "skill",
+      "path": "skills/postgresql-optimization/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\postgresql-optimization",
+      "hash": "9b511a7d706302761a7700cd6b87df9793650fa7f7f3299fe33243fc339e3c9f",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.302Z"
+    },
+    {
+      "slug": "postgresql-code-review",
+      "kind": "skill",
+      "path": "skills/postgresql-code-review/SKILL.md",
+      "dest": "C:\\Users\\dylan\\Monorepo_ModMe\\.agents\\skills\\postgresql-code-review",
+      "hash": "5c2f68120440692ae4b030b17e2a3553c1204d63ee871d6d994c6925b1f874cb",
+      "source": "vendor",
+      "installedAt": "2026-06-20T08:45:01.306Z"
+    }
+  ],
+  "lastRun": "2026-06-20T13:09:19.371Z"
+}

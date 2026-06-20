@@ -1,0 +1,29 @@
+{
+  "name": "agent",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch --env-file=.env ./src/index.ts",
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "volt": "volt"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^0.0.33",
+    "@voltagent/cli": "latest",
+    "@voltagent/core": "latest",
+    "@voltagent/libsql": "latest",
+    "@voltagent/logger": "latest",
+    "@voltagent/server-hono": "latest",
+    "ai": "^3.2.19",
+    "dotenv": "^16.4.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "tsup": "^8.2.3",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3"
+  }
+}

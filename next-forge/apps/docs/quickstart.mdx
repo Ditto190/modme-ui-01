@@ -1,0 +1,73 @@
+---
+title: 'Quickstart'
+description: 'ModMe next-forge local setup in under 10 minutes'
+---
+
+## ModMe quickstart
+
+<Info>
+  **Prerequisites:** [Bun](https://bun.sh) 1.3+, [Supabase CLI](https://supabase.com/docs/guides/cli), Docker Desktop, Node.js 18+.
+</Info>
+
+### 1. Install dependencies
+
+```powershell
+cd next-forge
+bun install
+bun run check
+```
+
+### 2. Local database (Supabase)
+
+```powershell
+cd next-forge
+bun run db:start
+copy packages\database\.env.example packages\database\.env
+bun run db:push
+```
+
+Postgres listens on `127.0.0.1:54322` by default.
+
+### 3. App environment (ModMe ports)
+
+Copy each `.env.example` to `.env.local` for `apps/app`, `apps/web`, and `apps/api`.
+
+Default dev login (Auth.js credentials):
+
+- Email: `dev@modme.local`
+- Password: `devpassword`
+
+Ports: app **3100**, web **3101**, api **3102**, docs **3104**, storybook **6106**.
+
+### 4. Start dev servers
+
+From repo root:
+
+```powershell
+yarn dev:forge:core        # app + web + api
+yarn dev:forge:workshop    # docs + storybook
+yarn dev:forge             # full stack
+```
+
+Sign in at http://localhost:3100/sign-in
+
+### 5. Verify
+
+```powershell
+cd next-forge
+bunx turbo build --dry-run
+```
+
+## Learn more
+
+<CardGroup>
+
+<Card title="Development guide" icon="code" href="/development">
+  Supabase local, Auth.js, Bun, ports, and GenerativeUI coexistence.
+</Card>
+
+<Card title="ModMe architecture" icon="sitemap" href="/modme-architecture">
+  Dual-monorepo layout and migration strategy.
+</Card>
+
+</CardGroup>

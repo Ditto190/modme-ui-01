@@ -1,119 +1,110 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Secrets and local env
+.env
+.env.*
+!.env.example
 
-# dependencies
+# Dependencies and package managers
 node_modules/
-**/node_modules/
-/.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
+!.yarn/sdks
 !.yarn/versions
 
-# testing
-/coverage
+# Build outputs
+dist/
+build/
+out/
+.next/
+.turbo/
+coverage/
+target/
+*.tsbuildinfo
 
-# next.js
-/.next/
-/out/
+# Tooling caches (lean-ctx, local installs)
+.tools/
+.lean-ctx/
+.node/
 
-# production
-/build
+# Vendored mirrors (re-fetch via scripts)
+.vendor/
 
-# misc
-.DS_Store
-*.pem
-
-# debug
+# Logs and diagnostics
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+# Session logger logs (local-only)
+logs/copilot/
 
-# env files (can opt-in for committing if needed)
-.env*
-!.env.example
+# OS and IDE
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+*.iml
 
-# vercel
-.vercel
+# Cursor local / ephemeral
+.cursor/**/*.log
+.cursor/**/mcp.json
+.cursor/hook-logs/
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# UniversalWorkbench build artifacts
+**/UniversalWorkbench-staging/**/dist/
+**/UniversalWorkbench-dev/**/dist/
+**/UniversalWorkbench/**/dist/
+**/UniversalWorkbench/**/.next/
+**/UniversalWorkbench/**/node_modules/
 
-.mastra/
+# Test and temp
+.tmp/
+temp/
+**/playwright-report/
+**/test-results/
+**/intake-pipeline/outgoing/
+**/debug-test-output.json
+# Inbox is a local drafts funnel — keep content private but commit the manifest and README
+**/docs/inbox/*
+!**/docs/inbox/README.md
+!**/docs/inbox/_index.json
+.agents/temp_skills/
+*.bak
 
-# lock files
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-bun.lockb
+# Local agent runtime (SQLite)
+**/.voltagent/*.db
+# lean-ctx machine-local
+.lean-ctx-id
+.lean-ctx.toml
 
-.# knowledge management generated files (keep authored markdown under version control)
-# Ignore generated binary assets and export outputs only
-/docs/toolsets/*.svg
-/docs/toolsets/*.png
-/docs/toolsets/*.pdf
-/docs/toolsets/generated/
-.ripgrep-cache/
+# agenttrace
+.agenttrace/
+/agenttrace-report.*
+/agenttrace-baseline.*
 
-# python
-agent/venv/
-agent/__pycache__/
-agent/.venv/
-**/__pycache__/
-**/*.pyc
-**/*.pyo
-**/*.pyd
-.Python
-*.egg-info/
+# Local Cursor hook runtime state (not project config)
+.cursor/hooks/state/
 
-# data directory (local client data)
-/data/
+# IDE-local skill/runtime dirs (use .cursor/skills and .agents/skills in repo)
+.claude/
+.copilot/
 
-# ChromaDB & vector storage
-chroma_data/
-output_chunks/
+# Misc local artifacts
+quality/
+1.1.0
+-w
+*.backup
+.agents/skills/.antigravity-install-manifest.json
 
-# Memory & local state
-.vault/
-.logs/
-.memory/
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+.beads/embeddeddolt/
+.beads/interactions.jsonl
 *.db
-*.sqlite
-*.sqlite3
-artifacts.db
+.beads-credential-key
+.beads/proxieddb/
 
-# Large auto-generated docs (prefer source)
-*_SUMMARY.md
-*_IMPLEMENTATION.md
-SESSION_SUMMARY_*.md
-REFACTORING_APPLIED_*.md
-CONVERSION_SUMMARY_*.md
-
-# Log files
-*.log
-lint_errors*.log
-validation_errors.log
-docs_error.log
-
-# Test outputs
-test-mcp-validation/
-
-# Agent generator output
-agent-generator/output/
-
-# DevContainer
-.devcontainer/.env
-
-# Ignore node modules for micro-agent models (built artifact kept in dist/)
-experiments/micro-agents/models/node_modules/
-experiments/**/node_modules/
-agent-generator/node_modules/
-agent-library/node_modules/
-scripts/**/node_modules/
-with-a2a-a2ui/node_modules/
-with-a2a-a2ui/.venv/
-with-a2a-a2ui/pnpm-lock.yaml
-with-a2a-a2ui/yarn.lock
+/generated/prisma

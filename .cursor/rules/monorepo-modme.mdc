@@ -1,0 +1,27 @@
+﻿---
+description: "Monorepo_ModMe project context â€” Turborepo layout, package boundaries, and verification expectations."
+globs: GenerativeUI_monorepo/**/*
+alwaysApply: false
+---
+
+# Monorepo_ModMe
+
+## Layout
+- Primary work happens under `GenerativeUI_monorepo/`.
+- Yarn 3 workspaces: `apps/*`, `packages/*`.
+- Turbo orchestrates `dev`, `build`, `lint`, `test` from the monorepo root.
+
+## Editing rules
+- Change only packages affected by the task.
+- Prefer `workspace:*` for internal dependencies.
+- Match the linter/formatter already configured in each package (ESLint or Biome).
+- UniversalWorkbench has its own root `package.json`; do not assume scripts from the template monorepo root.
+
+## Verification
+- Run the nearest package's `test`, `lint:check` or `lint`, and `type-check` when available.
+- For UI changes in Vite apps, run `dev` or `build` in that app package.
+
+## AI asset locations
+- Rules: `.cursor/rules/`
+- Skills: `.agents/skills/` and `.cursor/skills/`
+- Copilot: `.github/copilot-instructions.md`

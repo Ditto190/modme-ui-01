@@ -1,0 +1,7 @@
+{
+  "setup-worktree-windows": "setup-worktree-windows.ps1",
+  "setup-worktree-unix": "setup-worktree-unix.sh",
+  "setup-worktree": [
+    "echo 'Use OS-specific setup script in .cursor/'"
+  ]
+}

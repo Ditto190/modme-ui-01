@@ -1,0 +1,32 @@
+name: Agenttrace CI
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+
+jobs:
+  agenttrace:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Install Agenttrace
+        run: curl -sL https://raw.githubusercontent.com/luoyuctl/agenttrace/master/install.sh | sh
+
+      - name: Run Agenttrace Overview
+        run: agenttrace --overview --fail-on-critical

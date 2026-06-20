@@ -1,0 +1,42 @@
+{ "version": 1, "tasks": [
+  {
+    "id": "e2e-pipeline-verification",
+    "title": "E2E pipeline smoke test (inbox drop → Supabase)",
+    "priority": "P0",
+    "phase": "QA",
+    "model": "sonnet",
+    "description": "Verify full pipeline: drop test file into docs/inbox/, trigger inbox-ingest.yml manually, confirm row in Supabase inbox_entries. Requires SUPABASE env vars.",
+    "blockers": ["supabase-env-vars-verified"],
+    "estimatedTokens": 8000
+  },
+  {
+    "id": "supabase-env-vars-verified",
+    "title": "Verify Supabase env vars are set",
+    "priority": "P0",
+    "phase": "QA",
+    "model": "haiku",
+    "description": "Check that NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY are set in next-forge/.env and accessible to CI. Check docs/supabase-setup.md.",
+    "blockers": [],
+    "estimatedTokens": 2000
+  },
+  {
+    "id": "phase5-query-ui",
+    "title": "Phase 5: Knowledge Query UI in next-forge",
+    "priority": "P1",
+    "phase": "Development",
+    "model": "sonnet",
+    "description": "Scaffold apps/app/app/(authenticated)/knowledge/ — /knowledge page (search + recent), /knowledge/[id] (entry detail), /knowledge/catalogue (skills browser). Use TanStack Query. Follow existing generative-ui/ pattern.",
+    "blockers": ["e2e-pipeline-verification"],
+    "estimatedTokens": 25000
+  },
+  {
+    "id": "mcp-json-registration",
+    "title": "Register skillsh-mcp in .mcp.json",
+    "priority": "P2",
+    "phase": "Infrastructure",
+    "model": "haiku",
+    "description": "Add .tools/skillsh-mcp/dist/index.js to .mcp.json so Cursor/Copilot can use search_skills, popular_skills, skill_details, install_command tools directly from the IDE.",
+    "blockers": [],
+    "estimatedTokens": 1000
+  }
+], "updatedAt": "2026-06-20T23:09:00Z" }

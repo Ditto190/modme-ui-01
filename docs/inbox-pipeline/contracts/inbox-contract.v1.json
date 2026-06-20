@@ -1,0 +1,99 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-06-20T12:00:00.000Z",
+  "embeddingDimensions": 384,
+  "enums": {
+    "entryType": [
+      "architecture",
+      "design",
+      "code-review",
+      "solution",
+      "research",
+      "snippet",
+      "link",
+      "component"
+    ],
+    "severity": [
+      "low",
+      "medium",
+      "high",
+      "critical"
+    ],
+    "agentRole": [
+      "frontend",
+      "backend",
+      "devops",
+      "architect",
+      "reviewer",
+      "researcher"
+    ],
+    "sourceFormat": [
+      "md",
+      "txt",
+      "pdf",
+      "url",
+      "jsx",
+      "snippet",
+      "html",
+      "csv"
+    ],
+    "pipelineStage": [
+      "indexed",
+      "categorized",
+      "archived",
+      "superseded"
+    ]
+  },
+  "frontmatter": {
+    "required": [
+      "timestamp",
+      "agent",
+      "type"
+    ],
+    "optional": [
+      "agent_role",
+      "session_id",
+      "tags",
+      "severity",
+      "related_files",
+      "branch",
+      "pr_number",
+      "title",
+      "summary"
+    ],
+    "appliesTo": [
+      "md"
+    ]
+  },
+  "funnelFile": {
+    "required": [
+      "path",
+      "format",
+      "contentHash"
+    ],
+    "contentHashLength": 64
+  },
+  "entryRecord": {
+    "required": [
+      "id",
+      "content_hash",
+      "source_file",
+      "source_format",
+      "severity",
+      "status",
+      "created_at",
+      "updated_at"
+    ],
+    "contentHashLength": 64
+  },
+  "indexManifest": {
+    "version": "1.0",
+    "required": [
+      "version",
+      "last_updated",
+      "entry_count",
+      "entries"
+    ]
+  },
+  "categoryIdPattern": "^cat-[a-z0-9-]+$"
+}

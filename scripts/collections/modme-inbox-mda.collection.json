@@ -1,0 +1,20 @@
+{
+  "id": "modme-inbox-mda",
+  "name": "ModMe Inbox & Master Data Architect Collection",
+  "description": "Agents and skills for the Inbox→MDA→Supabase pipeline — ingest, categorize, enrich, and publish structured knowledge from the inbox into the data catalogue.",
+  "tags": ["inbox", "mda", "supabase", "knowledge-management", "pipeline", "data"],
+  "display": { "ordering": "manual", "featured": true },
+  "items": [
+    { "path": "agents/adr-generator.agent.md", "kind": "agent", "usage": "ADR documenter subagent — captures architectural decisions from inbox notes" },
+    { "path": "agents/gem-documentation-writer.agent.md", "kind": "agent", "usage": "Transform processed inbox entries into structured documentation" },
+    { "path": "agents/gem-devops.agent.md", "kind": "agent", "usage": "Diagnose pipeline failures in ingest/categorize/embed workflows" },
+    { "path": "agents/api-architect.agent.md", "kind": "agent", "usage": "Design Supabase schema evolution for new categories" },
+    { "path": "agents/se-security-reviewer.agent.md", "kind": "agent", "usage": "Review ingested content for sensitive data before Supabase insert" },
+    { "path": "skills/quality-playbook/SKILL.md", "kind": "skill", "usage": "Validate pipeline output quality with spec-traced tests" },
+    { "path": "skills/doublecheck/SKILL.md", "kind": "skill", "usage": "Verify MDA categorization output with three-layer review" },
+    { "path": "skills/supabase/SKILL.md", "kind": "skill", "usage": "Supabase DB patterns — RLS, migrations, pgvector, storage" },
+    { "path": "skills/supabase-postgres-best-practices/SKILL.md", "kind": "skill", "usage": "Postgres optimization, query performance, and index tuning" },
+    { "path": "skills/memory-merger/SKILL.md", "kind": "skill", "usage": "Merge mature MDA discoveries back into agent instruction files" },
+    { "path": "skills/create-agentsmd/SKILL.md", "kind": "skill", "usage": "Regenerate AGENTS.md files as the MDA pipeline evolves" }
+  ]
+}

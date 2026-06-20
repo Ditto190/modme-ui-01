@@ -1,0 +1,42 @@
+---
+title: ModMe Architecture
+description: Dual-monorepo layout in Monorepo_ModMe
+---
+
+## Overview
+
+Monorepo_ModMe hosts **two primary JavaScript monorepos**:
+
+| Path | Purpose | Package manager |
+|------|---------|-----------------|
+| `next-forge/` | Apps, documentation (this site), Storybook workshop | Bun |
+| `GenerativeUI_monorepo/` | Legacy CopilotKit + Python agent-server stack | Yarn 3.3 |
+
+UniversalWorkbench copies under `GenerativeUI_monorepo/` are separate products and are not part of next-forge.
+
+## next-forge apps
+
+| App | Port | Role |
+|-----|------|------|
+| `app` | 3100 | Main SaaS application |
+| `web` | 3101 | Marketing site |
+| `api` | 3102 | Webhooks and API routes |
+| `docs` | 3104 | Mintlify documentation (you are here) |
+| `storybook` | 6106 | Design system workshop |
+
+## Commands
+
+From repository root:
+
+```bash
+yarn dev:forge
+yarn dev:forge:docs
+yarn dev:forge:storybook
+yarn dev:generative
+```
+
+## Further reading
+
+- Repository `docs/codebase/STACK.md` — dependency scorecard
+- Repository `docs/multi-agent-worktrees.md` — parallel agent development
+- `.agents/skills/next-forge/SKILL.md` — next-forge agent skill

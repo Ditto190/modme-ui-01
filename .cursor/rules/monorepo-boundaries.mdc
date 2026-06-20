@@ -1,0 +1,25 @@
+---
+description: Boundaries between next-forge and GenerativeUI monorepos
+alwaysApply: true
+---
+
+# Monorepo boundaries
+
+This repository contains **independent monorepos**. Do not merge them.
+
+| Path | Role | Package manager |
+|------|------|-----------------|
+| `next-forge/` | Apps, Mintlify docs, Storybook workshop | Bun |
+| `GenerativeUI_monorepo/` | Legacy agent stack (CopilotKit, agent-server) | Yarn 3.3 |
+| `GenerativeUI_monorepo/UniversalWorkbench*/` | Separate product (read-only unless tasked) | Yarn 4.10 |
+
+## Allowed integration
+
+- HTTP, WebSocket, or published npm packages between stacks.
+- Shared documentation links (Mintlify → `docs/codebase/`).
+
+## Forbidden
+
+- `workspace:*` dependencies across `next-forge/` and `GenerativeUI_monorepo/`.
+- Relative imports like `../../GenerativeUI_monorepo/...` from next-forge apps.
+- Deleting or converting GenerativeUI lockfiles during next-forge work.

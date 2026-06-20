@@ -1,0 +1,57 @@
+{
+  "servers": {
+    "io.github.upstash/context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@upstash/context7-mcp@1.0.31"],
+      "env": {
+        "CONTEXT7_API_KEY": "${input:CONTEXT7_API_KEY}",
+        "PATH": "${env:PATH}"
+      },
+      "gallery": "https://api.mcp.github.com",
+      "version": "1.0.31"
+    },
+    "microsoft/playwright-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "env": {
+        "PATH": "${env:PATH}"
+      },
+      "gallery": "https://api.mcp.github.com",
+      "version": "0.0.1-seed"
+    },
+    "microsoft/markitdown": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["markitdown-mcp@0.0.1a4"],
+      "env": {
+        "PATH": "${env:PATH}"
+      },
+      "gallery": "https://api.mcp.github.com",
+      "version": "0.0.1a4"
+    },
+    "io.github.github/github-mcp-server": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "gallery": "https://api.mcp.github.com",
+      "version": "1.2.0"
+    },
+    "mantine": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@mantine/mcp-server"],
+      "env": {
+        "PATH": "${env:PATH}"
+      }
+    }
+  },
+  "inputs": [
+    {
+      "id": "CONTEXT7_API_KEY",
+      "type": "promptString",
+      "description": "Context7 API key (used by context7 MCP)",
+      "password": true
+    }
+  ]
+}
