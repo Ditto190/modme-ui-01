@@ -28,11 +28,69 @@ export const AgentStateSchema = z.object({
 
 export type AgentState = z.infer<typeof AgentStateSchema>;
 
+/** Token delta emitted during streaming generation */
+export const TokenEventPayloadSchema = z.object({
+  delta: z.string(),
+  seq: z.number(),
+  runId: z.string().optional(),
+});
+
+export type TokenEventPayload = z.infer<typeof TokenEventPayloadSchema>;
+
+/** Tool invocation lifecycle events */
+export const ToolStartPayloadSchema = z.object({
+  name: z.string(),
+  callId: z.string(),
+  runId: z.string().optional(),
+});
+
+export const ToolResultPayloadSchema = z.object({
+  callId: z.string(),
+  output: z.unknown(),
+  runId: z.string().optional(),
+});
+
+export const DonePayloadSchema = z.object({
+  runId: z.string(),
+  usage: z
+    .object({
+      promptTokens: z.number().optional(),
+      completionTokens: z.number().optional(),
+    })
+    .optional(),
+});
+
+export type ToolStartPayload = z.infer<typeof ToolStartPayloadSchema>;
+export type ToolResultPayload = z.infer<typeof ToolResultPayloadSchema>;
+export type DonePayload = z.infer<typeof DonePayloadSchema>;
+
+/** Optimistic chat message tracked client-side until server ack */
+export const OptimisticMessageSchema = z.object({
+  id: z.string(),
+  role: z.enum(['user', 'assistant']),
+  content: z.string(),
+  pending: z.boolean().optional(),
+});
+
+export type OptimisticMessage = z.infer<typeof OptimisticMessageSchema>;
+
 /**
  * WebSocket message schema for real-time communication
  */
 export const WebSocketMessageSchema = z.object({
-  type: z.enum(['state_update', 'action', 'error', 'ping', 'pong']).describe('Message type'),
+  type: z
+    .enum([
+      'state_update',
+      'action',
+      'error',
+      'ping',
+      'pong',
+      'token',
+      'tool_start',
+      'tool_result',
+      'done',
+    ])
+    .describe('Message type'),
   payload: z.any().optional().describe('Message payload'),
   timestamp: z.number().default(() => Date.now()).describe('Unix timestamp'),
 });

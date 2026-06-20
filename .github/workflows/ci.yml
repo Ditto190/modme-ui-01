@@ -2,13 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [main, master, develop]
+    branches: [main, master, develop, dev]
     paths-ignore:
       - "**.md"
       - "docs/**"
       - "LICENSE"
   pull_request:
-    branches: [main, master, develop]
+    branches: [main, master, develop, dev]
     paths-ignore:
       - "**.md"
       - "docs/**"
@@ -35,6 +35,22 @@ jobs:
           fi
           echo "No .env files tracked."
 
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      forge: ${{ steps.filter.outputs.forge }}
+      generative: ${{ steps.filter.outputs.generative }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            forge:
+              - 'next-forge/**'
+            generative:
+              - 'GenerativeUI_monorepo/**'
+
   changelog:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -51,7 +67,8 @@ jobs:
         run: node scripts/validate-changelog.mjs --require-update
 
   monorepo:
-    needs: secret-guard
+    needs: [secret-guard, changes]
+    if: needs.changes.outputs.generative == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -80,3 +97,30 @@ jobs:
 
       - name: Build
         run: yarn build
+
+  next-forge:
+    needs: [secret-guard, changes]
+    if: needs.changes.outputs.forge == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: next-forge
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: next-forge/package.json
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Check (Ultracite/Biome)
+        run: bun run check
+
+      - name: Test
+        run: bun run test
+
+      - name: Build
+        run: bun run build

@@ -1,0 +1,43 @@
+{
+  "next-forge": {
+    "cwd": "next-forge",
+    "answers": {
+      "detection": {
+        "stacks": [
+          "typescript",
+          "nextjs",
+          "react",
+          "tailwind",
+          "prisma",
+          "vitest",
+          "node"
+        ],
+        "language": "typescript",
+        "packageManager": "bun",
+        "hint": "next-forge"
+      },
+      "projectName": "next-forge",
+      "projectKind": "fullstack",
+      "description": "Frontend workshops connected to a backend factory — Turborepo for ModMe apps, Mintlify docs, and Storybook (Bun, @repo/*).",
+      "stacks": [
+        "typescript",
+        "nextjs",
+        "react",
+        "tailwind",
+        "prisma",
+        "vitest",
+        "node"
+      ],
+      "aiTools": [
+        "cursor",
+        "claude-code",
+        "copilot",
+        "windsurf"
+      ],
+      "codingStyle": "pragmatic",
+      "verbosity": "terse",
+      "testingEmphasis": "critical-paths",
+      "customRules": "Use Bun only in this tree (npx bun). Never yarn install here. Respect @repo/* workspace boundaries. Do not add workspace:* deps to GenerativeUI_monorepo."
+    }
+  }
+}

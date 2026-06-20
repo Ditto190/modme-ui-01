@@ -48,6 +48,7 @@ Thumbs.db
 # Cursor local / ephemeral
 .cursor/**/*.log
 .cursor/**/mcp.json
+.cursor/hook-logs/
 
 # UniversalWorkbench build artifacts
 **/UniversalWorkbench-staging/**/dist/
@@ -59,7 +60,36 @@ Thumbs.db
 # Test and temp
 .tmp/
 temp/
+**/debug-test-output.json
+**/docs/inbox/
+.agents/temp_skills/
+*.bak
+
+# Local agent runtime (SQLite)
+**/.voltagent/*.db
 # lean-ctx machine-local
 .lean-ctx-id
 .lean-ctx.toml
 
+# agenttrace
+.agenttrace/
+agenttrace-report.*
+agenttrace-baseline.*
+
+# Local Cursor hook runtime state (not project config)
+.cursor/hooks/state/
+
+# IDE-local skill/runtime dirs (use .cursor/skills and .agents/skills in repo)
+.claude/
+.copilot/
+
+# Misc local artifacts
+quality/
+1.1.0
+*.backup
+.agents/skills/.antigravity-install-manifest.json
+
+# Security: Remove problematic hooks from version control
+.cursor/hooks/audit-log.sh
+.cursor/hooks/block-models-by-repo-origin.sh
+.cursor/hooks/sensitive-prompt-guard.sh

@@ -39,7 +39,17 @@ class WebSocketMessage(BaseModel):
     """
     WebSocket message for real-time communication
     """
-    type: Literal["state_update", "action", "error", "ping", "pong"] = Field(
+    type: Literal[
+        "state_update",
+        "action",
+        "error",
+        "ping",
+        "pong",
+        "token",
+        "tool_start",
+        "tool_result",
+        "done",
+    ] = Field(
         ..., description="Message type"
     )
     payload: Optional[Any] = Field(None, description="Message payload")

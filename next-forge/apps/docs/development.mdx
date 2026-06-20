@@ -1,0 +1,114 @@
+---
+title: 'Development'
+description: 'ModMe next-forge local development'
+---
+
+<Info>
+  **Prerequisites:** Node.js 18+, [Bun](https://bun.sh) 1.3+, and a Neon Postgres
+  `DATABASE_URL` in `packages/database/.env`.
+</Info>
+
+## Quick start (ModMe ports)
+
+From the **Monorepo_ModMe** repository root:
+
+```bash
+yarn dev:forge:docs        # Mintlify → http://localhost:3104
+yarn dev:forge:storybook   # Storybook → http://localhost:6106
+yarn dev:forge             # all next-forge apps
+```
+
+From `next-forge/`:
+
+```bash
+bun install
+bun run db:push            # after setting DATABASE_URL (Neon)
+bun dev --filter docs
+bun dev --filter storybook
+bun dev --filter app       # http://localhost:3100
+```
+
+Copy env templates:
+
+| Template | Copy to |
+|----------|---------|
+| `packages/database/.env.example` | `packages/database/.env` |
+| `apps/app/.env.example` | `apps/app/.env.local` (and `web`, `api`) |
+
+## Neon database
+
+1. Create a project at [neon.tech](https://neon.tech).
+2. Copy the **pooled** connection string into `packages/database/.env`:
+
+```bash
+DATABASE_URL="postgresql://USER:PASS@HOST/DB?sslmode=require"
+```
+
+3. Push schema:
+
+```bash
+cd next-forge
+bun run db:push
+```
+
+Prisma loads `.env` via `packages/database/prisma.config.ts`.
+
+## Mintlify docs
+
+Install the CLI globally (once):
+
+```bash
+npm i -g mintlify
+```
+
+The docs app runs on **port 3104** (avoids GenerativeUI on 3000–3004):
+
+```bash
+cd next-forge/apps/docs
+mintlify dev --port 3104
+```
+
+Or from repo root: `yarn dev:forge:docs`
+
+## Storybook workshop
+
+Design system workshop on **port 6106**:
+
+```bash
+yarn dev:forge:storybook
+```
+
+Browse **ModMe / Workshop** stories before migrating GenerativeUI components.
+
+## Coexistence with GenerativeUI
+
+| Stack | Ports |
+|-------|-------|
+| GenerativeUI | 3000, 3001, 8000 |
+| next-forge | 3100–3104, 6106 |
+
+Run legacy stack: `yarn dev:generative` from repo root.
+
+See [ModMe architecture](/modme-architecture) and repository docs:
+
+- [`docs/codebase/STACK.md`](https://github.com/vercel/next-forge/blob/main/README.md) — ports, package managers, setup status
+- [`docs/codebase/ARCHITECTURE.md`](https://github.com/vercel/next-forge/blob/main/README.md) — dual-monorepo boundaries
+- [`docs/codebase/STRUCTURE.md`](https://github.com/vercel/next-forge/blob/main/README.md) — directory layout
+
+<Note>
+  The links above refer to files at the Monorepo_ModMe repository root (`docs/codebase/`).
+</Note>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="db:push — Can't reach database server">
+    Replace `packages/database/.env` with your Neon pooled URL, not `localhost`, unless Postgres is running locally.
+  </Accordion>
+  <Accordion title="Port already in use">
+    Stop GenerativeUI dev servers or use worktree port offsets (`.worktree-ports.env`).
+  </Accordion>
+  <Accordion title="Mintlify not found">
+    Run `npm i -g mintlify` and retry `yarn dev:forge:docs`.
+  </Accordion>
+</AccordionGroup>

@@ -33,7 +33,13 @@ if (Test-Path `$wingetDirenvDir) {
     `$env:Path = "`$wingetDirenvDir;`$env:Path"
 }
 if (`$PSVersionTable.PSVersion.Major -ge 7 -and (Get-Command direnv -ErrorAction SilentlyContinue)) {
-    Invoke-Expression (& direnv hook pwsh | Out-String)
+    try {
+        `$direnvHook = (direnv hook pwsh 2>`$null | Out-String).Trim()
+        if (`$direnvHook) { Invoke-Expression `$direnvHook }
+    }
+    catch {
+        Write-Warning "direnv hook skipped: `$_"
+    }
 }
 $markerEnd
 "@

@@ -84,12 +84,25 @@ function Copy-ItemForce($Source, $Dest) {
     if ($parent -and -not (Test-Path $parent)) {
         New-Item -ItemType Directory -Force -Path $parent | Out-Null
     }
-    Copy-Item -Path $Source -Destination $Dest -Force
+    if (Test-Path $Source) {
+        $item = Get-Item -Path $Source -Force
+        if ($item.PSIsContainer) {
+            Copy-Item -Path $Source -Destination $Dest -Recurse -Force -ErrorAction SilentlyContinue
+        } else {
+            Copy-Item -Path $Source -Destination $Dest -Force -ErrorAction SilentlyContinue
+        }
+        Write-Host "  [ok] copied to $Dest"
+    } else {
+        Write-Warning "  [skip] source not found: $Source"
+    }
 }
 
 function Install-SkillFolder($SourceSkillDir, $TargetRoot, $SkillName) {
     $dest = Join-Path $TargetRoot $SkillName
-    if (Test-Path $dest) { Remove-Item $dest -Recurse -Force }
+    if (Test-Path $dest) { 
+        Write-Host "  [skip] skill exists: $dest"
+        return
+    }
     Copy-Item -Path $SourceSkillDir -Destination $dest -Recurse -Force
     Write-Host "  skill -> $dest"
 }
@@ -145,22 +158,24 @@ function Install-GlobalSkills {
 }
 
 function Convert-CopilotInstructionToMdc($InstructionPath, $OutPath) {
-    $raw = Get-Content -Path $InstructionPath -Raw -Encoding UTF8
-    if ($raw -notmatch '(?s)^---\r?\n(.*?)\r?\n---\r?\n(.*)$') {
-        throw "Invalid instruction frontmatter: $InstructionPath"
-    }
-    $fm = $Matches[1]
-    $body = $Matches[2].TrimStart()
+    try {
+        $raw = Get-Content -Path $InstructionPath -Raw -Encoding UTF8
+        if ($raw -notmatch '(?s)^---\r?\n(.*?)\r?\n---\r?\n(.*)$') {
+            Write-Warning "  [skip] no frontmatter in instruction: $InstructionPath"
+            return
+        }
+        $fm = $Matches[1]
+        $body = $Matches[2].TrimStart()
 
-    $description = ''
-    $globs = '**/*'
-    foreach ($line in ($fm -split '\r?\n')) {
-        if ($line -match '^description:\s*["'']?(.*?)["'']?\s*$') { $description = $Matches[1] }
-        if ($line -match '^applyTo:\s*["'']?(.*?)["'']?\s*$') { $globs = $Matches[1] }
-    }
+        $description = ''
+        $globs = '**/*'
+        foreach ($line in ($fm -split '\r?\n')) {
+            if ($line -match '^description:\s*["'']?(.*?)["'']?\s*$') { $description = $Matches[1] }
+            if ($line -match '^applyTo:\s*["'']?(.*?)["'']?\s*$') { $globs = $Matches[1] }
+        }
 
-    $name = [IO.Path]::GetFileNameWithoutExtension($OutPath) -replace '\.mdc$',''
-    $mdc = @"
+        $name = [IO.Path]::GetFileNameWithoutExtension($OutPath) -replace '\.mdc$',''
+        $mdc = @"
 ---
 description: "$description"
 globs: $globs
@@ -169,7 +184,11 @@ alwaysApply: false
 
 $body
 "@
-    Set-Content -Path $OutPath -Value $mdc -Encoding UTF8 -NoNewline
+        [System.IO.File]::WriteAllText($OutPath, $mdc, [System.Text.Encoding]::UTF8)
+        Write-Host "  [ok] converted to $OutPath"
+    } catch {
+        Write-Warning "  [skip] failed to convert: $_"
+    }
 }
 
 function Install-CursorRules {
@@ -227,26 +246,27 @@ function Install-CursorRules {
 }
 
 function Install-AwesomeCopilot {
-    $copilotRoot = Join-Path $VendorRoot 'awesome-copilot-main'
-    $githubDir = Join-Path $RepoRoot '.github'
-    $instrDir = Join-Path $githubDir 'instructions'
-    New-Item -ItemType Directory -Force -Path $instrDir | Out-Null
+    try {
+        $copilotRoot = Join-Path $VendorRoot 'awesome-copilot-main'
+        $githubDir = Join-Path $RepoRoot '.github'
+        $instrDir = Join-Path $githubDir 'instructions'
+        New-Item -ItemType Directory -Force -Path $instrDir | Out-Null
 
-    # Copilot instructions (VS Code / Copilot CLI compatible)
-    $copilotInstr = Join-Path $copilotRoot 'instructions'
-    $copilotFiles = @(
-        'nextjs.instructions.md',
-        'nextjs-tailwind.instructions.md',
-        'code-review-generic.instructions.md',
-        'github-actions-ci-cd-best-practices.instructions.md',
-        'agent-skills.instructions.md',
-        'a11y.instructions.md'
-    )
-    foreach ($f in $copilotFiles) {
-        Copy-ItemForce (Join-Path $copilotInstr $f) (Join-Path $instrDir $f)
-    }
+        # Copilot instructions (VS Code / Copilot CLI compatible)
+        $copilotInstr = Join-Path $copilotRoot 'instructions'
+        $copilotFiles = @(
+            'nextjs.instructions.md',
+            'nextjs-tailwind.instructions.md',
+            'code-review-generic.instructions.md',
+            'github-actions-ci-cd-best-practices.instructions.md',
+            'agent-skills.instructions.md',
+            'a11y.instructions.md'
+        )
+        foreach ($f in $copilotFiles) {
+            Copy-ItemForce (Join-Path $copilotInstr $f) (Join-Path $instrDir $f)
+        }
 
-    $copilotInstructions = @'
+        $copilotInstructions = @'
 # Monorepo_ModMe — GitHub Copilot instructions
 
 Primary codebase: `GenerativeUI_monorepo/` (Turborepo + Yarn workspaces).
@@ -276,48 +296,61 @@ Primary codebase: `GenerativeUI_monorepo/` (Turborepo + Yarn workspaces).
 
 See also per-file instructions in `.github/instructions/` (from github/awesome-copilot).
 '@
-    Set-Content -Path (Join-Path $githubDir 'copilot-instructions.md') -Value $copilotInstructions -Encoding UTF8
+        [System.IO.File]::WriteAllText((Join-Path $githubDir 'copilot-instructions.md'), $copilotInstructions, [System.Text.Encoding]::UTF8)
 
-    # Project skills from awesome-copilot (canonical: .agents/skills)
-    $agentsSkills = Join-Path $RepoRoot '.agents\skills'
-    $cursorSkills = Join-Path $RepoRoot '.cursor\skills'
-    New-Item -ItemType Directory -Force -Path $agentsSkills | Out-Null
-    New-Item -ItemType Directory -Force -Path $cursorSkills | Out-Null
+        # Project skills from awesome-copilot (canonical: .agents/skills)
+        $agentsSkills = Join-Path $RepoRoot '.agents\skills'
+        $cursorSkills = Join-Path $RepoRoot '.cursor\skills'
+        New-Item -ItemType Directory -Force -Path $agentsSkills | Out-Null
+        New-Item -ItemType Directory -Force -Path $cursorSkills | Out-Null
 
-    $skillNames = @(
-        'acquire-codebase-knowledge',
-        'create-agentsmd',
-        'github-actions-efficiency',
-        'quality-playbook',
-        'doublecheck',
-        'react18-dep-compatibility'
-    )
-    $copilotSkills = Join-Path $copilotRoot 'skills'
-    foreach ($name in $skillNames) {
-        $src = Join-Path $copilotSkills $name
-        if (-not (Test-Path $src)) { Write-Warning "missing awesome-copilot skill: $name"; continue }
-        Install-SkillFolder $src $agentsSkills $name
-        # Mirror into .cursor/skills for Cursor discovery
-        $link = Join-Path $cursorSkills $name
-        $target = Join-Path $agentsSkills $name
-        if (Test-Path $link) { Remove-Item $link -Recurse -Force -ErrorAction SilentlyContinue }
-        $mklink = cmd /c "mklink /J `"$link`" `"$target`" 2>&1"
-        if ($LASTEXITCODE -ne 0) {
-            Copy-Item -Path $target -Destination $link -Recurse -Force
+        $skillNames = @(
+            'acquire-codebase-knowledge',
+            'create-agentsmd',
+            'github-actions-efficiency',
+            'quality-playbook',
+            'doublecheck',
+            'react18-dep-compatibility'
+        )
+        $copilotSkills = Join-Path $copilotRoot 'skills'
+        foreach ($name in $skillNames) {
+            $src = Join-Path $copilotSkills $name
+            if (-not (Test-Path $src)) { Write-Warning "missing awesome-copilot skill: $name"; continue }
+            Install-SkillFolder $src $agentsSkills $name
+            # Mirror into .cursor/skills for Cursor discovery
+            $link = Join-Path $cursorSkills $name
+            $target = Join-Path $agentsSkills $name
+            if (Test-Path $link) { Write-Host "  [skip] link exists: $link" }
+            else {
+                try {
+                    $mklink = cmd /c "mklink /J `"$link`" `"$target`" 2>&1"
+                    if ($LASTEXITCODE -ne 0) {
+                        Copy-Item -Path $target -Destination $link -Recurse -Force -ErrorAction SilentlyContinue
+                        Write-Host "  [ok] copied skill to $link"
+                    } else {
+                        Write-Host "  [ok] linked skill to $link"
+                    }
+                } catch {
+                    Write-Warning "  [skip] failed to link/copy: $_"
+                }
+            }
         }
-    }
 
-    # Project MCP snippet (merge-safe reference)
-    $projectMcp = Join-Path $RepoRoot '.cursor\mcp.json'
-    if (-not (Test-Path $projectMcp)) {
-        @'
+        # Project MCP snippet (merge-safe reference)
+        $projectMcp = Join-Path $RepoRoot '.cursor\mcp.json'
+        if (-not (Test-Path $projectMcp)) {
+            $mcpContent = @'
 {
   "mcpServers": {}
 }
-'@ | Set-Content -Path $projectMcp -Encoding UTF8
-    }
+'@
+            [System.IO.File]::WriteAllText($projectMcp, $mcpContent, [System.Text.Encoding]::UTF8)
+        }
 
-    Write-Host '[ok] awesome-copilot configured (.github + .agents/skills)'
+        Write-Host '[ok] awesome-copilot configured (.github + .agents/skills)'
+    } catch {
+        Write-Warning "  [skip] awesome-copilot install failed: $_"
+    }
 }
 
 function Write-AgentsMd {
@@ -371,12 +404,16 @@ Per-package scripts vary (Vite/Biome/Vitest vs Next.js). Check the nearest `pack
 - [PatrickJS/awesome-cursorrules](https://github.com/PatrickJS/awesome-cursorrules)
 - [sanjeed5/awesome-cursor-rules-mdc](https://github.com/sanjeed5/awesome-cursor-rules-mdc)
 '@
-    Set-Content -Path $path -Value $content -Encoding UTF8
+    [System.IO.File]::WriteAllText($path, $content, [System.Text.Encoding]::UTF8)
     Write-Host '[ok] created AGENTS.md'
 }
 
 function Write-MonorepoRule {
     $path = Join-Path $RepoRoot '.cursor\rules\monorepo-modme.mdc'
+    if (Test-Path $path) {
+        Write-Host '[skip] monorepo-modme.mdc already exists'
+        return
+    }
     $content = @'
 ---
 description: "Monorepo_ModMe project context — Turborepo layout, package boundaries, and verification expectations."
@@ -406,16 +443,183 @@ alwaysApply: false
 - Skills: `.agents/skills/` and `.cursor/skills/`
 - Copilot: `.github/copilot-instructions.md`
 '@
-    Set-Content -Path $path -Value $content -Encoding UTF8
+    [System.IO.File]::WriteAllText($path, $content, [System.Text.Encoding]::UTF8)
+    Write-Host '[ok] created monorepo-modme.mdc'
 }
 
 function Install-GitHooks {
-    $installer = Join-Path $RepoRoot 'scripts\install-git-hooks.ps1'
-    if (-not (Test-Path $installer)) {
-        Write-Warning 'scripts/install-git-hooks.ps1 not found — skipping hook install'
-        return
+    try {
+        $installer = Join-Path $RepoRoot 'scripts\install-git-hooks.ps1'
+        if (-not (Test-Path $installer)) {
+            Write-Warning 'scripts/install-git-hooks.ps1 not found - skipping hook install'
+            return
+        }
+        & $installer
+    } catch {
+        Write-Warning "Git hooks install failed: $_"
+        Write-Host "To install git hooks manually, run: powershell -ExecutionPolicy Bypass -File `"$installer`""
     }
-    & $installer
+}
+
+function Test-LeanCtx {
+    Write-Host '[check] lean-ctx...' -ForegroundColor Cyan
+    $leanCtx = Get-Command lean-ctx -ErrorAction SilentlyContinue
+    if (-not $leanCtx) {
+        $settingsPath = Join-Path $RepoRoot '.vscode\settings.json'
+        if (Test-Path $settingsPath) {
+            $settings = Get-Content $settingsPath -Raw | ConvertFrom-Json
+            $binary = $settings.'leanctx.binaryPath'
+            if ($binary -and (Test-Path $binary)) {
+                $leanCtx = Get-Command $binary
+            }
+        }
+    }
+    if (-not $leanCtx) {
+        Write-Warning 'lean-ctx not on PATH. See docs/agent-tech-guide.md for install.'
+        return $false
+    }
+    & $leanCtx.Source doctor 2>&1 | Write-Host
+    if ($LASTEXITCODE -ne 0) {
+        Write-Warning 'lean-ctx doctor reported issues'
+        return $false
+    }
+    Write-Host '[ok] lean-ctx doctor'
+    return $true
+}
+
+function Test-WorktreeInfrastructure {
+    Write-Host '[check] worktree infrastructure...' -ForegroundColor Cyan
+    $requiredScripts = @(
+        'init-worktrees.ps1',
+        'new-agent-worktree.ps1',
+        'worktree-allocate-ports.ps1',
+        'smoke-test-worktrees.ps1',
+        'list-worktrees.ps1',
+        'validate-launch-json.mjs'
+    )
+    $missing = @()
+    foreach ($s in $requiredScripts) {
+        if (-not (Test-Path (Join-Path $RepoRoot "scripts\$s"))) { $missing += $s }
+    }
+    if ($missing.Count -gt 0) {
+        Write-Warning "Missing worktree scripts: $($missing -join ', ')"
+        return $false
+    }
+
+    $worktreesJson = Join-Path $RepoRoot '.cursor\worktrees.json'
+    if (-not (Test-Path $worktreesJson)) {
+        Write-Warning '.cursor/worktrees.json missing'
+        return $false
+    }
+    $wt = Get-Content $worktreesJson -Raw | ConvertFrom-Json
+    $winSetup = $wt.'setup-worktree-windows'
+    if (-not $winSetup -or -not (Test-Path (Join-Path $RepoRoot ".cursor\$winSetup"))) {
+        Write-Warning 'Cursor worktree bootstrap script missing (.cursor/setup-worktree-windows.ps1)'
+        return $false
+    }
+    if (-not $wt.'setup-worktree-unix' -or -not (Test-Path (Join-Path $RepoRoot ".cursor\$($wt.'setup-worktree-unix')"))) {
+        Write-Warning 'Unix worktree bootstrap script missing (.cursor/setup-worktree-unix.sh)'
+        return $false
+    }
+
+    $projectName = Split-Path -Leaf $RepoRoot
+    $devCheckout = Join-Path (Split-Path -Parent $RepoRoot) "$projectName-dev\dev"
+    if (-not (Test-Path $devCheckout)) {
+        Write-Warning "Dev worktree not initialized. Run: .\scripts\init-worktrees.ps1"
+    }
+    else {
+        Write-Host "[ok] dev worktree: $devCheckout"
+    }
+
+    Push-Location $RepoRoot
+    try {
+        node scripts/validate-launch-json.mjs 2>&1 | Write-Host
+        if ($LASTEXITCODE -ne 0) { return $false }
+    }
+    finally { Pop-Location }
+    Write-Host '[ok] launch.json validation'
+    return $true
+}
+
+function Test-WorktreePortAllocation {
+    Write-Host '[check] worktree port allocation...' -ForegroundColor Cyan
+    $tmp = Join-Path $env:TEMP "wt-setup-check-$([Guid]::NewGuid().ToString('N').Substring(0, 8))"
+    New-Item -ItemType Directory -Force -Path $tmp | Out-Null
+    try {
+        $envFile = & (Join-Path $RepoRoot 'scripts\worktree-allocate-ports.ps1') -WorktreePath $tmp
+        if (-not (Test-Path $envFile)) {
+            Write-Warning 'worktree-allocate-ports.ps1 did not write .worktree-ports.env'
+            return $false
+        }
+        $content = Get-Content $envFile -Raw
+        if ($content -notmatch 'WORKTREE_SLOT=' -or $content -notmatch 'WEB_DASHBOARD_PORT=') {
+            Write-Warning 'Invalid .worktree-ports.env output'
+            return $false
+        }
+        Write-Host '[ok] port allocation script'
+        return $true
+    }
+    finally {
+        Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue
+    }
+}
+
+function Test-TerminalHooks {
+    Write-Host '[check] terminal hooks...' -ForegroundColor Cyan
+    $marker = '# >>> Monorepo_ModMe terminal hooks >>>'
+    $profiles = @($PROFILE)
+    if (Get-Command pwsh -ErrorAction SilentlyContinue) {
+        $profiles += (pwsh -NoProfile -Command 'Write-Output $PROFILE').Trim()
+    }
+
+    foreach ($p in ($profiles | Select-Object -Unique)) {
+        if ((Test-Path $p) -and ((Get-Content $p -Raw -ErrorAction SilentlyContinue) -match [regex]::Escape($marker))) {
+            Write-Host "[ok] terminal hooks in $p"
+            return $true
+        }
+    }
+
+    Write-Warning 'PowerShell profile missing Monorepo_ModMe hooks. Run: .\scripts\install-pwsh-terminal-hooks.ps1'
+    return $false
+}
+
+function Test-CursorHooks {
+    Write-Host '[check] Cursor project hooks...' -ForegroundColor Cyan
+    $hooksJson = Join-Path $RepoRoot '.cursor\hooks.json'
+    if (-not (Test-Path $hooksJson)) {
+        Write-Warning '.cursor/hooks.json missing'
+        return $false
+    }
+
+    try {
+        $config = Get-Content $hooksJson -Raw | ConvertFrom-Json
+    } catch {
+        Write-Warning ".cursor/hooks.json is invalid JSON: $_"
+        return $false
+    }
+
+    $hookEvents = @($config.hooks.PSObject.Properties | Where-Object { $_.Value.Count -gt 0 })
+    if ($hookEvents.Count -eq 0) {
+        Write-Host '[ok] Cursor hooks disabled (empty hooks map)'
+        return $true
+    }
+
+    Write-Warning "Cursor hooks are enabled ($($hookEvents.Count) event type(s)). Re-run setup only after editing .cursor/hooks.json intentionally."
+    return $true
+}
+
+function Test-MultiIdeWorktreeOwners {
+    Write-Host '[check] multi-IDE worktree owners...' -ForegroundColor Cyan
+    $scriptPath = Join-Path $RepoRoot 'scripts\new-agent-worktree.ps1'
+    $content = Get-Content $scriptPath -Raw
+    $owners = @('cursor', 'copilot', 'claude', 'antigravity', 'human')
+    $missing = @($owners | Where-Object { $content -notmatch $_ })
+    if ($missing.Count -gt 0) {
+        Write-Warning "new-agent-worktree.ps1 missing owners: $($missing -join ', ')"
+        return $false
+    }
+    Write-Host "[ok] owners: $($owners -join ', ')"
+    return $true
 }
 
 # --- main ---
@@ -429,6 +633,22 @@ Write-MonorepoRule
 Install-AwesomeCopilot
 Write-AgentsMd
 Install-GitHooks
+
+Write-Host ''
+Write-Host '=== Environment verification ===' -ForegroundColor Cyan
+$checkResults = @(
+    (Test-LeanCtx),
+    (Test-WorktreeInfrastructure),
+    (Test-WorktreePortAllocation),
+    (Test-MultiIdeWorktreeOwners),
+    (Test-CursorHooks),
+    (Test-TerminalHooks)
+)
+$failedChecks = @($checkResults | Where-Object { $_ -eq $false }).Count
+if ($failedChecks -gt 0) {
+    Write-Warning "$failedChecks environment check(s) reported issues (non-fatal). See warnings above."
+}
+
 Write-Host ''
 Write-Host 'Done. Restart Cursor to reload rules and skills.' -ForegroundColor Green
 Write-Host 'Global skills: ' $GlobalSkills

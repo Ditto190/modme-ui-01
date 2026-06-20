@@ -2,12 +2,15 @@ name: Changelog check
 
 on:
   pull_request:
+    branches: [main, master, develop, dev]
     paths:
       - "CHANGELOG.md"
       - ".agents/**"
       - ".cursor/**"
       - "GenerativeUI_monorepo/apps/**"
       - "GenerativeUI_monorepo/packages/**"
+      - "next-forge/apps/**"
+      - "next-forge/packages/**"
       - "scripts/**"
       - "docs/**"
       - ".github/workflows/changelog-check.yml"

@@ -1,0 +1,33 @@
+---
+title: Generative UI (Legacy)
+description: CopilotKit frontend and FastAPI agent-server
+---
+
+## Stack
+
+The **GenerativeUI** monorepo powers the original agent-driven UI:
+
+- **web-dashboard** — Next.js 14 + CopilotKit (`GenerativeUI_monorepo/apps/web-dashboard`)
+- **agent-server** — Python FastAPI + AG2 WebSocket backend
+- **shared-schemas** — Zod schemas shared with the Python layer
+
+## Ports (default checkout)
+
+| Service | Port |
+|---------|------|
+| vibe-web-app | 3000 |
+| web-dashboard | 3001 |
+| agent-server | 8000 |
+
+Worktrees apply slot offsets via `.worktree-ports.env`.
+
+## Migration path
+
+Product features will move incrementally into next-forge (`apps/app` or a dedicated app). Until then:
+
+- Run legacy stack: `yarn dev:generative` from repo root
+- Do not import GenerativeUI packages from next-forge workspaces
+
+## Agent development
+
+Use isolated Git worktrees for feature work. See `docs/multi-agent-worktrees.md` in the repository root.

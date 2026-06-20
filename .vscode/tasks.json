@@ -37,6 +37,15 @@
         "reveal": "silent",
         "panel": "shared"
       }
+    },
+    {
+      "label": "agenttrace: overview",
+      "type": "shell",
+      "command": "yarn agenttrace --overview",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
     }
   ]
 }
