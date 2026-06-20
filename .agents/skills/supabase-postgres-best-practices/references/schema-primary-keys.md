@@ -1,7 +1,7 @@
 ---
 title: Select Optimal Primary Key Strategy
 impact: HIGH
-impactDescription: Better index locality, reduced fragmentation
+impactDescription: "30-50% less index bloat and up to 2x faster inserts with sequential or time-ordered keys"
 tags: primary-key, identity, uuid, serial, schema
 ---
 

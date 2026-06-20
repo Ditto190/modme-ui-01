@@ -20,7 +20,7 @@ add constraint if not exists profiles_birthchart_id_unique unique (birthchart_id
 **Correct (idempotent constraint creation):**
 
 ```sql
--- Use DO block to check before adding
+-- Guard repeatable migrations because Postgres lacks ADD CONSTRAINT IF NOT EXISTS
 do $$
 begin
   if not exists (
@@ -37,27 +37,30 @@ end $$;
 For all constraint types:
 
 ```sql
--- Check constraints
+-- Scope the lookup to one table so same-named constraints elsewhere do not block the migration
 do $$
 begin
   if not exists (
     select 1 from pg_constraint
     where conname = 'check_age_positive'
+    and conrelid = 'public.users'::regclass
   ) then
-    alter table users add constraint check_age_positive check (age > 0);
+    alter table public.users
+    add constraint check_age_positive check (age > 0);
   end if;
 end $$;
 
--- Foreign keys
+-- Scope the lookup to one table so reruns only skip the foreign key already attached there
 do $$
 begin
   if not exists (
     select 1 from pg_constraint
     where conname = 'profiles_birthchart_id_fkey'
+    and conrelid = 'public.profiles'::regclass
   ) then
-    alter table profiles
+    alter table public.profiles
     add constraint profiles_birthchart_id_fkey
-    foreign key (birthchart_id) references birthcharts(id);
+    foreign key (birthchart_id) references public.birthcharts(id);
   end if;
 end $$;
 ```

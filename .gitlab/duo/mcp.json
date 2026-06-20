@@ -1,0 +1,18 @@
+{
+  // GitLab Duo MCP (Model Context Protocol) Configuration
+  // This file configures MCP servers that extend GitLab Duo's capabilities.
+  // MCP servers provide additional tools and resources that can be used during conversations.
+  //
+  // GitLab MCP Documentation: https://docs.gitlab.com/user/gitlab_duo/model_context_protocol/mcp_clients/
+  // MCP Prerequisites: https://docs.gitlab.com/user/gitlab_duo/model_context_protocol/mcp_clients/#prerequisites
+
+  // Uncomment and modify the example below to add your first MCP server:
+
+  "mcpServers": {
+    "mantine": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@mantine/mcp-server"]
+    }
+  }
+}

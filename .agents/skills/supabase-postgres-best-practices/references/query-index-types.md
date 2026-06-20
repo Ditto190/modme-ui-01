@@ -1,6 +1,6 @@
 ---
 title: Choose the Right Index Type for Your Data
-impact: HIGH
+impact: CRITICAL
 impactDescription: 10-100x improvement with correct index type
 tags: indexes, btree, gin, gist, brin, hash, index-types
 ---

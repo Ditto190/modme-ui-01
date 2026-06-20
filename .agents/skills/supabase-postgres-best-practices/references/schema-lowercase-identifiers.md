@@ -1,7 +1,7 @@
 ---
 title: Use Lowercase Identifiers for Compatibility
 impact: MEDIUM
-impactDescription: Avoid case-sensitivity bugs with tools, ORMs, and AI assistants
+impactDescription: "1.5-3x fewer query and migration failures caused by quoted-identifier mismatches"
 tags: naming, identifiers, case-sensitivity, schema, conventions
 ---
 

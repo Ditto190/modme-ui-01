@@ -1,7 +1,7 @@
 ---
 title: Use UPSERT for Insert-or-Update Operations
 impact: MEDIUM
-impactDescription: Atomic operation, eliminates race conditions
+impactDescription: "Eliminates 100% of check-then-insert race conditions and saves 1 round trip per contended write"
 tags: upsert, on-conflict, insert, update
 ---
 

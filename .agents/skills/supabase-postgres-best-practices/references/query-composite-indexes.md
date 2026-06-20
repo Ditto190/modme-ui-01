@@ -34,7 +34,7 @@ select * from orders where status = 'pending' and created_at > '2024-01-01';
 
 ```sql
 -- Good: status (=) before created_at (>)
-create index idx on orders (status, created_at);
+create index orders_status_created_idx on orders (status, created_at);
 
 -- Works for: WHERE status = 'pending'
 -- Works for: WHERE status = 'pending' AND created_at > '2024-01-01'

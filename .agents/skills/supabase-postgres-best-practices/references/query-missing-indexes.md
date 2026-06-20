@@ -31,13 +31,28 @@ select * from orders where customer_id = 123;
 
 For JOIN columns, always index the foreign key side:
 
+**Incorrect (JOIN without foreign key index):**
+
 ```sql
--- Index the referencing column
+-- Missing index on the referencing side forces repeated scans as the join fan-out grows
+select c.name, o.total
+from customers c
+join orders o on o.customer_id = c.id;
+
+-- EXPLAIN often shows: Seq Scan on orders or Hash Join over a full orders scan
+```
+
+**Correct (JOIN can use the foreign key index):**
+
+```sql
+-- Index the referencing column so the join can find matching child rows quickly
 create index orders_customer_id_idx on orders (customer_id);
 
 select c.name, o.total
 from customers c
 join orders o on o.customer_id = c.id;
+
+-- EXPLAIN often shows: Index Scan using orders_customer_id_idx on orders
 ```
 
 Reference: [Query Optimization](https://supabase.com/docs/guides/database/query-optimization)

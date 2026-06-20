@@ -43,13 +43,24 @@ Try-lock for non-blocking operations:
 ```sql
 -- Returns immediately with true/false instead of waiting
 select pg_try_advisory_lock(hashtext('resource_name'));
+```
 
--- Use in application
+```typescript
+// Application code can skip work instead of blocking when another worker owns the lock
+const [{ pg_try_advisory_lock: acquired }] = await db.query(
+  "select pg_try_advisory_lock(hashtext('resource_name'))",
+);
+
 if (acquired) {
-  -- Do work
-  select pg_advisory_unlock(hashtext('resource_name'));
+  try {
+    // Do work
+  } finally {
+    await db.query(
+      "select pg_advisory_unlock(hashtext('resource_name'))",
+    );
+  }
 } else {
-  -- Skip or retry later
+  // Skip or retry later
 }
 ```
 

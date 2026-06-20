@@ -110,7 +110,6 @@ for (const user of users) {
   ]);
 }
 ```
-````
 
 **Correct (batch query):**
 
@@ -119,6 +118,7 @@ const posts = await db.query("SELECT * FROM posts WHERE user_id = ANY($1)", [
   userIds,
 ]);
 ```
+````
 
 ---
 

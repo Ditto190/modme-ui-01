@@ -73,8 +73,8 @@ temp/
 
 # agenttrace
 .agenttrace/
-agenttrace-report.*
-agenttrace-baseline.*
+/agenttrace-report.*
+/agenttrace-baseline.*
 
 # Local Cursor hook runtime state (not project config)
 .cursor/hooks/state/
@@ -89,7 +89,3 @@ quality/
 *.backup
 .agents/skills/.antigravity-install-manifest.json
 
-# Security: Remove problematic hooks from version control
-.cursor/hooks/audit-log.sh
-.cursor/hooks/block-models-by-repo-origin.sh
-.cursor/hooks/sensitive-prompt-guard.sh
