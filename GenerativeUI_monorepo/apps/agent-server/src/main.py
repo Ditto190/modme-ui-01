@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
 
-from .routes import websocket_router
+from .routes import inbox_pipeline_router, websocket_router
 
 # Load environment variables
 load_dotenv()
@@ -29,6 +29,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(websocket_router)
+app.include_router(inbox_pipeline_router)
 
 
 @app.get("/")
@@ -39,6 +40,7 @@ async def root() -> dict:
         "version": "0.1.0",
         "endpoints": {
             "websocket": "/ws/agent",
+            "inbox_pipeline": "/api/inbox/health",
             "docs": "/docs",
         },
     }
