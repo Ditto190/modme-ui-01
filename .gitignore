@@ -61,7 +61,10 @@ Thumbs.db
 .tmp/
 temp/
 **/debug-test-output.json
-**/docs/inbox/
+# Inbox is a local drafts funnel — keep content private but commit the manifest and README
+**/docs/inbox/*
+!**/docs/inbox/README.md
+!**/docs/inbox/_index.json
 .agents/temp_skills/
 *.bak
 

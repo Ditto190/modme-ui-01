@@ -1,0 +1,93 @@
+name: Inbox Ingest Pipeline
+
+on:
+  push:
+    branches: [main, dev, 'chore/**', 'feat/**', 'fix/**']
+    paths:
+      - 'GenerativeUI_monorepo/docs/inbox/**'
+      - '!GenerativeUI_monorepo/docs/inbox/README.md'
+      - '!GenerativeUI_monorepo/docs/inbox/_index.json'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no writes to Supabase)'
+        type: boolean
+        default: false
+
+concurrency:
+  group: inbox-ingest-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    name: Ingest new inbox entries
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect new files
+        id: changes
+        run: |
+          NEW_FILES=$(git diff HEAD~1 --name-only --diff-filter=A -- \
+            'GenerativeUI_monorepo/docs/inbox/*' | \
+            grep -v 'README.md\|_index.json' | \
+            tr '\n' ',' | sed 's/,$//')
+          echo "new_files=${NEW_FILES}" >> $GITHUB_OUTPUT
+          echo "has_new=$([ -n "$NEW_FILES" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "New files: ${NEW_FILES:-none}"
+
+      - name: Setup Node.js
+        if: steps.changes.outputs.has_new == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: 'yarn.lock'
+
+      - name: Install dependencies
+        if: steps.changes.outputs.has_new == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          npm install -g @supabase/supabase-js --silent
+
+      - name: Run inbox ingest
+        if: steps.changes.outputs.has_new == 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: |
+          DRY_RUN_FLAG=""
+          if [[ "${{ inputs.dry_run }}" == "true" ]]; then
+            DRY_RUN_FLAG="--dry-run"
+          fi
+          node scripts/inbox-ingest.mjs \
+            --inbox-dir GenerativeUI_monorepo/docs/inbox \
+            $DRY_RUN_FLAG
+
+      - name: Commit updated _index.json
+        if: |
+          (steps.changes.outputs.has_new == 'true' || github.event_name == 'workflow_dispatch')
+          && inputs.dry_run != true
+        run: |
+          git config user.name "inbox-pipeline[bot]"
+          git config user.email "inbox-pipeline@modme.local"
+          git add GenerativeUI_monorepo/docs/inbox/_index.json
+          git diff --staged --quiet || \
+            git commit -m "chore(inbox): update _index.json after ingest [skip ci]"
+          git push origin ${{ github.ref_name }}
+
+      - name: Trigger embeddings workflow
+        if: |
+          steps.changes.outputs.has_new == 'true'
+          && inputs.dry_run != true
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: inbox-embeddings.yml
+          ref: ${{ github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}

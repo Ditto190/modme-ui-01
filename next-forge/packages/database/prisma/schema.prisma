@@ -10,9 +10,104 @@ datasource db {
   provider = "postgresql"
 }
 
-// This is a stub model.
-// Delete it and add your own Prisma models.
+// Stub model — kept for reference
 model Page {
   id   Int    @id @default(autoincrement())
   name String
+}
+
+// ─── Inbox Pipeline Models ────────────────────────────────────────────────────
+// Managed by: scripts/inbox-ingest.mjs + MDA Pipeline
+// See: GenerativeUI_monorepo/docs/inbox/README.md
+
+model InboxEntry {
+  id              String           @id @default(uuid())
+  contentHash     String           @unique @map("content_hash")
+  sourceFile      String           @map("source_file")
+  sourceFormat    String           @map("source_format")
+  rawContent      String?          @map("raw_content")
+  extractedText   String?          @map("extracted_text")
+  title           String?
+  summary         String?
+  agentName       String?          @map("agent_name")
+  agentRole       String?          @map("agent_role")
+  sessionId       String?          @map("session_id")
+  branchName      String?          @map("branch_name")
+  prNumber        Int?             @map("pr_number")
+  tags            String[]
+  severity        String           @default("medium")
+  entryType       String?          @map("entry_type")
+  status          String           @default("indexed")
+  storageUrl      String?          @map("storage_url")
+  categoryId      String?          @map("category_id")
+  category        Category?        @relation(fields: [categoryId], references: [id])
+  relations       EntryRelation[]  @relation("from_entry")
+  relatedBy       EntryRelation[]  @relation("to_entry")
+  outputArtefacts OutputArtefact[]
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  archivedAt      DateTime?        @map("archived_at")
+  archiveLocation String?          @map("archive_location")
+
+  @@map("inbox_entries")
+}
+
+model EntryRelation {
+  id           String     @id @default(uuid())
+  fromEntryId  String     @map("from_entry_id")
+  toEntryId    String     @map("to_entry_id")
+  relationType String     @map("relation_type")
+  confidence   Float      @default(1.0)
+  fromEntry    InboxEntry @relation("from_entry", fields: [fromEntryId], references: [id])
+  toEntry      InboxEntry @relation("to_entry", fields: [toEntryId], references: [id])
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  @@unique([fromEntryId, toEntryId, relationType])
+  @@map("entry_relations")
+}
+
+model Category {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  slug        String       @unique
+  description String?
+  parentId    String?      @map("parent_id")
+  parent      Category?    @relation("CategoryTree", fields: [parentId], references: [id])
+  children    Category[]   @relation("CategoryTree")
+  entries     InboxEntry[]
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  @@map("categories")
+}
+
+model OutputSchema {
+  id            String           @id @default(uuid())
+  schemaType    String           @map("schema_type")
+  name          String
+  slug          String           @unique
+  version       String           @default("1.0.0")
+  schema        Json
+  sourceEntryId String?          @map("source_entry_id")
+  artefacts     OutputArtefact[]
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+
+  @@map("output_schemas")
+}
+
+model OutputArtefact {
+  id            String        @id @default(uuid())
+  artefactType  String        @map("artefact_type")
+  title         String
+  content       String
+  filePath      String?       @map("file_path")
+  status        String        @default("draft")
+  sourceEntryId String?       @map("source_entry_id")
+  schemaId      String?       @map("schema_id")
+  sourceEntry   InboxEntry?   @relation(fields: [sourceEntryId], references: [id])
+  schema        OutputSchema? @relation(fields: [schemaId], references: [id])
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  @@map("output_artefacts")
 }

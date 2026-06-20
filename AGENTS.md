@@ -1,18 +1,19 @@
-# AGENTS.md â€” Monorepo_ModMe
+# AGENTS.md — Monorepo_ModMe
 
 Guidance for Cursor agents, cloud agents, and GitHub Copilot working in this repository.
 
 ## Repository layout
-- **`next-forge/`** — primary Turborepo for apps, Mintlify docs, and Storybook workshop (Bun, `@repo/*`)
-- **`GenerativeUI_monorepo/`** â€” legacy Turborepo (Yarn 3 workspaces, Turbo) — CopilotKit + agent-server
-  - `apps/` â€” applications (web, API, agent, dashboard, etc.)
-  - `packages/` â€” shared libraries and example apps
-  - `UniversalWorkbench/` â€” workbench monorepo variant (staging/dev copies also exist)
-- **`.cursor/rules/`** â€” Cursor project rules (MDC). Includes lean-ctx, PatrickJS, sanjeed5, awesome-copilot.
-- **`.agents/skills/`** â€” Agent skills (Cursor + Copilot compatible SKILL.md format)
-- **`.github/copilot-instructions.md`** â€” always-on Copilot instructions
-- **`.github/instructions/`** â€” file-scoped Copilot instructions from awesome-copilot
-- **`.vendor/awesome-copilot-main/`** â€” vendored github/awesome-copilot (refresh via setup script)
+
+- **`next-forge/`** — **primary** Turborepo for apps, Mintlify docs, and Storybook workshop (Bun, `@repo/*`)
+- **`GenerativeUI_monorepo/`** — **legacy** Turborepo (Yarn 3 workspaces, Turbo) — CopilotKit + agent-server
+  - `apps/` — web-dashboard, agent-server, vibe-web-app, agent-generator
+  - `packages/` — shared-schemas and template packages
+  - `UniversalWorkbench/` — workbench monorepo variant (staging/dev copies also exist; read-only unless tasked)
+- **`.cursor/rules/`** — Cursor project rules (MDC). Includes lean-ctx, monorepo-boundaries, multi-agent-worktrees.
+- **`.agents/skills/`** — Agent skills (Cursor + Copilot compatible SKILL.md format)
+- **`.github/copilot-instructions.md`** — always-on Copilot instructions
+- **`.github/instructions/`** — file-scoped Copilot instructions from awesome-copilot
+- **`.vendor/awesome-copilot-main/`** — vendored github/awesome-copilot (refresh via setup script)
 
 ## Default commands
 
@@ -20,8 +21,12 @@ Guidance for Cursor agents, cloud agents, and GitHub Copilot working in this rep
 
 ```bash
 yarn dev:forge              # all next-forge apps
+yarn dev:forge:core         # app + web + api (3100–3102)
+yarn dev:forge:workshop     # docs + storybook
+yarn dev:forge:supabase     # local Supabase Postgres
 yarn dev:forge:docs         # Mintlify on port 3104
 yarn dev:forge:storybook    # Storybook on port 6106
+yarn verify:forge           # CI parity (check + test + build)
 ```
 
 From `next-forge/` (use `npx bun` if Bun is not on PATH):
@@ -32,13 +37,20 @@ npx bun run dev
 npx bun run build
 ```
 
-**GenerativeUI** (legacy agent stack) — from `GenerativeUI_monorepo/`:
+**GenerativeUI** (legacy agent stack) — from repo root or `GenerativeUI_monorepo/`:
+
 ```bash
+yarn dev:generative         # from repo root
+yarn verify:generative      # CI parity (lint + test + build)
+```
+
+```bash
+cd GenerativeUI_monorepo
 yarn install
-yarn dev          # turbo run dev
-yarn build        # turbo run build
-yarn test         # monorepo test runner
-yarn lint         # turbo run lint
+yarn dev
+yarn build
+yarn test
+yarn lint
 ```
 
 Per-package scripts vary (Vite/Biome/Vitest vs Next.js). Check the nearest `package.json`.
@@ -61,29 +73,12 @@ Feature work **must not** happen in the main checkout. Use isolated Git worktree
 **Docs:** [`docs/multi-agent-worktrees.md`](docs/multi-agent-worktrees.md)
 
 ## Agent behavior
+
 1. Read `package.json` in the target package before changing build/test commands.
 2. Use workspace protocol dependencies (`workspace:*`) for internal packages.
 3. Do not edit `UniversalWorkbench-staging` or `UniversalWorkbench-dev` unless the task explicitly targets them.
 4. Run verification in the affected package before marking work complete.
 5. For browser/UI work, use Cursor browser MCP skills (`visual-qa-testing`, `verifying-in-browser`).
-
-## Multi-agent worktrees
-
-Run parallel agents in **isolated Git worktrees**, not the main checkout.
-
-```powershell
-.\scripts\init-worktrees.ps1                                    # once
-.\scripts\new-agent-worktree.ps1 -Name "task" -Owner cursor     # per task
-```
-
-| IDE | Owner flag |
-|-----|------------|
-| Cursor Agents Window / `/worktree` | `cursor` |
-| VS Code Copilot | `copilot` |
-| Claude Code | `claude` |
-| Antigravity | `antigravity` |
-
-See [`docs/multi-agent-worktrees.md`](docs/multi-agent-worktrees.md) for ports, cleanup, and canvas sharing.
 
 ## End of session (vibe-coding / prototypes)
 
@@ -92,6 +87,7 @@ After prototyping in a **worktree** (not the main checkout):
 ```powershell
 yarn check:forge              # fast Ultracite check while iterating (next-forge)
 yarn verify:forge             # CI parity before PR (check + test + build)
+yarn verify:generative        # when GenerativeUI paths changed
 yarn pre-commit:check         # same as git pre-commit hook
 .\scripts\vibe-session-finish.ps1   # group changes → commit → push → PR to dev
 ```
@@ -101,6 +97,7 @@ yarn pre-commit:check         # same as git pre-commit hook
 - Git hooks install automatically in worktrees; one-time on main: `yarn hooks:install`
 
 ## Updating AI configuration
+
 ```powershell
 .\scripts\cursor-ai\setup.ps1
 yarn contextarch:install   # contextarch CLI (vendor + verify)
@@ -121,29 +118,65 @@ Root `AGENTS.md` and `.cursor/rules/` are hand-maintained — use contextarch fo
 ## Workspace docs (all agents)
 
 - **Onboarding:** run `/init` in Cursor (beads + debug setup + doc map)
-- [`docs/agent-tech-guide.md`](docs/agent-tech-guide.md) — lean-ctx, skills-sh MCP, installed skills, changelog workflow
-- [`docs/debug-launch-guide.md`](docs/debug-launch-guide.md) — VS Code `launch.json`, ports, adding apps, CI validation
+- [`docs/agent-index.md`](docs/agent-index.md) — dual-monorepo index (ports, skills, migration status)
+- [`docs/agent-tech-guide.md`](docs/agent-tech-guide.md) — lean-ctx, skills, changelog, CI, debug
+- [`docs/debug-launch-guide.md`](docs/debug-launch-guide.md) — VS Code `launch.json`, ports, CI validation
+- [`docs/multi-agent-worktrees.md`](docs/multi-agent-worktrees.md) — mandatory for feature work
+- [`docs/inbox-pipeline/README.md`](docs/inbox-pipeline/README.md) — **Inbox → Knowledge pipeline** (feature taxonomy, mermaid architecture, all scripts + DB + UI + workflows)
 - [`CHANGELOG.md`](CHANGELOG.md) — append under `[Unreleased]` per Agent Update Protocol
 - [`docs/codebase/STACK.md`](docs/codebase/STACK.md) — dual-monorepo dependency scorecard and ports
 - [`.agents/skills/next-forge/SKILL.md`](.agents/skills/next-forge/SKILL.md) — next-forge agent skill
 - [`.agents/skills/modme-generative-ui-migrate/SKILL.md`](.agents/skills/modme-generative-ui-migrate/SKILL.md) — GenerativeUI → next-forge migration playbook
-- [`next-forge/SETUP.md`](next-forge/SETUP.md) — Bun + Neon setup walkthrough
+- [`.agents/skills/cicd-automation-workflow-automate/SKILL.md`](.agents/skills/cicd-automation-workflow-automate/SKILL.md) — CI/CD consolidation
+- [`next-forge/SETUP.md`](next-forge/SETUP.md) — Bun + Supabase setup walkthrough
+- [`docs/beads-workflow.md`](docs/beads-workflow.md) — beads issue tracking (`modme` prefix)
 - [`GenerativeUI_monorepo/AGENTS.md`](GenerativeUI_monorepo/AGENTS.md) — legacy Turborepo commands and package layout
 
 ## Observability (Agenttrace)
 
 **agenttrace** is used to monitor agent session costs, performance, and anomalies.
+
 - **Install/Update**: Run `.\scripts\install-agenttrace.ps1`
 - **Dashboard**: Run `yarn agenttrace --overview` (or `.\agenttrace` at the root) to view the global overview.
 - **Debugging**: If an agent run seems hung or fails repeatedly, agents should run `yarn agenttrace --doctor` or `yarn agenttrace --latest` to check for anomalies like retry loops or slow tools.
 
 ## External references
-- [awesome-copilot](https://github.com/github/awesome-copilot) â€” community agents, instructions, skills
+
+- [awesome-copilot](https://github.com/github/awesome-copilot) — community agents, instructions, skills
 - [PatrickJS/awesome-cursorrules](https://github.com/PatrickJS/awesome-cursorrules)
 - [sanjeed5/awesome-cursor-rules-mdc](https://github.com/sanjeed5/awesome-cursor-rules-mdc)
 
 ## Antigravity IDE / MCP Troubleshooting
-- **Windows `npx` quoting bugs:** When configuring MCP servers using `npx` in `mcp_config.json` (like `datacloud_*_toolbox`, `genkit-mcp-server`, or `gitlab-orbit`), use `"command": "npx.cmd"` instead of `"npx"`. This prevents Node's `child_process.spawn` from injecting unwanted quotes into arguments like `@toolbox-sdk/server@>=1.1.0`.
-- **Missing Module Errors:** If `notebooks` or `visualization` MCP servers fail with `Cannot find module`, verify that the extension version in `.antigravity-ide\extensions` matches the path in `mcp_config.json` (e.g. updating `0.4.0` to `0.5.0`).
-- **GitHub Copilot MCP:** The `copilot plugin` command expects exactly 0 extra arguments. Use `"args": ["plugin"]` rather than passing the plugin name inside the args array.
-- **Stitch MCP API Key:** The system automatically redacts API keys written by agents via tools (e.g., swapping them to `[GCP_API_KEY]`). Inject API keys securely into `mcp_config.json` directly from `.env` using a background script (e.g., PowerShell) to bypass LLM redaction filters.
+
+- **Windows `npx` quoting bugs:** When configuring MCP servers using `npx` in `mcp_config.json`, use `"command": "npx.cmd"` instead of `"npx"`.
+- **Missing Module Errors:** If `notebooks` or `visualization` MCP servers fail with `Cannot find module`, verify extension version paths in `mcp_config.json`.
+- **GitHub Copilot MCP:** The `copilot plugin` command expects exactly 0 extra arguments. Use `"args": ["plugin"]`.
+- **Stitch MCP API Key:** Inject API keys securely into `mcp_config.json` from `.env` using a background script to bypass LLM redaction filters.
+
+---
+
+## Inbox Capture Protocol
+
+When making significant design decisions, architectural changes, code reviews, or any research worth keeping, **drop a note in the inbox**:
+
+**Location**: `GenerativeUI_monorepo/docs/inbox/`
+
+**Filename**: `YYYY-MM-DDTHH-MM-SS_{type}_{agent-role}_{summary-slug}.{ext}`
+
+**Minimum frontmatter** (`.md` files):
+```yaml
+---
+timestamp: <ISO 8601>        # e.g. 2026-06-20T13:08:52Z
+agent: copilot               # your agent name
+agent_role: architect        # frontend|backend|devops|architect|reviewer|researcher
+type: architecture           # architecture|design|code-review|solution|research|snippet|link|component
+severity: high               # low|medium|high|critical
+tags: [supabase, decision]
+branch: <current branch>
+---
+```
+
+For non-`.md` formats (links, PDFs, code snippets, React components), just drop the file — the ingestor handles extraction automatically.
+
+The pipeline runs on every push to `docs/inbox/` and ingests new entries into Supabase.
+

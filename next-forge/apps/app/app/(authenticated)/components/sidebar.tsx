@@ -91,6 +91,12 @@ const data = {
       ],
     },
     {
+      title: "Generative UI",
+      url: "/generative-ui",
+      icon: BotIcon,
+      items: [],
+    },
+    {
       title: "Models",
       url: "#",
       icon: BotIcon,

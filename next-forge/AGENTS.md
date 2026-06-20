@@ -4,6 +4,11 @@
 
 Frontend workshops connected to a backend factory — Turborepo for ModMe apps, Mintlify docs, and Storybook (Bun, @repo/*).
 
+## Key Docs
+
+- [`../docs/inbox-pipeline/README.md`](../docs/inbox-pipeline/README.md) — **Inbox → Knowledge pipeline** (DB schema, API routes, Knowledge UI, pgvector migrations)
+- [`SETUP.md`](SETUP.md) — Bun + Supabase local dev setup
+
 ## How to work in this repo
 
 - **Coding style**: Ship readable code that works now. Add types and tests where they pay off, not prophylactically.
@@ -89,3 +94,29 @@ Frontend workshops connected to a backend factory — Turborepo for ModMe apps, 
 - When a command fails, read the actual error. Don't retry blindly or bypass with `--force`.
 - Prefer editing existing files over creating new ones.
 - If you touch public types, interfaces, or exported APIs, check every caller.
+
+---
+
+## Inbox Capture Protocol
+
+When making significant design decisions, architectural changes, code reviews, or research worth keeping, **drop a note in the inbox**:
+
+**Location**: `GenerativeUI_monorepo/docs/inbox/`
+
+**Filename**: `YYYY-MM-DDTHH-MM-SS_{type}_{agent-role}_{summary-slug}.{ext}`
+
+**Minimum frontmatter** (`.md` files):
+```yaml
+---
+timestamp: <ISO 8601>
+agent: copilot
+agent_role: frontend          # frontend|backend|devops|architect|reviewer|researcher
+type: design                  # architecture|design|code-review|solution|research|snippet|link|component
+severity: medium              # low|medium|high|critical
+tags: [nextjs, decision]
+branch: <current branch>
+---
+```
+
+For non-`.md` formats (links, PDFs, code snippets, React components), just drop the file — the ingestor handles extraction automatically.
+

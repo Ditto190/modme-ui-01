@@ -1,0 +1,92 @@
+name: Output Generation Pipeline
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Daily at 6am UTC
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Trigger source (manual or mda-pipeline)'
+        required: false
+        default: manual
+      output_types:
+        description: 'Comma-separated output types (skills,storybook,docs,adr)'
+        required: false
+        default: 'skills,storybook,docs'
+
+jobs:
+  generate-skills:
+    name: Generate skills catalogue
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd GenerativeUI_monorepo/apps/agent-generator
+          npm install
+
+      - name: Generate skills from Supabase catalogue
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          node scripts/output-generate.mjs --type skills
+
+  generate-storybook:
+    name: Generate Storybook stories
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate Storybook stories from components
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          node scripts/output-generate.mjs --type storybook
+
+  promote-adrs:
+    name: Promote ADR candidates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Find and promote ADR candidates
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          node scripts/output-generate.mjs --type adr --adr-dir next-forge/docs/adr
+
+      - name: Commit promoted ADRs
+        run: |
+          git config user.name "mda-pipeline[bot]"
+          git config user.email "mda@modme.local"
+          git add next-forge/docs/adr/ GenerativeUI_monorepo/docs/inbox/_index.json
+          git diff --staged --quiet || \
+            git commit -m "docs(adr): promote inbox entries to ADRs [skip ci]"
+          git push origin ${{ github.ref_name }}
