@@ -1,7 +1,7 @@
 ---
 title: Eliminate N+1 Queries with Batch Loading
 impact: MEDIUM-HIGH
-impactDescription: "2-5x faster endpoints by replacing N+1 loops with 1 batched query"
+impactDescription: 10-100x fewer database round trips
 tags: n-plus-one, batch, performance, queries
 ---
 

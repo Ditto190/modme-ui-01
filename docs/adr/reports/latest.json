@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-06-20T08:17:39.631Z",
+  "source": "validate-adrs",
+  "strict": false,
+  "passed": true,
+  "summary": {
+    "files": 0,
+    "errors": 0,
+    "warnings": 0,
+    "total": 0,
+    "automatable": 0,
+    "byLens": {},
+    "byCode": {}
+  },
+  "findings": [],
+  "automation": {
+    "fixAllDryRun": "node scripts/adr-fix.mjs --from-report --dry-run",
+    "fixAllApply": "node scripts/adr-fix.mjs --from-report --apply",
+    "revalidate": "yarn adr:validate",
+    "test": "yarn adr:test",
+    "audit": "yarn adr:audit"
+  },
+  "paths": {
+    "json": "docs/adr/reports/latest.json",
+    "markdown": "docs/adr/reports/latest.md",
+    "jsonl": ".cursor/hooks/state/adr-errors.jsonl"
+  },
+  "root": "C:\\Users\\dylan\\Monorepo_ModMe"
+}

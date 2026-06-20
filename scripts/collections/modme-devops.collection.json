@@ -1,0 +1,19 @@
+{
+  "id": "modme-devops",
+  "name": "ModMe DevOps & Infrastructure Collection",
+  "description": "DevOps, CI/CD, security, and infrastructure agents for Monorepo_ModMe — covering GitHub Actions, Supabase, cost optimization, and deployment.",
+  "tags": ["devops", "cicd", "github-actions", "security", "infrastructure", "supabase"],
+  "display": { "ordering": "manual" },
+  "items": [
+    { "path": "agents/github-actions-expert.agent.md", "kind": "agent", "usage": "Secure, efficient GitHub Actions workflows" },
+    { "path": "agents/se-security-reviewer.agent.md", "kind": "agent", "usage": "Security audit — OWASP, secrets, supply chain" },
+    { "path": "agents/devops-expert.agent.md", "kind": "agent", "usage": "DevOps automation, deployment, rollout strategies" },
+    { "path": "skills/github-actions-efficiency/SKILL.md", "kind": "skill", "usage": "Audit and optimize CI minutes and workflow cost" },
+    { "path": "skills/mcp-security-audit/SKILL.md", "kind": "skill", "usage": "Audit MCP server configurations for security issues" },
+    { "path": "skills/dependabot/SKILL.md", "kind": "skill", "usage": "Configure Dependabot for automated dependency updates" },
+    { "path": "skills/secret-scanning/SKILL.md", "kind": "skill", "usage": "Detect exposed secrets and credentials in the codebase" },
+    { "path": "skills/multi-stage-dockerfile/SKILL.md", "kind": "skill", "usage": "Optimized multi-stage Dockerfiles for production" },
+    { "path": "skills/postgresql-optimization/SKILL.md", "kind": "skill", "usage": "Supabase/Postgres query and index optimization" },
+    { "path": "skills/postgresql-code-review/SKILL.md", "kind": "skill", "usage": "Review Postgres migrations and schema for quality" }
+  ]
+}

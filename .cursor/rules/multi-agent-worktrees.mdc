@@ -29,20 +29,27 @@ Creates `../Monorepo_ModMe-dev/dev` (persistent `dev` branch checkout).
 ## Per-task workflow
 
 ```powershell
+.\scripts\ensure-worktree.ps1   # fail fast if on main checkout
 .\scripts\new-agent-worktree.ps1 -Name "auth-fix" -Owner cursor
 # → branch feature/cursor/auth-fix
 # → path ../Monorepo_ModMe-dev/dev-agent-cursor-auth-fix
 ```
 
+Uncommitted work on main: `.\scripts\migrate-main-to-worktree.ps1 -Name "auth-fix" -Owner cursor`
+
 ## Ports
 
-Before `yarn dev` or starting debug sessions in a worktree, load ports from `.worktree-ports.env`:
+Before `yarn dev` or starting debug sessions in a worktree:
 
 ```powershell
-# PowerShell
-Get-Content .worktree-ports.env | ForEach-Object {
-  if ($_ -match '^([A-Z_]+)=(.+)$') { Set-Item -Path "env:$($Matches[1])" -Value $Matches[2] }
-}
+. .\scripts\load-worktree-ports.ps1   # or yarn worktree:ports
+```
+
+## Pre-flight
+
+```powershell
+yarn worktree:doctor
+yarn worktree:doctor:fix
 ```
 
 Main checkout uses `scripts/launch-manifest.json` defaults (3000, 3001, 8000). Worktrees get slot offsets (0–9 × 10).
@@ -53,7 +60,7 @@ Main checkout uses `scripts/launch-manifest.json` defaults (3000, 3001, 8000). W
 - **Never** merge or rebase manually across worktrees; open PRs to `dev` only.
 - **Never** edit `UniversalWorkbench-staging` or `UniversalWorkbench-dev` unless explicitly tasked.
 - List worktrees: `.\scripts\list-worktrees.ps1`
-- Remove when done: `.\scripts\remove-agent-worktree.ps1 -Path <worktree-path>`
-- Session end (commit/PR): `.\scripts\vibe-session-finish.ps1` — smart-git overlay; branches via scripts only
+- Remove when done: `.\scripts\remove-agent-worktree.ps1 -Path <worktree-path> -Yes`
+- Session end: `.\scripts\vibe-session-finish.ps1` (`-Yes -CommitMessage "..." -Push -CreatePr` for agents)
 
 Full guide: [`docs/multi-agent-worktrees.md`](../../docs/multi-agent-worktrees.md)

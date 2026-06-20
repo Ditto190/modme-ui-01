@@ -1,7 +1,7 @@
 ---
 title: Use Cursor-Based Pagination Instead of OFFSET
 impact: MEDIUM-HIGH
-impactDescription: "2-5x faster page fetches in typical workloads and 10-100x faster on deep pages than OFFSET scans"
+impactDescription: Consistent O(1) performance regardless of page depth
 tags: pagination, cursor, keyset, offset, performance
 ---
 

@@ -1,43 +1,252 @@
-# AI Agent Guide: LeanCTX Optimization
+# Lean-CTX — Agent Playbook (ModMe)
 
-This document serves as the canonical knowledge base for AI agents operating within this repository to understand and leverage the **lean-ctx** token optimization layer.
+Canonical guide for **compressing tokens**, **remembering project facts**, and **learning across sessions** in this monorepo. Works with Cursor MCP, shell hooks, and optional Cursor project hooks.
 
-> [!TIP]
-> `lean-ctx` operates automatically via proxy or native shell hooks. You do not need to manually compress content before reading files. Just run standard tools, and `lean-ctx` will optimize the output.
+> **Rule of thumb:** MCP for reads/memory/graph; `lean-ctx -c` for shell; native Edit for writes.
 
-## Core Concepts
+---
 
-`lean-ctx` works by dynamically intercepting requests (like `cat`, `ls`, or native IDE API calls) and compressing the output before it reaches the AI context window. This prevents token overflow, saves API costs, and keeps the AI focused on relevant code elements.
+## 1. CLI vs MCP (why `lean-ctx workflow` failed)
 
-### Read Modes
+`ctx_graph`, `ctx_workflow`, `ctx_knowledge`, and `ctx_session` are **MCP tools** (69 tools in the lean-ctx MCP server). They are **not** CLI subcommands.
 
-When reading files (or if you are explicitly invoking `lean-ctx read <file> --mode <mode>`), there are three primary compression strategies:
+| You tried | Use instead |
+|-----------|-------------|
+| `lean-ctx workflow ctx_graph action=build` | MCP: `ctx_graph({ "action": "build" })` |
+| `lean-ctx workflow …` | MCP: `ctx_workflow({ "action": "status" })` |
+| Read a file in chat | MCP: `ctx_read({ "path": "…", "mode": "map" })` |
+| `git status` in terminal | CLI: `lean-ctx -c "git status"` |
 
-1. **`aggressive`**: Best for text files, configs (`json`, `md`, `css`). Strips out unnecessary whitespace, comments, and redundant formatting.
-2. **`map`**: Best for understanding repository structure and large code files (`ts`, `tsx`). Extracts the structural skeleton: dependencies, exports, and high-level class definitions, hiding the implementation logic. Extremely fast and saves ~95% tokens.
-3. **`signatures`**: Best for inspecting code files where you only need the API surface (`ts`, `py`, `js`). Leaves function names, types, and parameters but strips out the function body.
+**CLI everyday commands:**
 
-## Configuration & Tuning
+```powershell
+lean-ctx doctor              # wiring check
+lean-ctx gain                # tokens saved
+lean-ctx discover            # commands still bypassing compression
+lean-ctx init --global       # compress yarn/git/bun/npm globally (recommended)
+lean-ctx -c "yarn verify:forge"
+lean-ctx read path/to/file --mode signatures
+lean-ctx cheatsheet          # agent workflow summary
+lean-ctx help all            # full CLI reference
+```
 
-The global `lean-ctx` settings are located at `~/.config/lean-ctx/config.toml`. Key tunable variables include:
+**Bypass when debugging:** `$env:LEAN_CTX_RAW = "1"` or `$env:LEAN_CTX_DISABLED = "1"`.
 
-- `proxy.compression_level`: Defaults to `"max"`. If you are losing crucial detail in minified files or heavily templated components, instruct the user to lower this to `"balanced"`.
-- `extra_ignore_patterns`: A list of globs (e.g., `"node_modules/**"`, `"dist/**"`). `lean-ctx` will completely ignore these directories, speeding up parsing.
+---
 
-## Diagnostics & Telemetry
+## 2. Three-layer memory model
 
-As an AI agent, you can verify the status and usefulness of `lean-ctx` using the following CLI commands:
+Use the right layer for each kind of “remember this”:
 
-- `lean-ctx gain`: Displays a summary card of tokens saved, compression ratio, and estimated USD cost avoided.
-- `lean-ctx gain --wrapped`: Generates a condensed, shareable card of the overall session savings.
-- `lean-ctx benchmark`: Scans the current directory, tests all compression modes, and provides a breakdown of potential savings by file type.
-- `lean-ctx doctor`: Verifies the installation, proxy connections, and IDE integration status.
+| Layer | MCP tool | Persists | Best for |
+|-------|----------|----------|----------|
+| **Project facts** | `ctx_knowledge` | Cross-session, searchable | Ports, Supabase ref, “yarn only at root”, ADR status |
+| **Session continuity** | `ctx_session` | This task / thread | Current goal, open decisions, findings (~400 tok `load`) |
+| **Agent diary** | `ctx_agent` | Multi-agent / handoffs | discovery, decision, blocker, progress, insight |
 
-> [!WARNING]
-> If a shell command throws a `lean-ctx` related error or proxy refusal, check the `lean-ctx doctor` output. You can temporarily bypass compression by prefixing commands with `LEAN_CTX_DISABLED=1`.
+### Project facts (`ctx_knowledge`)
 
-## Fallback Protocols
+```json
+{ "action": "remember", "key": "supabase_project", "value": "modme-next-forge ref aevemmmmouxqlfyxthzf", "category": "deployment", "confidence": 0.95 }
+{ "action": "recall", "query": "supabase cloud setup", "mode": "hybrid" }
+{ "action": "wakeup" }
+{ "action": "consolidate" }
+{ "action": "timeline" }
+{ "action": "search", "query": "worktree ports" }
+```
 
-If you suspect `lean-ctx` is stripping out too much information (for example, if you need the actual body implementation of a heavily compressed function):
-1. Recommend modifying the mode to `raw` or temporarily turning it off: `lean-ctx off`.
-2. Or read the file bypassing `lean-ctx` entirely using standard tools if the proxy is bypassed.
+Categories: `architecture`, `api`, `testing`, `deployment`, `conventions`, `dependencies`.
+
+**ModMe convention:** High-confidence facts also belong in `AGENTS.md` → “Learned User Preferences / Workspace Facts” (human-readable). Use `ctx_knowledge` for agent recall; use AGENTS.md for repo policy.
+
+### Session continuity (`ctx_session`)
+
+```json
+{ "action": "load" }
+{ "action": "task", "value": "Wire worktree doctor + session finish flags" }
+{ "action": "finding", "value": "yarn fails in worktree without yarn.lock copy" }
+{ "action": "decision", "value": "Prefer cloud Supabase over local Docker" }
+{ "action": "save" }
+```
+
+Use at **session start** (`load` + `ctx_knowledge` `wakeup`) and **session end** (`save` + optional `consolidate`).
+
+### Agent diary (`ctx_agent`)
+
+For parallel worktrees / subagents:
+
+```json
+{ "action": "register", "agent_type": "cursor", "role": "dev" }
+{ "action": "diary", "category": "decision", "message": "ADR-0002 supersedes ADR-0001" }
+{ "action": "handoff", "to_agent": "…", "message": "…" }
+{ "action": "sync" }
+```
+
+Categories: `discovery` | `decision` | `blocker` | `progress` | `insight`.
+
+---
+
+## 3. Token compression workflow (per task)
+
+```
+START  → ctx_session load + ctx_knowledge wakeup + ctx_overview OR ctx_compose(task)
+LOCATE → ctx_search / ctx_semantic_search / ctx_graph context
+READ   → ctx_read (mode by goal — see table below)
+EDIT   → native StrReplace/Write (or ctx_edit fallback)
+VERIFY → ctx_read diff + lean-ctx -c "yarn check:forge" (or verify:forge before PR)
+RECORD → ctx_knowledge remember + ctx_session finding/decision + ctx_agent diary
+CHECK  → ctx_compress (long chats; auto checkpoint ~every 15 MCP reads)
+END    → ctx_session save + ctx_knowledge consolidate
+```
+
+### Read modes (`ctx_read`)
+
+| Goal | Mode | Typical savings |
+|------|------|-----------------|
+| Orient / big file | `map` | ~95% |
+| API surface only | `signatures` | ~80% |
+| Before editing | `full` | baseline |
+| After edit | `diff` | minimal tokens |
+| One region | `lines:120-180` | targeted |
+
+**Replace search chains:** `ctx_compose({ "task": "where is catalogue route handler" })` — one call instead of grep → read → outline → read.
+
+### Code graph (`ctx_graph`)
+
+Run once per worktree or after large refactors:
+
+```json
+{ "action": "build", "project_root": "." }
+{ "action": "status" }
+{ "action": "context", "path": "next-forge/apps/api" }
+{ "action": "impact", "path": "packages/supabase/server.ts" }
+{ "action": "diagram", "kind": "deps", "depth": 2 }
+```
+
+### Workflow rails (`ctx_workflow`)
+
+For structured plan → code → test loops:
+
+```json
+{ "action": "start" }
+{ "action": "status" }
+{ "action": "transition", "to": "implement" }
+{ "action": "evidence_add", "key": "verify", "value": "yarn verify:forge passed" }
+{ "action": "complete" }
+```
+
+---
+
+## 4. Shell compression (`lean-ctx discover`)
+
+Your `lean-ctx discover` output showed **~19k tokens/month** still uncaptured (mostly `yarn`, `bun`, `git`, `npm`).
+
+**Fix (one-time, recommended):**
+
+```powershell
+lean-ctx init --global
+lean-ctx discover    # re-check; uncaptured count should drop
+```
+
+**ModMe commands to always wrap:**
+
+```powershell
+lean-ctx -c "git status"
+lean-ctx -c "git diff --stat"
+lean-ctx -c "yarn worktree:doctor"
+lean-ctx -c "yarn verify:forge"
+cd next-forge; lean-ctx -c "npx bun run check"
+```
+
+Agents in Cursor should prefer MCP `ctx_shell` (same compression) over raw Shell when lean-ctx is allowlisted.
+
+---
+
+## 5. Tool profiles (MCP surface area)
+
+Too many MCP tools inflate the system prompt. lean-ctx supports profiles:
+
+```powershell
+lean-ctx tools standard   # default balance
+lean-ctx tools minimal    # reads + search + shell only
+lean-ctx tools power      # full 69-tool set
+```
+
+Use **minimal** for narrow tasks; **power** when you need `ctx_knowledge`, `ctx_graph`, `ctx_workflow`.
+
+---
+
+## 6. ModMe-specific facts to remember
+
+Seed these via `ctx_knowledge` `remember` (or confirm with `recall`):
+
+| Key | Value (example) |
+|-----|-----------------|
+| `worktree_policy` | Feature work in `../Monorepo_ModMe-dev/dev-agent-*`, not main checkout |
+| `package_managers` | Root Yarn 3; `next-forge/` Bun; never cross-install |
+| `forge_ports` | app 3100, web 3101, api 3102 (main); worktrees use `.worktree-ports.env` |
+| `supabase_adr` | ADR-0002 accepted; ADR-0001 superseded; cloud project modme-next-forge |
+| `session_finish` | `.\scripts\vibe-session-finish.ps1 -Yes -CommitMessage "…" -Push -CreatePr` |
+| `intake_cwd` | `yarn intake` only from repo root with Supabase env in `.env` |
+
+---
+
+## 7. Cursor hooks (opt-in)
+
+**Project policy:** `.cursor/hooks.json` is **empty by default**. Previous hooks with `failClosed: true` stole focus and blocked agents. See `.cursor/hooks/README.md`.
+
+**Safe pattern:** advisory hooks only — always `exit 0`, no `failClosed`, timeout ≤ 5s.
+
+Example opt-in config: [`.cursor/hooks.json.example`](../.cursor/hooks.json.example)
+
+Suggested hooks (enable manually):
+
+| Event | Purpose | Script |
+|-------|---------|--------|
+| `afterFileEdit` | Remind verify command for next-forge TS | `lean-ctx-post-edit.ps1` |
+| `stop` | Append session marker for memory pipelines | `lean-ctx-stop-marker.ps1` |
+
+Do **not** re-enable stop hooks that rewrite skills or open browsers without explicit opt-in.
+
+### Antigravity / Copilot tool hooks
+
+This repo also ships [`.github/hooks/hooks.json`](../.github/hooks/hooks.json) with lean-ctx `hook rewrite`, `hook redirect`, `hook observe` on pre/post tool use — separate from Cursor project hooks.
+
+---
+
+## 8. Diagnostics
+
+```powershell
+lean-ctx doctor
+lean-ctx gain
+lean-ctx benchmark
+lean-ctx status
+```
+
+If MCP tools return `"Not connected"`: restart Cursor MCP / run `lean-ctx onboard`.
+
+Config: `~/.config/lean-ctx/config.toml` (`compression_level`, `extra_ignore_patterns`, shell allowlist).
+
+---
+
+## 9. Integration with ModMe docs
+
+| Artifact | Role |
+|----------|------|
+| `AGENTS.md` | Human + agent policy (Learned Preferences) |
+| `docs/multi-agent-worktrees.md` | Worktree CWD matrix |
+| Inbox `GenerativeUI_monorepo/docs/inbox/` | Design decisions → Supabase pipeline |
+| ADRs `next-forge/docs/adr/` | Formal architecture decisions |
+
+After significant decisions: `ctx_knowledge remember` + inbox note + ADR when appropriate.
+
+---
+
+## References
+
+- [lean-ctx GitHub](https://github.com/yvgude/lean-ctx)
+- [leanctx.com](https://leanctx.com)
+- Repo rule: `.cursor/rules/lean-ctx.mdc`
+- Agent tech guide: [docs/agent-tech-guide.md](./agent-tech-guide.md) §2
+
+**Last updated:** 2026-06-20

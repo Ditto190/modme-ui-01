@@ -20,7 +20,7 @@
  *   node scripts/inbox-ingest.mjs [--inbox-dir <path>] [--dry-run]
  */
 
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { resolve, join, extname, basename } from 'node:path';
 import { createClient } from '@supabase/supabase-js';
@@ -36,8 +36,8 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-  console.error('❌ Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env vars');
-  console.error('   These come from next-forge/.env.local');
+  console.error('❌ Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+  console.error('   Run: yarn supabase:local:setup  (repo root) or bun run db:local:setup (next-forge/)');
   process.exit(1);
 }
 
@@ -213,7 +213,9 @@ async function ingestInbox() {
       const entryType = frontmatter.type || format;
       const severity = frontmatter.severity || 'medium';
 
+      const now = new Date().toISOString();
       const entry = {
+        id: randomUUID(),
         content_hash: contentHash,
         source_file: filename,
         source_format: format,
@@ -230,6 +232,8 @@ async function ingestInbox() {
         severity,
         entry_type: entryType,
         status: 'indexed',
+        created_at: now,
+        updated_at: now,
       };
 
       if (DRY_RUN) {

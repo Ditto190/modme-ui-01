@@ -1,6 +1,6 @@
 ---
 title: Index Foreign Key Columns
-impact: CRITICAL
+impact: HIGH
 impactDescription: 10-100x faster JOINs and CASCADE operations
 tags: foreign-key, indexes, joins, schema
 ---

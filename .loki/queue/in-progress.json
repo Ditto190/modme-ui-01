@@ -1,0 +1,3 @@
+{ "version": 1, "tasks": [
+  { "id": "integrate-skillsh-index", "title": "Wire --details + --export-collection into installer", "completedAt": "2026-06-20T23:09:00Z" }
+], "updatedAt": "2026-06-20T23:09:00Z" }

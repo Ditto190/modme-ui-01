@@ -69,7 +69,10 @@ Feature work **must not** happen in the main checkout. Use isolated Git worktree
 
 **Once:** `.\scripts\init-worktrees.ps1`  
 **Per task:** `.\scripts\new-agent-worktree.ps1 -Name "<task>" -Owner <owner>`  
-**Ports:** source `.worktree-ports.env` before `yarn dev`  
+**Guard:** `yarn worktree:ensure` (fail on main checkout) or `.\scripts\ensure-worktree.ps1 -WarnOnly`  
+**Doctor:** `yarn worktree:doctor` / `yarn worktree:doctor:fix` (yarn.lock, ports, gh, Supabase env)  
+**Migrate main:** `.\scripts\migrate-main-to-worktree.ps1 -Name "<task>" -Owner cursor` when main has uncommitted work  
+**Ports:** `. .\scripts\load-worktree-ports.ps1` or `yarn worktree:ports` before `yarn dev:*`  
 **Docs:** [`docs/multi-agent-worktrees.md`](docs/multi-agent-worktrees.md)
 
 ## Agent behavior
@@ -85,11 +88,14 @@ Feature work **must not** happen in the main checkout. Use isolated Git worktree
 After prototyping in a **worktree** (not the main checkout):
 
 ```powershell
+yarn worktree:doctor          # pre-flight in worktree (use -Fix via yarn worktree:doctor:fix)
 yarn check:forge              # fast Ultracite check while iterating (next-forge)
 yarn verify:forge             # CI parity before PR (check + test + build)
 yarn verify:generative        # when GenerativeUI paths changed
 yarn pre-commit:check         # same as git pre-commit hook
-.\scripts\vibe-session-finish.ps1   # group changes → commit → push → PR to dev
+.\scripts\vibe-session-finish.ps1   # group → commit → optional push/PR (prefer in worktrees)
+# Agent headless: -Yes -CommitMessage "..." -Push -CreatePr
+# Preview: .\scripts\vibe-session-finish.ps1 -DryRun -SkipPull
 ```
 
 - Branch creation: `new-agent-worktree.ps1` or `/worktree` only — see [`.agents/skills/smart-git-automation/SKILL.md`](.agents/skills/smart-git-automation/SKILL.md)
@@ -180,3 +186,35 @@ For non-`.md` formats (links, PDFs, code snippets, React components), just drop 
 
 The pipeline runs on every push to `docs/inbox/` and ingests new entries into Supabase.
 
+## Learned User Preferences
+
+- Prefer cloud-first hosted Supabase over local Docker as the default database path; local Supabase is optional offline-only.
+- When asked for Supabase credentials, verify from the user's dashboard or `npx supabase status -o env` — do not answer from generic demo defaults alone.
+- Use the Cursor Supabase plugin MCP for project creation and management; Rube/supabase-automation requires a separate Composio connection.
+- Run `yarn vibe:finish` / session finish only from a worktree under `Monorepo_ModMe-dev/`, not the main checkout.
+- Prefer `.\scripts\vibe-session-finish.ps1` directly in worktrees when `yarn` fails due to missing `yarn.lock`.
+- Use `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (not legacy anon-only naming) for next-forge browser/SSR Supabase clients via `@repo/supabase`.
+- Do not wire Supabase Auth middleware into `apps/app` by default — ModMe uses Auth.js for sign-in.
+- On Windows, prefer `bunx supabase login --token sbp_...` (dashboard access token) over browser login; avoid bare `supabase` on PATH (often v1.x, HTTP 401).
+
+## Learned Workspace Facts
+
+- Hosted Supabase project: `modme-next-forge` (ref `aevemmmmouxqlfyxthzf`, region `us-east-1`); ADR-0002 supersedes ADR-0001 (local Docker).
+- Supabase setup: `docs/supabase-setup.md` (local: `yarn supabase:local:setup` then `yarn intake`); cloud checklist: `docs/supabase-cloud-setup.md`
+- Root intake scripts need `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`; Prisma DB URLs live in `next-forge/packages/database/.env`.
+- Worktrees branched from `dev` may lack `yarn.lock`; `worktree-copy-env.ps1` copies `yarn.lock`, `.yarnrc.yml`, and `.yarn/` from main.
+- `vibe-session-finish.ps1 -DryRun` skips interactive `Read-Host` and pre-commit; use `yarn vibe:finish:dry-run` or the script with `-DryRun -SkipPull`.
+- `yarn intake` from repo root runs `scripts/run-intake.mjs` (ingest only); full embed/MDA/output is CI-chained or manual. `intake-orchestrator.mjs` / `catalogue-orchestrator.mjs` are documented but not implemented.
+- Schema deploy order: `bun run db:push` (Prisma) before `bunx supabase db push` — SQL migration 001 expects Prisma tables.
+- Supabase CLI config lives at `next-forge/supabase/`; use `bunx supabase` from `next-forge/packages/database` with `--workdir ../.. --dns-resolver https` on Windows.
+- next-forge default ports: app 3100, web 3101, api 3102, docs 3104, storybook 6106 (avoids GenerativeUI 3000–3004 block).
+
+<!-- lean-ctx-compression -->
+OUTPUT STYLE: expert-terse
+- Telegraph format: subject-verb-object, drop articles/prepositions
+- Symbolic vocabulary: → cause, ∵ because, ∴ therefore, ⊕ add, ⊖ remove, Δ change, ≈ similar, ≠ different, ∈ in/member, ∅ empty/none, ✓ ok, ✗ fail
+- Code blocks: untouched (never compress code syntax)
+- Each line: max 80 chars
+- Zero narration, zero filler
+- BUDGET: ≤100 tokens per non-code response
+<!-- /lean-ctx-compression -->

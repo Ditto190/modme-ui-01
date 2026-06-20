@@ -7,10 +7,29 @@ param(
 
   [switch]$Force,
 
+  [switch]$Yes,
+
   [switch]$DeleteBranch
 )
 
 $ErrorActionPreference = "Stop"
+
+if ($args -contains '-Help' -or $args -contains '--help' -or $args -contains '-h') {
+  @"
+remove-agent-worktree — remove a worktree folder safely
+
+Options:
+  -Path <worktree-path>   Required
+  -Yes                    Skip confirmation prompts (agents)
+  -Force                  Same as -Yes for removal confirm
+  -DeleteBranch           Also delete the feature branch (prompts unless -Yes)
+
+Examples:
+  .\scripts\remove-agent-worktree.ps1 -Path ..\Monorepo_ModMe-dev\dev-agent-cursor-auth-fix -Yes
+  .\scripts\remove-agent-worktree.ps1 -Path <path> -DeleteBranch -Yes
+"@
+  exit 0
+}
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $ProjectMainDir = Split-Path -Parent $ScriptDir
@@ -55,7 +74,7 @@ Write-Host "   Path:   $resolvedPath"
 Write-Host "   Branch: $branch"
 Write-Host ""
 
-if (-not $Force) {
+if (-not $Force -and -not $Yes) {
   $confirm = Read-Host "Remove this worktree? [y/N]"
   if ($confirm -notin @('y', 'Y', 'yes', 'Yes')) {
     Write-Host "Cancelled."
@@ -79,7 +98,7 @@ if ($DeleteBranch) {
   if ($LASTEXITCODE -ne 0) {
     Write-Host "Branch '$branch' could not be deleted (may have unmerged commits)." -ForegroundColor DarkYellow
     $forceBranch = Read-Host "Force-delete branch '$branch'? [y/N]"
-    if ($forceBranch -in @('y', 'Y', 'yes', 'Yes')) {
+    if ($forceBranch -in @('y', 'Y', 'yes', 'Yes') -or $Yes) {
       git -C $ProjectMainDir branch -D $branch
     }
   }

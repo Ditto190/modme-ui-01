@@ -16,7 +16,8 @@ Architecture Decision Records provide:
 
 | # | Title | Status | Date | Area |
 |---|-------|--------|------|------|
-| **0001** | [Supabase Local Development with Hybrid Cloud Architecture](./0001-supabase-local-development-with-hybrid-cloud.md) | **Accepted** | 2026-06-20 | Database & Infrastructure |
+| **0001** | [Supabase Local Development with Hybrid Cloud Architecture](./0001-supabase-local-development-with-hybrid-cloud.md) | **Superseded** | 2026-06-20 | Database & Infrastructure |
+| **0002** | [Cloud-First Supabase with Prisma](./0002-cloud-first-supabase-with-prisma.md) | **Accepted** | 2026-06-20 | Database & Infrastructure |
 
 ## Creating a New ADR
 

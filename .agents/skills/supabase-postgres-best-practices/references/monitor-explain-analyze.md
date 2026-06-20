@@ -1,7 +1,7 @@
 ---
 title: Use EXPLAIN ANALYZE to Diagnose Slow Queries
 impact: LOW-MEDIUM
-impactDescription: "Turns hours of guesswork into minutes and guides 10-30% query-time improvements"
+impactDescription: Identify exact bottlenecks in query execution
 tags: explain, analyze, diagnostics, query-plan
 ---
 

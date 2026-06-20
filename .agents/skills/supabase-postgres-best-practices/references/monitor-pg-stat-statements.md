@@ -1,7 +1,7 @@
 ---
 title: Enable pg_stat_statements for Query Analysis
 impact: LOW-MEDIUM
-impactDescription: "Surfaces fixes that commonly reduce response times by 10-30% on hot queries"
+impactDescription: Identify top resource-consuming queries
 tags: pg-stat-statements, monitoring, statistics, performance
 ---
 

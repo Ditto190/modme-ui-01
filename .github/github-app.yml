@@ -1,0 +1,23 @@
+name: modme-copilot-app
+url: https://github.com/Ditto190/modme-ui-01
+description: "Conservative GitHub App for CI/webhook integrations and Copilot-related automation. Review permissions before installation."
+public: false
+hook_attributes:
+  url: https://ci.example.com/github-app/webhook
+redirect_url: https://ci.example.com/github-app/callback
+permissions:
+  metadata: read
+  contents: read
+  pull_requests: write
+  checks: write
+  statuses: write
+  actions: read
+  issues: read
+  deployments: read
+events:
+  - push
+  - pull_request
+  - pull_request_review
+  - check_run
+  - workflow_run
+  - issue_comment

@@ -108,6 +108,29 @@ branch: $(git branch --show-current)
 Your content here.
 EOF
 ```
+The `EOF` here is used as a delimiter for the [heredoc](https://en.wikipedia.org/wiki/Here_document) in bash. It marks the end of the multiline input that is redirected into your new markdown inbox entry file. Everything typed or pasted before `EOF` becomes the file content.
+
+**Example:**
+Suppose you run:
+```bash
+cat > GenerativeUI_monorepo/docs/inbox/2024-06-08T12-00-00_architecture_copilot_decision-foo.md << 'EOF'
+---
+timestamp: 2024-06-08T12:00:00Z
+agent: copilot
+agent_role: architect
+type: architecture
+severity: high
+tags: [decision, supabase]
+branch: main
+---
+
+# Chose Supabase for project DB
+
+Discussed options and decided to use Supabase because of X, Y, and Z.
+EOF
+```
+This will create a new markdown file with all the above content. The `EOF` at the end closes the input for the file.
+```
 
 ---
 

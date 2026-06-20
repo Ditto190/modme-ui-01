@@ -19,6 +19,23 @@
     "fix:forge": "powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run fix",
     "verify:forge": "powershell -ExecutionPolicy Bypass -File ./scripts/verify-forge-ci.ps1",
     "pre-commit:check": "node scripts/pre-commit-checks.mjs",
-    "hooks:install": "powershell -ExecutionPolicy Bypass -File ./scripts/install-git-hooks.ps1"
+    "hooks:install": "powershell -ExecutionPolicy Bypass -File ./scripts/install-git-hooks.ps1",
+    "vibe:finish": "powershell -ExecutionPolicy Bypass -File ./scripts/vibe-session-finish.ps1",
+    "vibe:finish:dry-run": "powershell -ExecutionPolicy Bypass -File ./scripts/vibe-session-finish.ps1 -DryRun -SkipPull",
+    "worktree:ensure": "powershell -ExecutionPolicy Bypass -File ./scripts/ensure-worktree.ps1",
+    "worktree:migrate": "powershell -ExecutionPolicy Bypass -File ./scripts/migrate-main-to-worktree.ps1",
+    "worktree:doctor": "powershell -ExecutionPolicy Bypass -File ./scripts/worktree-doctor.ps1",
+    "worktree:doctor:fix": "powershell -ExecutionPolicy Bypass -File ./scripts/worktree-doctor.ps1 -Fix",
+    "worktree:ports": "powershell -ExecutionPolicy Bypass -File ./scripts/load-worktree-ports.ps1",
+    "worktree:tmux": "bash ./scripts/agent-workspace-tmux.sh",
+    "supabase:setup": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-supabase-cloud.ps1",
+    "supabase:local:setup": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-supabase-local.ps1",
+    "supabase:local:env": "powershell -ExecutionPolicy Bypass -File ./scripts/sync-supabase-local-env.ps1",
+    "intake": "node scripts/run-intake.mjs",
+    "intake:dry-run": "node scripts/run-intake.mjs --dry-run"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.108.2"
   }
 }

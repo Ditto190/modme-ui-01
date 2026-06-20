@@ -2,7 +2,9 @@
 
 ## Status
 
-**Accepted**
+**Superseded** by [ADR-0002: Cloud-First Supabase with Prisma](./0002-cloud-first-supabase-with-prisma.md) (2026-06-20)
+
+Local Docker Supabase remains **optional** for offline work; the team default is hosted `modme-next-forge` (`aevemmmmouxqlfyxthzf`).
 
 ## Context
 

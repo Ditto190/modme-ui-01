@@ -42,6 +42,4 @@ create index products_sku_idx on products (sku)
 where sku is not null;
 ```
 
-Only queries that include the partial index predicate can use that index. If you also run queries without `deleted_at is null`, `status = 'pending'`, or the same filter, keep a separate full index or expect the planner to fall back to another plan.
-
 Reference: [Partial Indexes](https://www.postgresql.org/docs/current/indexes-partial.html)

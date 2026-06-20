@@ -36,6 +36,8 @@ target/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+# Session logger logs (local-only)
+logs/copilot/
 
 # OS and IDE
 .DS_Store

@@ -53,12 +53,14 @@ ON CONFLICT (id) DO NOTHING;
 -- inbox_entries: only service role can write; authenticated users can read
 ALTER TABLE inbox_entries ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "service_role_all_inbox" ON inbox_entries;
 CREATE POLICY "service_role_all_inbox"
   ON inbox_entries FOR ALL
   TO service_role
   USING (true)
   WITH CHECK (true);
 
+DROP POLICY IF EXISTS "authenticated_read_inbox" ON inbox_entries;
 CREATE POLICY "authenticated_read_inbox"
   ON inbox_entries FOR SELECT
   TO authenticated
@@ -67,12 +69,14 @@ CREATE POLICY "authenticated_read_inbox"
 -- entry_relations: same pattern
 ALTER TABLE entry_relations ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "service_role_all_relations" ON entry_relations;
 CREATE POLICY "service_role_all_relations"
   ON entry_relations FOR ALL
   TO service_role
   USING (true)
   WITH CHECK (true);
 
+DROP POLICY IF EXISTS "authenticated_read_relations" ON entry_relations;
 CREATE POLICY "authenticated_read_relations"
   ON entry_relations FOR SELECT
   TO authenticated
@@ -81,12 +85,14 @@ CREATE POLICY "authenticated_read_relations"
 -- output_artefacts: service role writes, authenticated reads
 ALTER TABLE output_artefacts ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "service_role_all_artefacts" ON output_artefacts;
 CREATE POLICY "service_role_all_artefacts"
   ON output_artefacts FOR ALL
   TO service_role
   USING (true)
   WITH CHECK (true);
 
+DROP POLICY IF EXISTS "authenticated_read_artefacts" ON output_artefacts;
 CREATE POLICY "authenticated_read_artefacts"
   ON output_artefacts FOR SELECT
   TO authenticated

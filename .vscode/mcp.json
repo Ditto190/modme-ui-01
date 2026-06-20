@@ -1,12 +1,8 @@
 {
-  "servers": {
-    "mantine": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@mantine/mcp-server"],
-      "env": {
-        "PATH": "${env:PATH}"
-      }
-    }
+ "servers": {
+  "supabase": {
+   "type": "http",
+   "url": "https://mcp.supabase.com/mcp?project_ref=aevemmmmouxqlfyxthzf"
   }
+ }
 }
