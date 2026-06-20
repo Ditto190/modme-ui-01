@@ -3,7 +3,7 @@
     "skills-sh": {
       "command": "node",
       "args": [
-        "C:/Users/dylan/Monorepo_ModMe/.tools/skillsh-mcp/dist/index.js"
+        "${workspaceFolder}/.tools/skillsh-mcp/dist/index.js"
       ]
     },
     "buildkite": {
