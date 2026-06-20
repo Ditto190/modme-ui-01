@@ -78,6 +78,11 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - (cursor-cookbook) `dag-task-runner` skill at `.cursor/skills/dag-task-runner/` with Cursor SDK runner scripts
 - (cursor-cookbook) SDK examples vendored at `.vendor/cursor-cookbook/sdk/` (quickstart, app-builder, agent-kanban, coding-agent-cli, dag-task-runner)
 - (cursor-cookbook) `scripts/install-cursor-cookbook.ps1` to refresh hooks, skill, and SDK from upstream
+
+### Removed
+
+- (cursor) Problematic hooks removed from project — `audit-log.sh`, `block-models-by-repo-origin.sh`, `sensitive-prompt-guard.sh` were causing `ERROR_HOOKS_BLOCKED` in Cursor due to `failClosed: true` configuration and missing dependencies
+- (cursor) Hook patching logic from `install-cursor-cookbook.ps1` — hooks no longer available upstream
 - (cursor-ai) `agent-workbench-orchestration` skill — multi-agent workflow for agent panel work (schemas → hook → UI → WebSocket → verify) with goal contract template
 - (contextarch) [contextarch-cli](https://github.com/ksoventures/contextarch-cli) — install/bootstrap scripts, `yarn contextarch` / `yarn contextarch:bootstrap`; generated `next-forge` AI context files (AGENTS.md, CLAUDE.md, `.cursorrules`, `.github/copilot-instructions.md`)
 - (shared-schemas) WebSocket stream event payloads: `token`, `tool_start`, `tool_result`, `done`, plus `OptimisticMessage` schema

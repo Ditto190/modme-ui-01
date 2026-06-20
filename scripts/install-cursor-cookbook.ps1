@@ -37,24 +37,6 @@ try {
     $hooksDest = Join-Path $RepoRoot '.cursor\hooks'
     if ($IncludeHooks) {
         New-Item -ItemType Directory -Force -Path $hooksDest | Out-Null
-        Copy-Item -Path (Join-Path $TempClone 'hooks\.cursor\hooks\*') -Destination $hooksDest -Force
-        Copy-Item -Path (Join-Path $TempClone 'hooks\README.md') -Destination (Join-Path $hooksDest 'README.md') -Force
-        # Windows Git Bash: upstream uses </dev/stdin> which fails under MSYS pipes
-        $blockModels = Join-Path $hooksDest 'block-models-by-repo-origin.sh'
-        if (Test-Path $blockModels) {
-            $blockContent = Get-Content $blockModels -Raw
-            if ($blockContent -match '</dev/stdin>') {
-                $blockContent = $blockContent -replace 'payload="\$\(</dev/stdin\)"', @'
-# Use `cat` — `</dev/stdin` is unavailable in some Windows Git Bash / MSYS environments.
-payload="$(cat)"
-if [[ -z "${payload//[[:space:]]/}" ]]; then
-  payload="{}"
-fi
-'@
-                [System.IO.File]::WriteAllText($blockModels, $blockContent, [System.Text.UTF8Encoding]::new($false))
-                Write-Step 'Patched block-models-by-repo-origin.sh for Windows stdin'
-            }
-        }
         Write-Step "Updated hook scripts in .cursor/hooks/ (opt-in via -IncludeHooks)"
     } else {
         Write-Step 'Skipped hook scripts (project hooks disabled; pass -IncludeHooks to refresh upstream scripts)'
