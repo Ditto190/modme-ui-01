@@ -1,0 +1,25 @@
+{
+  "extends": "@tsconfig/strictest/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@adaptiveworx/db": ["packages/db/src"],
+      "@adaptiveworx/db/*": ["packages/db/src/*"],
+      "@adaptiveworx/shared": ["packages/shared/src"],
+      "@adaptiveworx/shared/*": ["packages/shared/src/*"],
+      "@adaptiveworx/ui": ["packages/ui/src"],
+      "@adaptiveworx/ui/*": ["packages/ui/src/*"],
+      "@adaptiveworx/agent": ["apps/agent/src"],
+      "@adaptiveworx/agent/*": ["apps/agent/src/*"]
+    }
+  },
+  "files": [],
+  "references": [
+    { "path": "./packages/db" },
+    { "path": "./packages/shared" },
+    { "path": "./packages/ui" },
+    { "path": "./apps/api" },
+    { "path": "./apps/web" },
+    { "path": "./apps/agent" }
+  ]
+}

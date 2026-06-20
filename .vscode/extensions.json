@@ -1,6 +1,17 @@
 {
     "recommendations": [
+<<<<<<< HEAD
         "astro-build.astro-vscode",
         "davidanson.vscode-markdownlint"
+=======
+        "leanctx.lean-ctx",
+        "ms-python.python",
+        "ms-python.debugpy",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "huggingface.huggingface-vscode-chat",
+        "pinage404.bash-extension-pack",
+        "ms-azuretools.vscode-docker"
+>>>>>>> chore/adr-readme-pipeline
     ]
 }

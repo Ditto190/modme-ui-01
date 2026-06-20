@@ -1,0 +1,5 @@
+{
+  "extends": "@monorepo-template/tsconfig/react-application/cypress.json",
+  "exclude": ["coverage/", "screenshots/", "videos/"],
+  "include": ["**/*.ts"]
+}

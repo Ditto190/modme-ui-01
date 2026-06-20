@@ -1,0 +1,9 @@
+# Un-ignore all non-bloat files in .vendor except those that are typical bloat (e.g., node_modules)
+!.vendor/
+.vendor/*
+# Allow everything inside .vendor except node_modules or other bloat folders
+!.vendor/**/
+!.vendor/**/*
+.vendor/**/node_modules/
+.vendor/**/node_modules/**
+# (Repeat for other bloat folders if necessary)

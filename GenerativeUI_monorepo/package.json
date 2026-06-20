@@ -1,0 +1,62 @@
+{
+  "name": "@monorepo-template/monorepo-template",
+  "version": "1.0.0",
+  "author": "Charles Stover <monorepo-template@charlesstover.com>",
+  "description": "monorepo template",
+  "homepage": "https://github.com/monorepo-template/monorepo-template#monorepo-template",
+  "license": "MIT",
+  "packageManager": "yarn@3.3.0",
+  "private": true,
+  "repository": "github:monorepo-template/monorepo-template",
+  "type": "module",
+  "bugs": {
+    "email": "monorepo-template@charlesstover.com",
+    "url": "https://github.com/monorepo-template/monorepo-template/issues"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/CharlesStover"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "browserslist:update-db": "browserslist --update-db",
+    "eslint": "eslint '**/*'",
+    "eslint:fix": "eslint '**/*' --fix",
+    "prepack": "yarn workspaces foreach --parallel --topological-dev run prepack",
+    "prepublish": "yarn run eslint && yarn run test && yarn workspaces foreach --no-private --parallel --topological-dev run prepublish",
+    "test": "monorepo-template-test",
+    "up": "monorepo-template-up",
+    "agenttrace": "cd .. && .tools/agenttrace.exe",
+    "quality": "bash ./quality/run_quality_playbook.sh",
+    "intake:dry-run": "cd intake-pipeline && python orchestrator.py --dry-run",
+    "intake:sync": "cd intake-pipeline && python orchestrator.py --live",
+    "intake:seed": "cd intake-pipeline && python vendor_importer.py --live"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@monorepo-template/eslint-config": "^1.0.4",
+    "@monorepo-template/test": "^2.2.0",
+    "@monorepo-template/tsconfig": "^1.1.2",
+    "@monorepo-template/up": "^1.0.1",
+    "@types/node": "^18.11.13",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
+    "@yarnpkg/sdks": "^3.0.0-rc.32",
+    "browserslist": "^4.21.4",
+    "eslint": "^8.29.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.11",
+    "prettier": "^2.8.1",
+    "turbo": "^2.6.3",
+    "typescript": "4.9.3"
+  }
+}

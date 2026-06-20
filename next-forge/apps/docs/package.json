@@ -1,0 +1,12 @@
+{
+  "name": "docs",
+  "private": true,
+  "scripts": {
+    "dev": "bunx mintlify dev --port 3104",
+    "lint": "bunx mintlify broken-links"
+  },
+  "devDependencies": {
+    "mintlify": "^4.2.243",
+    "typescript": "^5.9.3"
+  }
+}

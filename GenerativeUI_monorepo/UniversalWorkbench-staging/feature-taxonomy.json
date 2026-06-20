@@ -1,0 +1,148 @@
+{
+  "version": "1.0.0",
+  "domains": {
+    "AUTH": {
+      "description": "Authentication and authorization",
+      "examples": ["AUTH.USER.LOGIN", "AUTH.SESSION.VALIDATE", "AUTH.PASSWORD.RESET"]
+    },
+    "USER": {
+      "description": "User profile and account management",
+      "examples": ["USER.PROFILE.UPDATE", "USER.SETTINGS.UPDATE"]
+    },
+    "TEAM": {
+      "description": "Team/organization management",
+      "examples": ["TEAM.MEMBER.INVITE", "TEAM.ROLE.UPDATE"]
+    },
+    "PROJECT": {
+      "description": "Project management",
+      "examples": ["PROJECT.ITEM.CREATE", "PROJECT.MEMBER.ADD"]
+    },
+    "TASK": {
+      "description": "Task/work item management",
+      "examples": ["TASK.ITEM.CREATE", "TASK.COMMENT.CREATE", "TASK.ITEM.STATUS.UPDATE"]
+    },
+    "API": {
+      "description": "API infrastructure (routes, middleware, validation)",
+      "examples": ["API.MIDDLEWARE.AUTH", "API.VALIDATION.BODY", "API.ERROR.HANDLER"]
+    },
+    "DB": {
+      "description": "Database schema and migrations",
+      "examples": ["DB.USERS.SCHEMA", "DB.POSTS.SCHEMA", "DB.MIGRATION.RUN"]
+    },
+    "UI": {
+      "description": "Frontend components and pages",
+      "examples": ["UI.TASK.ITEM.CREATE.FORM", "UI.USER.PROFILE.PAGE"]
+    },
+    "AGENT": {
+      "description": "AI agent tools and workflows",
+      "examples": ["AGENT.TASK.CREATE.TOOL", "AGENT.PROJECT.UPDATE.WORKFLOW"]
+    },
+    "INFRA": {
+      "description": "Infrastructure (Docker, deployment, monitoring)",
+      "examples": ["INFRA.DOCKER.BUILD", "INFRA.DEPLOY.STAGING"]
+    }
+  },
+  "operations": {
+    "CREATE": {
+      "description": "Create new resource",
+      "examples": ["USER.PROFILE.CREATE", "TASK.ITEM.CREATE"]
+    },
+    "READ": {
+      "description": "Fetch single resource",
+      "examples": ["USER.PROFILE.READ", "TASK.ITEM.READ"]
+    },
+    "LIST": {
+      "description": "Fetch multiple resources",
+      "examples": ["USER.PROFILE.LIST", "TASK.ITEM.LIST"]
+    },
+    "UPDATE": {
+      "description": "Modify existing resource",
+      "examples": ["USER.PROFILE.UPDATE", "TASK.ITEM.STATUS.UPDATE"]
+    },
+    "DELETE": {
+      "description": "Remove resource",
+      "examples": ["USER.PROFILE.DELETE", "TASK.ITEM.DELETE"]
+    },
+    "VALIDATE": {
+      "description": "Validation logic",
+      "examples": ["AUTH.SESSION.VALIDATE", "API.INPUT.VALIDATE"]
+    },
+    "SEARCH": {
+      "description": "Search/filter functionality",
+      "examples": ["USER.PROFILE.SEARCH", "TASK.ITEM.SEARCH"]
+    },
+    "EXPORT": {
+      "description": "Export data",
+      "examples": ["TASK.ITEM.EXPORT", "USER.DATA.EXPORT"]
+    },
+    "IMPORT": {
+      "description": "Import data",
+      "examples": ["TASK.ITEM.IMPORT", "USER.DATA.IMPORT"]
+    },
+    "SYNC": {
+      "description": "Synchronization logic",
+      "examples": ["DB.CACHE.SYNC", "AGENT.STATE.SYNC"]
+    },
+    "SCHEMA": {
+      "description": "Database table definition",
+      "examples": ["DB.USERS.SCHEMA", "DB.POSTS.SCHEMA"],
+      "restricted": ["DB"]
+    },
+    "MIDDLEWARE": {
+      "description": "API middleware",
+      "examples": ["API.AUTH.MIDDLEWARE", "API.CORS.MIDDLEWARE"],
+      "restricted": ["API"]
+    },
+    "HANDLER": {
+      "description": "Event or error handler",
+      "examples": ["API.ERROR.HANDLER", "UI.EVENT.HANDLER"],
+      "restricted": ["API", "UI"]
+    },
+    "TOOL": {
+      "description": "Agent tool implementation",
+      "examples": ["AGENT.TASK.CREATE.TOOL", "AGENT.USER.SEARCH.TOOL"],
+      "restricted": ["AGENT"]
+    },
+    "WORKFLOW": {
+      "description": "Multi-step agent workflow",
+      "examples": ["AGENT.TASK.UPDATE.WORKFLOW", "AGENT.PROJECT.SYNC.WORKFLOW"],
+      "restricted": ["AGENT"]
+    },
+    "FORM": {
+      "description": "UI form component",
+      "examples": ["UI.TASK.ITEM.CREATE.FORM", "UI.USER.PROFILE.EDIT.FORM"],
+      "restricted": ["UI"]
+    },
+    "PAGE": {
+      "description": "UI page/route component",
+      "examples": ["UI.TASK.ITEM.LIST.PAGE", "UI.USER.PROFILE.PAGE"],
+      "restricted": ["UI"]
+    }
+  },
+  "qualifiers": {
+    "BULK": {
+      "description": "Batch operations",
+      "examples": ["TASK.ITEM.CREATE.BULK", "USER.PROFILE.DELETE.BULK"]
+    },
+    "ASYNC": {
+      "description": "Asynchronous processing",
+      "examples": ["TASK.ITEM.CREATE.ASYNC", "REPORT.GENERATE.ASYNC"]
+    },
+    "PAGINATED": {
+      "description": "Pagination support",
+      "examples": ["TASK.ITEM.LIST.PAGINATED", "USER.PROFILE.SEARCH.PAGINATED"]
+    },
+    "FILTERED": {
+      "description": "Filter support",
+      "examples": ["TASK.ITEM.LIST.FILTERED", "USER.PROFILE.SEARCH.FILTERED"]
+    },
+    "SORTED": {
+      "description": "Sort support",
+      "examples": ["TASK.ITEM.LIST.SORTED", "USER.PROFILE.LIST.SORTED"]
+    },
+    "CACHED": {
+      "description": "Caching layer",
+      "examples": ["DB.USERS.SCHEMA.CACHED", "API.DATA.READ.CACHED"]
+    }
+  }
+}

@@ -1,0 +1,37 @@
+name: Changelog check
+
+on:
+  pull_request:
+    branches: [main, master, develop, dev]
+    paths:
+      - "CHANGELOG.md"
+      - ".agents/**"
+      - ".cursor/**"
+      - "GenerativeUI_monorepo/apps/**"
+      - "GenerativeUI_monorepo/packages/**"
+      - "next-forge/apps/**"
+      - "next-forge/packages/**"
+      - "scripts/**"
+      - "docs/**"
+      - ".github/workflows/changelog-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate CHANGELOG format
+        run: node scripts/validate-changelog.mjs
+
+      - name: Require CHANGELOG update when monitored paths change
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/validate-changelog.mjs --require-update

@@ -1,0 +1,70 @@
+{
+  "version": "1.0",
+  "suite": "funnel",
+  "expectations": [
+    {
+      "id": "fm.timestamp.required",
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "dimension": "completeness",
+      "severity": "error",
+      "automatable": true,
+      "rule": "md files must have frontmatter.timestamp (ISO 8601)"
+    },
+    {
+      "id": "fm.agent.required",
+      "code": "INBOX.FM.MISSING_AGENT",
+      "dimension": "completeness",
+      "severity": "error",
+      "automatable": true,
+      "rule": "md files must have frontmatter.agent"
+    },
+    {
+      "id": "fm.type.required",
+      "code": "INBOX.FM.MISSING_TYPE",
+      "dimension": "completeness",
+      "severity": "error",
+      "automatable": true,
+      "rule": "md files must have frontmatter.type in entryType enum"
+    },
+    {
+      "id": "fm.type.valid",
+      "code": "INBOX.FM.INVALID_TYPE",
+      "dimension": "validity",
+      "severity": "error",
+      "automatable": true,
+      "rule": "frontmatter.type must be in entryType enum"
+    },
+    {
+      "id": "fm.severity.valid",
+      "code": "INBOX.FM.INVALID_SEVERITY",
+      "dimension": "validity",
+      "severity": "error",
+      "automatable": true,
+      "rule": "frontmatter.severity must be in severity enum"
+    },
+    {
+      "id": "fm.agent_role.valid",
+      "code": "INBOX.FM.INVALID_AGENT_ROLE",
+      "dimension": "validity",
+      "severity": "warning",
+      "automatable": false,
+      "rule": "frontmatter.agent_role must be in agentRole enum when present"
+    },
+    {
+      "id": "fm.filename.convention",
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "dimension": "consistency",
+      "severity": "warning",
+      "automatable": false,
+      "rule": "structured .md files should match YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md"
+    },
+    {
+      "id": "fm.text.non_empty",
+      "code": "INBOX.FM.EMPTY_TEXT",
+      "dimension": "completeness",
+      "severity": "warning",
+      "automatable": false,
+      "rule": "text formats should have non-empty extracted_text"
+    }
+  ]
+}

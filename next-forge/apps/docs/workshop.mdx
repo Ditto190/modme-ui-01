@@ -1,0 +1,31 @@
+---
+title: Frontend Workshop
+description: Storybook design system workshop
+---
+
+## Storybook
+
+The frontend workshop runs at **http://localhost:6106** (port 6106 in the default checkout).
+
+```bash
+yarn dev:forge:storybook
+# or
+cd next-forge && npx bun run dev --filter storybook
+```
+
+## Design system
+
+Components live in `next-forge/packages/design-system` and are consumed by apps and Storybook via `@repo/design-system`.
+
+Add shadcn components:
+
+```bash
+npx shadcn@latest add button -c packages/design-system
+cd next-forge && npx bun run bump-ui
+```
+
+## ModMe workshop stories
+
+See the **ModMe / Workshop** group in Storybook for ModMe-specific component examples built on the shared design system.
+
+When migrating UI from GenerativeUI `GenerativeCanvas`, add stories here before moving production code into `apps/app`.

@@ -1,0 +1,42 @@
+---
+description: next-forge monorepo conventions (Bun, @repo/*, server components)
+globs: next-forge/**/*
+---
+
+# next-forge monorepo
+
+Work in `next-forge/` uses **Bun** and the upstream next-forge layout.
+
+## Package manager
+
+- Run `bun install`, `bun dev`, `bun run build` from `next-forge/`.
+- If `bun` is not on PATH, use `npx bun` from that directory.
+- Do not add `yarn.lock`, `pnpm-lock.yaml`, or `package-lock.json` here.
+
+## Imports and structure
+
+- Shared packages use `@repo/*` (e.g. `@repo/design-system`, `@repo/database`).
+- `page.tsx` and `layout.tsx` are server components unless `'use client'` is required.
+- Validate env vars via each package's `keys.ts`; extend with `@t3-oss/env-nextjs`.
+
+## Ports (ModMe offset block)
+
+| App | Port |
+|-----|------|
+| app | 3100 |
+| web | 3101 |
+| api | 3102 |
+| docs | 3104 |
+| storybook | 6106 |
+
+## Database
+
+- `DATABASE_URL` lives in `packages/database/.env`.
+- After schema changes: `bun run migrate` or `bun run db:push` from `next-forge/`.
+
+## shadcn / design system
+
+```bash
+npx shadcn@latest add [component] -c packages/design-system
+bun run bump-ui
+```

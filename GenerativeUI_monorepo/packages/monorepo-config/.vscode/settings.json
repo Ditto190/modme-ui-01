@@ -1,0 +1,46 @@
+{
+  "workbench.colorTheme": "Dark+",
+  "editor.fontSize": 15,
+  "editor.fontFamily": "Consolas, 'Courier New', monospace",
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.renderWhitespace": "all",
+  "editor.minimap.enabled": false,
+  "editor.wordWrap": "on",
+  "editor.guides.bracketPairs": "active",
+  "workbench.startupEditor": "none",
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.git": true
+  },
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "git.enableSmartCommit": true,
+  "git.autofetch": true,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmDelete": false,
+  "breadcrumbs.enabled": true,
+  "window.zoomLevel": 0,
+  "workbench.sideBar.location": "left",
+  "workbench.statusBar.visible": true,
+  "extensions.ignoreRecommendations": false,
+  "[markdown]": {
+    "editor.wordWrap": "on"
+  },
+  "[json]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    }
+  },
+  "markdown.preview.fontSize": 14,
+  "markdown.preview.lineHeight": 1.6
+}

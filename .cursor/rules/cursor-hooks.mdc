@@ -1,0 +1,11 @@
+---
+description: Cursor project hooks — disabled by default (focus-safe)
+globs: .cursor/hooks/**,.cursor/hooks.json
+---
+
+# Cursor project hooks
+
+- **Project hooks are disabled.** `.cursor/hooks.json` contains an empty `hooks` map.
+- Cursor hooks with `failClosed: true` were causing blocking errors and have been permanently removed.
+- `scripts/install-cursor-cookbook.ps1` skips hook installation.
+

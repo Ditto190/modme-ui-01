@@ -1,0 +1,20 @@
+{
+  "id": "modme-frontend",
+  "name": "ModMe Frontend Collection",
+  "description": "Frontend-focused agents and skills for next-forge — React 18/19, Next.js App Router, Tailwind, Storybook, accessibility, and UI/UX patterns.",
+  "tags": ["frontend", "react", "nextjs", "tailwind", "storybook", "accessibility", "ui"],
+  "display": { "ordering": "manual" },
+  "items": [
+    { "path": "agents/accessibility.agent.md", "kind": "agent", "usage": "WCAG 2.2 AA audit — perceivable, operable, understandable, robust" },
+    { "path": "agents/accessibility-runtime-tester.agent.md", "kind": "agent", "usage": "Runtime accessibility testing with Playwright" },
+    { "path": "agents/se-system-architecture-reviewer.agent.md", "kind": "agent", "usage": "UI/UX and system design review against best practices" },
+    { "path": "skills/react18-dep-compatibility/SKILL.md", "kind": "skill", "usage": "React 18.3.1 and React 19 dependency compatibility matrix" },
+    { "path": "skills/react-audit-grep-patterns/SKILL.md", "kind": "skill", "usage": "Audit React codebase for anti-patterns using grep" },
+    { "path": "skills/react18-batching-patterns/SKILL.md", "kind": "skill", "usage": "React 18 automatic batching upgrade patterns" },
+    { "path": "skills/playwright-generate-test/SKILL.md", "kind": "skill", "usage": "Generate Playwright E2E tests for UI flows" },
+    { "path": "skills/playwright-automation-fill-in-form/SKILL.md", "kind": "skill", "usage": "Automate form filling with Playwright" },
+    { "path": "skills/playwright-explore-website/SKILL.md", "kind": "skill", "usage": "Explore and audit a website with Playwright browser" },
+    { "path": "skills/premium-frontend-ui/SKILL.md", "kind": "skill", "usage": "High-quality frontend UI patterns and components" },
+    { "path": "skills/ui-screenshots/SKILL.md", "kind": "skill", "usage": "Capture UI screenshots for review and documentation" }
+  ]
+}

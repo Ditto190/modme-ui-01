@@ -1,0 +1,46 @@
+{
+  "updatedAt": "2026-06-20T23:09:00Z",
+  "version": 1,
+  "tasks": [
+    {
+      "title": "Foundation: agents + inbox-ingest.mjs + AGENTS.md patches",
+      "completedAt": "2026-06-20",
+      "id": "agent-inbox-phase1"
+    },
+    {
+      "title": "Supabase Prisma models + pgvector migration + inbox-embeddings.mjs",
+      "completedAt": "2026-06-20",
+      "id": "agent-inbox-phase2"
+    },
+    {
+      "title": "MDA pipeline: mda-categorize.mjs + mda-categorize.yml",
+      "completedAt": "2026-06-20",
+      "id": "agent-inbox-phase3"
+    },
+    {
+      "title": "Output generation: output-generate.mjs + output-generate.yml",
+      "completedAt": "2026-06-20",
+      "id": "agent-inbox-phase4"
+    },
+    {
+      "title": "Installer v2: collection manifests + 41 agents installed",
+      "completedAt": "2026-06-20",
+      "id": "expand-installer"
+    },
+    {
+      "title": "skillsh --details + --export-collection wired into installer",
+      "completedAt": "2026-06-20T23:09:00Z",
+      "id": "integrate-skillsh-index"
+    },
+    {
+      "title": "Plugin-cache hooks deleted + hooks.json locked ReadOnly",
+      "completedAt": "2026-06-20",
+      "id": "delete-plugin-cache-hooks"
+    },
+    {
+      "title": "docs/supabase/inventory.md created",
+      "completedAt": "2026-06-20",
+      "id": "supabase-inventory"
+    }
+  ]
+}

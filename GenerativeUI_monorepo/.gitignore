@@ -1,0 +1,55 @@
+/**/.git/
+/**/.idea/
+/**/node_modules/
+/**/.DS_Store
+/**/.pnp.*
+/**/.tsbuildinfo
+/.yarn/cache/
+/.yarn/sdks/
+/.yarn/unplugged/
+/.yarn/build-state.yml
+/.yarn/install-state.gz
+/*.iml
+/.attach_pid*
+/.eslintcache
+/.tsbuildinfo
+/yarn-error.log
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/*.so
+**/.Python
+**/build/
+**/dist/
+**/*.egg-info/
+**/.pytest_cache/
+**/.coverage
+**/htmlcov/
+**/.mypy_cache/
+**/.venv/
+**/venv/
+**/env/
+**/ENV/
+
+# Environment files
+**/.env
+**/.env.local
+**/.env*.local
+!.env.example
+!**/.env.example
+
+# Credential files
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/secrets/
+**/credentials.json
+
+# Next.js
+**/.next/
+**/out/
+
+# Turbo
+**/.turbo

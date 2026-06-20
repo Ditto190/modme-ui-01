@@ -1,0 +1,6 @@
+name: "Monorepo_ModMe CI"
+description: "Lint, test, and build GenerativeUI_monorepo on every push — parallel verify, Turbo-powered build."
+emoji: ":pipeline:"
+steps:
+  - command: "buildkite-agent pipeline upload"
+    label: ":pipeline:"

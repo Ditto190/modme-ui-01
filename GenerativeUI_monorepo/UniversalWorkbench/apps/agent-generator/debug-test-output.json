@@ -1,0 +1,84 @@
+{
+  "molecules": [
+    {
+      "id": "file_explorer",
+      "name": "File Explorer",
+      "underlyingTools": [
+        "filesystem.list_directory",
+        "filesystem.read_file"
+      ]
+    },
+    {
+      "id": "code_editor",
+      "name": "Code Editor",
+      "underlyingTools": [
+        "filesystem.read_file",
+        "filesystem.write_file"
+      ]
+    },
+    {
+      "id": "file_manager",
+      "name": "File Manager",
+      "underlyingTools": [
+        "filesystem.read_file",
+        "filesystem.write_file",
+        "filesystem.list_directory",
+        "filesystem.delete_file",
+        "filesystem.create_directory"
+      ]
+    },
+    {
+      "id": "git_workspace",
+      "name": "Git Workspace",
+      "underlyingTools": [
+        "git.git_status",
+        "git.git_diff",
+        "git.git_log",
+        "git.git_branch"
+      ]
+    },
+    {
+      "id": "git_committer",
+      "name": "Git Committer",
+      "underlyingTools": [
+        "git.git_add",
+        "git.git_commit",
+        "git.git_push",
+        "git.git_status"
+      ]
+    },
+    {
+      "id": "sequential_analyzer",
+      "name": "Sequential Analyzer",
+      "underlyingTools": [
+        "sequential-thinking.create_thinking_process",
+        "sequential-thinking.add_thinking_step"
+      ]
+    },
+    {
+      "id": "web_fetcher",
+      "name": "Web Fetcher",
+      "underlyingTools": [
+        "web.fetch_url"
+      ]
+    },
+    {
+      "id": "custom_search",
+      "name": "Custom Search",
+      "underlyingTools": [
+        "custom_search"
+      ]
+    },
+    {
+      "id": "read_file",
+      "name": "Read File",
+      "underlyingTools": [
+        "read_file"
+      ]
+    }
+  ],
+  "instructionsPrefix": "# Agent Instructions\n\n## Task\nFind data\n\n## Available Tools (Molecules)\nYou have access to the following high-level tools (\"Molecules\"). \nUse these molecules to accomplish your task. Do NOT use raw MCP tools if a molecule wrapper exists.\n\n### File Explorer (file_explorer)\nBrowse and navigate the file system\n- **When to use**: Navigate and explore file hierarchy\n- **Safe to use**: static\n\n### Code Editor (code_editor)\nView, edit, and create source code files\n- **When to use**: Edit source code wi",
+  "instructionsContainsCustom": true,
+  "instructionsContainsFileExplorer": true,
+  "fullInstructions": "# Agent Instructions\n\n## Task\nFind data\n\n## Available Tools (Molecules)\nYou have access to the following high-level tools (\"Molecules\"). \nUse these molecules to accomplish your task. Do NOT use raw MCP tools if a molecule wrapper exists.\n\n### File Explorer (file_explorer)\nBrowse and navigate the file system\n- **When to use**: Navigate and explore file hierarchy\n- **Safe to use**: static\n\n### Code Editor (code_editor)\nView, edit, and create source code files\n- **When to use**: Edit source code with syntax awareness\n- **Safe to use**: static\n\n### File Manager (file_manager)\nManage files: copy, move, delete, create directories\n- **When to use**: Perform file system operations with safety checks\n- **Safe to use**: static\n\n### Git Workspace (git_workspace)\nView git status, diffs, branches\n- **When to use**: Inspect repository state without modifying\n- **Safe to use**: declarative\n\n### Git Committer (git_committer)\nStage, commit, and push changes\n- **When to use**: Commit and push code changes\n- **Safe to use**: declarative\n\n### Sequential Analyzer (sequential_analyzer)\nBreak complex problems into steps and solve them methodically\n- **When to use**: Decompose problems and solve step-by-step\n- **Safe to use**: open-ended\n\n### Web Fetcher (web_fetcher)\nFetch and retrieve web content\n- **When to use**: Retrieve content from the web\n- **Safe to use**: static\n\n### Custom Search (custom_search)\nSearch the custom database\n- **When to use**: Search the custom database\n- **Safe to use**: static\n\n### Read File (read_file)\nRead file\n- **When to use**: Read file\n- **Safe to use**: static\n\n## Tool Usage Reference\nBelow are the detailed schemas and instructions for each molecule.\n\n# File Explorer\n\n**ID**: `file_explorer`\n\n## Description\nBrowse and navigate the file system\n\n## What It Does\nNavigate and explore file hierarchy\n\n## When to Use\n- Discovering project structure\n- Finding relevant files\n- Understanding codebase organization\n\n## How to Call\n```json\n{\n  \"molecule\": \"file_explorer\",\n  \"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"pattern\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"path\"\n  ]\n}\n}\n```\n\n## Safety Constraints\n- ⚠️ Cannot access system directories without explicit permission\n- ⚠️ Some paths may be restricted by filesystem permissions\n\n## Examples\n\n### Explore project structure\n**Input**: `{\"path\":\"/workspace\",\"pattern\":\"*.ts\"}`\n**Expected**: List of TypeScript files in workspace\n\n\n## Underlying Tools\nThese MCP tools power this molecule:\n- `filesystem.list_directory`\n- `filesystem.read_file`\n\n---\n\n# Code Editor\n\n**ID**: `code_editor`\n\n## Description\nView, edit, and create source code files\n\n## What It Does\nEdit source code with syntax awareness\n\n## When to Use\n- Modifying source files\n- Creating new components\n- Refactoring code\n- Adding tests\n\n## How to Call\n```json\n{\n  \"molecule\": \"code_editor\",\n  \"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"filepath\": {\n      \"type\": \"string\"\n    },\n    \"action\": {\n      \"enum\": [\n        \"read\",\n        \"write\",\n        \"append\"\n      ]\n    },\n    \"content\": {\n      \"type\": \"string\"\n    },\n    \"language\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"filepath\",\n    \"action\"\n  ]\n}\n}\n```\n\n## Safety Constraints\n- ⚠️ Always confirm before overwriting files\n- ⚠️ Validate syntax before committing\n- ⚠️ Backup before bulk replacements\n\n## Examples\n\n### Read TypeScript file\n**Input**: `{\"filepath\":\"src/index.ts\",\"action\":\"read\",\"language\":\"typescript\"}`\n**Expected**: File contents with line numbers\n\n\n### Edit file with confirmation\n**Input**: `{\"filepath\":\"src/api.ts\",\"action\":\"write\",\"content\":\"// updated code\"}`\n**Expected**: File updated, show diff for confirmation\n\n\n## Underlying Tools\nThese MCP tools power this molecule:\n- `filesystem.read_file`\n- `filesystem.write_file`\n\n---\n\n# File Manager\n\n**ID**: `file_manager`\n\n## Description\nManage files: copy, move, delete, create directories\n\n## What It Does\nPerform file system operations with safety checks\n\n## When to Use\n- Organizing project files\n- Refactoring directory structure\n- Cleaning up build artifacts\n- Creating project structure\n\n## How to Call\n```json\n{\n  \"molecule\": \"file_manager\",\n  \"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"action\": {\n      \"enum\": [\n        \"copy\",\n        \"move\",\n        \"delete\",\n        \"mkdir\"\n      ]\n    },\n    \"source\": {\n      \"type\": \"string\"\n    },\n    \"destination\": {\n      \"type\": \"string\"\n    },\n    \"recursive\": {\n      \"type\": \"boolean\"\n    }\n  },\n  \"required\": [\n    \"action\",\n    \"source\"\n  ]\n}\n}\n```\n\n## Safety Constraints\n- ⚠️ Confirm all destructive operations (delete, move)\n- ⚠️ Never delete without backups\n- ⚠️ Preserve directory permissions\n\n## Examples\n\n\n## Underlying Tools\nThese MCP tools power this molecule:\n- `filesystem.read_file`\n- `filesystem.write_file`\n- `filesystem.list_directory`\n- `filesystem.delete_file`\n- `filesystem.create_directory`\n\n---\n\n# Git Workspace\n\n**ID**: `git_workspace`\n\n## Description\nView git status, diffs, branches\n\n## What It Does\nInspect repository state without modifying\n\n## When to Use\n- Checking current branch\n- Reviewing changes\n- Understanding commit history\n- Finding which branch has a fix\n\n## How to Call\n```json\n{\n  \"molecule\": \"git_workspace\",\n  \"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"action\": {\n      \"enum\": [\n        \"status\",\n        \"diff\",\n        \"log\",\n        \"branches\"\n      ]\n    },\n    \"branch\": {\n      \"type\": \"string\"\n    },\n    \"lines\": {\n      \"type\": \"number\"\n    }\n  },\n  \"required\": [\n    \"action\"\n  ]\n}\n}\n```\n\n## Safety Constraints\n- ⚠️ Read-only operations only\n- ⚠️ Display diffs for human review\n\n## Examples\n\n### Check git status\n**Input**: `{\"action\":\"status\"}`\n**Expected**: Current branch, staged/unstaged changes\n\n\n## Underlying Tools\nThese MCP tools power this molecule:\n- `git.git_status`\n- `git.git_diff`\n- `git.git_log`\n- `git.git_branch`\n\n---\n\n# Git Committer\n\n**ID**: `git_committer`\n\n## Description\nStage, commit, and push changes\n\n## What It Does\nCommit and push code changes\n\n## When to Use\n- Saving work with meaningful messages\n- Creating feature branches\n- Pushing to remote\n\n## How to Call\n```json\n{\n  \"molecule\": \"git_committer\",\n  \"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"action\": {\n      \"enum\": [\n        \"commit\",\n        \"push\",\n        \"create_branch\"\n      ]\n    },\n    \"message\": {\n      \"type\": \"string\"\n    },\n    \"files\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"branch\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"action\",\n    \"message\"\n  ]\n}\n}\n```\n\n## Safety Constraints\n- ⚠️ Always ask for confirmation before pushing\n- ⚠️ Validate commit message format\n- ⚠️ Ensure tests pass before committing (if CI enabled)\n\n## Examples\n\n\n## Underlying Tools\nThese MCP tools power this molecule:\n- `git.git_add`\n- `git.git_commit`\n- `git.git_push`\n- `git.git_status`\n\n---\n\n# Sequential Analyzer\n\n**ID**: `sequential_analyzer`\n\n## Description\nBreak complex problems into steps and solve them methodically\n\n## What It Does\nDecompose problems and solve step-by-step\n\n## When to Use\n- Debugging complex issues\n- Designing large features\n- Understanding complex code\n- Planning refactoring\n\n## How to Call\n```json\n{\n  \"molecule\": \"sequential_analyzer\",\n  \"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"problem\": {\n      \"type\": \"string\"\n    },\n    \"maxSteps\": {\n      \"type\": \"number\"\n    },\n    \"approach\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"problem\"\n  ]\n}\n}\n```\n\n## Safety Constraints\n- ⚠️ Keep steps focused and small\n- ⚠️ Show reasoning for each step\n- ⚠️ Allow for backtracking if needed\n\n## Examples\n\n\n## Underlying Tools\nThese MCP tools power this molecule:\n- `sequential-thinking.create_thinking_process`\n- `sequential-thinking.add_thinking_step`\n\n---\n\n# Web Fetcher\n\n**ID**: `web_fetcher`\n\n## Description\nFetch and retrieve web content\n\n## What It Does\nRetrieve content from the web\n\n## When to Use\n- Fetching documentation\n- Getting API responses\n- Researching information\n\n## How to Call\n```json\n{\n  \"molecule\": \"web_fetcher\",\n  \"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"url\": {\n      \"type\": \"string\",\n      \"format\": \"uri\"\n    },\n    \"method\": {\n      \"enum\": [\n        \"GET\",\n        \"POST\"\n      ]\n    },\n    \"format\": {\n      \"enum\": [\n        \"json\",\n        \"html\",\n        \"text\"\n      ]\n    }\n  },\n  \"required\": [\n    \"url\"\n  ]\n}\n}\n```\n\n## Safety Constraints\n- ⚠️ Whitelist trusted domains\n- ⚠️ Sanitize external content\n- ⚠️ Respect robots.txt and rate limits\n\n## Examples\n\n\n## Underlying Tools\nThese MCP tools power this molecule:\n- `web.fetch_url`\n\n---\n\n# Custom Search\n\n**ID**: `custom_search`\n\n## Description\nSearch the custom database\n\n## What It Does\nSearch the custom database\n\n## When to Use\n- General purpose usage\n\n## How to Call\n```json\n{\n  \"molecule\": \"custom_search\",\n  \"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"query\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"query\"\n  ]\n}\n}\n```\n\n## Safety Constraints\n- ⚠️ Standard tool safety applies\n\n## Examples\n\n\n## Underlying Tools\nThese MCP tools power this molecule:\n- `custom_search`\n\n---\n\n# Read File\n\n**ID**: `read_file`\n\n## Description\nRead file\n\n## What It Does\nRead file\n\n## When to Use\n- General purpose usage\n\n## How to Call\n```json\n{\n  \"molecule\": \"read_file\",\n  \"parameters\": {}\n}\n```\n\n## Safety Constraints\n- ⚠️ Standard tool safety applies\n\n## Examples\n\n\n## Underlying Tools\nThese MCP tools power this molecule:\n- `read_file`\n\n---\n\n## Operational Guidelines\n1. **Analyze the Request**: Understand the user's intent and select the appropriate molecule.\n2. **Check Constraints**: Ensure your action complies with both global and molecule-specific constraints.\n3. **Formulate Action**: Construct the usage JSON for the selected molecule.\n4. **Execute**: Submit the molecule action.\n"
+}

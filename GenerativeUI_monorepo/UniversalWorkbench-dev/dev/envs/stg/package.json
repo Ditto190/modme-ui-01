@@ -1,0 +1,17 @@
+{
+  "name": "@adaptiveworx/stg-env",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Staging environment configuration",
+  "dependencies": {
+    "@adaptiveworx/agent": "0.1.0",
+    "@adaptiveworx/api": "0.1.0",
+    "@adaptiveworx/web": "0.1.0"
+  },
+  "scripts": {
+    "deploy": "echo 'Deploy to staging environment'",
+    "infra:preview": "pulumi preview",
+    "infra:up": "pulumi up",
+    "infra:destroy": "pulumi destroy"
+  }
+}

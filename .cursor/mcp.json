@@ -1,0 +1,27 @@
+﻿{
+  "mcpServers": {
+    "skills-sh": {
+      "command": "node",
+      "args": [
+        "C:/Users/dylan/Monorepo_ModMe/.tools/skillsh-mcp/dist/index.js"
+      ]
+    },
+    "buildkite": {
+      "url": "https://mcp.buildkite.com/mcp"
+    },
+    "mantine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mantine/mcp-server"
+      ]
+    },
+    "next-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "next-devtools-mcp@latest"
+      ]
+    }
+  }
+}

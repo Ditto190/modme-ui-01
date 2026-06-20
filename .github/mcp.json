@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "GitLab": {
+      "type": "http",
+      "url": "https://gitlab.com/api/v4/mcp"
+    },
+    "mantine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mantine/mcp-server"
+      ]
+    },
+    "github-agentic-workflows": {
+      "command": "gh",
+      "args": [
+        "aw",
+        "mcp-server"
+      ]
+    }
+  }
+}

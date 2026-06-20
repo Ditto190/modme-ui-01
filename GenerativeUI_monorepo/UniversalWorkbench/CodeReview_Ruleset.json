@@ -1,0 +1,49 @@
+{
+  "id": 11504025,
+  "name": "CodeReview_Ruleset",
+  "target": "branch",
+  "source_type": "Repository",
+  "source": "Ditto190/modme-ui-01",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "~DEFAULT_BRANCH",
+        "refs/heads/feature"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "copilot_code_review",
+      "parameters": {
+        "review_on_push": false,
+        "review_draft_pull_requests": false
+      }
+    },
+    {
+      "type": "copilot_code_review_analysis_tools",
+      "parameters": {
+        "tools": [
+          {
+            "name": "CodeQL"
+          },
+          {
+            "name": "ESLint"
+          },
+          {
+            "name": "PMD"
+          }
+        ]
+      }
+    }
+  ],
+  "bypass_actors": []
+}
