@@ -1,159 +1,3 @@
-<<<<<<< HEAD
-# AGENTS.md - Agent Development Guide
-
-**Purpose**: Guidelines for agentic coding assistants working in this GenUI workspace.
-
-## Essential Commands
-
-### Development
-
-```bash
-npm run dev              # Start both UI (3000) and agent (8000)
-npm run dev:ui           # Frontend only
-npm run dev:agent        # Python agent only
-npm run dev:debug        # With LOG_LEVEL=debug
-```
-
-### Build & Quality
-
-```bash
-npm run build            # Build Next.js for production
-npm run lint             # ESLint (TS) + Ruff (Python)
-npm run lint:fix         # Auto-fix lint issues
-npm run format           # Prettier + Ruff format
-npx tsc --noEmit         # TypeScript type checking
-```
-
-### Testing
-
-```bash
-# Python (pytest)
-pytest tests/                    # Run all tests
-pytest tests/test_file.py       # Run single test file
-pytest tests/test_file.py::test_function_name  # Run specific test
-pytest -v                        # Verbose output
-pytest --cov                    # Coverage report
-
-# TypeScript/React (check for test files - none configured yet)
-```
-
-### Documentation & Validation
-
-```bash
-npm run validate:toolsets    # Validate toolset JSON schemas
-npm run docs:all             # Generate all docs + diagrams
-npm run docs:sync            # Sync JSON ↔ Markdown
-```
-
-## Code Style Guidelines
-
-### Imports
-
-- Group: external libs → internal modules → relative imports
-- Use `@/*` alias for src imports: `import { UIElement } from "@/lib/types"`
-- No default exports for components (named exports preferred)
-
-### Formatting
-
-- **TypeScript/React**: Prettier (auto-run via `npm run format`)
-- **Python**: Ruff format (auto-run via `npm run format`)
-- **Line length**: No strict limit, keep readable
-
-### TypeScript Rules
-
-- **Strict mode enabled**: `strict: true` in tsconfig.json
-- Use `type` for type-only imports: `import type { Metadata } from "next"`
-- No `any`: Use `unknown` or proper types
-- Props interfaces should be inferred from Zod schemas
-
-### Python Rules
-
-- **Type hints required**: All functions must have type annotations
-- Use `Dict[str, Any]` for JSON props, not generic `dict`
-- Docstrings follow Google style (triple quotes)
-- `from __future__ import annotations` at top of files
-
-### Naming Conventions
-
-- **Files**: PascalCase for components (`StatCard.tsx`), snake_case for modules
-- **React components**: PascalCase, named export (`export const StatCard: React.FC<Props>`)
-- **Element IDs**: snake_case (`revenue_stat`)
-- **Component types**: PascalCase strings (`"StatCard"`)
-- **Props**: camelCase (`trendDirection`)
-- **Functions/variables**: snake_case in Python, camelCase in TypeScript
-
-### Error Handling
-
-- **Components**: Use Zod `safeParse()` with fallback UI
-- **Agent tools**: Return `{"status": "error"|"success", "message": "..."}`
-- **API routes**: Proper FastAPI/Next.js error responses
-- **Always validate props before use** (see StatCard.tsx)
-
-### Component Pattern
-
-```typescript
-// 1. Define Zod schema for validation
-const PropsSchema = z.object({ title: z.string(), value: z.number() });
-
-// 2. Infer type from schema
-type Props = z.infer<typeof PropsSchema>;
-
-// 3. Validate and render
-export const MyComponent: React.FC<Props> = (rawProps) => {
-  const result = PropsSchema.safeParse(rawProps);
-  if (!result.success) return <ErrorFallback />;
-  const props = result.data;
-  return <div>{props.title}</div>;
-};
-```
-
-### Agent Tool Pattern
-
-```python
-def my_tool(tool_context: ToolContext, param: str) -> Dict[str, str]:
-    if not param or not isinstance(param, str):
-        return {"status": "error", "message": "Invalid param"}
-
-    elements = tool_context.state.get("elements", [])
-    # ... operation ...
-
-    tool_context.state["elements"] = elements
-    return {"status": "success", "message": "Done"}
-}
-```
-
-### Critical Conventions (Do Not Break)
-
-- **State is ONE-WAY**: Python writes → React reads. Never mutate from React.
-- **ALLOWED_TYPES whitelist**: Must match switch cases in `src/app/page.tsx`
-- **Props must be JSON-serializable**: No functions, no circular refs
-- **Key prop required**: Always use `key={el.id}` when rendering lists
-
-### File Locations
-
-| Purpose       | Path                       |
-| ------------- | -------------------------- |
-| Components    | `src/components/registry/` |
-| Types         | `src/lib/types.ts`         |
-| Page renderer | `src/app/page.tsx`         |
-| Agent tools   | `agent/main.py`            |
-| Tests         | `tests/*.py`               |
-
-### Environment
-
-- Node.js: 22.9.0+ (use nvm)
-- Python: 3.12+ (with uv or pip)
-- Required: `GOOGLE_API_KEY` in `.env`
-
-### Debugging
-
-```bash
-curl http://localhost:8000/health  # Agent health
-curl http://localhost:8000/ready   # Agent readiness + toolset info
-```
-
-See `.github/copilot-instructions.md` for detailed architecture and patterns.
-=======
 # AGENTS.md — Monorepo_ModMe
 
 Guidance for Cursor agents, cloud agents, and GitHub Copilot working in this repository.
@@ -211,6 +55,8 @@ yarn lint
 
 Per-package scripts vary (Vite/Biome/Vitest vs Next.js). Check the nearest `package.json`.
 
+**Legacy root GenUI** (pre-consolidation): see [`CLAUDE.md`](CLAUDE.md) and [`GenerativeUI_monorepo/AGENTS.md`](GenerativeUI_monorepo/AGENTS.md).
+
 ## Multi-agent worktrees
 
 Feature work **must not** happen in the main checkout. Use isolated Git worktrees so parallel agents avoid file/Git/port conflicts.
@@ -227,9 +73,10 @@ Feature work **must not** happen in the main checkout. Use isolated Git worktree
 **Per task:** `.\scripts\new-agent-worktree.ps1 -Name "<task>" -Owner <owner>`  
 **Guard:** `yarn worktree:ensure` (fail on main checkout) or `.\scripts\ensure-worktree.ps1 -WarnOnly`  
 **Doctor:** `yarn worktree:doctor` / `yarn worktree:doctor:fix` (yarn.lock, ports, gh, Supabase env)  
+**Repo alignment:** `yarn repo:doctor` / `yarn repo:doctor:fix`  
 **Migrate main:** `.\scripts\migrate-main-to-worktree.ps1 -Name "<task>" -Owner cursor` when main has uncommitted work  
 **Ports:** `. .\scripts\load-worktree-ports.ps1` or `yarn worktree:ports` before `yarn dev:*`  
-**Docs:** [`docs/multi-agent-worktrees.md`](docs/multi-agent-worktrees.md)
+**Docs:** [`docs/multi-agent-worktrees.md`](docs/multi-agent-worktrees.md), [`docs/repo-alignment.md`](docs/repo-alignment.md)
 
 ## Agent behavior
 
@@ -244,6 +91,7 @@ Feature work **must not** happen in the main checkout. Use isolated Git worktree
 After prototyping in a **worktree** (not the main checkout):
 
 ```powershell
+yarn repo:doctor            # remote, workspace, AGENTS.md alignment
 yarn worktree:doctor          # pre-flight in worktree (use -Fix via yarn worktree:doctor:fix)
 yarn check:forge              # fast Ultracite check while iterating (next-forge)
 yarn verify:forge             # CI parity before PR (check + test + build)
@@ -366,14 +214,4 @@ The pipeline runs on every push to `docs/inbox/` and ingests new entries into Su
 - Schema deploy order: `bun run db:push` (Prisma) before `bunx supabase db push` — SQL migration 001 expects Prisma tables.
 - Supabase CLI config lives at `next-forge/supabase/`; use `bunx supabase` from `next-forge/packages/database` with `--workdir ../.. --dns-resolver https` on Windows.
 - next-forge default ports: app 3100, web 3101, api 3102, docs 3104, storybook 6106 (avoids GenerativeUI 3000–3004 block).
-
-<!-- lean-ctx-compression -->
-OUTPUT STYLE: expert-terse
-- Telegraph format: subject-verb-object, drop articles/prepositions
-- Symbolic vocabulary: → cause, ∵ because, ∴ therefore, ⊕ add, ⊖ remove, Δ change, ≈ similar, ≠ different, ∈ in/member, ∅ empty/none, ✓ ok, ✗ fail
-- Code blocks: untouched (never compress code syntax)
-- Each line: max 80 chars
-- Zero narration, zero filler
-- BUDGET: ≤100 tokens per non-code response
-<!-- /lean-ctx-compression -->
->>>>>>> chore/adr-readme-pipeline
+- GitHub (`Ditto190/modme-ui-01`) is the canonical git remote; GitLab is an automated mirror for Duo/MCP/CI — see [`docs/repo-alignment.md`](docs/repo-alignment.md).

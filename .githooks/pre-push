@@ -1,0 +1,11 @@
+#!/bin/sh
+# Pre-push: repo alignment + optional full verify gate
+set -e
+
+if command -v powershell.exe >/dev/null 2>&1; then
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/repo-alignment-doctor.ps1 -Quiet
+else
+  node -e "const fs=require('fs');const p='AGENTS.md';if(fs.existsSync(p)&&(fs.readFileSync(p,'utf8').includes('<<<<<<<')||fs.readFileSync(p,'utf8').includes('>>>>>>>'))){console.error('repo-alignment: AGENTS.md conflict');process.exit(1)}"
+fi
+
+node scripts/pre-commit-checks.mjs --full

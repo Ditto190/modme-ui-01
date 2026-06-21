@@ -247,6 +247,17 @@ Mirror [UniversalWorkbench GIT_WORKFLOW](../GenerativeUI_monorepo/UniversalWorkb
 
 Main checkout is for review, merge, and release — not active feature development.
 
+## Repo alignment
+
+GitHub (`Ditto190/modme-ui-01`) is canonical; GitLab is an automated mirror. See [`docs/repo-alignment.md`](repo-alignment.md).
+
+```powershell
+yarn repo:doctor              # remotes, AGENTS.md, workspace.json validity
+yarn repo:doctor:fix          # regenerate minimal workspace.code-workspace
+```
+
+Open [`workspace.code-workspace`](../workspace.code-workspace) so IDE roots match `next-forge/` and `GenerativeUI_monorepo/`.
+
 ### Main checkout policy
 
 Agents and humans should **not** implement features in `Monorepo_ModMe/` (the main checkout). Use a worktree under `../Monorepo_ModMe-dev/` instead.

@@ -341,6 +341,8 @@ node scripts/validate-changelog.mjs --require-update   # after editing monitored
 yarn check:forge                            # fast lint (also runs on commit when next-forge/ staged)
 yarn fix:forge                              # auto-fix
 yarn verify:forge                           # CI parity: check + test + build
+yarn verify:generative                      # GenerativeUI CI parity: lint + test + build
+yarn repo:doctor                            # remote, workspace, AGENTS.md alignment
 ```
 
 Pre-commit runs automatically on `git commit` after hook install (`setup.ps1`, worktree bootstrap, and `new-agent-worktree.ps1` also install hooks). Staged `next-forge/**` changes trigger `ultracite check`; test/build run in CI only.
