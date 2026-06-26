@@ -43,6 +43,7 @@
     "db:push": "cd packages/database && bunx prisma format && bunx prisma generate && bunx prisma db push",
     "dev:core": "node scripts/with-forge-dev.mjs bunx turbo dev --filter=app --filter=web --filter=api",
     "dev:workshop": "node scripts/with-forge-dev.mjs bunx turbo dev --filter=docs --filter=storybook",
+    "env:verify": "node scripts/forge-env-verify.mjs",
     "clean": "git clean -xdf node_modules",
     "release": "npm publish"
   },

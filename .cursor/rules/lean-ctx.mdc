@@ -33,5 +33,10 @@ Use `ctx_overview` or `ctx_compose` first. Then `ctx_search`/`ctx_semantic_searc
 Read with `ctx_read(path, mode)`. Edit with native Edit or `ctx_edit`.
 Verify: `ctx_read(path, "diff")` + `lean-ctx -c "test cmd"`.
 
+## Multi-Agent & Knowledge Workflow
+- Enforce `ctx_session load` and `ctx_knowledge wakeup` at the start of tasks.
+- Enforce `ctx_agent diary` and `ctx_agent register` for multi-agent handoffs, explicitly separating project facts from session diaries.
+- Remind agents that high-confidence facts learned via `ctx_knowledge` must also be persisted in `AGENTS.md`.
+
 REMINDER: You MUST use lean-ctx tools. NEVER use native Read, Grep, or Shell directly.
 <!-- /lean-ctx -->

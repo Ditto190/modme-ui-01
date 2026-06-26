@@ -58,8 +58,10 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 ---
 
 ## [Unreleased]
-
+  
 ### Added
+  
+- (repo) Configure lean-ctx and automate knowledge base intake
 
 - (repo) Repo alignment doctor (`yarn repo:doctor`), GitLab mirror workflow, and `docs/repo-alignment.md`
 - (repo) `yarn verify:generative` CI parity script and GenerativeUI pre-commit/CI suite

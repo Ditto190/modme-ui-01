@@ -62,10 +62,17 @@ else {
 }
 
 # 8. Git pre-commit hook
-Write-Host "8/8 Installing git pre-commit hook..." -ForegroundColor Cyan
+Write-Host "8/9 Installing git pre-commit hook..." -ForegroundColor Cyan
 & "$WorktreeRoot/scripts/install-git-hooks.ps1"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+# 9. Session bootstrap (env + runtime)
+Write-Host "9/9 Session bootstrap (env + runtime)..." -ForegroundColor Cyan
+& "$WorktreeRoot/scripts/modme-session.ps1" -Phase session-start -RepoRoot $WorktreeRoot
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "   modme-session session-start reported issues (continuing)" -ForegroundColor DarkYellow
+}
+
 Write-Host ""
 Write-Host "Worktree setup complete." -ForegroundColor Green
-Write-Host "Source ports before dev: . .worktree-ports.env" -ForegroundColor Cyan
+Write-Host "New terminals use ModMe Dev profile (auto env). Manual: yarn session:start" -ForegroundColor Cyan

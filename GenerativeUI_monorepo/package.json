@@ -31,6 +31,7 @@
     "prepack": "yarn workspaces foreach --parallel --topological-dev run prepack",
     "prepublish": "yarn run eslint && yarn run test && yarn workspaces foreach --no-private --parallel --topological-dev run prepublish",
     "test": "monorepo-template-test",
+    "verify": "yarn run lint && yarn run test && yarn run build",
     "up": "monorepo-template-up",
     "agenttrace": "cd .. && .tools/agenttrace.exe",
     "quality": "bash ./quality/run_quality_playbook.sh",

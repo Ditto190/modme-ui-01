@@ -18,6 +18,18 @@
     "HTTPS_PROXY": null
   },
   "terminal.integrated.profiles.windows": {
+    "ModMe Dev": {
+      "path": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.2.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+      "args": [
+        "-NoLogo",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-NoExit",
+        "-File",
+        "${workspaceFolder}/scripts/modme-terminal.ps1"
+      ],
+      "icon": "terminal-powershell"
+    },
     "PowerShell 7": {
       "path": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.2.0_x64__8wekyb3d8bbwe\\pwsh.exe",
       "args": [
@@ -38,13 +50,19 @@
       "icon": "terminal-powershell"
     }
   },
-  "terminal.integrated.defaultProfile.windows": "PowerShell 7",
+  "terminal.integrated.defaultProfile.windows": "ModMe Dev",
+  "terminal.integrated.shellIntegration.enabled": true,
   "terminal.integrated.rightClickBehavior": "default",
   "debug.focusWindowOnBreak": false,
   "debug.focusEditorOnBreak": false,
   "files.autoSave": "afterDelay",
   "editor.formatOnSave": true,
-  "workbench.colorTheme": "Cursor Dark",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "workbench.colorTheme": "Default Dark Modern",
   "terminal.integrated.gpuAcceleration": "off",
   "explorer.autoReveal": true,
   "explorer.confirmDelete": false

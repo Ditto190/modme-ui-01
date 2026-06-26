@@ -15,7 +15,12 @@ export const InboxEntryTypeSchema = z.enum([
   "component",
 ]);
 
-export const InboxSeveritySchema = z.enum(["low", "medium", "high", "critical"]);
+export const InboxSeveritySchema = z.enum([
+  "low",
+  "medium",
+  "high",
+  "critical",
+]);
 
 export const InboxAgentRoleSchema = z.enum([
   "frontend",

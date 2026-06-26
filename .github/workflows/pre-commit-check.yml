@@ -37,3 +37,12 @@ jobs:
           GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
           GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/pre-commit-checks.mjs --ci
+
+      - name: Upload preflight report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preflight-report-pre-commit
+          path: docs/devops/reports/preflight-latest.json
+          retention-days: 14
+          if-no-files-found: warn

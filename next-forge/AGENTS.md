@@ -87,6 +87,26 @@ Frontend workshops connected to a backend factory — Turborepo for ModMe apps, 
 
 - Use Bun only in this tree (npx bun). Never yarn install here. Respect @repo/* workspace boundaries. Do not add workspace:* deps to GenerativeUI_monorepo.
 
+## Environment bootstrap
+
+ModMe uses a **single root `.env`** synced into forge targets. From repo root:
+
+```bash
+yarn setup:env          # root .env -> database/.env, apps/*/.env.local
+yarn session:start      # sync + write .vscode/.env.runtime for debug/tasks
+yarn session:verify     # validate required keys
+```
+
+From `next-forge/`:
+
+```bash
+bun run env:verify      # DATABASE_URL, Supabase keys after bootstrap
+```
+
+Dev commands run via `scripts/with-forge-dev.mjs`, which loads the same env stack as PowerShell (`scripts/lib/load-modme-env.mjs`). Turbo invalidates caches when `../.env` or `packages/database/.env` change (`turbo.json` globalDependencies).
+
+Worktree port offsets: root `.worktree-ports.env` overrides `FORGE_*_PORT` and public URLs.
+
 ## Guardrails
 
 - Never commit secrets, API keys, or credentials. If you spot one in a diff, stop and flag it.

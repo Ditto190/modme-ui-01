@@ -29,6 +29,8 @@ npx supabase db push
 
 Copy `apps/app/.env.example` → `apps/app/.env.local` and set Supabase publishable key from the [dashboard](https://supabase.com/dashboard/project/aevemmmmouxqlfyxthzf/settings/api).
 
+**Or** from repo root: fill root `.env` and run `yarn setup:env` (see [ADR-0010](./docs/adr/0010-gh-aw-copilot-secrets-and-root-env-sync.md)).
+
 Supabase client: `@repo/supabase` (`createBrowserSupabaseClient`, `createServerSupabaseClient`).
 
 Also configure (if not already):

@@ -379,3 +379,11 @@ Toolsets support:
 ---
 
 For help with Claude Code features, see `/help` or report issues at <https://github.com/anthropics/claude-code/issues>
+
+<genkit_prompts hash="5b57dd6d">
+<!-- Genkit Context - Auto-generated, do not edit -->
+
+Genkit Framework Instructions:
+ - @./GENKIT.md
+
+</genkit_prompts>

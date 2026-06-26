@@ -111,3 +111,55 @@ model OutputArtefact {
 
   @@map("output_artefacts")
 }
+
+model CatalogueItem {
+  id                  String                        @id @default(uuid())
+  itemType            String                        @map("item_type")
+  slug                String                        @unique
+  name                String
+  description         String?
+  taxonomyCode        String?                       @map("taxonomy_code")
+  status              String                        @default("draft")
+  sourceEntryId       String?                       @map("source_entry_id")
+  outputSchemaId      String?                       @map("output_schema_id")
+  metadata            Json                          @default("{}")
+  popularityScore     Float?                        @map("popularity_score")
+  publishedAt         DateTime?                     @map("published_at")
+  createdAt           DateTime                      @default(now()) @map("created_at")
+  updatedAt           DateTime                      @updatedAt @map("updated_at")
+  popularitySnapshots CataloguePopularitySnapshot[]
+  evalScores          EvalCatalogueScore[]
+
+  @@index([itemType, status])
+  @@map("catalogue_items")
+}
+
+model CataloguePopularitySnapshot {
+  id              String        @id @default(uuid())
+  catalogueItemId String        @map("catalogue_item_id")
+  timeframe       String        @default("30d")
+  compositeScore  Float?        @map("composite_score")
+  metrics         Json          @default("{}")
+  capturedAt      DateTime      @default(now()) @map("captured_at")
+  catalogueItem   CatalogueItem @relation(fields: [catalogueItemId], references: [id], onDelete: Cascade)
+
+  @@map("catalogue_popularity_snapshots")
+}
+
+model EvalCatalogueScore {
+  id              String         @id @default(uuid())
+  catalogueItemId String?        @map("catalogue_item_id")
+  externalId      String?        @map("external_id")
+  timeframe       String         @default("30d")
+  behavioralScore Float?         @map("behavioral_score")
+  evalPassRate    Float?         @map("eval_pass_rate")
+  localUsage      Float?         @map("local_usage")
+  compositeScore  Float?         @map("composite_score")
+  metrics         Json           @default("{}")
+  capturedAt      DateTime       @default(now()) @map("captured_at")
+  catalogueItem   CatalogueItem? @relation(fields: [catalogueItemId], references: [id], onDelete: SetNull)
+
+  @@index([externalId, capturedAt(sort: Desc)])
+  @@map("eval_catalogue_scores")
+}
+

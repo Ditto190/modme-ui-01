@@ -1,6 +1,8 @@
 # GitHub Agentic Workflows (gh-aw) — ModMe setup
 
-This repo is initialized for [GitHub Agentic Workflows](https://github.github.com/gh-aw/) at **gh-aw v0.71.5**.
+This repo is initialized for [GitHub Agentic Workflows](https://github.github.com/gh-aw/). Local CLI: **gh-aw v0.79.8+** (avoid 0.68.4–0.71.3 — billing bug per upstream).
+
+**Architecture decision**: [ADR-0010 — Copilot secrets & root `.env` sync](../next-forge/docs/adr/0010-gh-aw-copilot-secrets-and-root-env-sync.md)
 
 ## What was installed
 
@@ -17,15 +19,44 @@ This repo is initialized for [GitHub Agentic Workflows](https://github.github.co
 | `.github/workflows/workflow-health.md` | **Workflow** — weekly compilation + run health |
 | `.github/mcp.json` | `github-agentic-workflows` MCP server (`gh aw mcp-server`) |
 
+## Copilot engine secret (required)
+
+Agentic workflows use `engine: copilot`. Set **`COPILOT_GITHUB_TOKEN`** on the repo (fine-grained PAT with **Copilot Requests: Read**).
+
+From root `.env` (maps `COPILOT_GITHUB_TOKEN`, `GITHUB_PAT`, or `GITHUB_PERSONAL_ACCESS_TOKEN`):
+
+```powershell
+# Add token to root .env first, then:
+.\scripts\setup-gh-aw-secrets.ps1
+# or: yarn setup:gh-aw
+```
+
+Manual: [gh-aw quick start — COPILOT_GITHUB_TOKEN](https://github.com/github/gh-aw/blob/main/docs/src/content/docs/setup/quick-start.mdx)
+
+### Windows note
+
+`gh aw compile` / `gh aw status` may hang in native PowerShell. Use WSL or rely on GitHub Actions:
+
+```bash
+wsl bash -lc 'cd /mnt/c/Users/dylan/Monorepo_ModMe && gh aw compile --validate'
+```
+
 ## CLI (local)
 
 ```powershell
-gh extension install github/gh-aw --pin v0.71.5
+gh extension install github/gh-aw
 gh aw version
 gh aw init          # already run once
 gh aw compile --validate
 gh aw run create-agentic-workflow-builder
 gh aw logs workflow-health
+```
+
+## Full dev setup (env + gh-aw + next-forge)
+
+```powershell
+Copy-Item .env.example .env   # fill Supabase + PAT values
+yarn setup:modme              # sync dotenv + set secret + forge check
 ```
 
 ## Refresh vendored prompts
