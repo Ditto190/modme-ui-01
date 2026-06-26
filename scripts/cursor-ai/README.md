@@ -39,8 +39,12 @@ Curated install set includes browser QA, port-conflict detection, cursor rules/h
 | `skills-sh` | `.cursor/mcp.json` (stdio) | None |
 | `buildkite` | `.cursor/mcp.json` (remote `https://mcp.buildkite.com/mcp`) | OAuth on first connect — no `BUILDKITE_API_TOKEN` in repo |
 | `mantine` | `.cursor/mcp.json`, `.vscode/mcp.json`, `.github/mcp.json` | Mantine docs/components (`list_items`, `get_item_doc`, `get_item_props`, `search_docs`) |
+| GitKraken (gk CLI) | `~/.cursor/mcp.json` | `gk mcp install cursor` — see `yarn gitkraken:setup` |
+| GitKraken (GitLens) | Cursor extension MCP | Install `eamodio.gitlens` — `extension-GitKraken` tools |
 
-After editing `.cursor/mcp.json`, restart Cursor. First Buildkite use: authorize in browser and pick your organization. Details: `docs/agent-tech-guide.md` § Buildkite MCP.
+After editing `.cursor/mcp.json`, restart Cursor.
+
+**GitKraken:** `yarn gitkraken:setup` — doctor, workspace `modme-ui`, MCP reinstall. Guide: `docs/gitkraken-cli-setup.md`. First Buildkite use: authorize in browser and pick your organization. Details: `docs/agent-tech-guide.md` § Buildkite MCP.
 
 ## Generate new MDC rules (sanjeed5 generator)
 

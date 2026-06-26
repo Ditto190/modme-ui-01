@@ -63,7 +63,7 @@
       "enabled": true
     },
     "teaching": {
-      "enabled": true
+      "enabled": false
     },
     "continual-learning": {
       "enabled": false
@@ -116,9 +116,6 @@
     "context7-plugin": {
       "enabled": true
     },
-    "claude-code-plugins/learning-output-style": {
-      "enabled": true
-    },
     "claude-plugins-official/feature-dev": {
       "enabled": true
     },
@@ -140,5 +137,9 @@
     "claude-plugins-official/agent-sdk-dev": {
       "enabled": true
     }
+  },
+  "rust-analyzer.server.path": "${env:USERPROFILE}\\.cargo\\bin\\lspmux.exe",
+  "rust-analyzer.server.extraEnv": {
+    "LSPMUX_SERVER": "${env:USERPROFILE}\\.cargo\\bin\\rust-analyzer.exe"
   }
 }

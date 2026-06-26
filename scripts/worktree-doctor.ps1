@@ -187,6 +187,29 @@ else {
   Add-Check 'supabase_cli' 'warn' 'No next-forge/supabase/config.toml at expected path' ''
 }
 
+# lspmux (optional shared LSP daemon — probe via status.ps1)
+$lspmuxStatusScript = Join-Path $PSScriptRoot 'lspmux\status.ps1'
+if (Test-Path $lspmuxStatusScript) {
+  try {
+    $lspmuxJsonText = & pwsh -NoProfile -File $lspmuxStatusScript -Json 2>$null
+    $lspmuxJson = $lspmuxJsonText | ConvertFrom-Json
+    if (-not $lspmuxJson.installed) {
+      Add-Check 'lspmux' 'warn' 'lspmux not installed (optional Rust LSP multiplexer)' `
+        '.\scripts\lspmux\install.ps1  # see docs/lspmux-setup.md'
+    }
+    elseif (-not $lspmuxJson.daemon_ok) {
+      Add-Check 'lspmux' 'warn' 'lspmux installed but daemon not reachable' `
+        '.\scripts\lspmux\start-daemon.ps1'
+    }
+    else {
+      Add-Check 'lspmux' 'ok' 'lspmux daemon reachable' ''
+    }
+  }
+  catch {
+    Add-Check 'lspmux' 'warn' 'Could not probe lspmux status' '.\scripts\lspmux\status.ps1'
+  }
+}
+
 # Package manager scope
 if ($repo -match 'next-forge\\packages\\|next-forge/packages/') {
   Add-Check 'cwd' 'error' 'Run repo-root scripts from Monorepo_ModMe root, not next-forge/packages/*' `

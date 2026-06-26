@@ -1,18 +1,32 @@
 {
   "version": 1,
   "hooks": {
+    "sessionStart": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File .cursor/hooks/session-bootstrap.ps1",
+        "failClosed": false,
+        "timeoutSec": 5
+      }
+    ],
     "afterFileEdit": [
       {
-        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/lean-ctx-post-edit.ps1",
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File .cursor/hooks/lean-ctx-post-edit.ps1",
         "failClosed": false,
         "timeoutSec": 3
       }
     ],
     "stop": [
       {
-        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/lean-ctx-stop-marker.ps1",
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File .cursor/hooks/session-capture.ps1",
         "failClosed": false,
-        "timeoutSec": 3
+        "timeoutSec": 8
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File .cursor/hooks/session-capture.ps1 -Phase end",
+        "failClosed": false,
+        "timeoutSec": 5
       }
     ]
   }

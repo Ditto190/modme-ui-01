@@ -24,6 +24,10 @@ const RESUME_PATH = join(ROOT, "reports", "agent-eval", "resume.json");
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes("--dry-run");
 const SINCE = args.find((a) => a.startsWith("--since="))?.split("=")[1] ?? "7d";
+const AGENTTRACE_PATH = args.find((a) => a.startsWith("--agenttrace="))?.split("=")[1];
+const EVENTS_LOG = join(LOGS_DIR, "events.log");
+const MARKERS_PATH = join(ROOT, ".cursor", "hooks", "state", "lean-ctx-session-markers.jsonl");
+const TRACE_STATE = join(ROOT, ".cursor", "hooks", "state", "agenttrace-latest.json");
 
 function fail(code, message, suggestion) {
   process.stderr.write(
@@ -59,6 +63,40 @@ function filterSince(entries, days) {
     const ts = Date.parse(e.timestamp ?? "");
     return !Number.isNaN(ts) && ts >= cutoff;
   });
+}
+
+function loadAgenttraceSnapshot(path) {
+  const resolved = path ?? (existsSync(TRACE_STATE) ? TRACE_STATE : null);
+  if (!resolved || !existsSync(resolved)) return null;
+  try {
+    return JSON.parse(readFileSync(resolved, "utf8"));
+  } catch {
+    return { raw: readFileSync(resolved, "utf8").slice(0, 4000) };
+  }
+}
+
+function loadHookMarkers() {
+  return readJsonLines(MARKERS_PATH);
+}
+
+function clusterPromptThemes(prompts) {
+  /** Lightweight keyword buckets — Phase 5 defers Gemma3n batch embeddings to nightly jobs. */
+  const buckets = new Map();
+  for (const p of prompts) {
+    const msg = (p.message ?? "").toLowerCase();
+    const keys = [];
+    if (/hook|lean-ctx|session/i.test(msg)) keys.push("observability");
+    if (/supabase|prisma|database/i.test(msg)) keys.push("data");
+    if (/worktree|git|branch/i.test(msg)) keys.push("git-workflow");
+    if (/test|verify|ci/i.test(msg)) keys.push("quality");
+    if (keys.length === 0) keys.push("general");
+    for (const k of keys) {
+      buckets.set(k, (buckets.get(k) ?? 0) + 1);
+    }
+  }
+  return [...buckets.entries()]
+    .map(([id, count]) => ({ id, count, method: "keyword-cluster" }))
+    .sort((a, b) => b.count - a.count);
 }
 
 function loadThemes() {
@@ -188,6 +226,10 @@ function main() {
   const sinceDays = parseSinceDays(SINCE);
   const sessions = filterSince(readJsonLines(SESSION_LOG), sinceDays);
   const prompts = filterSince(readJsonLines(PROMPTS_LOG), sinceDays);
+  const events = filterSince(readJsonLines(EVENTS_LOG), sinceDays);
+  const markers = loadHookMarkers();
+  const agenttrace = loadAgenttraceSnapshot(AGENTTRACE_PATH);
+  const promptClusters = clusterPromptThemes(prompts);
   const { themes: themeDefs } = loadThemes();
 
   const signals = inferSignals(sessions, prompts, themeDefs);
@@ -199,6 +241,10 @@ function main() {
     windowDays: sinceDays,
     sessions: sessions.length,
     prompts: prompts.length,
+    events: events.length,
+    markers: markers.length,
+    promptClusters,
+    agenttrace: agenttrace ? { present: true } : { present: false },
     signals,
     themes: themeGroups,
     totalSignals: signals.length,

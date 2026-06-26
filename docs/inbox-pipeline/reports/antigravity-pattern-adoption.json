@@ -1,0 +1,66 @@
+{
+  "report_id": "antigravity-pattern-adoption",
+  "generated_at": "2026-06-21T00:00:00Z",
+  "status": "complete",
+  "prd_hook": {
+    "path": "docs/PRD.yaml",
+    "feature": "antigravity-hybrid-skills",
+    "version": "1.1.0"
+  },
+  "summary": {
+    "pipeline_layers": 5,
+    "skills_indexed": 41,
+    "loader_tests_pass": 7,
+    "loader_tests_skip": 1
+  },
+  "layers": [
+    {
+      "name": "sources",
+      "path": "GenerativeUI_monorepo/docs/inbox/",
+      "role": "raw capture"
+    },
+    {
+      "name": "staging",
+      "path": "scripts/lib/category-scorer.mjs",
+      "role": "weighted scoring"
+    },
+    {
+      "name": "intermediate",
+      "path": "scripts/mda-categorize.mjs",
+      "role": "taxonomy + relations"
+    },
+    {
+      "name": "manifest",
+      "path": "skills_index.json",
+      "role": "discovery manifest"
+    },
+    {
+      "name": "marts",
+      "path": "catalogue_items",
+      "role": "published registry"
+    },
+    {
+      "name": "runtime",
+      "path": "next-forge/packages/database/skill-loader.ts",
+      "role": "lazy @skill-id load"
+    }
+  ],
+  "verification": [
+    {
+      "check": "skills:index",
+      "command": "yarn skills:index"
+    },
+    {
+      "check": "loader tests",
+      "command": "cd next-forge/packages/database && bun test skill-loader"
+    },
+    {
+      "check": "intake orchestrator",
+      "command": "yarn intake:orchestrate"
+    },
+    {
+      "check": "docs writer",
+      "command": "yarn docs:writer:check"
+    }
+  ]
+}

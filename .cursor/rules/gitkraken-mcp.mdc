@@ -1,0 +1,47 @@
+---
+description: Prefer GitKraken MCP and gk CLI for git, PR, and issue workflows in Cursor
+alwaysApply: true
+---
+
+# GitKraken MCP (Cursor)
+
+Use **GitKraken MCP** for git status, branches, PRs, issues, and Launchpad when available.
+
+## MCP servers (two sources — both valid)
+
+| Source | Server id | Best for |
+|--------|-----------|----------|
+| GitLens extension | `user-eamodio.gitlens-extension-GitKraken` | Launchpad, graph, PR/issue UI, workspace list |
+| gk CLI | `GitKraken` in `~/.cursor/mcp.json` | Same surface via `gk mcp --host=cursor` |
+
+Prefer **GitLens extension** tools when both are enabled. Fall back to `gh` only if MCP is unavailable.
+
+## Repo context
+
+- **Workspace:** `modme-ui`
+- **Repo:** `modme-ui-01` → `c:\Users\dylan\Monorepo_ModMe`
+- **Canonical remote:** GitHub `Ditto190/modme-ui-01`; GitLab mirror optional
+
+## Agent prompts that map to MCP tools
+
+| User intent | Tool |
+|-------------|------|
+| What needs my attention? | `gitlens_launchpad` (pass repo `directory`) |
+| Git status / diff / log | `git_status`, `git_log_or_diff` |
+| Open PRs assigned to me | `pull_request_assigned_to_me` (`provider: github`) |
+| Create or review PR | `pull_request_create`, `pull_request_create_review` |
+| Issues assigned to me | `issues_assigned_to_me` |
+| List workspaces | `gitkraken_workspace_list` |
+
+Always pass `directory` as the absolute repo path (main checkout or active worktree).
+
+## CLI (terminal)
+
+```powershell
+.\scripts\gitkraken\setup-cursor.ps1   # doctor + MCP install
+gk ai commit                           # AI commit message
+gk pr list                             # PRs in workspace
+gk graph                               # terminal commit graph
+```
+
+Setup guide: `docs/gitkraken-cli-setup.md`

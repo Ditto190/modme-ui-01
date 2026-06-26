@@ -191,26 +191,46 @@ Seed these via `ctx_knowledge` `remember` (or confirm with `recall`):
 
 ---
 
-## 7. Cursor hooks (opt-in)
+## 7. Cursor hooks (two-layer stack)
 
-**Project policy:** `.cursor/hooks.json` is **empty by default**. Previous hooks with `failClosed: true` stole focus and blocked agents. See `.cursor/hooks/README.md`.
+### Global (`~/.cursor/hooks.json`)
 
-**Safe pattern:** advisory hooks only — always `exit 0`, no `failClosed`, timeout ≤ 5s.
+Always-on **compression telemetry** — lean-ctx `hook observe` on session/tool events; `hook rewrite` (Shell) and `hook redirect` (Read|Grep). Never blocks agents (`failClosed: false`, `timeoutSec: 5`).
 
-Example opt-in config: [`.cursor/hooks.json.example`](../.cursor/hooks.json.example)
+### Project (`.cursor/hooks.json`)
 
-Suggested hooks (enable manually):
+**Advisory session observability** — replaces teaching/learning SessionStart injection:
 
 | Event | Purpose | Script |
 |-------|---------|--------|
-| `afterFileEdit` | Remind verify command for next-forge TS | `lean-ctx-post-edit.ps1` |
-| `stop` | Append session marker for memory pipelines | `lean-ctx-stop-marker.ps1` |
+| `sessionStart` | session-logger start + `ctx_session load` hint | `session-bootstrap.ps1` |
+| `afterFileEdit` | next-forge verify hint | `lean-ctx-post-edit.ps1` |
+| `stop` / `sessionEnd` | session-logger end + marker + offline docs stub | `session-capture.ps1` |
 
-Do **not** re-enable stop hooks that rewrite skills or open browsers without explicit opt-in.
+All scripts use `-WindowStyle Hidden` PowerShell wrappers. See [`.cursor/hooks/README.md`](../.cursor/hooks/README.md).
+
+**Teaching replacement (MCP, not hooks):**
+
+| Cheat sheet phase | Action |
+|-------------------|--------|
+| BEFORE START | `ctx_session load` + `ctx_knowledge wakeup` + `ctx_agent register` |
+| WHILE CODING | Global observe/redirect/rewrite (automatic) |
+| AFTER CODING | `ctx_session finding` / `decision` on meaningful changes; `save` + `consolidate` at stop |
+| MULTI-AGENT | `ctx_agent post` / `read` / `sync` in worktrees |
+
+Offline: `yarn eval:collect` themes from `logs/copilot/`; `yarn session:docs` inbox/CHANGELOG preview.
+
+### Config sync (power + max)
+
+```powershell
+.\scripts\lean-ctx\sync-config.ps1 -InitGlobal
+```
+
+Sets `tool_profile = "power"` and `[proxy] compression_level = "max"` in `~/.config/lean-ctx/config.toml`.
 
 ### Antigravity / Copilot tool hooks
 
-This repo also ships [`.github/hooks/hooks.json`](../.github/hooks/hooks.json) with lean-ctx `hook rewrite`, `hook redirect`, `hook observe` on pre/post tool use — separate from Cursor project hooks.
+[`.github/hooks/hooks.json`](../.github/hooks/hooks.json) — lean-ctx rewrite/redirect/observe for Copilot (separate from Cursor project hooks).
 
 ---
 
@@ -249,4 +269,4 @@ After significant decisions: `ctx_knowledge remember` + inbox note + ADR when ap
 - Repo rule: `.cursor/rules/lean-ctx.mdc`
 - Agent tech guide: [docs/agent-tech-guide.md](./agent-tech-guide.md) §2
 
-**Last updated:** 2026-06-20
+**Last updated:** 2026-06-21

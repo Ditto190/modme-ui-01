@@ -155,6 +155,18 @@ if (-not (Test-Path ".env")) {
     Print-Success ".env file already exists"
 }
 
+# Optional: shared LSP multiplexer (rust-analyzer across Cursor + VS Code windows)
+Write-Host ""
+Write-Host "🔧 Optional: lspmux (shared rust-analyzer daemon)..."
+if (Test-Path (Join-Path $scriptPath "lspmux\install.ps1")) {
+    Print-Warning "Not installed by default. For multi-window Rust LSP sharing:"
+    Write-Host "  .\scripts\lspmux\install.ps1"
+    Write-Host "  .\scripts\lspmux\start-daemon.ps1"
+    Write-Host "  See docs/lspmux-setup.md"
+} else {
+    Print-Warning "scripts/lspmux/ not found — skip lspmux setup"
+}
+
 # Final instructions
 Write-Host ""
 Write-Host "==============================" -ForegroundColor Cyan
@@ -164,10 +176,15 @@ Write-Host "📝 Next steps:"
 Write-Host "  1. Update .env with your API keys (especially GOOGLE_API_KEY)"
 Write-Host "     Get your Google API key from: https://makersuite.google.com/app/apikey"
 Write-Host ""
-Write-Host "  2. Start the development servers:"
+Write-Host "  2. (Optional) Shared LSP for Rust — saves RAM with Cursor + VS Code:"
+Write-Host "     .\scripts\lspmux\install.ps1"
+Write-Host "     .\scripts\lspmux\start-daemon.ps1"
+Write-Host "     See docs/lspmux-setup.md"
+Write-Host ""
+Write-Host "  3. Start the development servers:"
 Write-Host "     npm run dev"
 Write-Host ""
-Write-Host "  3. Access the application:"
+Write-Host "  4. Access the application:"
 Write-Host "     UI:    http://localhost:3000"
 Write-Host "     Agent: http://localhost:8000"
 Write-Host ""

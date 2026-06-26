@@ -84,7 +84,7 @@ Setup steps (automatic):
 2. `corepack enable`
 3. `yarn install` in `GenerativeUI_monorepo/`
 4. `npx bun install` in `next-forge/`
-5. Copy `.env` files from `ROOT_WORKTREE_PATH` (main checkout)
+5. Copy `.env` files and lspmux editor settings from `ROOT_WORKTREE_PATH` (main checkout)
 6. `poetry install` in `apps/agent-server/`
 7. Optional `lean-ctx doctor` (non-fatal)
 8. Git pre-commit hook install (`scripts/install-git-hooks.ps1`)
@@ -159,8 +159,11 @@ Open the generated folder in Claude Code.
 | `AGENT_SERVER_PORT` | 8000 | + slot × 10 |
 | `EXAMPLE_NEXT_PORT` | 3002 | + slot × 10 |
 | `EXAMPLE_REACT_PORT` | 3003 | + slot × 10 |
+| `LSPMUX_CONNECT` | `127.0.0.1:27631` | fixed (host lspmux daemon) |
 
 Example (slot 3): dashboard `3031`, agent server `8030`.
+
+`LSPMUX_CONNECT` points every worktree at the **same machine-local lspmux daemon**. Language-server instances are still **per worktree path** (see [LSP multiplexing](#lsp-multiplexing-lspmux) below).
 
 ### Loading ports before dev
 
@@ -200,7 +203,7 @@ Main checkout debugging uses [`.vscode/launch.json`](../.vscode/launch.json) bas
 | [`list-worktrees.ps1`](../scripts/list-worktrees.ps1) | List worktrees with assigned ports |
 | [`remove-agent-worktree.ps1`](../scripts/remove-agent-worktree.ps1) | Safe removal; optional `-DeleteBranch` |
 | [`worktree-allocate-ports.ps1`](../scripts/worktree-allocate-ports.ps1) | Regenerate `.worktree-ports.env` |
-| [`worktree-copy-env.ps1`](../scripts/worktree-copy-env.ps1) | Copy `.env` by name from main checkout |
+| [`worktree-copy-env.ps1`](../scripts/worktree-copy-env.ps1) | Copy `.env` by name from main checkout; merge lspmux editor settings |
 | [`ensure-worktree.ps1`](../scripts/ensure-worktree.ps1) | Fail (or warn with `-WarnOnly`) if cwd is main checkout |
 | [`migrate-main-to-worktree.ps1`](../scripts/migrate-main-to-worktree.ps1) | Stash main-checkout changes → new worktree → stash pop |
 | [`worktree-doctor.ps1`](../scripts/worktree-doctor.ps1) | Pre-flight: checkout, yarn.lock, ports, gh, Supabase env (`-Fix`, `-Json`) |
@@ -347,16 +350,57 @@ Windows pwsh: use `worktree-doctor` + `list-worktrees.ps1` instead (tmux optiona
 
 ---
 
+## LSP multiplexing (lspmux)
+
+Worktrees share **one lspmux daemon per machine**, not one language-server process for all folders.
+
+| Layer | Scope | Notes |
+|-------|-------|-------|
+| **lspmux daemon** | One per machine (login session) | Listens on `127.0.0.1:27631`; started outside worktrees — see [`docs/lspmux-setup.md`](./lspmux-setup.md) |
+| **Language-server instance** | One per unique workspace path | Each worktree path gets its own rust-analyzer (or other) instance behind the daemon |
+| **Editor clients** | Per IDE window | Cursor + VS Code on the **same checkout** share one instance; different worktrees do **not** |
+
+This is **correct behavior**, not a bug. lspmux keys instances on `(workspaceFolders, environment)`. Worktrees live at different paths and often different branch contents — sharing one LSP instance across them would produce **wrong diagnostics**.
+
+### What worktree bootstrap does
+
+[`scripts/worktree-copy-env.ps1`](../scripts/worktree-copy-env.ps1) (called from `new-agent-worktree.ps1` and Cursor setup):
+
+1. Copies `rust-analyzer.server.path` / `rust-analyzer.server.extraEnv` from the main checkout [`.vscode/settings.json`](../.vscode/settings.json) when present, otherwise applies repo defaults (`lspmux` shim → `rust-analyzer`).
+2. Leaves unrelated editor settings untouched.
+
+[`scripts/worktree-allocate-ports.ps1`](../scripts/worktree-allocate-ports.ps1) writes `LSPMUX_CONNECT=127.0.0.1:27631` into `.worktree-ports.env`. Load it with [`. .\scripts/load-worktree-ports.ps1`](../scripts/load-worktree-ports.ps1) so terminals and tools can reach the daemon.
+
+### Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| No Rust diagnostics in a worktree | Confirm daemon: `.\scripts\lspmux\status.ps1` or `yarn lspmux:status` |
+| Stale diagnostics after branch switch or large refactor | `lspmux reload <workspace-path>` for that worktree folder |
+| Multiple RA processes on **same** checkout | Check `pass_environment` in lspmux config — see [`docs/lspmux-setup.md`](./lspmux-setup.md) |
+| Worktree shows wrong types from another branch | Expected if instances were incorrectly shared — each worktree must keep its own instance; reload after switching worktrees |
+| Daemon not running | `yarn lspmux:start` or `.\scripts\lspmux\start-daemon.ps1`; `yarn worktree:doctor` warns when unreachable |
+
+Do **not** expect lspmux to share LSP state across worktrees. For cross-branch semantic search, use the inbox-pipeline / agent tooling instead of IDE LSP.
+
+---
+
 ## IDE settings
 
-[`.vscode/settings.json`](../.vscode/settings.json):
+[`.vscode/settings.json`](../.vscode/settings.json) includes worktree and LSP baseline settings:
 
 ```json
 {
   "cursor.worktreeMaxCount": 25,
-  "cursor.worktreeCleanupIntervalHours": 6
+  "cursor.worktreeCleanupIntervalHours": 6,
+  "rust-analyzer.server.path": "${env:USERPROFILE}\\.cargo\\bin\\lspmux.exe",
+  "rust-analyzer.server.extraEnv": {
+    "LSPMUX_SERVER": "${env:USERPROFILE}\\.cargo\\bin\\rust-analyzer.exe"
+  }
 }
 ```
+
+New worktrees receive the lspmux-related keys via `worktree-copy-env.ps1`. Install and daemon setup: [`docs/lspmux-setup.md`](./lspmux-setup.md).
 
 Agent terminals should respect `.worktree-ports.env` when starting dev servers.
 
@@ -393,6 +437,7 @@ For multi-agent review of audit/report artifacts, see [Cursor canvas sharing](ht
 
 ## Related docs
 
+- [`docs/lspmux-setup.md`](./lspmux-setup.md) — shared LSP multiplexer (Cursor + VS Code)
 - [`AGENTS.md`](../AGENTS.md) — agent quick-start
 - [`docs/agent-tech-guide.md`](./agent-tech-guide.md) — section 11
 - [`.cursor/rules/multi-agent-worktrees.mdc`](../.cursor/rules/multi-agent-worktrees.mdc) — always-on rule

@@ -1,0 +1,12 @@
+{
+  "generated_at": "2026-06-21T00:36:55.242Z",
+  "source": "documentation-writer-check",
+  "status": "PASS",
+  "summary": {
+    "errors": 0,
+    "warnings": 0,
+    "skill_files": 42
+  },
+  "findings": [],
+  "prd_hook": "docs/PRD.yaml"
+}

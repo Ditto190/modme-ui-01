@@ -6,4 +6,9 @@
 !.vendor/**/*
 .vendor/**/node_modules/
 .vendor/**/node_modules/**
-# (Repeat for other bloat folders if necessary)
+
+# Ignore local skills directories to prevent search/indexing bloat
+.agents/skills/
+.agents/temp_skills/
+.cursor/skills/
+.vendor/**/skills/

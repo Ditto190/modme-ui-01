@@ -1,0 +1,79 @@
+prd_id: modme-monorepo
+version: "1.1.0"
+user_stories:
+  - as_a: platform engineer
+    i_want: hybrid skill manifest and lazy @skill-id loading
+    so_that: agents discover curated skills without loading full bodies at startup
+  - as_a: documentation maintainer
+    i_want: PRD-linked implementation reports and Diátaxis doc triggers
+    so_that: pipeline changes stay traceable from product intent to verification
+scope:
+  in_scope:
+    - Antigravity manifest + mirror (skills_index.json, data/skills_index.json)
+    - Weighted category scorer shared by MDA and skills index generator
+    - Hybrid skill resolver (project .agents/skills, global ~/.cursor/skills)
+    - ADR-0010 catalogue_items bridge and /api/catalogue registry API
+    - VoltAgent prepareModelMessages runtime hook
+    - documentation-writer skill restore + CI trigger workflow
+  out_of_scope:
+    - Vendoring full antigravity 1,678-skill corpus into monorepo
+    - Replacing ModMe inbox taxonomy with antigravity generic categories
+    - UniversalWorkbench copies
+acceptance_criteria:
+  - criterion: yarn skills:index emits validated manifest from .agents/skills
+    verification: node scripts/skills-index-generate.mjs exits 0
+  - criterion: skill-loader rejects path traversal and caps skills per turn
+    verification: bun test skill-loader in next-forge/packages/database
+  - criterion: intake orchestrator runs skills index, output-generate, catalogue-sync
+    verification: scripts/intake-orchestrator.mjs includes three steps after MDA
+  - criterion: GET /api/catalogue queries catalogue_items with list|popular|search
+    verification: next-forge/apps/api/app/catalogue/route.ts uses CatalogueListQuerySchema
+  - criterion: documentation-writer skill present and CI workflow triggers on doc paths
+    verification: .agents/skills/documentation-writer/SKILL.md and .github/workflows/documentation-writer.yml exist
+needs_clarification: []
+features:
+  - name: antigravity-hybrid-skills
+    overview: Manifest-first discovery, weighted categorization, lazy loader, catalogue registry
+    status: complete
+  - name: documentation-writer-ci
+    overview: Diátaxis documentation agent restore + path-triggered quality workflow
+    status: complete
+state_machines:
+  - name: skills-pipeline
+    states: [capture, categorize, manifest, registry, runtime]
+    transitions:
+      - from: capture
+        to: categorize
+        trigger: inbox-ingest + mda-categorize
+      - from: categorize
+        to: manifest
+        trigger: yarn skills:index
+      - from: manifest
+        to: registry
+        trigger: catalogue-sync after output-generate
+      - from: registry
+        to: runtime
+        trigger: prepareModelMessages on @skill-id reference
+errors:
+  - code: ERR_SKILLS_OVERFLOW
+    message: Too many @skill-id references in a single agent turn
+  - code: ERR_SKILLS_PATH_ESCAPE
+    message: Skill manifest path resolves outside configured skills root
+decisions:
+  - id: ADR-0010
+    status: accepted
+    decision: catalogue_items is the canonical addressable registry for agents and skills
+    rationale: Unifies web catalog, eval scores, and runtime loader FK target
+    alternatives: [query output_schemas directly, hardcoded mock catalog]
+    consequences: [extra sync step in orchestrator, idempotent upsert on slug]
+  - id: antigravity-hybrid-resolution
+    status: accepted
+    decision: Project manifest first, global ~/.cursor/skills second, dedupe by id
+    rationale: Curated project skills stay canonical; global antigravity install is optional fallback
+    alternatives: [global-only, monorepo vendor of full library]
+    consequences: [MODME_SKILLS_* env vars, no full corpus in system prompt]
+changes:
+  - version: "1.1.0"
+    change: Antigravity hybrid adoption complete; documentation-writer CI hook added
+  - version: "1.0.0"
+    change: Initial PRD scaffold for ModMe monorepo platform features

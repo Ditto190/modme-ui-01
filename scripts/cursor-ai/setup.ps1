@@ -463,6 +463,18 @@ function Install-GitHooks {
 
 function Test-LeanCtx {
     Write-Host '[check] lean-ctx...' -ForegroundColor Cyan
+    $syncScript = Join-Path $RepoRoot 'scripts\lean-ctx\sync-config.ps1'
+    if (Test-Path $syncScript) {
+        Write-Host '[run] lean-ctx sync-config...' -ForegroundColor Cyan
+        & $syncScript -SkipDoctor
+    }
+
+    $patchScript = Join-Path $RepoRoot 'scripts\cursor-ai\patch-silent-plugin-hooks.ps1'
+    if (Test-Path $patchScript) {
+        Write-Host '[run] patch silent plugin hooks...' -ForegroundColor Cyan
+        & $patchScript
+    }
+
     $leanCtx = Get-Command lean-ctx -ErrorAction SilentlyContinue
     if (-not $leanCtx) {
         $settingsPath = Join-Path $RepoRoot '.vscode\settings.json'
@@ -600,11 +612,18 @@ function Test-CursorHooks {
 
     $hookEvents = @($config.hooks.PSObject.Properties | Where-Object { $_.Value.Count -gt 0 })
     if ($hookEvents.Count -eq 0) {
-        Write-Host '[ok] Cursor hooks disabled (empty hooks map)'
-        return $true
+        Write-Warning 'Cursor project hooks empty — expected session-bootstrap/session-capture stack'
+        return $false
     }
 
-    Write-Warning "Cursor hooks are enabled ($($hookEvents.Count) event type(s)). Re-run setup only after editing .cursor/hooks.json intentionally."
+    $expected = @('sessionStart', 'stop', 'sessionEnd', 'afterFileEdit')
+    $missing = @($expected | Where-Object { $_ -notin $config.hooks.PSObject.Properties.Name })
+    if ($missing.Count -gt 0) {
+        Write-Warning "Cursor hooks missing events: $($missing -join ', ')"
+        return $false
+    }
+
+    Write-Host "[ok] Cursor observability hooks ($($hookEvents.Count) event types)"
     return $true
 }
 

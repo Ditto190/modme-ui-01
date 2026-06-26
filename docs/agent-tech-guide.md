@@ -71,6 +71,19 @@ Inbox captures in `GenerativeUI_monorepo/docs/inbox/` are validated against **co
 
 Reports: `docs/inbox-pipeline/reports/latest.md` · ADR: `next-forge/docs/adr/0009-inbox-data-contract-and-quality-gates.md`
 
+### Documentation writer + PRD hook
+
+| Command | Purpose |
+|---------|---------|
+| `yarn docs:writer:check` | Validate `docs/PRD.yaml`, documentation-writer skill/agent, implementation reports |
+| `yarn skills:index` | Regenerate `skills_index.json` when `.agents/skills` changes |
+
+CI: `.github/workflows/documentation-writer.yml` (triggers on `docs/**`, `docs/PRD.yaml`, `.agents/skills/**`).
+
+Implementation report (dbt-style layers): `docs/inbox-pipeline/reports/antigravity-pattern-adoption.md` → hooks `docs/PRD.yaml` feature `antigravity-hybrid-skills`.
+
+Agent: `.github/agents/documentation-writer.agent.md` · Skill: `.agents/skills/documentation-writer/SKILL.md`
+
 ---
 
 ## 3. lean-ctx setup
@@ -92,6 +105,20 @@ lean-ctx benchmark
 ```
 
 Details: [docs/lean-ctx-guide.md](./lean-ctx-guide.md).
+
+### Hooks + session observability
+
+| Layer | Path |
+|-------|------|
+| Global compression | `~/.cursor/hooks.json` (lean-ctx observe/rewrite/redirect) |
+| Project session stack | `.cursor/hooks.json` (bootstrap/capture/post-edit) |
+| Config sync | `yarn lean-ctx:sync-config` |
+
+```powershell
+yarn hooks:session:bootstrap
+yarn session:docs
+yarn eval:collect --dry-run
+```
 
 ### Bypass
 

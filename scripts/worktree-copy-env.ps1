@@ -1,4 +1,4 @@
-# Monorepo_ModMe — Copy .env files from root worktree into a target worktree (names only, never commit)
+# Monorepo_ModMe — Copy .env files and lspmux editor settings from root worktree into a target worktree (names only, never commit)
 
 param(
   [Parameter(Mandatory = $true)]
@@ -9,6 +9,8 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
+. (Join-Path $PSScriptRoot 'lspmux/lib.ps1')
 
 $envPaths = @(
   ".env",
@@ -53,3 +55,5 @@ if (Test-Path $yarnDir) {
   Copy-Item $yarnDir $targetYarn -Recurse -Force
   Write-Host "   Copied .yarn/" -ForegroundColor Green
 }
+
+Ensure-LspmuxEditorSettings -SourceRoot $SourceRoot -TargetRoot $TargetRoot

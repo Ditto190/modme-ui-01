@@ -1,0 +1,2 @@
+﻿Dev helper loaded: use 'Find-Command', 'Explain <cmd>', 'sf <pattern>'
+PSReadLine suggestions enabled (Tab to complete, suggestions shown automatically).

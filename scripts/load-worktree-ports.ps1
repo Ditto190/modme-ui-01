@@ -48,4 +48,4 @@ Get-Content $portsFile | ForEach-Object {
 }
 
 Write-Host "Loaded $loaded port variables from .worktree-ports.env" -ForegroundColor Green
-Write-Host "  FORGE_APP_PORT=$env:FORGE_APP_PORT  WEB_DASHBOARD_PORT=$env:WEB_DASHBOARD_PORT  AGENT_SERVER_PORT=$env:AGENT_SERVER_PORT" -ForegroundColor DarkGray
+Write-Host "  FORGE_APP_PORT=$env:FORGE_APP_PORT  WEB_DASHBOARD_PORT=$env:WEB_DASHBOARD_PORT  AGENT_SERVER_PORT=$env:AGENT_SERVER_PORT  LSPMUX_CONNECT=$env:LSPMUX_CONNECT" -ForegroundColor DarkGray

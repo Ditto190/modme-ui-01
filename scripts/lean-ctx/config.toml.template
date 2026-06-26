@@ -1,0 +1,48 @@
+tool_profile = "power"
+proxy_enabled = true
+extra_ignore_patterns = [
+    "node_modules/**",
+    "dist/**",
+    ".next/**",
+    "coverage/**",
+    "target/**",
+    "vendor/**",
+    ".vendor/**",
+    "generated/**",
+    "UniversalWorkbench-staging/**",
+    "UniversalWorkbench-dev/**",
+    ".tools/**",
+    "logs/**",
+]
+memory_profile = "balanced"
+memory_cleanup = "shared"
+shell_allowlist_extra = [
+    "gain",
+    "Set-Location",
+    "py",
+    "poetry",
+    "where.exe",
+    "Get-Command",
+    "Test-Path",
+    "Select-Object",
+    "agenttrace",
+    "node",
+    "yarn",
+    "git",
+    "bun",
+    "npx",
+]
+
+[setup]
+auto_inject_rules = false
+auto_inject_skills = false
+
+[proxy]
+anthropic_upstream = "https://api.anthropic.com"
+compression_level = "max"
+
+[archive]
+enabled = true
+
+[cloud]
+contribute_enabled = true

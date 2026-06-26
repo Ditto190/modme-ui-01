@@ -114,6 +114,7 @@ Write-Host "Agent worktree ready." -ForegroundColor Green
 Write-Host "   Path:   $TargetPath"
 Write-Host "   Branch: $BranchName"
 Write-Host "   Ports:  $TargetPath\.worktree-ports.env"
+Write-Host "   LSP:    lspmux daemon shared; one language-server instance per worktree path"
 Write-Host ""
 Write-Host "   Open this folder in your IDE, or let Cursor Agents Window bootstrap via .cursor/worktrees.json"
 }

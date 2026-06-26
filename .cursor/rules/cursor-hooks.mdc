@@ -1,11 +1,13 @@
 ---
-description: Cursor project hooks — disabled by default (focus-safe)
+description: Cursor project hooks — lean-ctx observability stack (advisory)
 globs: .cursor/hooks/**,.cursor/hooks.json
 ---
 
 # Cursor project hooks
 
-- **Project hooks are disabled.** `.cursor/hooks.json` contains an empty `hooks` map.
-- Cursor hooks with `failClosed: true` were causing blocking errors and have been permanently removed.
-- `scripts/install-cursor-cookbook.ps1` skips hook installation.
+- **Project hooks are enabled** for session observability (`.cursor/hooks.json`).
+- **Global hooks** (`~/.cursor/hooks.json`) run lean-ctx observe/rewrite/redirect.
+- All project hooks: `failClosed: false`, `-WindowStyle Hidden`, always exit 0.
+- Do **not** re-enable `failClosed: true` or skill-rewriting stop hooks.
 
+See [`.cursor/hooks/README.md`](../../.cursor/hooks/README.md) and [docs/lean-ctx-guide.md](../../docs/lean-ctx-guide.md) §7.

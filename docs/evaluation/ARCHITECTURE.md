@@ -208,19 +208,15 @@ See **[`ORCHESTRATION.md`](ORCHESTRATION.md)** for role matrix, acceptance-orche
 
 Copy **`goal-contract.template.yaml`** → `goal-contract.yaml` before eval sprint work.
 
-## session-logger upgrades (Phase 1 prerequisite)
+## session-logger upgrades (Phase 1 — done)
 
-Current logger tracks UniversalWorkbench docs only. Extend `config.json`:
+Implemented in [`.github/hooks/session-logger/`](../../.github/hooks/session-logger/):
 
-```json
-{
-  "trackedFiles": ["..."],
-  "events": ["sessionStart", "sessionEnd", "prompt", "toolCall", "userCorrection", "hookFire"],
-  "emitFields": ["agent", "worktree", "branch", "catalogue_item_id"]
-}
-```
-
-Wire Cursor/Copilot hooks to call `session-logger.ps1 prompt` and new `event` action for behavioral signals.
+- Extended `config.json` tracked files (PRD, CHANGELOG, AGENTS, lean-ctx-guide + UniversalWorkbench docs)
+- `event` action → `logs/copilot/events.log`
+- Cursor project hooks: [`.cursor/hooks/session-bootstrap.ps1`](../../.cursor/hooks/session-bootstrap.ps1), [`session-capture.ps1`](../../.cursor/hooks/session-capture.ps1)
+- Offline docs: `yarn session:docs` → [`scripts/session-to-docs.mjs`](../../scripts/session-to-docs.mjs)
+- Eval collect reads events, markers, optional agenttrace snapshot; keyword prompt clusters (Gemma3n batch deferred)
 
 ## ADR candidates
 

@@ -80,7 +80,8 @@ $lines = @(
   "FORGE_API_PORT=$($ports.FORGE_API_PORT)",
   "FORGE_DOCS_PORT=$($ports.FORGE_DOCS_PORT)",
   "FORGE_STORYBOOK_PORT=$($ports.FORGE_STORYBOOK_PORT)",
-  "NEXT_PUBLIC_AGENT_SERVER_WS_URL=ws://localhost:$($ports.AGENT_SERVER_PORT)/ws/agent"
+  "NEXT_PUBLIC_AGENT_SERVER_WS_URL=ws://localhost:$($ports.AGENT_SERVER_PORT)/ws/agent",
+  "LSPMUX_CONNECT=127.0.0.1:27631"
 )
 
 Set-Content -Path $envFile -Value $lines -Encoding utf8

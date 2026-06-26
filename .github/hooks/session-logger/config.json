@@ -2,7 +2,21 @@
   "logLevel": "info",
   "skipLoggingEnvVar": "SKIP_LOGGING",
   "logsDir": "logs\\copilot",
+  "events": [
+    "sessionStart",
+    "sessionEnd",
+    "prompt",
+    "toolCall",
+    "userCorrection",
+    "hookFire",
+    "event"
+  ],
+  "emitFields": ["agent", "worktree", "branch", "catalogue_item_id", "conversation_id"],
   "trackedFiles": [
+    "docs\\PRD.yaml",
+    "CHANGELOG.md",
+    "AGENTS.md",
+    "docs\\lean-ctx-guide.md",
     "GenerativeUI_monorepo\\UniversalWorkbench\\.flow\\README.md",
     "GenerativeUI_monorepo\\UniversalWorkbench\\.flow\\behavior-management.md",
     "GenerativeUI_monorepo\\UniversalWorkbench\\docs\\FEATURE-TAXONOMY.md"

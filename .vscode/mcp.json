@@ -1,6 +1,16 @@
 {
-<<<<<<< HEAD
   "servers": {
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=aevemmmmouxqlfyxthzf"
+    },
+    "next-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "next-devtools-mcp@latest"
+      ]
+    },
     "github-agentic-workflows": {
       "command": "gh",
       "args": [
@@ -11,19 +21,3 @@
     }
   }
 }
-=======
- "servers": {
-  "supabase": {
-   "type": "http",
-   "url": "https://mcp.supabase.com/mcp?project_ref=aevemmmmouxqlfyxthzf"
-  },
-  "next-devtools": {
-   "command": "npx",
-   "args": [
-    "-y",
-    "next-devtools-mcp@latest"
-   ]
-  }
- }
-}
->>>>>>> chore/adr-readme-pipeline

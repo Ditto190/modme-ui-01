@@ -61,6 +61,9 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (repo) GitKraken CLI integration (docs/gitkraken-cli-setup.md), gitkraken-mcp rules (.cursor/rules/gitkraken-mcp.mdc), and scripts/gitkraken/
+- (next-forge) next-forge code-reviewer app under apps/code-reviewer/
+- (lspmux) LSP multiplexer setup (docs/lspmux-setup.md) and scripts/lspmux/
 - (repo) Inbox pipeline v1 — contracts (`docs/inbox-pipeline/contracts/`), audit/fix scripts, Supabase migrations, and `@repo/schemas` inbox types
 - (repo) GitHub Agentic Workflows assets (`.github/aw/`, agent definitions, workflow-health and inbox-pipeline-check CI)
 - (repo) GenerativeUI devops-voltagent app, intake-pipeline Python orchestrator, and Playwright test scaffolding

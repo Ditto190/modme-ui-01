@@ -1,0 +1,115 @@
+name: Documentation Writer Check
+
+on:
+  pull_request:
+    branches: [main, dev, master, develop]
+    paths:
+      - "docs/**"
+      - "docs/PRD.yaml"
+      - ".agents/skills/**"
+      - ".github/agents/documentation-writer.agent.md"
+      - "skills_index.json"
+      - "data/skills_index.json"
+      - "scripts/documentation-writer-check.mjs"
+      - "scripts/skills-index-generate.mjs"
+      - "docs/inbox-pipeline/reports/**"
+      - "docs/inbox-pipeline/resources/**"
+  push:
+    branches: [main, dev]
+    paths:
+      - "docs/**"
+      - "docs/PRD.yaml"
+      - ".agents/skills/**"
+      - "skills_index.json"
+  workflow_dispatch:
+    inputs:
+      regenerate_skills_index:
+        description: "Regenerate skills_index.json before doc check"
+        required: false
+        default: false
+        type: boolean
+      strict:
+        description: "Fail on PRD status mismatches"
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: documentation-writer-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  documentation-writer:
+    name: PRD hook + doc parity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "yarn"
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Regenerate skills index (optional)
+        if: github.event_name == 'workflow_dispatch' && inputs.regenerate_skills_index == true
+        run: yarn skills:index
+
+      - name: Validate skills index
+        run: |
+          if [ -d .agents/skills ] && find .agents/skills -name 'SKILL.md' | grep -q .; then
+            yarn skills:index
+          fi
+
+      - name: Documentation writer quality check
+        run: |
+          ARGS=""
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.strict }}" = "true" ]; then
+            ARGS="--strict"
+          fi
+          node scripts/documentation-writer-check.mjs $ARGS
+
+      - name: Upload documentation report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: documentation-writer-report
+          path: |
+            docs/inbox-pipeline/reports/documentation-writer-latest.md
+            docs/inbox-pipeline/reports/documentation-writer-latest.json
+            docs/inbox-pipeline/reports/antigravity-pattern-adoption.md
+
+  notify-documentation-writer:
+    name: Trigger documentation-writer agent (manual follow-up)
+    needs: documentation-writer
+    if: failure() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post PR comment hint
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              '### Documentation writer check failed',
+              '',
+              'Run locally:',
+              '```powershell',
+              'yarn docs:writer:check',
+              'yarn skills:index',
+              '```',
+              '',
+              'Delegate fixes to the **documentation-writer** agent (`.github/agents/documentation-writer.agent.md`).',
+              'Sync feature status in `docs/PRD.yaml` when implementation reports change.',
+            ].join('\n');
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body,
+            });

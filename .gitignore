@@ -90,6 +90,9 @@ temp/
 # IDE-local skill/runtime dirs (use .cursor/skills and .agents/skills in repo)
 .claude/
 .copilot/
+.agents/skills/
+.agents/temp_skills/
+.cursor/skills/
 
 # Misc local artifacts
 quality/

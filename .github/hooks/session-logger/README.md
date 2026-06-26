@@ -1,26 +1,36 @@
 Session Logger hook
 
-This repository contains a small session logger hook implemented in PowerShell
-for Windows development environments. It logs session start/end events and
-prompt events as JSON lines under logs/copilot/.
+PowerShell session logger for Cursor/Copilot on Windows. Logs JSON lines under `logs/copilot/`.
 
-Configuration
-- config.json controls tracked files and log directory.
-- By default it tracks three UniversalWorkbench docs in this repo.
+## Configuration
 
-Usage
-- Start a session (generates a session id and writes sessionStart):
-  .\.github\hooks\session-logger\session-logger.ps1 start
+[`config.json`](config.json) — tracked docs, event types, log directory.
 
-- End a session:
-  .\.github\hooks\session-logger\session-logger.ps1 end <session-id>
+## Actions
 
-- Log a prompt event:
-  .\.github\hooks\session-logger\session-logger.ps1 prompt <session-id> "User's prompt text"
+| Action | Purpose |
+|--------|---------|
+| `start` | sessionStart — writes `session.log` |
+| `end` | sessionEnd |
+| `prompt` | User prompt text → `prompts.log` |
+| `event` | Behavioral / hookFire → `events.log` |
 
-Notes
-- The hook is implemented in PowerShell for Windows compatibility. If your CI
-  runner uses bash, you can call PowerShell core (pwsh) or re-implement a shell
-  shim as needed.
-- Logs are written to the repository-local logs/copilot/ directory and are
-  excluded from git via .gitignore.
+## Usage
+
+```powershell
+.\.github\hooks\session-logger\session-logger.ps1 -Action start
+.\.github\hooks\session-logger\session-logger.ps1 -Action end -SessionId <id>
+.\.github\hooks\session-logger\session-logger.ps1 -Action prompt -SessionId <id> -Message "..."
+.\.github\hooks\session-logger\session-logger.ps1 -Action event -EventName hookFire -SessionId <id>
+```
+
+Set `SKIP_LOGGING=1` to disable. Wired from [`.cursor/hooks/session-bootstrap.ps1`](../../.cursor/hooks/session-bootstrap.ps1) and [`session-capture.ps1`](../../.cursor/hooks/session-capture.ps1).
+
+## Eval pipeline
+
+```powershell
+yarn eval:collect
+yarn eval:report
+```
+
+See [`docs/evaluation/ARCHITECTURE.md`](../../../docs/evaluation/ARCHITECTURE.md).

@@ -341,15 +341,15 @@ node scripts/mda-categorize.mjs --team taxonomy
 node scripts/mda-categorize.mjs --team relations
 
 # 4. Generate outputs
-node scripts/output-generate.mjs --type skills
-node scripts/output-generate.mjs --type storybook
-node scripts/output-generate.mjs --type adr
+yarn skills:index
+node scripts/output-generate.mjs --type all
+node scripts/catalogue-sync.mjs
+
+# 5. Documentation + PRD parity
+yarn docs:writer:check
 
 # Or run full pipeline end-to-end
-node scripts/inbox-ingest.mjs && \
-node scripts/inbox-embeddings.mjs && \
-node scripts/mda-categorize.mjs --team all && \
-node scripts/output-generate.mjs --type all
+yarn intake:orchestrate
 
 # Dry-run (no writes)
 node scripts/inbox-ingest.mjs --dry-run

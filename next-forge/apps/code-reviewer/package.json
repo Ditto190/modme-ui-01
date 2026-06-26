@@ -1,0 +1,28 @@
+{
+  "name": "code-reviewer",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch --env-file=.env ./src/index.ts",
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "2.0.46",
+    "@voltagent/cli": "0.1.21",
+    "@voltagent/core": "2.7.7",
+    "@voltagent/libsql": "2.1.2",
+    "@voltagent/logger": "2.0.2",
+    "@voltagent/server-hono": "2.0.14",
+    "ai": "latest",
+    "dotenv": "^16.4.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "tsup": "^8.2.3",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3"
+  }
+}
