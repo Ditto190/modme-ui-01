@@ -61,6 +61,9 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (repo) Repo alignment doctor (`yarn repo:doctor`), GitLab mirror workflow, and `docs/repo-alignment.md`
+- (repo) `yarn verify:generative` CI parity script and GenerativeUI pre-commit/CI suite
+- (repo) Pre-push hook (repo alignment + `--full` verify gate)
 - (repo) Inbox pipeline v1 — contracts (`docs/inbox-pipeline/contracts/`), audit/fix scripts, Supabase migrations, and `@repo/schemas` inbox types
 - (repo) GitHub Agentic Workflows assets (`.github/aw/`, agent definitions, workflow-health and inbox-pipeline-check CI)
 - (repo) GenerativeUI devops-voltagent app, intake-pipeline Python orchestrator, and Playwright test scaffolding
@@ -72,6 +75,8 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
+- (repo) Resolved `AGENTS.md` and `package.json` merge conflicts; dual-monorepo `workspace.code-workspace` layout
+- (ci) GitLab CI aligned with GitHub generative-ui job; pre-commit workflow installs Bun
 - (repo) **Reconcile `main` with Monorepo_ModMe** — GenUI Workbench (`modme-ui-01` legacy layout) superseded by dual-monorepo stack (`next-forge/` + `GenerativeUI_monorepo/`); unrelated GenUI history retired on default branch
 - (gitignore) Ignore Playwright artifacts, beads embedded Dolt state, local hook state (`.cursor/hooks/state/`), IDE-local dirs (`.claude/`, `.copilot/`), and install manifests; remove erroneous `.cursor/hooks.json` ignore
 
@@ -110,6 +115,10 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
+- (GenerativeUI) CI parity: Turbo 2 `tasks`, `yarn build:product`, postcss isolation from root Tailwind 4, CopilotKit App Router endpoint, devops-voltagent and shared-schemas lint fixes
+
+- (ci) `ci.yml` Bun version file path (`next-forge/package.json` instead of missing `pkg.json`)
+- (api) Catalogue route query param validation; public reads restricted to `published` status
 - (dev) `init-worktrees.ps1` — use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
 - (dev) `new-agent-worktree.ps1` — usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`
 - (vscode) Set `git.path` in `.vscode/settings.json` so Cursor Agent Review finds Git on Windows when it is not on PATH

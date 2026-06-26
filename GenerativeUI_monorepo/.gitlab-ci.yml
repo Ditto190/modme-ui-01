@@ -1,5 +1,5 @@
-# GitLab CI for GenerativeUI_monorepo (Yarn 3 + Turbo + TypeScript)
-# Mirrors .github/workflows/index.yml: install → eslint → test
+# GitLab CI for GenerativeUI_monorepo — mirrors root .github/workflows/ci.yml generative-ui job
+# Canonical CI: GitHub Actions at repo root. GitLab is an active mirror.
 
 stages:
   - install
@@ -42,13 +42,13 @@ install:
       - .pnp.loader.mjs
     expire_in: 1 hour
 
-eslint:
+lint:
   stage: test
   <<: *yarn_cache
   needs: [install]
   script:
     - yarn install --immutable
-    - yarn eslint
+    - yarn lint
 
 test:
   stage: test
@@ -57,3 +57,11 @@ test:
   script:
     - yarn install --immutable
     - yarn test
+
+build:
+  stage: test
+  <<: *yarn_cache
+  needs: [install]
+  script:
+    - yarn install --immutable
+    - yarn build:product

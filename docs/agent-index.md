@@ -155,7 +155,7 @@ Rollback: `yarn dev:generative` restores legacy stack; disable feature flags in 
 
 | Workflow | Scope |
 |----------|-------|
-| `.github/workflows/ci.yml` | Path-filtered GenerativeUI + next-forge + agent-server |
+| `.github/workflows/ci.yml` | Path-filtered GenerativeUI + next-forge |
 | `.github/workflows/pre-commit-check.yml` | Policy checks (secret, changelog, launch-json, skills) |
 | `.github/workflows/changelog-check.yml` | PR changelog require-update |
 | `.github/workflows/launch-json-check.yml` | launch.json ↔ manifest sync |

@@ -22,6 +22,16 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: next-forge/package.json
+
+      - name: Install GenerativeUI deps (for CI suite)
+        run: |
+          corepack enable
+          cd GenerativeUI_monorepo && yarn install --immutable 2>/dev/null || yarn install
+
       - name: Run pre-commit checks
         env:
           GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
