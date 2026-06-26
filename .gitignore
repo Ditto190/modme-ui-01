@@ -111,3 +111,7 @@ quality/
 .beads/proxieddb/
 
 /generated/prisma
+# Worktree-local auto-generated files
+.worktree-ports.env
+config/secret_key
+config/hypercorn.toml
