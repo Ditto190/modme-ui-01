@@ -4,6 +4,7 @@
  * Usage:
  *   node scripts/pre-commit-checks.mjs           # staged-aware (hook)
  *   node scripts/pre-commit-checks.mjs --full   # pre-push audit (path-scoped CI suites)
+ *   node scripts/pre-commit-checks.mjs --ci      # full suite (CI / Buildkite)
  */
 
 import { execSync, spawnSync } from "node:child_process";
@@ -124,6 +125,16 @@ const FORGE_PREFIX = "next-forge/";
 const GENERATIVE_PREFIX = "GenerativeUI_monorepo/";
 const FORGE_ROOT = resolve(ROOT, "next-forge");
 
+function spawnForgeBun(args, cwd = FORGE_ROOT) {
+  const result = spawnSync("bun", args, {
+    cwd,
+    stdio: "inherit",
+  });
+  if (result.status !== 0) {
+    process.exit(result.status ?? 1);
+  }
+}
+
 function stagedForgePaths(files) {
   return files
     .filter((f) => f.startsWith(FORGE_PREFIX))
@@ -132,7 +143,20 @@ function stagedForgePaths(files) {
 }
 
 function runUltraciteOnForgePath(mode, relPath) {
-  runForgeBun(["x", "ultracite", mode, relPath]);
+  if (relPath.includes("[")) {
+    const segments = relPath.split("/");
+    const fileName = segments.pop();
+    const subDir = resolve(FORGE_ROOT, ...segments);
+    spawnForgeBun(["x", "ultracite", mode, fileName], subDir);
+    return;
+  }
+
+  if (isWindows) {
+    runForgeBun(["x", "ultracite", mode, relPath]);
+    return;
+  }
+
+  spawnForgeBun(["x", "ultracite", mode, relPath]);
 }
 
 function runForgeCheckIfNeeded(files) {
