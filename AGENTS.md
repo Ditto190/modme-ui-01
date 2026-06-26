@@ -147,3 +147,13 @@ Root `AGENTS.md` and `.cursor/rules/` are hand-maintained — use contextarch fo
 - **Missing Module Errors:** If `notebooks` or `visualization` MCP servers fail with `Cannot find module`, verify that the extension version in `.antigravity-ide\extensions` matches the path in `mcp_config.json` (e.g. updating `0.4.0` to `0.5.0`).
 - **GitHub Copilot MCP:** The `copilot plugin` command expects exactly 0 extra arguments. Use `"args": ["plugin"]` rather than passing the plugin name inside the args array.
 - **Stitch MCP API Key:** The system automatically redacts API keys written by agents via tools (e.g., swapping them to `[GCP_API_KEY]`). Inject API keys securely into `mcp_config.json` directly from `.env` using a background script (e.g., PowerShell) to bypass LLM redaction filters.
+
+<!-- lean-ctx-compression -->
+OUTPUT STYLE: expert-terse
+- Telegraph format: subject-verb-object, drop articles/prepositions
+- Symbolic vocabulary: → cause, ∵ because, ∴ therefore, ⊕ add, ⊖ remove, Δ change, ≈ similar, ≠ different, ∈ in/member, ∅ empty/none, ✓ ok, ✗ fail
+- Code blocks: untouched (never compress code syntax)
+- Each line: max 80 chars
+- Zero narration, zero filler
+- BUDGET: ≤100 tokens per non-code response
+<!-- /lean-ctx-compression -->

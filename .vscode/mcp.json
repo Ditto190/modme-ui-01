@@ -1,12 +1,8 @@
 {
   "servers": {
-    "mantine": {
+    "lean-ctx": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@mantine/mcp-server"],
-      "env": {
-        "PATH": "${env:PATH}"
-      }
+      "command": "C:/Users/dylan/.gemini/antigravity/bin/lean-ctx.exe"
     }
   }
 }

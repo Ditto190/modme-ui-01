@@ -1,0 +1,7 @@
+{
+  "version": "1.0",
+  "description": "Catalogue registry contract v1 — canonical addressable agents/skills/components",
+  "itemTypes": ["agent", "skill", "instruction", "hook", "workflow", "plugin", "component"],
+  "statuses": ["draft", "published", "archived"],
+  "actions": ["list", "popular", "search"]
+}

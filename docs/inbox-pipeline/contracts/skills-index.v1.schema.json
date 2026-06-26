@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://modme.dev/schemas/skills-index.v1.schema.json",
+  "title": "ModMe Skills Index v1",
+  "description": "Lightweight discovery manifest for project and hybrid skill loading (antigravity-compatible fields).",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": true,
+    "required": [
+      "id",
+      "path",
+      "category",
+      "name",
+      "description",
+      "risk",
+      "source",
+      "date_added"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "minLength": 1
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-_./]*$"
+      },
+      "category": {
+        "type": "string",
+        "minLength": 1
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": {
+        "type": "string"
+      },
+      "risk": {
+        "type": "string",
+        "minLength": 1
+      },
+      "source": {
+        "type": "string",
+        "minLength": 1
+      },
+      "date_added": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

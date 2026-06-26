@@ -13,10 +13,21 @@ import {
 } from "@voltagent/libsql";
 import { createPinoLogger } from "@voltagent/logger";
 import { honoServer } from "@voltagent/server-hono";
+import { buildSkillDiscoveryHint, getSkillResolver, prepareModelMessages } from "./skills/runtime";
 import { weatherTool } from "./tools";
 import { expenseApprovalWorkflow } from "./workflows";
 
 const logger = createPinoLogger({ name: "next-forge-agent", level: "info" });
+
+const skillResolver = getSkillResolver();
+const skillHint = buildSkillDiscoveryHint(skillResolver);
+
+if (skillResolver.skillIndex.size > 0) {
+  logger.info(
+    { skillCount: skillResolver.skillIndex.size, maxPerTurn: skillResolver.maxSkillsPerTurn },
+    "Hybrid skill manifest loaded for lazy @skill-id injection"
+  );
+}
 
 const memory = new Memory({
   storage: new LibSQLMemoryAdapter({
@@ -38,8 +49,7 @@ const zai = createOpenAI({
 
 const agent = new Agent({
   name: "next-forge-agent",
-  instructions:
-    "A helpful assistant that can check weather and help with various tasks",
+  instructions: `A helpful assistant that can check weather and help with various tasks.${skillHint}`,
   model: zai("glm-4"),
   tools: [weatherTool],
   memory,
@@ -60,3 +70,5 @@ new VoltAgent({
 });
 
 logger.info(`VoltAgent server started on port ${port}`);
+
+export { agent, prepareModelMessages, skillResolver };

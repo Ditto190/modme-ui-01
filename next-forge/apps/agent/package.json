@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.33",
+    "@repo/database": "workspace:*",
     "@voltagent/cli": "latest",
     "@voltagent/core": "latest",
     "@voltagent/libsql": "latest",

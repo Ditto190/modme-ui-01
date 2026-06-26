@@ -1,0 +1,412 @@
+[
+  {
+    "id": "accessibility",
+    "path": "accessibility",
+    "category": "security",
+    "name": "Accessibility Expert",
+    "description": "Expert assistant for web accessibility (WCAG 2.1/2.2), inclusive UX, and a11y testing",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "accessibility-runtime-tester",
+    "path": "accessibility-runtime-tester",
+    "category": "testing",
+    "name": "Accessibility Runtime Tester",
+    "description": "Runtime accessibility specialist for keyboard flows, focus management, dialog behavior, form errors, and evidence-backed WCAG validation in the browser.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "acquire-codebase-knowledge",
+    "path": "acquire-codebase-knowledge",
+    "category": "documentation",
+    "name": "acquire-codebase-knowledge",
+    "description": "Use this skill when the user explicitly asks to map, document, or onboard into an existing codebase. Trigger for prompts like \"map this codebase\", \"document this architecture\", \"onboard me to this repo\", or \"create codebase docs\". Do not trigger for routine feature implementation, bug fixes, or narrow code edits unless the user asks for repository-level discovery.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "adr-generator",
+    "path": "adr-generator",
+    "category": "architecture",
+    "name": "ADR Generator",
+    "description": "Expert agent for creating comprehensive Architectural Decision Records (ADRs) with structured formatting optimized for AI consumption and human readability.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "api-architect",
+    "path": "api-architect",
+    "category": "testing",
+    "name": "API Architect",
+    "description": "Your role is that of an API architect. Help mentor the engineer by providing guidance, support, and working code.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "build",
+    "path": "build",
+    "category": "research",
+    "name": "build",
+    "description": "build",
+    "risk": "unknown",
+    "source": "community",
+    "date_added": "2026-06-12"
+  },
+  {
+    "id": "create-agentsmd",
+    "path": "create-agentsmd",
+    "category": "testing",
+    "name": "create-agentsmd",
+    "description": "Prompt for generating an AGENTS.md file for a repository",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "create-voltagent",
+    "path": "create-voltagent",
+    "category": "documentation",
+    "name": "create-voltagent",
+    "description": "Skill for creating AI agent projects using the VoltAgent framework. Guide for CLI setup and manual bootstrapping.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "dependabot",
+    "path": "dependabot",
+    "category": "backend",
+    "name": "dependabot",
+    "description": "Comprehensive guide for configuring and managing GitHub Dependabot. Use this skill when users ask about creating or optimizing dependabot.yml files, managing Dependabot pull requests, configuring dependency update strategies, setting up grouped updates, monorepo patterns, multi-ecosystem groups, security update configuration, auto-triage rules, or any GitHub Advanced Security (GHAS) supply chain security topic related to Dependabot. For pre-commit dependency vulnerability scanning in AI coding agents via the GitHub MCP Server, this skill references the Advanced Security plugin (`advanced-security@copilot-plugins`). Use this skill when an agent needs to scan dependencies for known vulnerabilities before committing.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "devops-expert",
+    "path": "devops-expert",
+    "category": "devops",
+    "name": "DevOps Expert",
+    "description": "DevOps specialist following the infinity loop principle (Plan → Code → Build → Test → Release → Deploy → Operate → Monitor) with focus on automation, collaboration, and continuous improvement",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "doublecheck",
+    "path": "doublecheck",
+    "category": "research",
+    "name": "doublecheck",
+    "description": "Three-layer verification pipeline for AI output. Extracts verifiable claims, finds supporting or contradicting sources via web search, runs adversarial review for hallucination patterns, and produces a structured verification report with source links for human review.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "gem-devops",
+    "path": "gem-devops",
+    "category": "devops",
+    "name": "gem-devops",
+    "description": "Infrastructure deployment, CI/CD pipelines, container management.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "gem-documentation-writer",
+    "path": "gem-documentation-writer",
+    "category": "documentation",
+    "name": "gem-documentation-writer",
+    "description": "Technical documentation, README files, API docs, diagrams, walkthroughs.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "gem-reviewer",
+    "path": "gem-reviewer",
+    "category": "frontend",
+    "name": "gem-reviewer",
+    "description": "Security auditing, code review, OWASP scanning, PRD compliance verification.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "github-actions-efficiency",
+    "path": "github-actions-efficiency",
+    "category": "devops",
+    "name": "github-actions-efficiency",
+    "description": "Audit GitHub Actions workflow efficiency and recommend fixes to reduce CI minutes and costs.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "github-actions-expert",
+    "path": "github-actions-expert",
+    "category": "security",
+    "name": "GitHub Actions Expert",
+    "description": "GitHub Actions specialist focused on secure CI/CD workflows, action pinning, OIDC authentication, permissions least privilege, and supply-chain security",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "mcp-security-audit",
+    "path": "mcp-security-audit",
+    "category": "backend",
+    "name": "mcp-security-audit",
+    "description": "Audit MCP (Model Context Protocol) server configurations for security issues. Use this skill when:\n- Reviewing .mcp.json files for security risks\n- Checking MCP server args for hardcoded secrets or shell injection patterns\n- Validating that MCP servers use pinned versions (not @latest)\n- Detecting unpinned dependencies in MCP server configurations\n- Auditing which MCP servers a project registers and whether they're on an approved list\n- Checking for environment variable usage vs. hardcoded credentials in MCP configs\n- Any request like \"is my MCP config secure?\", \"audit my MCP servers\", or \"check .mcp.json\"\nkeywords: [mcp, security, audit, secrets, shell-injection, supply-chain, governance]",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "memory-merger",
+    "path": "memory-merger",
+    "category": "devops",
+    "name": "memory-merger",
+    "description": "Merges mature lessons from a domain memory file into its instruction file. Syntax: `/memory-merger >domain [scope]` where scope is `global` (default), `user`, `workspace`, or `ws`.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "modme-generative-ui-migrate",
+    "path": "modme-generative-ui-migrate",
+    "category": "frontend",
+    "name": "modme-generative-ui-migrate",
+    "description": "Framework migration playbook for moving GenerativeUI (CopilotKit + agent-server) into next-forge without breaking the legacy stack. Use when porting web-dashboard, GenerativeCanvas, shared-schemas, or planning Phase 4 migration.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "multi-stage-dockerfile",
+    "path": "multi-stage-dockerfile",
+    "category": "performance",
+    "name": "multi-stage-dockerfile",
+    "description": "Create optimized multi-stage Dockerfiles for any language or framework",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "next-forge",
+    "path": "next-forge",
+    "category": "backend-database",
+    "name": "next-forge",
+    "description": "Expert assistance for next-forge — a production-grade Turborepo template for Next.js SaaS apps. Triggers on questions about next-forge installation, setup, architecture, packages, customization, deployment, and development workflows.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "playwright-automation-fill-in-form",
+    "path": "playwright-automation-fill-in-form",
+    "category": "testing",
+    "name": "playwright-automation-fill-in-form",
+    "description": "Automate filling in a form using Playwright MCP",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "playwright-explore-website",
+    "path": "playwright-explore-website",
+    "category": "testing",
+    "name": "playwright-explore-website",
+    "description": "Website exploration for testing using Playwright MCP",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "playwright-generate-test",
+    "path": "playwright-generate-test",
+    "category": "frontend",
+    "name": "playwright-generate-test",
+    "description": "Generate a Playwright test based on a scenario using Playwright MCP",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "postgresql-code-review",
+    "path": "postgresql-code-review",
+    "category": "security",
+    "name": "postgresql-code-review",
+    "description": "PostgreSQL-specific code review assistant focusing on PostgreSQL best practices, anti-patterns, and unique quality standards. Covers JSONB operations, array usage, custom types, schema design, function optimization, and PostgreSQL-exclusive security features like Row Level Security (RLS).",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "postgresql-optimization",
+    "path": "postgresql-optimization",
+    "category": "performance",
+    "name": "postgresql-optimization",
+    "description": "PostgreSQL-specific development assistant focusing on unique PostgreSQL features, advanced data types, and PostgreSQL-exclusive capabilities. Covers JSONB operations, array types, custom types, range/geometric types, full-text search, window functions, and PostgreSQL extensions ecosystem.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "premium-frontend-ui",
+    "path": "premium-frontend-ui",
+    "category": "frontend",
+    "name": "premium-frontend-ui",
+    "description": "A comprehensive guide for GitHub Copilot to craft immersive, high-performance web experiences with advanced motion, typography, and architectural craftsmanship.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "quality-playbook",
+    "path": "quality-playbook",
+    "category": "documentation",
+    "name": "quality-playbook",
+    "description": "Run a complete quality engineering audit on any codebase. Derives behavioral requirements from the code, generates spec-traced functional tests, runs a three-pass code review with regression tests, executes a multi-model spec audit (Council of Three), and produces a consolidated bug report with TDD-verified patches. Finds the 35% of real defects that structural code review alone cannot catch. Works with any language. Trigger on 'quality playbook', 'spec audit', 'Council of Three', 'fitness-to-purpose', or 'coverage theater'.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "react-audit-grep-patterns",
+    "path": "react-audit-grep-patterns",
+    "category": "frontend",
+    "name": "react-audit-grep-patterns",
+    "description": "Provides the complete, verified grep scan command library for auditing React codebases before a React 18.3.1 or React 19 upgrade. Use this skill whenever running a migration audit - for both the react18-auditor and react19-auditor agents. Contains every grep pattern needed to find deprecated APIs, removed APIs, unsafe lifecycle methods, batching vulnerabilities, test file issues, dependency conflicts, and React 19 specific removals. Always use this skill when writing audit scan commands - do not rely on memory for grep syntax, especially for the multi-line async setState patterns which require context flags.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "react18-batching-patterns",
+    "path": "react18-batching-patterns",
+    "category": "performance",
+    "name": "react18-batching-patterns",
+    "description": "Provides exact patterns for diagnosing and fixing automatic batching regressions in React 18 class components. Use this skill whenever a class component has multiple setState calls in an async method, inside setTimeout, inside a Promise .then() or .catch(), or in a native event handler. Use it before writing any flushSync call - the decision tree here prevents unnecessary flushSync overuse. Also use this skill when fixing test failures caused by intermediate state assertions that break after React 18 upgrade.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "react18-dep-compatibility",
+    "path": "react18-dep-compatibility",
+    "category": "testing",
+    "name": "react18-dep-compatibility",
+    "description": "React 18.3.1 and React 19 dependency compatibility matrix.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "se-security-reviewer",
+    "path": "se-security-reviewer",
+    "category": "security",
+    "name": "SE: Security",
+    "description": "Security-focused code review specialist with OWASP Top 10, Zero Trust, LLM security, and enterprise security standards",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "se-system-architecture-reviewer",
+    "path": "se-system-architecture-reviewer",
+    "category": "architecture",
+    "name": "SE: Architect",
+    "description": "System architecture review specialist with Well-Architected frameworks, design validation, and scalability analysis for AI and distributed systems",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "secret-scanning",
+    "path": "secret-scanning",
+    "category": "security",
+    "name": "secret-scanning",
+    "description": "Guide for configuring and managing GitHub secret scanning, push protection, custom patterns, and secret alert remediation. For pre-commit secret scanning in AI coding agents via the GitHub MCP Server, this skill references the Advanced Security plugin (`advanced-security@copilot-plugins`). Use this skill when enabling secret scanning, setting up push protection, defining custom patterns, triaging alerts, resolving blocked pushes, or when an agent needs to scan code for secrets before committing.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "security-review",
+    "path": "security-review",
+    "category": "security",
+    "name": "security-review",
+    "description": "AI-powered codebase security scanner that reasons about code like a security researcher — tracing data flows, understanding component interactions, and catching vulnerabilities that pattern-matching tools miss. Use this skill when asked to scan code for security vulnerabilities, find bugs, check for SQL injection, XSS, command injection, exposed API keys, hardcoded secrets, insecure dependencies, access control issues, or any request like \"is my code secure?\", \"review for security issues\", \"audit this codebase\", or \"check for vulnerabilities\". Covers injection flaws, authentication and access control bugs, secrets exposure, weak cryptography, insecure dependencies, and business logic issues across JavaScript, TypeScript, Python, Java, PHP, Go, Ruby, and Rust.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "smart-git-automation",
+    "path": "smart-git-automation",
+    "category": "devops",
+    "name": "smart-git-automation",
+    "description": "ModMe overlay — worktree-first smart git grouping, commit, and PR to dev",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "supabase",
+    "path": "supabase",
+    "category": "backend-database",
+    "name": "supabase",
+    "description": "Use when doing ANY task involving Supabase. Triggers: Supabase products (Database, Auth, Edge Functions, Realtime, Storage, Vectors, Cron, Queues); client libraries and SSR integrations (supabase-js, @supabase/ssr) in Next.js, React, SvelteKit, Astro, Remix; auth issues (login, logout, sessions, JWT, cookies, getSession, getUser, getClaims, RLS); Supabase CLI or MCP server; schema changes, migrations, security audits, Postgres extensions (pg_graphql, pg_cron, pg_vector).",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "supabase-postgres-best-practices",
+    "path": "supabase-postgres-best-practices",
+    "category": "backend-database",
+    "name": "supabase-postgres-best-practices",
+    "description": "Postgres performance optimization and best practices from Supabase. Use this skill when writing, reviewing, or optimizing Postgres queries, schema designs, or database configurations.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "ui-screenshots",
+    "path": "ui-screenshots",
+    "category": "backend",
+    "name": "ui-screenshots",
+    "description": "Capture screenshots of web apps during development using Playwright and PIL. Supports full-page captures, interactive states, and an iterate-on-crop workflow that avoids slow re-screenshots.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "voltagent-best-practices",
+    "path": "voltagent-best-practices",
+    "category": "frontend",
+    "name": "voltagent-best-practices",
+    "description": "VoltAgent architectural patterns and conventions. Covers agents vs workflows, project layout, memory, servers, and observability.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  },
+  {
+    "id": "voltagent-docs-bundle",
+    "path": "voltagent-docs-bundle",
+    "category": "documentation",
+    "name": "voltagent-docs-bundle",
+    "description": "Look up VoltAgent documentation embedded in node_modules/@voltagent/core/docs for version-matched docs. Use for API signatures, guides, and examples.",
+    "risk": "low",
+    "source": "project",
+    "date_added": "2026-06-20"
+  }
+]
