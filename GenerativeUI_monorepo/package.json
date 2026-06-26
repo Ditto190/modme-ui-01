@@ -22,6 +22,7 @@
   },
   "scripts": {
     "build": "turbo run build",
+    "build:product": "turbo run build --filter=@generative-ui/shared-schemas --filter=@generative-ui/web-dashboard --filter=devops-voltagent --filter=@monorepo/agent-generator --filter=vibe-web-app",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "browserslist:update-db": "browserslist --update-db",

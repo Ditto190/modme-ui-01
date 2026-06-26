@@ -9,11 +9,5 @@
     "templates",
     "vscode",
     "development-guidelines"
-  ],
-  "files": [
-    ".vscode",
-    "templates",
-    "README.md",
-    "GUIDELINES.md"
   ]
 }

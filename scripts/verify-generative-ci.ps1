@@ -31,8 +31,8 @@ try {
   }
 
   if (-not $SkipBuild) {
-    Write-Host "3/3 yarn build..." -ForegroundColor Cyan
-    yarn build
+    Write-Host "3/3 yarn build:product (ModMe apps, excludes template examples)..." -ForegroundColor Cyan
+    yarn build:product
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
   }
 }

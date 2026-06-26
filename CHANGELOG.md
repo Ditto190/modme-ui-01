@@ -115,6 +115,8 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
+- (GenerativeUI) CI parity: Turbo 2 `tasks`, `yarn build:product`, postcss isolation from root Tailwind 4, CopilotKit App Router endpoint, devops-voltagent and shared-schemas lint fixes
+
 - (ci) `ci.yml` Bun version file path (`next-forge/package.json` instead of missing `pkg.json`)
 - (api) Catalogue route query param validation; public reads restricted to `published` status
 - (dev) `init-worktrees.ps1` — use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)

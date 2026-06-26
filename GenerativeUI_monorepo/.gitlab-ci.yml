@@ -64,4 +64,4 @@ build:
   needs: [install]
   script:
     - yarn install --immutable
-    - yarn build
+    - yarn build:product

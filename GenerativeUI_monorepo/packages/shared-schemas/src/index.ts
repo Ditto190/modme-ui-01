@@ -6,11 +6,22 @@ import { z } from 'zod';
  */
 export const AgentActionSchema = z.object({
   id: z.string().describe('Unique identifier for the action'),
-  type: z.enum(['create', 'update', 'delete', 'render']).describe('Type of action'),
+  type: z
+    .enum(['create', 'update', 'delete', 'render'])
+    .describe('Type of action'),
   timestamp: z.number().describe('Unix timestamp of when the action occurred'),
-  componentType: z.string().optional().describe('Type of UI component to render'),
-  props: z.record(z.any()).optional().describe('Properties to pass to the component'),
-  content: z.any().optional().describe('Content or data associated with the action'),
+  componentType: z
+    .string()
+    .optional()
+    .describe('Type of UI component to render'),
+  props: z
+    .record(z.any())
+    .optional()
+    .describe('Properties to pass to the component'),
+  content: z
+    .any()
+    .optional()
+    .describe('Content or data associated with the action'),
   metadata: z.record(z.any()).optional().describe('Additional metadata'),
 });
 
@@ -21,7 +32,9 @@ export type AgentAction = z.infer<typeof AgentActionSchema>;
  */
 export const AgentStateSchema = z.object({
   actions: z.array(AgentActionSchema).describe('List of agent actions'),
-  status: z.enum(['idle', 'processing', 'streaming', 'complete', 'error']).describe('Current status'),
+  status: z
+    .enum(['idle', 'processing', 'streaming', 'complete', 'error'])
+    .describe('Current status'),
   error: z.string().optional().describe('Error message if status is error'),
   metadata: z.record(z.any()).optional().describe('Additional state metadata'),
 });
@@ -92,7 +105,10 @@ export const WebSocketMessageSchema = z.object({
     ])
     .describe('Message type'),
   payload: z.any().optional().describe('Message payload'),
-  timestamp: z.number().default(() => Date.now()).describe('Unix timestamp'),
+  timestamp: z
+    .number()
+    .default(() => Date.now())
+    .describe('Unix timestamp'),
 });
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;
