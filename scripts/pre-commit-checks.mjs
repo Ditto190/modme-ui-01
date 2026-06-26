@@ -230,6 +230,11 @@ function main() {
     runNode("scripts/inbox-audit.mjs", ["--lens", "funnel"]);
   }
 
+  const leanCtxPaths = [".cursor/hooks/", "state/lean-ctx-session-markers.jsonl"];
+  if (files.some((f) => matchesAny(f, leanCtxPaths))) {
+    runNode("scripts/run-lean-ctx-intake.mjs", []);
+  }
+
   ok("staged changes passed pre-commit checks");
 }
 

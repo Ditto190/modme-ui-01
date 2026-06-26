@@ -1,17 +1,4 @@
 {
-<<<<<<< HEAD
-  "servers": {
-    "github-agentic-workflows": {
-      "command": "gh",
-      "args": [
-        "aw",
-        "mcp-server"
-      ],
-      "cwd": "${workspaceFolder}"
-    }
-  }
-}
-=======
  "servers": {
   "supabase": {
    "type": "http",
@@ -26,4 +13,4 @@
   }
  }
 }
->>>>>>> chore/adr-readme-pipeline
+
