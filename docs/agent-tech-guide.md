@@ -240,6 +240,48 @@ Restart Cursor / VS Code after editing MCP config. On Windows Antigravity, use `
 
 ---
 
+## 3.7 Chrome DevTools MCP & CLI
+
+[chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp) allows agents to control and inspect a live Chrome browser. It acts as an MCP server with tools for navigation, evaluating JS, taking screenshots, analyzing performance traces, and more. 
+
+### Project config
+
+Configured with `--auto-connect` to attach to a stable running Chrome instance instead of opening a new one. This ensures persistent context and sessions for your browser automation tasks. See `.cursor/mcp.json` or `.mcp.json`:
+
+```json
+"chrome-devtools": {
+  "command": "npx.cmd",
+  "args": [
+    "-y",
+    "chrome-devtools-mcp@latest",
+    "--auto-connect"
+  ]
+}
+```
+
+### CLI
+
+The package also includes an experimental CLI that allows you to interact with the browser directly from the terminal (e.g. for generating automation scripts).
+Install it globally:
+
+```powershell
+npm i chrome-devtools-mcp@latest -g
+```
+
+Then use the `chrome-devtools` command:
+
+```powershell
+# Check status of the background daemon
+chrome-devtools status
+
+# Navigate to a URL
+chrome-devtools navigate_page "https://example.com"
+
+# Start the background daemon explicitly with custom arguments
+chrome-devtools start --auto-connect
+```
+For more CLI features, reference the [CLI documentation](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/main/docs/cli.md).
+
 ## 4. Installed skills (documentation & changelog)
 
 ### Repo-local (`.agents/skills/`)
@@ -306,6 +348,7 @@ Refresh AI config after vendor changes:
 2. **AGENTS.md** â€” If default commands, layout, or agent behavior changed, update root `AGENTS.md`.
 3. **This guide** â€” If paths, MCP, skills, or CI workflows changed, update `docs/agent-tech-guide.md`.
 4. **Do not** commit or document `.env` values; reference variable **names** only.
+5. **gh-aw / Copilot secrets**: Follow [ADR-0010](../next-forge/docs/adr/0010-gh-aw-copilot-secrets-and-root-env-sync.md) — root `.env` → `yarn setup:env` + `yarn setup:gh-aw`; repo secret `COPILOT_GITHUB_TOKEN`; never log PAT values.
 
 ### Cross-session handoff
 
@@ -335,14 +378,64 @@ node scripts/validate-changelog.mjs
 node scripts/validate-changelog.mjs --require-update   # after editing monitored paths
 ```
 
+**Pre-flight pipeline (recommended before PR):**
+
+```powershell
+yarn preflight:env        # env smoke (+ report)
+yarn preflight:fast       # lint + test (~5 min, no build)
+yarn preflight            # full gate: both stacks, check + test + build
+yarn preflight:ci         # CI mirror (affected stacks)
+yarn preflight:forge      # next-forge only
+yarn preflight:report     # full + JSON report artifact
+yarn quality:route --from docs/devops/reports/preflight-latest.json
+```
+
+**TDD profiles:**
+
+```powershell
+yarn preflight:tdd-red -- --test <path>      # expect failure
+yarn preflight:tdd-green -- --test <path>    # scoped test + lint
+yarn preflight:tdd-refactor -- --test <path> # lint + test + boundaries
+```
+
+Manifest: `scripts/preflight.manifest.json` · Skills: `.agents/skills/modme-preflight/SKILL.md`, `.agents/skills/modme-tdd/SKILL.md`, `.agents/skills/modme-quality-orchestrator/SKILL.md` · Runbook: `docs/devops/quality-loop.md` · Report schema: `docs/devops/preflight-report.schema.json`
+
+**Quality loop (local preflight → PR → CI artifact → gh-aw triage → quality:route):**
+
+1. **Local:** `yarn preflight:env` → TDD profile or `yarn preflight:fast --report` → full gate before push.
+2. **PR:** `.github/workflows/preflight-ci.yml` and `pre-commit-check.yml` run `preflight:ci`; artifact `preflight-report` (or `preflight-report-pre-commit`) uploads `docs/devops/reports/preflight-latest.json` with `if: always()`.
+3. **Triage:** gh-aw `preflight-failure-triage.md` comments and runs `apply-preflight-labels.mjs` (`ci:failed`, `failure:<class>`, `stack:*`).
+4. **Route:** `yarn quality:route --from docs/devops/reports/preflight-latest.json` (or `--pr N`) picks skills from `quality-skills-roster.json`.
+
+```powershell
+yarn preflight --report                              # docs/devops/reports/preflight-latest.json
+yarn quality:route --from docs/devops/reports/preflight-latest.json
+yarn quality:route --pr 123 --runtime cursor
+yarn preflight:tdd-red -- --test <path>              # TDD red phase
+yarn preflight:tdd-green -- --test <path>
+yarn preflight:tdd-refactor -- --test <path>
+```
+
+| Asset | Purpose |
+|-------|---------|
+| `docs/devops/preflight-report.schema.json` | Report contract |
+| `docs/devops/quality-loop.md` | Full runbook (mermaid + verification checklist) |
+| `scripts/lib/preflight-report.mjs` | `buildPreflightReport`, `writePreflightReport` |
+| `scripts/quality-orchestrator.mjs` | Route failures to Cursor/tmux |
+| `scripts/apply-preflight-labels.mjs` | PR labels from report |
+| `.agents/skills/modme-quality-orchestrator/SKILL.md` | Orchestrator skill |
+| `.agents/skills/modme-tdd/SKILL.md` | TDD red/green/refactor |
+| `scripts/quality-skills-roster.json` | Optional skills.sh installs |
+
+gh-aw: `preflight-failure-triage.md`, `pr-preflight-review.md`, `tdd-issue-bootstrap.md` (compile WSL/CI per ADR-0010).
+
 **next-forge (Ultracite/Biome):**
 
 ```powershell
 yarn check:forge                            # fast lint (also runs on commit when next-forge/ staged)
 yarn fix:forge                              # auto-fix
-yarn verify:forge                           # CI parity: check + test + build
-yarn verify:generative                      # GenerativeUI CI parity: lint + test + build
-yarn repo:doctor                            # remote, workspace, AGENTS.md alignment
+yarn preflight:forge                        # CI parity: check + test + build (+ boundaries)
+yarn verify:forge                           # alias of preflight:forge via verify-forge-ci.ps1
 ```
 
 Pre-commit runs automatically on `git commit` after hook install (`setup.ps1`, worktree bootstrap, and `new-agent-worktree.ps1` also install hooks). Staged `next-forge/**` changes trigger `ultracite check`; test/build run in CI only.

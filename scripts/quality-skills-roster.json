@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "description": "Curated skills.sh install commands for the ModMe quality loop (Tier B). Install manually or via yarn quality:skills:install when safe.",
+  "scope": "project",
+  "agent": "cursor",
+  "skills": [
+    {
+      "id": "turborepo",
+      "role": "next-forge task graph, boundaries, cache",
+      "install": "npx skills add vercel/turborepo@turborepo --agent cursor -y"
+    },
+    {
+      "id": "vitest-testing",
+      "role": "Root + package test patterns",
+      "install": "npx skills add oakoss/agent-skills@vitest-testing --agent cursor -y"
+    },
+    {
+      "id": "test-automator",
+      "role": "Test scaffolding automation",
+      "install": "npx skills add sickn33/antigravity-awesome-skills@test-automator --agent cursor -y"
+    },
+    {
+      "id": "testing-cicd-init",
+      "role": "CI bootstrap patterns",
+      "install": "npx skills add shipshitdev/library@testing-cicd-init --agent cursor -y"
+    },
+    {
+      "id": "github-pr-query",
+      "role": "PR/check introspection for gh-aw",
+      "install": "npx skills add github/gh-aw@github-pr-query --agent cursor -y"
+    },
+    {
+      "id": "github-automation",
+      "role": "Label/comment automation",
+      "install": "npx skills add ruvnet/ruflo@github-automation --agent cursor -y"
+    },
+    {
+      "id": "review-pull-request",
+      "role": "Structured PR review",
+      "install": "npx skills add b-mendoza/agent-skills@review-pull-request --agent cursor -y"
+    },
+    {
+      "id": "ci-debugging",
+      "role": "Log-driven failure diagnosis",
+      "install": "npx skills add citypaul/.dotfiles@ci-debugging --agent cursor -y"
+    },
+    {
+      "id": "fix-ci",
+      "role": "CI repair playbooks",
+      "install": "npx skills add s-hiraoku/synapse-a2a@fix-ci --agent cursor -y"
+    },
+    {
+      "id": "triage-issue",
+      "role": "Issue labeling from failure context",
+      "install": "npx skills add kirkchen/cadence@triage-issue --agent cursor -y"
+    },
+    {
+      "id": "parallel-agents",
+      "role": "Parallel domain dispatch (WSL)",
+      "install": "npx skills add parcadei/continuous-claude-v3@parallel-agents --agent cursor -y"
+    }
+  ],
+  "notes": [
+    "Do not bulk-install in CI — roster is documentation + optional local setup.",
+    "Tier A skills/agents are already in-repo; see quality-orchestrator.manifest.json agents.tierA.",
+    "agent-manager (Tier C): vendor fractalmind-ai/agent-manager-skill under .tools/agent-manager/ for tmux runtime."
+  ]
+}

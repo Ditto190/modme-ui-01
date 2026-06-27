@@ -1,0 +1,107 @@
+name: Catalog CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+      - dev
+    paths:
+      - "next-forge/packages/database/**"
+      - "next-forge/supabase/**"
+      - ".github/workflows/catalog-ci.yml"
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+      - dev
+    paths:
+      - "next-forge/packages/database/**"
+      - "next-forge/supabase/**"
+      - ".github/workflows/catalog-ci.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: catalog-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secret-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Block tracked env files
+        run: |
+          set -euo pipefail
+          if git ls-files | grep -E '(^|/)\.env$|\.env\.local$|\.env\.prod$' ; then
+            echo "::err::Secret env files must not be committed. Remove from git and add to .gitignore."
+            exit 1
+          fi
+          echo "No .env files tracked."
+
+  catalog:
+    needs: [secret-guard]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: next-forge
+    env:
+      # Remote cache: gate on vars.TURBO_REMOTE_CACHE_ENABLED (see docs/monorepo-build-ci-setup.md)
+      TURBO_API: ${{ vars.TURBO_API }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore Turbo local cache
+        if: vars.TURBO_REMOTE_CACHE_ENABLED != 'true'
+        uses: actions/cache@v4
+        with:
+          path: next-forge/.turbo
+          key: turbo-catalog-${{ runner.os }}-${{ hashFiles('next-forge/turbo.json', 'next-forge/bun.lock') }}-${{ github.sha }}
+          restore-keys: |
+            turbo-catalog-${{ runner.os }}-${{ hashFiles('next-forge/turbo.json', 'next-forge/bun.lock') }}-
+            turbo-catalog-${{ runner.os }}-
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: next-forge/package.json
+
+      - name: Install deps
+        run: bun install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: bun run build --filter=@repo/database
+
+      - name: Database unit tests
+        run: bun run test --filter=@repo/database
+
+      - name: Validate Prisma schema
+        working-directory: next-forge/packages/database
+        run: bunx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > check.sql
+
+      - name: Validate Supabase migrations
+        working-directory: next-forge/packages/database
+        run: bunx supabase db lint --workdir ../.. --dns-resolver https
+
+  deploy-staging:
+    needs: catalog
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Staging
+        run: echo "Deploy to staging is not automated yet — wire Pulumi/Vercel when ready."
+
+  deploy-production:
+    needs: catalog
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Production
+        run: echo "Deploy to production is not automated yet — wire Pulumi/Vercel when ready."

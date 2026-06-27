@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "description": "ModMe dev session lifecycle — single dispatcher (modme-session.ps1). VoltAgent-style: one bootstrap, explicit phases.",
+  "phases": {
+    "terminal": {
+      "description": "New integrated terminal — load env, ports, project profile",
+      "steps": [
+        "bootstrap",
+        "profile",
+        "banner"
+      ]
+    },
+    "session-start": {
+      "description": "Workspace / worktree open — sync dotenv if root .env exists, write runtime env, doctor warn",
+      "steps": [
+        "bootstrap",
+        "sync-env-if-needed",
+        "runtime-env",
+        "worktree-doctor-warn"
+      ]
+    },
+    "pre-launch": {
+      "description": "VS Code task/debug pre-step — write .vscode/.env.runtime for envFile",
+      "steps": [
+        "runtime-env"
+      ]
+    },
+    "session-end": {
+      "description": "Agent session end — delegates to vibe-session-finish when -Yes/-DryRun passed",
+      "steps": [
+        "marker",
+        "vibe-finish-optional"
+      ]
+    },
+    "verify": {
+      "description": "Test-automator smoke — env bootstrap + required paths (no secret values)",
+      "steps": [
+        "bootstrap",
+        "runtime-env",
+        "assert"
+      ]
+    },
+    "preflight": {
+      "description": "Optional quality gate — yarn preflight:fast or yarn preflight",
+      "steps": [
+        "delegates-to-preflight.mjs"
+      ]
+    }
+  },
+  "envSources": [
+    {
+      "id": "root",
+      "path": ".env",
+      "required": false
+    },
+    {
+      "id": "ports",
+      "path": ".worktree-ports.env",
+      "required": false
+    },
+    {
+      "id": "forge-db",
+      "path": "next-forge/packages/database/.env",
+      "required": false
+    },
+    {
+      "id": "forge-app",
+      "path": "next-forge/apps/app/.env.local",
+      "required": false
+    }
+  ],
+  "runtimeEnvFile": ".vscode/.env.runtime",
+  "related": {
+    "adr": "next-forge/docs/adr/0010-gh-aw-copilot-secrets-and-root-env-sync.md",
+    "skill": ".agents/skills/modme-dev-setup/SKILL.md"
+  }
+}

@@ -1,0 +1,21 @@
+---
+model: googleai/gemini-2.5-flash
+config:
+  temperature: 0.1
+input:
+  schema:
+    title: string
+    content: string
+output:
+  format: json
+  schema:
+    category: string, one of: architecture, database, frontend, backend, devops, security, performance, testing, ai-tooling
+    severity: string, one of: low, medium, high, critical
+    tags(array): string, relevant search and topic tags
+    summary: string, 1-2 sentences summarizing the content
+---
+Analyze the following document and classify it. Return a JSON object matching the requested schema.
+
+Title: {{title}}
+Content:
+{{content}}

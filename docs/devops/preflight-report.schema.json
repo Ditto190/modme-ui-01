@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://modme.dev/schemas/preflight-report.v1.json",
+  "title": "ModMe Preflight Report",
+  "description": "Machine-readable preflight pipeline results for CI artifacts and quality orchestration",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "profile",
+    "ok",
+    "durationMs",
+    "summary",
+    "steps"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "profile": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string"
+    },
+    "affected": {
+      "type": "object",
+      "properties": {
+        "forge": { "type": "boolean" },
+        "generative": { "type": "boolean" },
+        "inbox": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "durationMs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "passed", "failed", "skipped", "failureClasses"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 },
+        "skipped": { "type": "integer", "minimum": 0 },
+        "failureClasses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["env", "lint", "unit-test", "build", "boundary", "guard", "infra"]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "status", "durationMs", "failureClass"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["passed", "failed", "skipped"]
+          },
+          "durationMs": { "type": "integer", "minimum": 0 },
+          "failureClass": {
+            "type": "string",
+            "enum": ["env", "lint", "unit-test", "build", "boundary", "guard", "infra"]
+          },
+          "logExcerpt": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

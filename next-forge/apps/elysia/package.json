@@ -1,0 +1,21 @@
+{
+  "name": "@repo/elysia",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "build": "bun build src/index.ts --target bun --outdir ./dist",
+    "start": "NODE_ENV=production bun dist/index.js",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .turbo dist node_modules"
+  },
+  "dependencies": {
+    "@elysiajs/swagger": "^1.3.1",
+    "elysia": "1.4.29"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "bun-types": "1.3.14"
+  }
+}
