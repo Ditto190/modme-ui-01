@@ -29,6 +29,9 @@ Single onboarding map for Cursor agents, cloud agents, and Copilot. Run `/init` 
 | `yarn check:forge` / `yarn verify:forge` | next-forge CI parity |
 | `yarn verify:generative` | GenerativeUI CI parity |
 | `yarn pre-commit:check` | Staged-aware hook checks |
+| `yarn worktree:doctor` / `yarn worktree:doctor:fix` | Worktree pre-flight |
+| `yarn setup:modme` / `setup:env` / `setup:gh-aw` | Root `.env` sync + gh-aw Copilot secret (ADR-0010) |
+| `yarn setup:turbo-cache` | Turbo remote cache compose check + GitHub `vars`/`secrets` hints (ADR-0011) |
 | `.\scripts\new-agent-worktree.ps1` | Isolated feature worktrees |
 
 ### Codebase deep docs (`docs/codebase/`)
@@ -47,7 +50,7 @@ Single onboarding map for Cursor agents, cloud agents, and Copilot. Run `/init` 
 
 ## next-forge (primary)
 
-Setup: [`next-forge/SETUP.md`](../next-forge/SETUP.md). Skill: [`.agents/skills/next-forge/SKILL.md`](../.agents/skills/next-forge/SKILL.md).
+Setup: [`next-forge/SETUP.md`](../next-forge/SETUP.md). Skill: [`.agents/skills/next-forge/SKILL.md`](../.agents/skills/next-forge/SKILL.md). **Env + gh-aw secrets**: [ADR-0010](../next-forge/docs/adr/0010-gh-aw-copilot-secrets-and-root-env-sync.md), [`modme-dev-setup` skill](../.agents/skills/modme-dev-setup/SKILL.md), `yarn setup:modme`.
 
 | App | Port | Path | Purpose |
 |-----|------|------|---------|
@@ -163,6 +166,8 @@ Rollback: `yarn dev:generative` restores legacy stack; disable feature flags in 
 | `.buildkite/pipeline.yml` | GenerativeUI lint/test/build |
 
 Local parity: `yarn verify:forge`, `yarn verify:generative`, `yarn pre-commit:check`
+
+**Build & CI:** [`docs/monorepo-build-ci-setup.md`](monorepo-build-ci-setup.md) · [ADR-0011](../next-forge/docs/adr/0011-turbo-self-hosted-remote-cache.md) (Turbo remote cache) · [`docs/turbo-remote-cache-s3.md`](turbo-remote-cache-s3.md) (S3 server detail)
 
 ---
 

@@ -1,5 +1,7 @@
 name: CI
 
+# Stack jobs below mirror preflight manifest steps; unified manifest gate: preflight-ci.yml
+
 on:
   push:
     branches:
@@ -90,6 +92,14 @@ jobs:
           cache-dependency-path: GenerativeUI_monorepo/yarn.lock
       - name: Enable Corepack (Yarn 3)
         run: corepack enable
+      - name: Restore Turbo local cache
+        uses: actions/cache@v4
+        with:
+          path: GenerativeUI_monorepo/.turbo
+          key: turbo-generative-${{ runner.os }}-${{ hashFiles('GenerativeUI_monorepo/yarn.lock') }}-${{ github.sha }}
+          restore-keys: |
+            turbo-generative-${{ runner.os }}-${{ hashFiles('GenerativeUI_monorepo/yarn.lock') }}-
+            turbo-generative-${{ runner.os }}-
       - name: Install deps
         run: yarn install --immutable 2>/dev/null || yarn install
       - name: Lint
@@ -106,8 +116,24 @@ jobs:
     defaults:
       run:
         working-directory: next-forge
+    env:
+      # Remote cache: gate on repo variable TURBO_REMOTE_CACHE_ENABLED=true (not next-forge/.env).
+      # See docs/monorepo-build-ci-setup.md and docs/turbo-remote-cache-s3.md
+      TURBO_API: ${{ vars.TURBO_API }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
     steps:
       - uses: actions/checkout@v4
+      - name: Restore Turbo local cache
+        if: vars.TURBO_REMOTE_CACHE_ENABLED != 'true'
+        uses: actions/cache@v4
+        with:
+          path: next-forge/.turbo
+          key: turbo-forge-${{ runner.os }}-${{ hashFiles('next-forge/turbo.json', 'next-forge/bun.lock') }}-${{ github.sha }}
+          restore-keys: |
+            turbo-forge-${{ runner.os }}-${{ hashFiles('next-forge/turbo.json', 'next-forge/bun.lock') }}-
+            turbo-forge-${{ runner.os }}-
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:

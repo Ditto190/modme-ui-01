@@ -89,3 +89,41 @@ developer-experience:
   - 'scripts/**/*'
   - 'SETUP_RECORD.md'
   - 'DEVCONTAINER_SETUP.md'
+
+# next-forge stack
+next-forge:
+  - 'next-forge/**'
+
+# GenerativeUI legacy stack
+generative-ui:
+  - 'GenerativeUI_monorepo/**'
+
+# Preflight pipeline
+preflight:
+  - 'scripts/preflight.*'
+  - 'scripts/preflight.manifest.json'
+  - 'scripts/lib/preflight-report.mjs'
+  - 'scripts/quality-orchestrator.*'
+  - 'docs/devops/**'
+
+# next-forge (primary Turborepo)
+next-forge:
+  - 'next-forge/**'
+
+# GenerativeUI legacy stack
+generative-ui:
+  - 'GenerativeUI_monorepo/**'
+
+# Preflight / quality pipeline
+preflight:
+  - 'scripts/preflight.mjs'
+  - 'scripts/preflight.manifest.json'
+  - 'scripts/lib/preflight-report.mjs'
+  - 'scripts/apply-preflight-labels.mjs'
+  - 'scripts/quality-orchestrator.mjs'
+  - 'scripts/quality-orchestrator.manifest.json'
+  - 'docs/devops/preflight-report.schema.json'
+  - 'docs/devops/quality-loop.md'
+  - '.agents/skills/modme-preflight/**'
+  - '.agents/skills/modme-quality-orchestrator/**'
+  - '.agents/skills/modme-tdd/**'

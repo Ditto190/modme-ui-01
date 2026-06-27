@@ -1,0 +1,327 @@
+{
+  "version": 1,
+  "description": "ModMe pre-flight pipeline — env, guards, lint, test, build across dual monorepos",
+  "profiles": {
+    "env": {
+      "label": "Environment smoke",
+      "stages": [
+        "env"
+      ]
+    },
+    "fast": {
+      "label": "Quick pre-dev smoke (~5 min)",
+      "stages": [
+        "env",
+        "guard",
+        "repo-unit",
+        "forge-lint",
+        "forge-test"
+      ]
+    },
+    "forge": {
+      "label": "next-forge CI parity",
+      "stages": [
+        "env",
+        "forge-lint",
+        "forge-test",
+        "forge-build",
+        "forge-boundaries"
+      ]
+    },
+    "generative": {
+      "label": "GenerativeUI verify",
+      "stages": [
+        "generative-verify"
+      ]
+    },
+    "full": {
+      "label": "Full pre-PR gate (both stacks)",
+      "stages": [
+        "env",
+        "guard",
+        "repo-quality",
+        "forge-lint",
+        "forge-test",
+        "forge-build",
+        "forge-boundaries",
+        "generative-verify"
+      ]
+    },
+    "ci": {
+      "label": "GitHub CI mirror (affected stacks)",
+      "stages": [
+        "guard",
+        "repo-ci",
+        "stack-quality-affected"
+      ]
+    },
+    "tdd-red": {
+      "label": "TDD red — scoped test (expect failure)",
+      "stages": [
+        "tdd-red"
+      ]
+    },
+    "tdd-green": {
+      "label": "TDD green — lint + scoped test",
+      "stages": [
+        "tdd-green"
+      ]
+    },
+    "tdd-refactor": {
+      "label": "TDD refactor — lint + scoped test + boundaries",
+      "stages": [
+        "tdd-refactor"
+      ]
+    }
+  },
+  "stages": {
+    "env": {
+      "parallel": true,
+      "steps": [
+        "session-verify",
+        "forge-env-verify"
+      ]
+    },
+    "guard": {
+      "parallel": false,
+      "steps": [
+        "secret-guard",
+        "worktree-doctor"
+      ]
+    },
+    "repo-unit": {
+      "parallel": false,
+      "steps": [
+        "scripts-test"
+      ]
+    },
+    "repo-quality": {
+      "parallel": false,
+      "steps": [
+        "scripts-test",
+        "changelog",
+        "launch-json",
+        "launch-json-sync",
+        "cursor-skills"
+      ]
+    },
+    "repo-ci": {
+      "parallel": false,
+      "steps": [
+        "changelog",
+        "changelog-strict",
+        "launch-json",
+        "launch-json-sync",
+        "cursor-skills"
+      ]
+    },
+    "forge-lint": {
+      "parallel": false,
+      "steps": [
+        "forge-check"
+      ]
+    },
+    "forge-test": {
+      "parallel": false,
+      "steps": [
+        "forge-test"
+      ]
+    },
+    "forge-build": {
+      "parallel": false,
+      "steps": [
+        "forge-build"
+      ]
+    },
+    "forge-boundaries": {
+      "parallel": false,
+      "steps": [
+        "forge-boundaries"
+      ],
+      "optional": true
+    },
+    "generative-verify": {
+      "parallel": false,
+      "steps": [
+        "generative-verify"
+      ]
+    },
+    "stack-quality-affected": {
+      "parallel": true,
+      "dynamic": "affected-stacks"
+    },
+    "tdd-red": {
+      "parallel": false,
+      "steps": [
+        "tdd-red-test"
+      ]
+    },
+    "tdd-green": {
+      "parallel": false,
+      "steps": [
+        "tdd-green-test",
+        "forge-check"
+      ]
+    },
+    "tdd-refactor": {
+      "parallel": false,
+      "steps": [
+        "forge-check",
+        "tdd-refactor-test",
+        "forge-boundaries"
+      ],
+      "optional": true
+    }
+  },
+  "steps": {
+    "session-verify": {
+      "title": "Session env bootstrap",
+      "runner": "powershell",
+      "script": "scripts/modme-session.ps1",
+      "args": [
+        "-Phase",
+        "verify"
+      ]
+    },
+    "forge-env-verify": {
+      "title": "next-forge env keys",
+      "runner": "forge",
+      "args": [
+        "run",
+        "env:verify"
+      ]
+    },
+    "secret-guard": {
+      "title": "No tracked .env files",
+      "runner": "node-inline",
+      "handler": "secretGuard"
+    },
+    "worktree-doctor": {
+      "title": "Worktree health (warn)",
+      "runner": "powershell",
+      "script": "scripts/worktree-doctor.ps1",
+      "args": [
+        "-Quiet"
+      ],
+      "optional": true
+    },
+    "scripts-test": {
+      "title": "Root script unit tests",
+      "runner": "yarn",
+      "args": [
+        "inbox:test"
+      ]
+    },
+    "changelog": {
+      "title": "CHANGELOG format",
+      "runner": "node",
+      "script": "scripts/validate-changelog.mjs"
+    },
+    "changelog-strict": {
+      "title": "CHANGELOG updated when required",
+      "runner": "node",
+      "script": "scripts/validate-changelog.mjs",
+      "args": [
+        "--require-update"
+      ]
+    },
+    "launch-json": {
+      "title": "launch.json schema",
+      "runner": "node",
+      "script": "scripts/validate-launch-json.mjs"
+    },
+    "launch-json-sync": {
+      "title": "launch.json manifest sync",
+      "runner": "node",
+      "script": "scripts/validate-launch-json.mjs",
+      "args": [
+        "--require-manifest-sync"
+      ]
+    },
+    "cursor-skills": {
+      "title": "Cursor skills integrity",
+      "runner": "node",
+      "script": "scripts/validate-cursor-skills.mjs",
+      "args": [
+        "--project-only"
+      ]
+    },
+    "forge-check": {
+      "title": "next-forge ultracite check",
+      "runner": "forge",
+      "args": [
+        "run",
+        "check"
+      ]
+    },
+    "forge-test": {
+      "title": "next-forge turbo test",
+      "runner": "forge",
+      "args": [
+        "run",
+        "test"
+      ]
+    },
+    "forge-build": {
+      "title": "next-forge turbo build",
+      "runner": "forge",
+      "args": [
+        "run",
+        "build"
+      ]
+    },
+    "forge-boundaries": {
+      "title": "next-forge turbo boundaries",
+      "runner": "forge",
+      "args": [
+        "run",
+        "boundaries"
+      ],
+      "optional": true
+    },
+    "generative-verify": {
+      "title": "GenerativeUI lint + test + build",
+      "runner": "yarn-cwd",
+      "cwd": "GenerativeUI_monorepo",
+      "args": [
+        "verify"
+      ]
+    },
+    "inbox-audit": {
+      "title": "Inbox funnel audit (strict)",
+      "runner": "node",
+      "script": "scripts/inbox-audit.mjs",
+      "args": [
+        "--lens",
+        "funnel",
+        "--strict"
+      ],
+      "optional": true
+    },
+    "tdd-red-test": {
+      "title": "TDD red — scoped test (expect failure)",
+      "runner": "node-inline",
+      "handler": "tddRedTest"
+    },
+    "tdd-green-test": {
+      "title": "TDD green — scoped test (expect pass)",
+      "runner": "node-inline",
+      "handler": "tddGreenTest"
+    },
+    "tdd-refactor-test": {
+      "title": "TDD refactor — scoped test (expect pass)",
+      "runner": "node-inline",
+      "handler": "tddGreenTest"
+    }
+  },
+  "affected": {
+    "forgePrefix": "next-forge/",
+    "generativePrefix": "GenerativeUI_monorepo/",
+    "inboxPrefix": "GenerativeUI_monorepo/docs/inbox/"
+  },
+  "related": {
+    "ciWorkflow": ".github/workflows/ci.yml",
+    "preCommit": "scripts/pre-commit-checks.mjs",
+    "skill": ".agents/skills/modme-preflight/SKILL.md"
+  }
+}

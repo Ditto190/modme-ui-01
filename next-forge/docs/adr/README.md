@@ -19,6 +19,8 @@ Architecture Decision Records provide:
 | **0001** | [Supabase Local Development with Hybrid Cloud Architecture](./0001-supabase-local-development-with-hybrid-cloud.md) | **Superseded** | 2026-06-20 | Database & Infrastructure |
 | **0002** | [Cloud-First Supabase with Prisma](./0002-cloud-first-supabase-with-prisma.md) | **Accepted** | 2026-06-20 | Database & Infrastructure |
 | **0009** | [Inbox Data Contract and Quality Gates](./0009-inbox-data-contract-and-quality-gates.md) | **Accepted** | 2026-06-20 | Inbox Pipeline |
+| **0010** | [gh-aw Copilot Secrets and Root `.env` Sync](./0010-gh-aw-copilot-secrets-and-root-env-sync.md) | **Accepted** | 2026-06-27 | CI / Agentic Workflows |
+| **0011** | [Turbo Self-Hosted Remote Cache](./0011-turbo-self-hosted-remote-cache.md) | **Accepted** | 2026-06-27 | CI / Build Cache |
 
 ## Creating a New ADR
 
@@ -319,6 +321,6 @@ Optionally validate ADRs in CI:
 
 ---
 
-**Last Updated**: 2026-06-20  
+**Last Updated**: 2026-06-27  
 **Maintainer**: next-forge team  
 **Questions/Feedback**: Create an issue or discussion in the repository

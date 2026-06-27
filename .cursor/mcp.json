@@ -1,4 +1,4 @@
-﻿{
+{
   "mcpServers": {
     "skills-sh": {
       "command": "node",
@@ -21,6 +21,28 @@
       "args": [
         "-y",
         "next-devtools-mcp@latest"
+      ]
+    },
+    "chrome-devtools": {
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--auto-connect"
+      ]
+    },
+    "gitkraken": {
+      "command": "C:\\Users\\dylan\\AppData\\Local\\Microsoft\\WinGet\\Packages\\GitKraken.cli_Microsoft.Winget.Source_8wekyb3d8bbwe\\gk.exe",
+      "args": [
+        "mcp",
+        "--host=cursor"
+      ]
+    },
+    "genkit": {
+      "command": "genkit",
+      "args": [
+        "mcp",
+        "--no-update-notification"
       ]
     }
   }

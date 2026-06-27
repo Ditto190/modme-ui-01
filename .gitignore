@@ -3,6 +3,10 @@
 .env.*
 !.env.example
 
+# Local data and sandbox persistence (never commit client data)
+data/
+menv/
+
 # Dependencies and package managers
 node_modules/
 .pnp.*
@@ -62,6 +66,7 @@ Thumbs.db
 # Test and temp
 .tmp/
 temp/
+docs/devops/reports/
 **/playwright-report/
 **/test-results/
 **/intake-pipeline/outgoing/
@@ -73,7 +78,9 @@ temp/
 .agents/temp_skills/
 *.bak
 
-# Local agent runtime (SQLite)
+# Preflight / DevOps reports (generated locally and in CI)
+docs/devops/reports/
+
 **/.voltagent/*.db
 # lean-ctx machine-local
 .lean-ctx-id
@@ -97,7 +104,7 @@ quality/
 -w
 *.backup
 .agents/skills/.antigravity-install-manifest.json
-
+.agents/
 
 # Beads / Dolt files (added by bd init)
 .dolt/

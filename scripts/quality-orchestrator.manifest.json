@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "description": "ModMe quality loop — route preflight failures and PR context to Cursor subagents or tmux agent-manager (WSL)",
+  "runtimes": {
+    "cursor": {
+      "label": "Cursor subagents (default, Windows + macOS)",
+      "dispatch": "prompt"
+    },
+    "tmux": {
+      "label": "tmux agent-manager (WSL long runs)",
+      "dispatch": "agent-manager",
+      "requiresWsl": true,
+      "agentManagerScript": ".tools/agent-manager/scripts/main.py"
+    }
+  },
+  "agents": {
+    "tierA": {
+      "modme-preflight": {
+        "skill": ".agents/skills/modme-preflight/SKILL.md",
+        "role": "preflight-runner"
+      },
+      "ci-watcher": {
+        "path": ".cursor/agents/ci-watcher.md",
+        "role": "pr-checks-pending"
+      },
+      "ci-investigator": {
+        "subagent": "ci-investigator",
+        "role": "single-failed-gha-check"
+      },
+      "pr-test-analyzer": {
+        "subagent": "pr-test-analyzer",
+        "role": "test-suite-failures"
+      },
+      "silent-failure-hunter": {
+        "subagent": "silent-failure-hunter",
+        "role": "weak-assertions"
+      },
+      "bugbot": {
+        "subagent": "bugbot",
+        "role": "post-green-review",
+        "readonly": true
+      },
+      "security-review": {
+        "subagent": "security-review",
+        "role": "security-audit",
+        "readonly": true
+      },
+      "modme-dev-setup": {
+        "skill": ".agents/skills/modme-dev-setup/SKILL.md",
+        "role": "env-bootstrap"
+      },
+      "tdd-red": {
+        "agent": "agent-library/agents/tdd-red.agent.md",
+        "role": "tdd-red-phase"
+      },
+      "tdd-green": {
+        "agent": "agent-library/agents/tdd-green.agent.md",
+        "role": "tdd-green-phase"
+      },
+      "tdd-refactor": {
+        "agent": "agent-library/agents/tdd-refactor.agent.md",
+        "role": "tdd-refactor-phase"
+      }
+    }
+  },
+  "routing": {
+    "failureClass": {
+      "unit-test": {
+        "cursor": ["pr-test-analyzer", "silent-failure-hunter"],
+        "tmux": ["EMP_CI"]
+      },
+      "lint": {
+        "cursor": ["modme-preflight"],
+        "cursorFollowUp": ["yarn fix:forge"],
+        "tmux": ["EMP_CI"]
+      },
+      "build": {
+        "cursor": ["ci-investigator"],
+        "tmux": ["EMP_CI"]
+      },
+      "boundary": {
+        "cursor": ["ci-investigator"],
+        "tmux": ["EMP_CI"]
+      },
+      "env": {
+        "cursor": ["modme-dev-setup"],
+        "tmux": []
+      },
+      "guard": {
+        "cursor": ["modme-preflight"],
+        "tmux": []
+      },
+      "infra": {
+        "cursor": ["ci-investigator"],
+        "tmux": ["EMP_CI"]
+      }
+    },
+    "prGreenLargeDiff": {
+      "cursor": ["bugbot"],
+      "tmux": ["EMP_REVIEW"],
+      "diffLinesThreshold": 400
+    },
+    "tddIssue": {
+      "cursor": ["tdd-red", "tdd-green", "tdd-refactor"],
+      "tmux": ["EMP_TDD_RED", "EMP_TDD_GREEN", "EMP_TDD_REFACTOR"]
+    }
+  },
+  "tmuxEmployees": {
+    "EMP_CI": "CI failure diagnosis and repair",
+    "EMP_REVIEW": "Post-green PR review",
+    "EMP_TDD_RED": "Write failing tests first",
+    "EMP_TDD_GREEN": "Minimal implementation to pass tests",
+    "EMP_TDD_REFACTOR": "Refactor with full lint + boundaries"
+  },
+  "related": {
+    "preflightReportSchema": "docs/devops/preflight-report.schema.json",
+    "preflightReportDefault": "docs/devops/reports/preflight-latest.json",
+    "applyLabels": "scripts/apply-preflight-labels.mjs",
+    "skillsRoster": "scripts/quality-skills-roster.json",
+    "runbook": "docs/devops/quality-loop.md",
+    "skill": ".agents/skills/modme-quality-orchestrator/SKILL.md",
+    "adr": "next-forge/docs/adr/0010-gh-aw-copilot-secrets-and-root-env-sync.md"
+  }
+}

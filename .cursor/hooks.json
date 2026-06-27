@@ -1,1 +1,19 @@
-{"version": 1, "hooks": {}}
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/lean-ctx-post-edit.ps1",
+        "failClosed": false,
+        "timeoutSec": 3
+      }
+    ],
+    "stop": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/lean-ctx-stop-marker.ps1",
+        "failClosed": false,
+        "timeoutSec": 3
+      }
+    ]
+  }
+}

@@ -1,0 +1,61 @@
+---
+description: Cursor IDE best practices for ModMe (adapted from araguaci/cursor-skills + next-forge)
+alwaysApply: false
+globs:
+  - "next-forge/**"
+  - ".github/workflows/*.md"
+  - "scripts/**"
+---
+
+# Cursor IDE — ModMe / next-forge
+
+Adapted from [araguaci/cursor-skills](https://github.com/araguaci/cursor-skills) (MIT) and ModMe monorepo boundaries.
+
+## Environment setup (mandatory)
+
+1. Root `.env` → run `.\scripts\sync-env-from-root.ps1` before next-forge dev
+2. Package manager: **Bun** in `next-forge/` only (`yarn dev:forge:*` from root)
+3. Ports: app **3100**, web **3101**, api **3102**, docs **3104**, storybook **6106**
+## gh-aw secrets (ADR-0010)
+
+- Root `.env` (gitignored) is the single local source of truth
+- `yarn setup:env` → next-forge dotenv; `yarn setup:gh-aw` → GitHub `COPILOT_GITHUB_TOKEN`
+- Workflows default `engine: copilot`; extension v0.79.8+
+- Windows: compile in WSL or CI only
+
+## Project structure
+
+- `next-forge/apps/` — deployable apps
+- `next-forge/packages/` — `@repo/*` shared code
+- Never `workspace:*` or relative imports across `next-forge/` ↔ `GenerativeUI_monorepo/`
+- Feature work in Git worktrees, not main checkout
+
+## Code quality (cursor-skills aligned)
+
+- TypeScript strict; Zod validation at component boundaries
+- Functional React components; Server Components first
+- Early returns for errors; no deep nesting
+- kebab-case files/dirs; PascalCase components; camelCase hooks/props
+
+## gh-aw workflow rules
+
+- Edit `.github/workflows/*.md` only — never hand-edit `.lock.yml`
+- After frontmatter changes: `gh aw compile`
+- Trigger runs: `gh aw run <name>` (not `gh workflow run *.lock.yml`)
+- Writes via `safe-outputs` only; agent jobs stay read-only
+
+## DX commands
+
+```powershell
+.\scripts\setup-modme-dev.ps1    # full env + gh-aw + forge verify
+yarn dev:forge:core              # core stack
+yarn verify:forge                # CI parity
+gh aw compile --validate         # agentic workflows
+```
+
+## Review checklist
+
+- [ ] Env synced; no secrets committed
+- [ ] Correct monorepo boundary respected
+- [ ] gh-aw lock files regenerated if `.md` changed
+- [ ] `yarn check:forge` passes for next-forge edits

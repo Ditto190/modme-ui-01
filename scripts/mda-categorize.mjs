@@ -23,6 +23,8 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { resolve } from 'node:path';
+import { loadPrompt } from './lib/dotprompt-runner.mjs';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -106,12 +108,59 @@ async function runTaxonomyTeam() {
   const categories = await loadCategories();
   console.log(`[mda/taxonomy] Processing ${entries.length} entries...`);
 
+  let dotprompt = null;
+  try {
+    if (process.env.GEMINI_API_KEY) {
+      dotprompt = loadPrompt('inbox-categorize', resolve(import.meta.dirname, '../prompts'));
+    } else {
+      console.log('[mda/taxonomy] GEMINI_API_KEY not set. Using regex classification.');
+    }
+  } catch (err) {
+    console.warn(`[mda/taxonomy] Could not load Dotprompt: ${err.message}. Using regex classification.`);
+  }
+
   let updated = 0;
   for (const entry of entries) {
-    const fullText = [entry.title, entry.summary, entry.extracted_text].filter(Boolean).join(' ');
-    const inferredTags = inferTags(fullText);
-    const inferredSeverity = entry.severity === 'medium' ? inferSeverity(fullText) : entry.severity;
-    const categoryId = matchCategory(fullText, categories);
+    let inferredTags = [];
+    let inferredSeverity = entry.severity;
+    let categoryId = null;
+    let inferredSummary = null;
+
+    if (dotprompt) {
+      try {
+        console.log(`[mda/taxonomy] Running Dotprompt for entry ${entry.id.slice(0, 8)}...`);
+        const result = await dotprompt.generate({
+          title: entry.title || '',
+          content: entry.extracted_text || entry.summary || '',
+        });
+        
+        if (result && typeof result === 'object') {
+          inferredTags = result.tags || [];
+          inferredSeverity = result.severity || entry.severity;
+          inferredSummary = result.summary || null;
+          
+          if (result.category) {
+            const matchedCat = categories.find(
+              c => c.slug === result.category || c.name.toLowerCase() === result.category.toLowerCase()
+            );
+            if (matchedCat) {
+              categoryId = matchedCat.id;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn(`[mda/taxonomy] Dotprompt generation failed for ${entry.id.slice(0, 8)}: ${err.message}. Falling back to regex.`);
+        const fullText = [entry.title, entry.summary, entry.extracted_text].filter(Boolean).join(' ');
+        inferredTags = inferTags(fullText);
+        inferredSeverity = entry.severity === 'medium' ? inferSeverity(fullText) : entry.severity;
+        categoryId = matchCategory(fullText, categories);
+      }
+    } else {
+      const fullText = [entry.title, entry.summary, entry.extracted_text].filter(Boolean).join(' ');
+      inferredTags = inferTags(fullText);
+      inferredSeverity = entry.severity === 'medium' ? inferSeverity(fullText) : entry.severity;
+      categoryId = matchCategory(fullText, categories);
+    }
 
     // Merge inferred tags with existing tags (dedup)
     const mergedTags = Array.from(new Set([...(entry.tags ?? []), ...inferredTags]));
@@ -121,10 +170,11 @@ async function runTaxonomyTeam() {
       severity: inferredSeverity,
       status: 'categorized',
       ...(categoryId ? { category_id: categoryId } : {}),
+      ...(inferredSummary ? { summary: inferredSummary } : {}),
     };
 
     if (DRY_RUN) {
-      console.log(`[dry-run] ${entry.id.slice(0, 8)}... → tags:${mergedTags.join(',')}, severity:${inferredSeverity}`);
+      console.log(`[dry-run] ${entry.id.slice(0, 8)}... → tags:${mergedTags.join(',')}, severity:${inferredSeverity}, category:${categoryId || 'none'}`);
     } else {
       const { error: updateError } = await supabase
         .from('inbox_entries')

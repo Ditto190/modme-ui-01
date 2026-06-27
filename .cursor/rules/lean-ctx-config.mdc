@@ -1,0 +1,37 @@
+---
+description: "lean-ctx config artifacts — XDG path, schema reference, ensure workflow"
+globs: config-schema.json,.lean-ctx.toml,docs/lean-ctx/**
+alwaysApply: false
+---
+
+# lean-ctx configuration (ModMe)
+
+## Paths
+
+- **Global (active):** `~/.config/lean-ctx/config.toml` (XDG)
+- **Legacy (warn only):** `~/.lean-ctx/config.toml`
+- **Project overrides:** repo root `.lean-ctx.toml` (merged; project wins)
+- **Schema reference:** `docs/lean-ctx/config-schema.json` — from `lean-ctx config schema`; not read at runtime
+
+## Ensure workflow
+
+```powershell
+yarn lean-ctx:ensure              # detect + safe auto-apply missing keys
+yarn lean-ctx:ensure -- -CheckOnly
+yarn lean-ctx:schema:sync
+yarn lean-ctx:doctor
+```
+
+Script: `scripts/ensure-lean-ctx-config.ps1` — backs up `.bak` before writes; never overwrites customized keys without `-Force`.
+
+## ModMe preset (set only if key missing)
+
+`compression_level=max`, `memory_profile=balanced`, `tool_profile=power`, `proxy_enabled=true`, `max_ram_percent=5`, `graph_index_max_files=15000` (global); project `.lean-ctx.toml` sets `graph_index_max_files=15000`.
+
+Use CLI as source of truth (`lean-ctx config set`); do not hand-convert JSON schema to TOML.
+
+## Hybrid tool mapping
+
+See always-on [lean-ctx.mdc](./lean-ctx.mdc): `ctx_read` / `ctx_search` (MCP) + `lean-ctx -c` (shell).
+
+Full workflow: [`.agents/skills/smart-git-automation/references/lean-ctx-config-workflow.md`](../.agents/skills/smart-git-automation/references/lean-ctx-config-workflow.md)

@@ -178,6 +178,26 @@ jobs:
               labelsToRemove.add('needs-triage');
               console.log('Replaced needs-triage with status:triage');
             }
+
+            // Preflight / CI failure labels (from triage issues or PR bodies)
+            const preflightLabelPatterns = {
+              'ci:failed': /\bci:failed\b/i,
+              'ci:passed': /\bci:passed\b/i,
+              'failure:lint': /\bfailure:lint\b/i,
+              'failure:test': /\bfailure:test\b/i,
+              'failure:build': /\bfailure:build\b/i,
+              'failure:env': /\bfailure:env\b/i,
+              'stack:forge': /\bstack:forge\b/i,
+              'stack:generative': /\bstack:generative\b/i,
+              'tdd': /\blabel:\s*tdd\b|\btdd-red\b|\btdd-green\b/i,
+            };
+
+            for (const [label, pattern] of Object.entries(preflightLabelPatterns)) {
+              if (pattern.test(body) || pattern.test(issue.title)) {
+                labelsToAdd.add(label);
+                console.log('Added preflight label:', label);
+              }
+            }
             
             // Convert Sets to Arrays
             const finalLabels = Array.from(labelsToAdd).filter(l => !labelsToRemove.has(l));

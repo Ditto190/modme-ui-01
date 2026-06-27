@@ -7,6 +7,24 @@
       "skillPath": "skills/create-voltagent/SKILL.md",
       "computedHash": "c128fdcdf93d5e40fe87e044ba4ca6b78b0251cf4c51b6179699c282906e5a8a"
     },
+    "developing-genkit-dart": {
+      "source": "genkit-ai/skills",
+      "sourceType": "github",
+      "skillPath": "skills/developing-genkit-dart/SKILL.md",
+      "computedHash": "f1fc0f9e68d7c6f9df566426ec5a69dba888e6014849c70602efeffdd14b2f8e"
+    },
+    "developing-genkit-go": {
+      "source": "genkit-ai/skills",
+      "sourceType": "github",
+      "skillPath": "skills/developing-genkit-go/SKILL.md",
+      "computedHash": "af28b873ac92da889924d021df5af43d204586629531b16328218bfdb813a782"
+    },
+    "developing-genkit-js": {
+      "source": "genkit-ai/skills",
+      "sourceType": "github",
+      "skillPath": "skills/developing-genkit-js/SKILL.md",
+      "computedHash": "9aacfcf07d0eda52488b56f135f88b6ff9f5ccc59c2a14dffe318ff28ef1ffa1"
+    },
     "supabase": {
       "source": "supabase/agent-skills",
       "sourceType": "github",
