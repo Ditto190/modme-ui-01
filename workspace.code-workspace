@@ -1,25 +1,10 @@
 {
   "folders": [
-    {
-      "name": "Root (Monorepo_ModMe)",
-      "path": "."
-    },
-    {
-      "name": "next-forge",
-      "path": "./next-forge"
-    },
-    {
-      "name": "GenerativeUI",
-      "path": "./GenerativeUI_monorepo"
-    },
-    {
-      "name": "Scripts",
-      "path": "./scripts"
-    },
-    {
-      "name": "Agent skills",
-      "path": "./.agents/skills"
-    }
+    { "name": "Root", "path": "." },
+    { "name": "next-forge", "path": "next-forge" },
+    { "name": "GenerativeUI", "path": "GenerativeUI_monorepo" },
+    { "name": "scripts", "path": "scripts" },
+    { "name": "agent-skills", "path": ".agents/skills" }
   ],
   "settings": {
     "files.exclude": {
@@ -31,8 +16,7 @@
       "**/__pycache__": true,
       "**/.venv": true,
       "**/venv": true,
-      "**/*.pyc": true,
-      ".mastra": true
+      "**/*.pyc": true
     },
     "search.exclude": {
       "**/node_modules": true,
@@ -43,18 +27,10 @@
       "**/build": true,
       "**/dist": true,
       "**/.git": true,
-      "**/package-lock.json": true,
       "**/yarn.lock": true,
       "**/pnpm-lock.yaml": true
     },
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit",
-      "source.organizeImports": "explicit"
-    },
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "typescript.enablePromptUseWorkspaceTsdk": true,
     "git.ignoreLimitWarning": true,
     "terminal.integrated.defaultProfile.windows": "PowerShell"
   },
@@ -65,23 +41,7 @@
       "bradlc.vscode-tailwindcss",
       "GitHub.copilot",
       "GitHub.copilot-chat",
-      "GitHub.vscode-github-actions",
-      "eamodio.gitlens",
-      "ms-vscode-remote.remote-containers"
-    ]
-  },
-  "launch": {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": "next-forge: dev core",
-        "type": "node",
-        "request": "launch",
-        "runtimeExecutable": "yarn",
-        "runtimeArgs": ["dev:forge:core"],
-        "cwd": "${workspaceFolder:Root (Monorepo_ModMe)}",
-        "console": "integratedTerminal"
-      }
+      "eamodio.gitlens"
     ]
   },
   "tasks": {
@@ -91,45 +51,35 @@
         "label": "Dev: next-forge core",
         "type": "shell",
         "command": "yarn dev:forge:core",
-        "options": {
-          "cwd": "${workspaceFolder:Root (Monorepo_ModMe)}"
-        },
+        "options": { "cwd": "${workspaceFolder:Root}" },
         "problemMatcher": []
       },
       {
         "label": "Dev: GenerativeUI",
         "type": "shell",
         "command": "yarn dev:generative",
-        "options": {
-          "cwd": "${workspaceFolder:Root (Monorepo_ModMe)}"
-        },
+        "options": { "cwd": "${workspaceFolder:Root}" },
         "problemMatcher": []
       },
       {
-        "label": "Verify: next-forge CI parity",
+        "label": "Verify: next-forge",
         "type": "shell",
         "command": "yarn verify:forge",
-        "options": {
-          "cwd": "${workspaceFolder:Root (Monorepo_ModMe)}"
-        },
+        "options": { "cwd": "${workspaceFolder:Root}" },
         "problemMatcher": []
       },
       {
-        "label": "Verify: GenerativeUI CI parity",
+        "label": "Verify: GenerativeUI",
         "type": "shell",
         "command": "yarn verify:generative",
-        "options": {
-          "cwd": "${workspaceFolder:Root (Monorepo_ModMe)}"
-        },
+        "options": { "cwd": "${workspaceFolder:Root}" },
         "problemMatcher": []
       },
       {
         "label": "Repo alignment doctor",
         "type": "shell",
         "command": "yarn repo:doctor",
-        "options": {
-          "cwd": "${workspaceFolder:Root (Monorepo_ModMe)}"
-        },
+        "options": { "cwd": "${workspaceFolder:Root}" },
         "problemMatcher": []
       }
     ]
