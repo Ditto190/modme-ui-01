@@ -45,5 +45,9 @@
   "workbench.colorTheme": "Cursor Dark",
   "terminal.integrated.gpuAcceleration": "off",
   "explorer.autoReveal": true,
-  "explorer.confirmDelete": false
+  "explorer.confirmDelete": false,
+  "rust-analyzer.server.path": "${env:USERPROFILE}\\.cargo\\bin\\lspmux.exe",
+  "rust-analyzer.server.extraEnv": {
+    "LSPMUX_SERVER": "${env:USERPROFILE}\\.cargo\\bin\\rust-analyzer.exe"
+  }
 }

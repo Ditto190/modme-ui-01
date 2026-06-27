@@ -1,0 +1,55 @@
+name: "CI/CD Failure"
+description: "Automatically filed when a workflow or preflight check fails during CI/CD"
+title: "[CI/CD Failure]: "
+labels: ["ci-cd", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Automated CI/CD Failure Report
+        This issue was automatically generated due to a pipeline or pre-commit hook failure.
+  - type: input
+    id: pipeline
+    attributes:
+      label: "Pipeline Name"
+      placeholder: "e.g. CI Parity Check / verify:forge"
+    validations:
+      required: true
+  - type: input
+    id: step
+    attributes:
+      label: "Failing Step / Job"
+      placeholder: "e.g. build:app"
+    validations:
+      required: true
+  - type: textarea
+    id: error-log
+    attributes:
+      label: "Error Log Excerpt"
+      description: "Paste the relevant error logs/messages here"
+      placeholder: "yarn build failed with exit code 1..."
+    validations:
+      required: true
+  - type: dropdown
+    id: self-heal
+    attributes:
+      label: "Trigger Self-Healing TDD Agent?"
+      description: "If set to Yes, a VoltAgent self-healing TDD workflow will be initiated automatically"
+      options:
+        - "Yes"
+        - "No"
+      default: 0
+    validations:
+      required: true
+  - type: input
+    id: file-path
+    attributes:
+      label: "Target File Path (Optional)"
+      description: "Specify the file path if known"
+      placeholder: "next-forge/packages/schemas/index.ts"
+  - type: input
+    id: test-path
+    attributes:
+      label: "Test File Path (Optional)"
+      description: "Specify the test file path if known"
+      placeholder: "next-forge/packages/schemas/index.test.ts"

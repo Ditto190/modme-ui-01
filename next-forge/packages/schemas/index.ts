@@ -99,7 +99,7 @@ export type {
   InboxFrontmatter,
   InboxFunnelFile,
   InboxIndexManifest,
-} from "./inbox.js";
+} from "./inbox";
 export {
   INBOX_CONTRACT_VERSION,
   INBOX_EMBEDDING_DIMENSIONS,
@@ -114,4 +114,4 @@ export {
   InboxPipelineStageSchema,
   InboxSeveritySchema,
   InboxSourceFormatSchema,
-} from "./inbox.js";
+} from "./inbox";

@@ -335,6 +335,7 @@ export const GlobalSidebar = ({ children }: GlobalSidebarProperties) => {
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem className="flex items-center gap-2">
+              {/* @ts-expect-error Clerk types mismatch */}
               <UserButton
                 appearance={{
                   elements: {

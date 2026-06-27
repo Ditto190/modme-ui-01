@@ -8,7 +8,7 @@ import {
 import { LibSQLMemoryAdapter, LibSQLObservabilityAdapter } from "@voltagent/libsql";
 import { createPinoLogger } from "@voltagent/logger";
 import { honoServer } from "@voltagent/server-hono";
-import { codebaseOrchestratorWorkflow } from "./workflows";
+import { codebaseOrchestratorWorkflow, selfHealingTddWorkflow } from "./workflows";
 import { devopsExpert } from "./agents";
 
 const logger = createPinoLogger({ name: "devops-voltagent", level: "info" });
@@ -28,7 +28,10 @@ const observability = new VoltAgentObservability({
 
 new VoltAgent({
   agents: { "devops-expert": devopsExpert },
-  workflows: { "codebase-orchestrator": codebaseOrchestratorWorkflow },
+  workflows: {
+    "codebase-orchestrator": codebaseOrchestratorWorkflow,
+    "self-healing-tdd": selfHealingTddWorkflow,
+  },
   server: honoServer(),
   logger,
   observability,

@@ -1,0 +1,69 @@
+name: 📛 CI/CD Failure Auto-Issue Handler
+
+on:
+  workflow_run:
+    workflows: ["CI Check", "verify:forge", "Lint", "Test", "Build"]
+    types:
+      - completed
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  handle-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Generate Failure Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            
+            // 1. Fetch workflow jobs to find the failing one
+            const jobsResponse = await github.rest.actions.listJobsForWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: run.id
+            });
+            
+            const failedJob = jobsResponse.data.jobs.find(job => job.conclusion === 'failure');
+            const failedStep = failedJob?.steps?.find(step => step.conclusion === 'failure');
+            
+            const jobName = failedJob?.name || "Unknown Job";
+            const stepName = failedStep?.name || "Unknown Step";
+            const pipelineName = run.name || "Unknown Pipeline";
+            
+            // 2. Prepare the issue body using the CI/CD Failure form format
+            const issueBody = `
+            ### Automated CI/CD Failure Report
+            This issue was automatically generated due to a pipeline or pre-commit hook failure.
+            
+            **Pipeline Name:**
+            ${pipelineName}
+            
+            **Failing Step / Job:**
+            ${jobName} / ${stepName}
+            
+            **Error Log Excerpt:**
+            Failed during step: "${stepName}" in job "${jobName}" on run #${run.run_number}.
+            See full logs here: ${run.html_url}
+            
+            **Trigger Self-Healing TDD Agent?:**
+            Yes
+            `;
+            
+            // 3. Create the issue
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[CI/CD Failure]: ${pipelineName} - ${stepName} failed`,
+              body: issueBody.trim(),
+              labels: ["ci-cd", "needs-triage", "self-healing"]
+            });
+            
+            console.log(`Successfully created issue #${issue.data.number}: ${issue.data.title}`);

@@ -13,7 +13,9 @@ const getUserFromCustomerId = async (customerId: string) => {
   const users = await clerk.users.getUserList();
 
   const user = users.data.find(
-    (currentUser) => currentUser.privateMetadata.stripeCustomerId === customerId
+    (currentUser) =>
+      // @ts-expect-error property does not exist on type never
+      currentUser.privateMetadata.stripeCustomerId === customerId
   );
 
   return user;

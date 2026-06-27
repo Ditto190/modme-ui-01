@@ -1,0 +1,11 @@
+# lspmux daemon configuration (ModMe template)
+# Windows: %APPDATA%\lspmux\config\config.toml
+# Linux/macOS: ~/.config/lspmux/config.toml
+# See docs/lspmux-setup.md
+
+instance_timeout = 300
+listen = ["127.0.0.1", 27631]
+connect = ["127.0.0.1", 27631]
+
+# Prevent per-terminal env from spawning duplicate instances:
+pass_environment = ["*", "!WINDOWID", "!DESKTOP_STARTUP_ID", "!ALACRITTY_*", "!WT_SESSION"]
