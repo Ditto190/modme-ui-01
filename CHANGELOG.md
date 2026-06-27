@@ -61,6 +61,9 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (GenerativeUI) Hexagonal refactor of `apps/agent-server` — domain/ports/adapters/app layout with DI in `create_app()`
+- (GenerativeUI) Pytest golden contract parity for agent-server Pydantic models (`tests/test_schemas_contract.py`)
+- (next-forge) Vitest contract tests for `@repo/schemas` and reconnect delay helpers for generative UI WebSocket hook
 - (repo) Agent terminal orchestration layer — mprocs TUI (`yarn agent:tui`), session envelopes (`agent-session-start/finish`), task registry, extended git hooks, `yarn e2e:worktree-smoke`
 - (repo) Cursor commands `/beads` and `/architecture-decision-records`; session handover at `docs/handover/latest.md`
 - (next-forge) ADR-0011 terminal orchestration without Nx; ADR-0010 dual-store knowledge intake
@@ -76,6 +79,8 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
+- (GenerativeUI) Agent-server WebSocket timestamps aligned to Unix milliseconds to match `@repo/schemas` golden contract
+- (docs) `ARCHITECTURE.md` documents hexagonal ports/adapters layout for agent-server
 - (repo) Pre-push generative lint is advisory on push (full `yarn verify:generative` before PR merge)
 - (docs) `yarn agent:mprocs:generate` canonical name (replaces stale `mprocs:generate` references in orchestration docs)
 - (repo) **Reconcile `main` with Monorepo_ModMe** — GenUI Workbench (`modme-ui-01` legacy layout) superseded by dual-monorepo stack (`next-forge/` + `GenerativeUI_monorepo/`); unrelated GenUI history retired on default branch
