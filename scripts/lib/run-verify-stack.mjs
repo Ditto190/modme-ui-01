@@ -5,7 +5,7 @@
 import { spawnSync } from "node:child_process";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { classifyChangedStacks, gitChangedFiles } from "./path-filter.mjs";
+import { classifyChangedStacks, gitChangedFiles, gitChangedFilesForPush } from "./path-filter.mjs";
 import { logOrchestratorException } from "./agent-orchestrator-log.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -22,7 +22,31 @@ function runYarn(script) {
   }
 }
 
-const files = gitChangedFiles();
+function runForgeVerifyPrePush() {
+  console.log("verify-stack: forge pre-push (check only, skip build)");
+  const result = spawnSync(
+    "powershell",
+    [
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      resolve(ROOT, "scripts/verify-forge-ci.ps1"),
+      "-SkipTest",
+      "-SkipBuild",
+    ],
+    { cwd: ROOT, stdio: "inherit" },
+  );
+  if (result.status !== 0) {
+    logOrchestratorException("run-verify-stack", new Error("verify-forge-ci.ps1 -SkipTest -SkipBuild failed"), {
+      exit_code: result.status,
+    });
+    process.exit(result.status ?? 1);
+  }
+}
+
+const prePush = process.argv.includes("--pre-push");
+const files = prePush ? gitChangedFilesForPush() : gitChangedFiles();
 const stacks = classifyChangedStacks(files);
 
 console.log(`verify-stack: ${files.length} changed files`);
@@ -33,7 +57,30 @@ if (!stacks.forge && !stacks.generative) {
   process.exit(0);
 }
 
-if (stacks.forge) runYarn("verify:forge");
-if (stacks.generative) runYarn("verify:generative");
+if (stacks.forge) {
+  if (prePush) runForgeVerifyPrePush();
+  else runYarn("verify:forge");
+}
+if (stacks.generative) {
+  if (prePush) {
+    console.log("verify-stack: generative pre-push (lint only)");
+    const result = spawnSync(
+      "powershell",
+      [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        resolve(ROOT, "scripts/verify-generative-ci.ps1"),
+        "-SkipTest",
+        "-SkipBuild",
+      ],
+      { cwd: ROOT, stdio: "inherit" },
+    );
+    if (result.status !== 0) process.exit(result.status ?? 1);
+  } else {
+    runYarn("verify:generative");
+  }
+}
 
 console.log("verify-stack: passed");

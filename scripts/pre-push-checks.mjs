@@ -13,7 +13,7 @@ function ok(msg) {
   console.log(`pre-push: ${msg}`);
 }
 
-const result = spawnSync(process.execPath, [resolve(__dirname, "lib/run-verify-stack.mjs")], {
+const result = spawnSync(process.execPath, [resolve(__dirname, "lib/run-verify-stack.mjs"), "--pre-push"], {
   cwd: ROOT,
   stdio: "inherit",
 });

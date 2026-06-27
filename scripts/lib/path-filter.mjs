@@ -83,6 +83,22 @@ export function gitChangedFiles(options = {}) {
 }
 
 /**
+ * Files in commits being pushed (vs upstream), for pre-push hook.
+ * @returns {string[]}
+ */
+export function gitChangedFilesForPush() {
+  try {
+    const range = execSync("git merge-base HEAD @{u}", { cwd: ROOT, encoding: "utf8" }).trim();
+    if (!range) return [];
+    return execSync(`git diff --name-only ${range} HEAD`, { cwd: ROOT, encoding: "utf8" })
+      .split(/\r?\n/)
+      .filter(Boolean);
+  } catch {
+    return gitChangedFiles();
+  }
+}
+
+/**
  * @param {string[]} files
  * @returns {"verify:forge" | "verify:generative" | "verify:both" | null}
  */
