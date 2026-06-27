@@ -97,15 +97,18 @@ When finishing a prototype session:
 
 ```powershell
 yarn worktree:doctor              # optional pre-flight in worktree
+yarn agent:session:start          # optional if not auto-started by Cursor setup
+yarn agent:status                 # worktree + ports + doctor summary
 yarn check:forge                  # fast next-forge lint during iteration
 yarn verify:forge                 # full CI parity before opening PR
+.\scripts\agent-session-finish.ps1 -VerifyStack  # envelope + agenttrace + vibe finish
 .\scripts\vibe-session-finish.ps1 # prefer direct script in worktrees
 # Agents (non-interactive):
-.\scripts\vibe-session-finish.ps1 -Yes -CommitMessage "feat(scope): summary" -Push -CreatePr
+.\scripts\agent-session-finish.ps1 -Yes -CommitMessage "feat(scope): summary" -Push -CreatePr -VerifyStack
 # Preview: .\scripts\vibe-session-finish.ps1 -DryRun -SkipPull
 ```
 
-See [`.agents/skills/smart-git-automation/SKILL.md`](../.agents/skills/smart-git-automation/SKILL.md). Branch creation stays on `new-agent-worktree.ps1` / `/worktree` — smart-git is for commit/PR only.
+See [`docs/agent-terminal-orchestration.md`](agent-terminal-orchestration.md). Branch creation stays on `new-agent-worktree.ps1` / `/worktree` — smart-git is for commit/PR only.
 
 ### Cursor Editor commands
 

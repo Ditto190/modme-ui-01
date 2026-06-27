@@ -1,0 +1,70 @@
+name: "DevOps Autofix"
+description: "CI/CD failure eligible for autonomous agent fix (devops-ci-champion)"
+title: "[CI/CD Autofix]: "
+labels: ["ci-cd", "devops-autofix", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Autonomous fix lane — max 2 agent rounds. See [.cursor/bugbot/DEVOPS-AUTOFIX.md](../blob/dev/.cursor/bugbot/DEVOPS-AUTOFIX.md).
+  - type: dropdown
+    id: stack
+    attributes:
+      label: Stack
+      options:
+        - "stack:forge"
+        - "stack:generative"
+        - "stack:orchestration"
+        - "stack:root"
+    validations:
+      required: true
+  - type: input
+    id: pipeline
+    attributes:
+      label: Pipeline name
+      placeholder: "CI Parity Check / verify:forge"
+    validations:
+      required: true
+  - type: input
+    id: step
+    attributes:
+      label: Failing step / job
+      placeholder: "build:app"
+    validations:
+      required: true
+  - type: textarea
+    id: error-log
+    attributes:
+      label: Error log excerpt
+      placeholder: "yarn build failed with exit code 1..."
+    validations:
+      required: true
+  - type: textarea
+    id: verify_commands
+    attributes:
+      label: Verify commands
+      description: Commands that must pass before closing
+      value: |
+        yarn verify:forge
+    validations:
+      required: true
+  - type: dropdown
+    id: self_heal
+    attributes:
+      label: Trigger autonomous DevOps agent?
+      options:
+        - "Yes"
+        - "No"
+      default: 0
+    validations:
+      required: true
+  - type: input
+    id: beads_issue_id
+    attributes:
+      label: Beads issue ID (optional)
+      placeholder: "modme-aqu"
+  - type: input
+    id: file-path
+    attributes:
+      label: Target file path (optional)
+      placeholder: "next-forge/packages/schemas/index.ts"

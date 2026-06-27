@@ -81,7 +81,12 @@ if ($listOut -match "No issues found") {
     "chore: CI Phase A - confirm pre-commit vs ci.yml split",
     "task: Migration Phase 4 - feature-flag cutover for generative-ui",
     "chore: Document yarn verify:forge + yarn verify:generative in onboarding",
-    "task: Complete Storybook workshop parity with GenerativeCanvas"
+    "task: Complete Storybook workshop parity with GenerativeCanvas",
+    "task: Agent terminal orchestration - mprocs TUI + session envelopes",
+    "chore: E2E worktree-smoke CI job + local smoke checklist",
+    "chore: BUGBOT template pack + labeler modernization",
+    "chore: devops-autofix lane - polis router + backlog-health",
+    "chore: GitLab issue templates + Duo devops-autofix job"
   )
   foreach ($title in $starters) {
     Invoke-Bd -Command @("create", $title, "--priority", "2")

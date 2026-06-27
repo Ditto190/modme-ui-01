@@ -16,14 +16,14 @@
     "HTTPS_PROXY": null
   },
   "terminal.integrated.profiles.windows": {
-    "PowerShell 7": {
+    "PowerShell": {
       "path": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.2.0_x64__8wekyb3d8bbwe\\pwsh.exe",
       "args": [
         "-NoLogo"
       ],
       "icon": "terminal-powershell"
     },
-    "PowerShell 7 (No Profile)": {
+    "PowerShell (No Profile)": {
       "path": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.2.0_x64__8wekyb3d8bbwe\\pwsh.exe",
       "args": [
         "-NoLogo",
@@ -36,13 +36,13 @@
       "icon": "terminal-powershell"
     }
   },
-  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.defaultProfile.windows": "Windows PowerShell",
   "terminal.integrated.rightClickBehavior": "default",
   "debug.focusWindowOnBreak": false,
   "debug.focusEditorOnBreak": false,
   "files.autoSave": "afterDelay",
   "editor.formatOnSave": true,
-  "workbench.colorTheme": "Default Dark Modern",
+  "workbench.colorTheme": "Dark Modern",
   "terminal.integrated.gpuAcceleration": "off",
   "explorer.autoReveal": true,
   "explorer.confirmDelete": false,

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Installed by scripts/install-git-hooks.ps1
+set -e
+node scripts/pre-push-checks.mjs

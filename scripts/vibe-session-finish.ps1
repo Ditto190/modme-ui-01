@@ -6,6 +6,8 @@ param(
   [switch]$Yes,
   [switch]$Push,
   [switch]$CreatePr,
+  [switch]$ApplyLeanCtx,
+  [switch]$VerifyStack,
   [string]$CommitMessage = ''
 )
 
@@ -22,6 +24,8 @@ Options:
   -CommitMessage   Commit subject (conventional commits)
   -Push            Push after commit (-Yes skips confirmation)
   -CreatePr        gh pr create --base dev after push (-Yes skips confirmation; needs gh auth or GH_TOKEN)
+  -ApplyLeanCtx     Run lean-ctx ensure with auto-apply (default pre-flight is -CheckOnly only)
+  -VerifyStack      Run yarn verify:forge and/or verify:generative based on changed paths (ci.yml filters)
 
 Examples:
   .\scripts\vibe-session-finish.ps1 -DryRun -SkipPull
@@ -34,6 +38,18 @@ Examples:
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $RepoRoot = Split-Path -Parent $ScriptDir
 $ProjectName = Split-Path -Leaf $RepoRoot
+
+# Optional lean-ctx pre-flight (advisory; never blocks finish)
+$ensureScript = Join-Path $ScriptDir 'ensure-lean-ctx-config.ps1'
+if (Test-Path -LiteralPath $ensureScript) {
+  $ensureArgs = @('-File', $ensureScript)
+  if (-not $ApplyLeanCtx) { $ensureArgs += '-CheckOnly' }
+  if ($DryRun) {
+    Write-Host "[dry-run] would run: ensure-lean-ctx-config.ps1$(if (-not $ApplyLeanCtx) { ' -CheckOnly' })" -ForegroundColor DarkYellow
+  } else {
+    & powershell -NoProfile -ExecutionPolicy Bypass @ensureArgs
+  }
+}
 
 function Write-Group([string]$Title, [string[]]$Files) {
   if ($Files.Count -eq 0) { return }
@@ -221,6 +237,17 @@ if ($inboxChanged.Count -gt 0) {
         }
       }
     }
+  }
+}
+
+if ($VerifyStack) {
+  if ($DryRun) {
+    Write-Host "[dry-run] would run path-filtered stack verify (pre-push-checks.mjs)" -ForegroundColor DarkYellow
+  }
+  else {
+    Write-Host "Running path-filtered stack verify..." -ForegroundColor Cyan
+    & node (Join-Path $ScriptDir "pre-push-checks.mjs")
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
   }
 }
 

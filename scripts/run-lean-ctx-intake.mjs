@@ -11,8 +11,7 @@ if (!isDryRun) {
         execSync('npx lean-ctx knowledge export --format json --output knowledge-base.json', { stdio: 'inherit' });
         console.log('Knowledge base exported successfully.');
     } catch (error) {
-        console.error('Error exporting knowledge base:', error);
-        process.exit(1);
+        console.warn('lean-ctx intake: knowledge export skipped (advisory):', error.message ?? error);
     }
 } else {
     console.log('Dry run: Skipping export.');

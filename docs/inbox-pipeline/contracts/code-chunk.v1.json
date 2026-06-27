@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-06-27T00:00:00.000Z",
+  "description": "AST code chunk output from code-index-orchestrator / ast-indexer worker",
+  "required": ["path", "ast_kind", "symbol_name", "content_hash", "text"],
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "Repo-relative file path"
+    },
+    "ast_kind": {
+      "type": "string",
+      "enum": [
+        "export",
+        "function",
+        "class",
+        "interface",
+        "type_alias",
+        "zod_schema",
+        "prisma_model",
+        "mcp_tool",
+        "enum",
+        "const"
+      ]
+    },
+    "symbol_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "content_hash": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "description": "sha256(chunk text)"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Semantic chunk body (function/class/export source)"
+    },
+    "schema_json": {
+      "type": "object",
+      "description": "Optional JSON Schema or AST metadata"
+    },
+    "line_start": { "type": "integer", "minimum": 1 },
+    "line_end": { "type": "integer", "minimum": 1 },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "maxItems": 12
+    }
+  },
+  "batch": {
+    "type": "object",
+    "required": ["chunks"],
+    "properties": {
+      "chunks": {
+        "type": "array",
+        "items": { "$ref": "#/properties" },
+        "minItems": 1
+      },
+      "indexed_at": { "type": "string", "format": "date-time" }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+[project]
+name = "scrape-pipeline"
+version = "0.1.0"
+description = "Scrapy + Playwright crawl pipeline for ModMe inbox staging"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "scrapy>=2.11",
+  "scrapy-playwright>=0.0.40",
+  "trafilatura>=2.0",
+  "supabase>=2.0",
+  "pyyaml>=6.0",
+  "playwright>=1.40",
+]
+
+[project.scripts]
+scrape-pipeline = "scrape_pipeline.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["scrape_pipeline"]

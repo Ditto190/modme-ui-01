@@ -8,6 +8,18 @@ body:
       value: |
         ### Automated CI/CD Failure Report
         This issue was automatically generated due to a pipeline or pre-commit hook failure.
+  - type: dropdown
+    id: stack
+    attributes:
+      label: Stack
+      description: Which monorepo area failed?
+      options:
+        - "stack:forge"
+        - "stack:generative"
+        - "stack:orchestration"
+        - "stack:root"
+    validations:
+      required: true
   - type: input
     id: pipeline
     attributes:
@@ -33,14 +45,19 @@ body:
   - type: dropdown
     id: self-heal
     attributes:
-      label: "Trigger Self-Healing TDD Agent?"
-      description: "If set to Yes, a VoltAgent self-healing TDD workflow will be initiated automatically"
+      label: "Trigger autonomous DevOps agent?"
+      description: "If Yes, routes to devops-ci-champion (max 2 fix rounds)"
       options:
         - "Yes"
         - "No"
       default: 0
     validations:
       required: true
+  - type: input
+    id: beads_issue_id
+    attributes:
+      label: Beads issue ID (optional)
+      placeholder: "modme-aqu"
   - type: input
     id: file-path
     attributes:

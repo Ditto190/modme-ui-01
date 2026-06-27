@@ -82,6 +82,7 @@ Feature work **must not** happen in the main checkout. Use isolated Git worktree
 3. Do not edit `UniversalWorkbench-staging` or `UniversalWorkbench-dev` unless the task explicitly targets them.
 4. Run verification in the affected package before marking work complete.
 5. For browser/UI work, use Cursor browser MCP skills (`visual-qa-testing`, `verifying-in-browser`).
+6. Before smart-git session finish: `yarn lean-ctx:ensure` (or `-CheckOnly` via `vibe-session-finish.ps1` default).
 
 ## End of session (vibe-coding / prototypes)
 
@@ -89,15 +90,19 @@ After prototyping in a **worktree** (not the main checkout):
 
 ```powershell
 yarn worktree:doctor          # pre-flight in worktree (use -Fix via yarn worktree:doctor:fix)
+yarn agent:session:start      # beads + session envelope (auto on Cursor worktree setup)
+yarn agent:status             # worktree + ports + doctor summary
 yarn check:forge              # fast Ultracite check while iterating (next-forge)
 yarn verify:forge             # CI parity before PR (check + test + build)
 yarn verify:generative        # when GenerativeUI paths changed
 yarn pre-commit:check         # same as git pre-commit hook
+.\scripts\agent-session-finish.ps1 -VerifyStack  # envelope + agenttrace + vibe finish
 .\scripts\vibe-session-finish.ps1   # group → commit → optional push/PR (prefer in worktrees)
-# Agent headless: -Yes -CommitMessage "..." -Push -CreatePr
+# Agent headless: .\scripts\agent-session-finish.ps1 -Yes -CommitMessage "..." -Push -CreatePr -VerifyStack
 # Preview: .\scripts\vibe-session-finish.ps1 -DryRun -SkipPull
 ```
 
+- Orchestration guide: [`docs/agent-terminal-orchestration.md`](docs/agent-terminal-orchestration.md)
 - Branch creation: `new-agent-worktree.ps1` or `/worktree` only — see [`.agents/skills/smart-git-automation/SKILL.md`](.agents/skills/smart-git-automation/SKILL.md)
 - PRs target **`dev`**, not `main`
 - Git hooks install automatically in worktrees; one-time on main: `yarn hooks:install`
@@ -124,6 +129,8 @@ Root `AGENTS.md` and `.cursor/rules/` are hand-maintained — use contextarch fo
 ## Workspace docs (all agents)
 
 - **Onboarding:** run `/init` in Cursor (beads + debug setup + doc map)
+- **Session handover:** [`docs/handover/latest.md`](docs/handover/latest.md) — start here after context reset
+- **Cursor commands:** `/beads`, `/architecture-decision-records`, `/init`
 - [`docs/agent-index.md`](docs/agent-index.md) — dual-monorepo index (ports, skills, migration status)
 - [`docs/agent-tech-guide.md`](docs/agent-tech-guide.md) — lean-ctx, skills, changelog, CI, debug
 - [`docs/debug-launch-guide.md`](docs/debug-launch-guide.md) — VS Code `launch.json`, ports, CI validation
@@ -189,35 +196,46 @@ The pipeline runs on every push to `docs/inbox/` and ingests new entries into Su
 
 ## Learned User Preferences
 
-- Prefer cloud-first hosted Supabase over local Docker as the default database path; local Supabase is optional offline-only.
-- When asked for Supabase credentials, verify from the user's dashboard or `npx supabase status -o env` — do not answer from generic demo defaults alone.
-- Use the Cursor Supabase plugin MCP for project creation and management; Rube/supabase-automation requires a separate Composio connection.
+- Prefer cloud-first hosted Supabase over local Docker as the default database path; local Supabase is optional offline-only. Do not run `yarn supabase:local:env` after cloud setup — it overwrites root `.env` with localhost; use `node scripts/fix-cloud-supabase-url.mjs` if that happens.
+- When working with Supabase: use Cursor Supabase plugin MCP for project management; verify credentials from dashboard or `npx supabase status -o env` — not generic demo defaults; Rube/supabase-automation needs a separate Composio connection.
 - Run `yarn vibe:finish` / session finish only from a worktree under `Monorepo_ModMe-dev/`, not the main checkout.
 - Prefer `.\scripts\vibe-session-finish.ps1` directly in worktrees when `yarn` fails due to missing `yarn.lock`.
 - Use `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (not legacy anon-only naming) for next-forge browser/SSR Supabase clients via `@repo/supabase`.
 - Do not wire Supabase Auth middleware into `apps/app` by default — ModMe uses Auth.js for sign-in.
 - On Windows, prefer `bunx supabase login --token sbp_...` (dashboard access token) over browser login; avoid bare `supabase` on PATH (often v1.x, HTTP 401).
+- lean-ctx hybrid mode: global `~/.config/lean-ctx/config.toml` (`tool_profile=power`, `proxy_enabled=true`, `compression_level=max`, `memory_profile=balanced`); repo `.lean-ctx.toml` merges as project overrides; run `yarn lean-ctx:ensure` at session start/before smart-git finish; schema snapshot at `docs/lean-ctx/config-schema.json` (`yarn lean-ctx:schema:sync`).
+- Do not adopt Nx as a root meta-orchestrator — keep Turbo/Bun/Yarn inside each monorepo and use `yarn agent:*` terminal orchestration at the repo root instead.
+- Use beads (`bd`) for multi-session work with dependencies; chat todos only for single-session linear tasks.
+- Do not run `yarn contextarch init --overwrite` at repo root without review — root `AGENTS.md` and `.cursor/rules/` are hand-maintained.
+- Never run `prisma db push --accept-data-loss` on cloud — drops legacy tables outside Prisma schema (e.g. `copilot_*`, `agent_skills`).
 
 ## Learned Workspace Facts
 
 - Hosted Supabase project: `modme-next-forge` (ref `aevemmmmouxqlfyxthzf`, region `us-east-1`); ADR-0002 supersedes ADR-0001 (local Docker).
-- Supabase setup: `docs/supabase-setup.md` (local: `yarn supabase:local:setup` then `yarn intake`); cloud checklist: `docs/supabase-cloud-setup.md`
-- Root intake scripts need `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`; Prisma DB URLs live in `next-forge/packages/database/.env`.
+- Supabase setup: `docs/supabase-setup.md` (local: `yarn supabase:local:setup` then `yarn intake`); cloud checklist: `docs/supabase-cloud-setup.md`; hybrid agent guide: `docs/supabase-agent-hybrid.md` (`yarn supabase:env:diagnose`, `scripts/ensure-cloud-supabase-env.ps1`).
+- Root intake/scrape scripts load env via `scripts/lib/load-root-env.mjs` (root `.env` wins over stale shell exports); need `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`; Prisma DB URLs live in `next-forge/packages/database/.env`.
 - Worktrees branched from `dev` may lack `yarn.lock`; `worktree-copy-env.ps1` copies `yarn.lock`, `.yarnrc.yml`, and `.yarn/` from main.
 - `vibe-session-finish.ps1 -DryRun` skips interactive `Read-Host` and pre-commit; use `yarn vibe:finish:dry-run` or the script with `-DryRun -SkipPull`.
-- `yarn intake` from repo root runs `scripts/run-intake.mjs` (ingest only); `yarn intake:orchestrate` runs audit → ingest → embed → MDA with quality gates.
+- `yarn intake` runs ingest only; `yarn intake:orchestrate` runs audit → ingest → embed → MDA; mode flags: `yarn intake:scrape|code-index|full` via `scripts/intake-orchestrator.mjs`.
 - Inbox data contract v1: `docs/inbox-pipeline/contracts/inbox-contract.v1.json` (ADR-0009). Quality: `yarn inbox:audit`, `yarn inbox:fix`, `yarn inbox:test`. Reports: `docs/inbox-pipeline/reports/latest.md`.
-- Schema deploy order: `bun run db:push` (Prisma) before `bunx supabase db push` — SQL migration 001 expects Prisma tables.
-- Supabase CLI config lives at `next-forge/supabase/`; use `bunx supabase` from `next-forge/packages/database` with `--workdir ../.. --dns-resolver https` on Windows.
+- Schema deploy + Supabase CLI: `bun run db:push` from `next-forge/` before `bunx supabase db push` (no `--accept-data-loss`); config at `next-forge/supabase/` — run `bunx supabase` from `next-forge/packages/database` with `--workdir ../.. --dns-resolver https` on Windows.
 - next-forge default ports: app 3100, web 3101, api 3102, docs 3104, storybook 6106 (avoids GenerativeUI 3000–3004 block).
+- Unified intake: dual-store (GreptimeDB code/AST + Supabase pgvector inbox/knowledge, sync at promote); Zod contracts in `packages/intake-contracts/`; scrape via `yarn scrape:run|classify|promote` + `scripts/run-scrape-pipeline.ps1`; staging Prisma + `007_scrape_staging.sql`.
+- Agent terminal orchestration: `yarn agent:tui|status|audit|session:start|session:finish`; `yarn agent:tui` needs mprocs on PATH; session envelopes in `logs/agent-orchestrator/sessions/`; task registry `data/agent-registry.json`; smoke `yarn e2e:worktree-smoke`; guide `docs/agent-terminal-orchestration.md`.
+- Bugbot PR review rules: `.cursor/BUGBOT.md` (skills, Oracle→Postgres bug templates, `next-forge/packages/feature-flags/FEATURE-FLAGS.md`).
 
 <!-- lean-ctx-compression -->
-OUTPUT STYLE: expert-terse
-- Telegraph format: subject-verb-object, drop articles/prepositions
-- Symbolic vocabulary: → cause, ∵ because, ∴ therefore, ⊕ add, ⊖ remove, Δ change, ≈ similar, ≠ different, ∈ in/member, ∅ empty/none, ✓ ok, ✗ fail
-- Code blocks: untouched (never compress code syntax)
-- Each line: max 80 chars
-- Zero narration, zero filler
-- BUDGET: ≤100 tokens per non-code response
+OUTPUT STYLE: dense
+- Each statement = one atomic fact line
+- Use abbreviations: fn, cfg, impl, deps, req, res, ctx, err, ret
+- Diff lines only (+/-/~), never repeat unchanged code
+- Symbols: → (causes), + (adds), − (removes), ~ (modifies), ∴ (therefore)
+- No narration, no filler, no hedging
+- BUDGET: ≤200 tokens per response unless code block required
 <!-- /lean-ctx-compression -->
+<!-- lean-ctx -->
+## lean-ctx
 
+Prefer lean-ctx MCP tools over native equivalents for token savings.
+Full rules: @LEAN-CTX.md
+<!-- /lean-ctx -->

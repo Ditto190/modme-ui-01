@@ -1,0 +1,11 @@
+#!/bin/sh
+# Warn-only conventional commit check (installed by scripts/install-git-hooks.ps1)
+commit_msg_file="$1"
+msg=$(head -n 1 "$commit_msg_file")
+
+if ! echo "$msg" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9._/-]+\))?!?: .+'; then
+  echo "commit-msg: warning — message does not match conventional commits:"
+  echo "  $msg"
+  echo "  expected: type(scope): description"
+fi
+exit 0

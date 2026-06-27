@@ -1,4 +1,11 @@
 #!/bin/sh
 # Installed by scripts/install-git-hooks.ps1
 set -e
+
+branch=$(git symbolic-ref --short HEAD 2>/dev/null || echo "detached")
+if [ "$branch" = "main" ] || [ "$branch" = "master" ]; then
+  echo "pre-commit: direct commits to $branch are not allowed. Use a feature worktree/branch."
+  exit 1
+fi
+
 node scripts/pre-commit-checks.mjs

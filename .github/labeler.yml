@@ -1,91 +1,65 @@
-# ModMe GenUI Workbench - PR Auto-Labeler Configuration
-# 
-# This file controls automatic labeling for pull requests based on changed files.
-# Works in conjunction with .github/workflows/issue-labeler.yml for issues.
+# ModMe dual-monorepo — PR auto-labeler
+# Stack + workflow labels; see .cursor/bugbot/AUTOTAGS.yml
 
-# Agent (Python Backend)
-agent:
-  - 'agent/**/*.py'
-  - 'agent/main.py'
-  - 'agent/toolset_manager.py'
-  - 'agent/pyproject.toml'
+stack:forge:
+  - "next-forge/**"
 
-# Frontend (React UI)
-frontend:
-  - 'src/**/*.tsx'
-  - 'src/**/*.ts'
-  - 'src/app/**/*'
-  - 'src/components/**/*'
-  - 'src/lib/**/*'
+stack:generative:
+  - "GenerativeUI_monorepo/**"
 
-# Component Registry
-component-registry:
-  - 'src/components/registry/**/*'
-  - 'src/components/registry/*.tsx'
+stack:orchestration:
+  - "scripts/**"
+  - "docs/**"
+  - ".cursor/**"
+  - ".agents/**"
+  - ".github/**"
+  - "package.json"
+  - "CHANGELOG.md"
+  - "mprocs.yaml"
+  - "data/agent-citizens/**"
 
-# State Sync / Types
-state-sync:
-  - 'src/lib/types.ts'
-  - 'agent/main.py'  # Contains state contract
-
-# Toolset Management
-toolset:
-  - 'agent/toolsets.json'
-  - 'agent/toolset_aliases.json'
-  - 'agent/toolset-schema.json'
-  - 'scripts/toolset-management/**/*'
-  - 'docs/TOOLSET_MANAGEMENT.md'
-  - 'docs/toolsets/**/*'
-
-# Theme System
-theme:
-  - 'src/app/page.tsx'  # Contains setThemeColor tool
-  - 'src/app/globals.css'
-
-# API Layer
-api:
-  - 'src/app/api/**/*'
-  - 'src/app/api/copilotkit/**/*'
-
-# Documentation
-documentation:
-  - '**/*.md'
-  - 'docs/**/*'
-  - 'README.md'
-  - 'CONTRIBUTING.md'
-  - '.github/copilot-instructions.md'
-
-# CI/CD & Workflows
 ci-cd:
-  - '.github/workflows/**/*'
-  - '.github/actions/**/*'
+  - ".github/workflows/**"
+  - ".github/actions/**"
+  - ".gitlab/**"
+  - ".gitlab-ci.yml"
+  - "GenerativeUI_monorepo/.gitlab-ci.yml"
+  - ".githooks/**"
+  - "scripts/pre-push-checks.mjs"
+  - "scripts/lib/run-verify-stack.mjs"
 
-# Build System
-build-system:
-  - 'package.json'
-  - 'package-lock.json'
-  - 'tsconfig.json'
-  - 'next.config.ts'
-  - 'agent/pyproject.toml'
-  - 'Dockerfile'
-  - '.devcontainer/**/*'
+documentation:
+  - "**/*.md"
+  - "docs/**"
+  - "README.md"
+  - "AGENTS.md"
 
-# Testing
 testing:
-  - '**/*.test.{ts,tsx,js,jsx,py}'
-  - '**/*.spec.{ts,tsx,js,jsx,py}'
-  - 'tests/**/*'
-  - 'test-*/**/*'
+  - "**/*.test.{ts,tsx,js,jsx,mjs}"
+  - "**/*.spec.{ts,tsx,js,jsx,py}"
+  - "scripts/__tests__/**"
+  - "e2e/**"
 
-# Security
 security:
-  - '.github/workflows/*security*'
-  - '**/SECURITY.md'
+  - ".github/workflows/*security*"
+  - "**/SECURITY.md"
 
-# Developer Experience
 developer-experience:
-  - '.vscode/**/*'
-  - '.github/copilot-instructions.md'
-  - 'scripts/**/*'
-  - 'SETUP_RECORD.md'
-  - 'DEVCONTAINER_SETUP.md'
+  - ".vscode/**"
+  - ".cursor/**"
+  - "scripts/cursor-ai/**"
+
+# Legacy GenUI paths (retain for open PRs touching old layout)
+agent:
+  - "agent/**/*.py"
+  - "agent/main.py"
+
+frontend:
+  - "src/**/*.tsx"
+  - "src/**/*.ts"
+  - "src/app/**/*"
+
+toolset:
+  - "agent/toolsets.json"
+  - "scripts/toolset-management/**/*"
+  - "docs/TOOLSET_MANAGEMENT.md"

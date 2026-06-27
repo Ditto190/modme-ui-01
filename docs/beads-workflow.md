@@ -6,6 +6,8 @@ Git-backed task memory for multi-session agent work. Prefix: **`modme`**.
 
 **Run all beads commands from the monorepo root** (`Monorepo_ModMe/`), not from `next-forge/` or `.beads/`.
 
+**Cursor command:** `/beads` (subcommands: `ready`, `create`, `show`, `close`, `sync`, `session`).
+
 ## Initialize (once)
 
 ```powershell
@@ -42,6 +44,29 @@ Issue IDs use **hash suffixes** (e.g. `modme-aqu`), not sequential `modme-1`.
 | task: Migration Phase 4 — feature-flag cutover for generative-ui | task |
 | chore: Document yarn verify:forge + yarn verify:generative in onboarding | chore |
 | task: Complete Storybook workshop parity with GenerativeCanvas | task |
+| task: Agent terminal orchestration - mprocs TUI + session envelopes | task |
+| chore: E2E worktree-smoke CI job + local smoke checklist | chore |
+| chore: BUGBOT template pack + labeler modernization | chore |
+| chore: devops-autofix lane - polis router + backlog-health | chore |
+| chore: GitLab issue templates + Duo devops-autofix job | chore |
+
+## Session orchestration (beads + envelopes)
+
+At **worktree session start** (automatic via Cursor `setup-worktree-windows.ps1` or manual):
+
+```powershell
+yarn agent:session:start --% -TaskTitle "my task" -ClaimPaths "next-forge/apps/app"
+yarn beads:ready
+```
+
+At **session finish**:
+
+```powershell
+.\scripts\agent-session-finish.ps1 -VerifyStack -Yes -CommitMessage "feat: ..." -Push -CreatePr
+yarn beads:push
+```
+
+Session envelopes: `logs/agent-orchestrator/sessions/<uuid>.json`. Guide: [`docs/agent-terminal-orchestration.md`](agent-terminal-orchestration.md).
 
 ## When to use beads vs chat todos
 
@@ -57,3 +82,20 @@ Onboarding and CI work should be tracked in beads when it spans sessions. Use th
 - [`.agents/skills/cicd-automation-workflow-automate/SKILL.md`](../.agents/skills/cicd-automation-workflow-automate/SKILL.md) — Phase E (beads + verify scripts)
 
 After `yarn beads:init`, agents run `npx @beads/bd ready` at session start and close issues when CI/migration tasks complete.
+
+## GitHub SoR + GitLab adjunct
+
+- **GitHub** (`Ditto190/modme-ui-01`) is system-of-record for issues and PRs.
+- **GitLab** mirrors DevOps autofix work when `GITLAB_PROJECT_ID` is set; always include `github_sor` on GitLab issues.
+- Promote beads → GitHub: [`.github/ISSUE_TEMPLATE/beads-handoff.yml`](../.github/ISSUE_TEMPLATE/beads-handoff.yml)
+
+```javascript
+import { beadsLinkExternal, beadsPromoteToIssue } from "./scripts/lib/beads-hooks.mjs";
+
+await beadsPromoteToIssue("chore: fix ci.yml", "modme-aqu");
+await beadsLinkExternal("modme-aqu", "https://github.com/Ditto190/modme-ui-01/issues/42");
+```
+
+Routing: [`docs/workflows/POLIS-ROUTING.md`](workflows/POLIS-ROUTING.md) (`beads-orchestrator` citizen).
+
+Backlog hygiene: `yarn backlog:health`

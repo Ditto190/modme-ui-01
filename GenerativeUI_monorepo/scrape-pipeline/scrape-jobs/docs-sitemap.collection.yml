@@ -1,0 +1,14 @@
+slug: docs-sitemap
+name: ModMe Docs Sitemap Crawl
+description: Crawl Mintlify docs and agent-index pages for inbox staging
+seeds:
+  - https://raw.githubusercontent.com/modme/docs/main/README.md
+sitemap_url: null
+depth: 2
+allowlist:
+  - docs/
+  - agent-index
+  - inbox-pipeline
+rate_limit_seconds: 1.5
+use_playwright: false
+obey_robots: true

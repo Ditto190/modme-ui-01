@@ -88,6 +88,44 @@ flowchart TD
     G1 & G2 --> H1
 ```
 
+### Unified dual-store intake (validated)
+
+```mermaid
+flowchart TD
+    subgraph sources [Sources]
+        WebCrawl[Scrapy manifest crawl]
+        LocalAST[AST indexer ts-morph]
+        InboxFiles[Inbox funnel files]
+    end
+
+    subgraph validate [Zod stage gates]
+        V1[scrape-job.schema]
+        V2[classify.output]
+        V3[promote.contract]
+        V4[code-chunk.v1]
+        V5[inbox-contract.v1]
+    end
+
+    subgraph stores [Dual store]
+        Greptime[(GreptimeDB code_index)]
+        Supabase[(Supabase inbox_entries pgvector)]
+    end
+
+    WebCrawl --> V1 --> V2 --> Supabase
+    V2 --> V3 --> InboxFiles
+    LocalAST --> V4 --> Greptime
+    Greptime -->|code_pattern_ids at promote| V3
+    InboxFiles --> V5 --> Supabase
+    Orch[intake-orchestrator.mjs] --> validate
+```
+
+| Stage | Script | Contract |
+|-------|--------|----------|
+| Scrape classify | `scripts/scrape-classify.mjs` | `packages/intake-contracts` Zod |
+| Scrape promote | `scripts/scrape-promote.mjs` | `scrape-promotion.v1.json` |
+| Code index | `scripts/code-index-orchestrator.mjs` | `code-chunk.v1.json` |
+| Full intake | `yarn intake:full` | scrape + code-index + ingest + embed |
+
 ---
 
 ## GitHub Actions Pipeline Chain
@@ -467,6 +505,153 @@ yarn inbox:test               # contract unit tests
 - **Push inbox paths:** funnel audit before ingest (`inbox-ingest.yml`)
 
 Human owns semantic quality (titles, tags, research value). Automation owns structural quality (schema, enums, dedup, embedding dimensions).
+
+---
+
+## Scrape intake (Scrapy + Ollama)
+
+Optional upstream stage: crawl web sources → classify with local Ollama → promote into `inbox_entries`, then reuse embed/MDA/output.
+
+```mermaid
+flowchart LR
+    M[scrape_manifests] --> J[scrape_jobs]
+    J --> P[scrape_pages]
+    P --> C[scrape_classifications]
+    C --> I[inbox_entries]
+    I --> E[embed → MDA → output]
+```
+
+| Table | Role |
+|-------|------|
+| `scrape_manifests` | Named crawl config (seed URLs, allowlist, depth rules) |
+| `scrape_jobs` | One run per manifest (`pending` → `running` → `done` \| `failed`) |
+| `scrape_pages` | Per-URL raw extract; SHA-256 dedup; links to inbox after promote |
+| `scrape_classifications` | Ollama output (type, severity, tags) before promotion |
+| `inbox_entries` | Standard inbox pipeline entry (existing embed/MDA/output) |
+
+| Stage | Location |
+|-------|----------|
+| Crawl | `GenerativeUI_monorepo/scrape-pipeline/` (Scrapy + scrapy-playwright) |
+| Classify | `scripts/scrape-classify.mjs` + `experiments/micro-agents/helpers/scrape-classifier-helper.ts` |
+| Promote | `scripts/scrape-promote.mjs` |
+| Orchestrate | `scripts/intake-orchestrator.mjs --mode=scrape` |
+
+### Environment
+
+| Variable | Purpose |
+|----------|---------|
+| `OLLAMA_BASE_URL` | Ollama API base (default `http://localhost:11434`) |
+| `OLLAMA_MODEL` | Classifier model (e.g. `llama3.2:3b`) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | Pipeline writes (never in browser) |
+| `DATABASE_URL` | Prisma reads (`next-forge/packages/database/.env`) |
+
+Prisma and Supabase point at the **same** Postgres. Deploy schema: `bun run db:push` (next-forge) then `bunx supabase db push` (migration `007_scrape_staging.sql` adds RLS + indexes).
+
+### Commands
+
+Repo root:
+
+```powershell
+yarn scrape:run -- --manifest docs-sitemap [--dry-run]
+yarn scrape:classify [--dry-run]
+yarn scrape:promote [--dry-run] [--export-md]
+yarn intake:scrape -- --manifest=docs-sitemap   # run → classify → promote
+```
+
+### Verification
+
+```powershell
+# 1. Schema
+cd next-forge && bun run db:push
+cd packages/database && bunx supabase db push --workdir ../..
+
+# 2. Dry-run scripts (no writes)
+yarn scrape:run -- --manifest docs-sitemap --dry-run
+yarn scrape:classify --dry-run
+yarn scrape:promote --dry-run
+
+# 3. Pipeline quality gate
+yarn inbox:audit --lens pipeline
+```
+
+Requires Ollama running locally (`ollama serve`) with `OLLAMA_MODEL` pulled.
+
+### Security
+
+RLS is enabled on all `scrape_*` tables (`007_scrape_staging.sql`). Pipeline scripts use **service role** for INSERT/UPDATE; authenticated users get SELECT only (future UI). Never expose `SUPABASE_SERVICE_ROLE_KEY` to browser or client bundles.
+
+---
+
+## Scrape Pipeline
+
+Firecrawl-style crawl → Ollama classify → batch promote into the existing inbox pipeline.
+
+```mermaid
+flowchart LR
+    YAML["scrape-jobs/*.collection.yml"] --> Scrapy
+    Scrapy["Scrapy + trafilatura"] --> Raw["scrape_pages status=raw"]
+    Raw --> Ollama["Ollama classify"]
+    Ollama --> Classified["scrape_classifications"]
+    Classified --> Promote["scrape-promote.mjs"]
+    Promote --> Inbox["inbox_entries"]
+    Inbox --> Embed["inbox-embeddings.mjs"]
+```
+
+### Staging tables
+
+| Table | Purpose |
+|-------|---------|
+| `scrape_manifests` | Named crawl configs (`slug`, `seeds`, `config`) |
+| `scrape_jobs` | One run per manifest (`pending/running/done/failed`) |
+| `scrape_pages` | Per-URL extract (`content_hash`, `text`, `status`) |
+| `scrape_classifications` | Ollama output before promote |
+
+Prisma models: `next-forge/packages/database/prisma/schema.prisma`  
+Supabase migration: `next-forge/supabase/migrations/007_scrape_staging.sql`  
+Promotion contract: `docs/inbox-pipeline/contracts/scrape-promotion.v1.json`
+
+Deploy order: `bun run db:push` (Prisma) **before** `bunx supabase db push`.
+
+### Environment variables
+
+| Variable | Used by | Default |
+|----------|---------|---------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Scrapy pipeline, classify, promote | — |
+| `SUPABASE_SERVICE_ROLE_KEY` | Scrapy pipeline, classify, promote | — |
+| `DATABASE_URL` | Prisma / next-forge API reads | `next-forge/packages/database/.env` |
+| `OLLAMA_BASE_URL` | `scrape-classify.mjs` | `http://localhost:11434` |
+| `OLLAMA_MODEL` | `scrape-classify.mjs` | `llama3.2:3b` |
+
+### Commands (repo root)
+
+```powershell
+# Validate scrape job YAML
+node scripts/yaml-parser.mjs parse GenerativeUI_monorepo/scrape-pipeline/scrape-jobs/docs-sitemap.collection.yml --schema GenerativeUI_monorepo/scrape-pipeline/scrape-jobs/scrape-job.schema.json
+
+# Crawl manifest (dry-run, no DB)
+cd GenerativeUI_monorepo/scrape-pipeline && python -m scrape_pipeline --manifest docs-sitemap --dry-run
+
+# Classify raw pages (requires Ollama)
+yarn scrape:classify --dry-run
+
+# Promote classified → inbox_entries
+yarn scrape:promote --dry-run
+
+# Full scrape mode orchestrator (audit → scrape → ingest → embed → MDA)
+yarn intake:scrape --dry-run
+yarn intake:scrape --manifest=docs-sitemap
+
+# Schema deploy
+cd next-forge/packages/database && bun run db:push
+cd next-forge/packages/database && bunx supabase db push --workdir ../.. --dns-resolver https
+```
+
+### Python scrape project
+
+Location: `GenerativeUI_monorepo/scrape-pipeline/`  
+Install: `pip install -e GenerativeUI_monorepo/scrape-pipeline`  
+Pattern for Supabase upsert: `intake-pipeline/supabase_syncer.py`
 
 ---
 

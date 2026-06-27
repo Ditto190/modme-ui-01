@@ -19,7 +19,7 @@ Initialize persistent, git-backed task memory for multi-session work.
 2. If **not** initialized:
    - Use the beads MCP `init` tool with prefix from `$ARGUMENTS` (or `modme` if empty).
    - Report database location and issue prefix.
-   - Suggest `/beads:workflow` and creating the first issue with `/beads:create`.
+   - Suggest `/beads` and creating the first issue with `/beads create <title>`.
 3. If **already** initialized:
    - Use beads MCP `stats` and summarize open/ready issues.
    - Do not re-init.
@@ -121,7 +121,7 @@ If beads was just initialized, offer to create starter issues:
 2. **chore**: Confirm `yarn install` + `poetry install` documented in onboarding
 3. **task**: Any active feature the user is working on
 
-Use `/beads:create` or the beads MCP `create` tool.
+Use `/beads create` or the beads MCP `create` tool.
 
 ---
 
@@ -132,6 +132,6 @@ After running, respond with:
 1. **Beads** — initialized or stats summary
 2. **Debug** — which configs exist, prerequisites met/missing, validation result
 3. **Docs** — links to `docs/debug-launch-guide.md` and `docs/agent-tech-guide.md`
-4. **Next step** — one concrete action (F5 a config, install deps, or `/beads:create`)
+4. **Next step** — one concrete action (F5 a config, install deps, or `/beads create`)
 
 Do not commit `.env` or print secret values.

@@ -8,6 +8,9 @@ on:
       - 'scripts/inbox-*.mjs'
       - 'scripts/intake-orchestrator.mjs'
       - 'scripts/lib/inbox-*.mjs'
+      - 'scripts/scrape-*.mjs'
+      - 'scripts/code-index-orchestrator.mjs'
+      - 'packages/intake-contracts/**'
       - 'docs/inbox-pipeline/**'
   push:
     branches: [main, dev]
@@ -16,6 +19,9 @@ on:
       - 'scripts/inbox-*.mjs'
       - 'scripts/intake-orchestrator.mjs'
       - 'scripts/lib/inbox-*.mjs'
+      - 'scripts/scrape-*.mjs'
+      - 'scripts/code-index-orchestrator.mjs'
+      - 'packages/intake-contracts/**'
       - 'docs/inbox-pipeline/**'
   workflow_dispatch:
 
@@ -57,6 +63,30 @@ jobs:
           path: |
             docs/inbox-pipeline/reports/latest.json
             docs/inbox-pipeline/reports/latest.md
+
+  retrieval-eval:
+    name: RAG retrieval eval (non-blocking)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install micro-agents deps
+        working-directory: experiments/micro-agents
+        run: npm install
+
+      - name: Hybrid retrieval Recall@5
+        working-directory: experiments/micro-agents
+        run: npm run evaluate:retrieval
+        env:
+          USE_LOCAL_EMBEDDINGS: 'true'
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
   staging-dry-run:
     name: Staging dry-run (merge to dev/main)

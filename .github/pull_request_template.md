@@ -4,9 +4,15 @@
 
 <!-- One sentence: what does this PR do? -->
 
-## Intent & Scope
+## Stack & tracking
 
-<!-- What problem is being solved? For whom? What is explicitly OUT of scope? -->
+| Field | Value |
+|-------|-------|
+| **Stack** | forge / generative / orchestration / root |
+| **Beads** | modme-xxxx (or N/A) |
+| **Agent citizen** | forge-reviewer / devops-ci-champion / etc. |
+
+## Intent & Scope
 
 **Problem:**
 
@@ -16,17 +22,13 @@
 
 ## Changes
 
-<!-- Bullet list of concrete changes. Link to relevant files where helpful. -->
-
 - 
 
 ## Validation
 
-<!-- How was this tested or verified? Attach screenshots / logs if applicable. -->
-
-- [ ] Local build/lint passes (`npm run lint` / `npm run build`)
-- [ ] Agent health verified (`curl http://localhost:8000/health`)
-- [ ] New components registered in `ALLOWED_TYPES` and `renderElement` switch (if UI change)
+- [ ] `yarn verify:forge` (if `next-forge/**` changed)
+- [ ] `yarn verify:generative` (if `GenerativeUI_monorepo/**` changed)
+- [ ] `yarn pre-commit:check` (orchestration / root)
 - [ ] Secrets not introduced into source or git history
 - [ ] CI checks pass on this branch
 
@@ -38,20 +40,22 @@
 3.
 ```
 
+## Acceptance evidence (agents)
+
+```markdown
+Status: accepted | executing | escalated
+Verify: (command + exit code)
+Beads: modme-xxxx (closed/linked)
+Open risks:
+```
+
 ## awesome-copilot Reuse
 
-<!-- REQUIRED: Which prompts, skills, checklists, or subagent instructions from
-awesome-copilot (Ditto190/awesome-copilot) or agents/ were used?
-If none, briefly explain why. -->
-
-- **Prompts used:** <!-- e.g. agents/prompts/pr-review.md, or "none - no matching asset found" -->
-- **Skills used:** <!-- e.g. agents/skills/ci-validation.md, or "none" -->
-- **Checklists used:** <!-- e.g. agents/review/code-review-rubric.md -->
-- **Index version consulted:** <!-- check vendor/awesome-copilot-index/manifest.json -->
+- **Prompts used:**
+- **Skills used:**
+- **Checklists used:**
 
 ## Risks & Tradeoffs
-
-<!-- Anything a reviewer should watch for: security, performance, breaking changes, debt. -->
 
 | Risk | Severity | Mitigation |
 |------|----------|------------|
@@ -59,7 +63,5 @@ If none, briefly explain why. -->
 
 ## Notes for Reviewers (Humans & Agents)
 
-<!-- Any context that helps reviewers: unusual decisions, follow-up issues, areas of uncertainty. -->
-
-> **Agents:** Read `AGENTS.md` and `agents/review/code-review-rubric.md` before reviewing.
+> **Agents:** Read `AGENTS.md` and [`.cursor/BUGBOT.md`](.cursor/BUGBOT.md) before reviewing.
 > Flag issues as: `BLOCKER` / `NON-BLOCKER` / `SUGGESTION`.

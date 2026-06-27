@@ -4,12 +4,13 @@
  * Quality-gated intake pipeline orchestrator.
  *
  * Usage:
- *   node scripts/intake-orchestrator.mjs --mode=session|ci|pr-validate|staging-dry-run [--dry-run] [--skip-fix]
+ *   node scripts/intake-orchestrator.mjs --mode=session|ci|pr-validate|staging-dry-run|scrape|code-index|full [--dry-run] [--skip-fix]
  */
 import { spawnSync } from 'node:child_process';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { existsSync, readFileSync } from 'node:fs';
+import { loadRootEnv } from './lib/load-root-env.mjs';
+import { beadsCreate, beadsUpdate } from './lib/beads-hooks.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -19,20 +20,6 @@ const modeArg = args.find((a) => a.startsWith('--mode='));
 const MODE = modeArg ? modeArg.split('=')[1] : 'session';
 const DRY_RUN = args.includes('--dry-run');
 const SKIP_FIX = args.includes('--skip-fix');
-
-function loadRootEnv() {
-  const envPath = resolve(ROOT, '.env');
-  if (!existsSync(envPath)) return;
-  for (const line of readFileSync(envPath, 'utf8').split('\n')) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
-    const eq = trimmed.indexOf('=');
-    if (eq === -1) continue;
-    const key = trimmed.slice(0, eq);
-    let value = trimmed.slice(eq + 1).trim().replace(/^["']|["']$/g, '');
-    if (!process.env[key]) process.env[key] = value;
-  }
-}
 
 function runNode(script, scriptArgs = []) {
   const result = spawnSync(process.execPath, [resolve(ROOT, script), ...scriptArgs], {
@@ -53,24 +40,45 @@ function runStep(label, script, scriptArgs = []) {
 }
 
 async function main() {
-  loadRootEnv();
+  loadRootEnv({ fileWins: true });
 
   const auditLens =
     MODE === 'pr-validate' ? 'funnel' : MODE === 'staging-dry-run' ? 'all' : 'funnel';
   const auditStrict = MODE === 'pr-validate' || MODE === 'ci';
 
-  runStep('Audit funnel', 'scripts/inbox-audit.mjs', [
-    '--lens',
-    auditLens === 'all' ? 'all' : 'funnel',
-    ...(auditStrict ? ['--strict'] : []),
-  ]);
+  if (MODE !== 'code-index') {
+    runStep('Audit funnel', 'scripts/inbox-audit.mjs', [
+      '--lens',
+      auditLens === 'all' ? 'all' : 'funnel',
+      ...(auditStrict ? ['--strict'] : []),
+    ]);
+  }
 
-  if (!SKIP_FIX && MODE !== 'pr-validate') {
+  if (!SKIP_FIX && MODE !== 'pr-validate' && MODE !== 'code-index') {
     runStep('Fix (dry-run preview)', 'scripts/inbox-fix.mjs', ['--dry-run', '--from-report']);
   }
 
   if (MODE === 'pr-validate') {
     console.log('\nintake-orchestrator: pr-validate complete (no writes)');
+    process.exit(0);
+  }
+
+  if (MODE === 'scrape' || MODE === 'full') {
+    await beadsCreate(`intake:${MODE}`, { priority: 2 });
+    const manifestArg = args.find((a) => a.startsWith('--manifest='));
+    const manifest = manifestArg ? manifestArg.split('=')[1] : 'docs-sitemap';
+    const scrapeArgs = [`--manifest=${manifest}`, ...(DRY_RUN ? ['--dry-run'] : [])];
+    runStep('Scrape orchestrator', 'scripts/scrape-orchestrator.mjs', scrapeArgs);
+  }
+
+  if (MODE === 'code-index' || MODE === 'full') {
+    const codeArgs = [...(DRY_RUN ? ['--dry-run'] : []), '--promote'];
+    runStep('Code AST index', 'scripts/code-index-orchestrator.mjs', codeArgs);
+  }
+
+  if (MODE === 'code-index') {
+    await beadsUpdate(`intake:${MODE}`, 'done');
+    console.log('\nintake-orchestrator: code-index complete');
     process.exit(0);
   }
 
@@ -82,10 +90,14 @@ async function main() {
     process.exit(0);
   }
 
-  if (!DRY_RUN && (MODE === 'session' || MODE === 'ci')) {
+  if (!DRY_RUN && (MODE === 'session' || MODE === 'ci' || MODE === 'full')) {
     runStep('Embeddings', 'scripts/inbox-embeddings.mjs', []);
     runStep('MDA categorize', 'scripts/mda-categorize.mjs', []);
     runStep('Audit pipeline', 'scripts/inbox-audit.mjs', ['--lens', 'pipeline']);
+  }
+
+  if (MODE === 'full') {
+    await beadsUpdate('intake:full', 'done');
   }
 
   console.log('\nintake-orchestrator: complete');

@@ -40,5 +40,63 @@
       "workspace": "/workspaces/modme-ui-01",
       "expected_tool": "bash"
     }
+  },
+  {
+    "id": "scrape-1",
+    "query": "Classify scrape page from https://nextjs.org/docs as research documentation",
+    "context": {
+      "url": "https://nextjs.org/docs",
+      "sample_text": "Next.js is a React framework for production with App Router, Server Components, and API routes.",
+      "expected_entry_type": "research",
+      "expected_severity": "medium",
+      "helper": "scrape-classifier-helper"
+    }
+  },
+  {
+    "id": "scrape-2",
+    "query": "Classify API reference page about fetch caching",
+    "context": {
+      "url": "https://nextjs.org/docs/app/building-your-application/data-fetching",
+      "sample_text": "Data Fetching in the App Router uses fetch with cache, revalidate, and tags. Route Handlers expose HTTP endpoints.",
+      "expected_entry_type": "architecture",
+      "expected_severity": "high",
+      "helper": "scrape-classifier-helper"
+    }
+  },
+  {
+    "id": "scrape-3",
+    "query": "Classify component snippet page with JSX example",
+    "context": {
+      "url": "https://ui.shadcn.com/docs/components/button",
+      "sample_text": "export function Button({ className, ...props }) { return <button className={cn(buttonVariants(), className)} {...props} /> }",
+      "expected_entry_type": "component",
+      "expected_severity": "low",
+      "helper": "scrape-classifier-helper"
+    }
+  },
+  {
+    "id": "retrieval-greptime-1",
+    "query": "JSON Schema to Zod conversion",
+    "store": "greptime",
+    "expected_paths": ["schema-crawler.ts", "mcp-registry/schema-crawler"],
+    "filter": { "ast_kind": "mcp_tool" }
+  },
+  {
+    "id": "retrieval-greptime-2",
+    "query": "scrape tool validation Zod schemas",
+    "store": "greptime",
+    "expected_paths": ["scrape-tools.ts", "scrape-schemas.ts"]
+  },
+  {
+    "id": "retrieval-hybrid-1",
+    "query": "inbox pipeline dual store promote",
+    "store": "hybrid",
+    "expected_paths": ["inbox", "scrape-promote", "code_pattern"]
+  },
+  {
+    "id": "retrieval-supabase-1",
+    "query": "architecture decision scrape staging",
+    "store": "supabase",
+    "expected_paths": ["architecture", "scrape"]
   }
 ]

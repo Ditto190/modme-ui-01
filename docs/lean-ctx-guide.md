@@ -89,14 +89,14 @@ Categories: `discovery` | `decision` | `blocker` | `progress` | `insight`.
 ## 3. Token compression workflow (per task)
 
 ```
-START  → ctx_session load + ctx_knowledge wakeup + ctx_overview OR ctx_compose(task)
+START  → yarn agent:session:start (worktree) + ctx_session load + ctx_knowledge wakeup + ctx_overview OR ctx_compose(task)
 LOCATE → ctx_search / ctx_semantic_search / ctx_graph context
-READ   → ctx_read (mode by goal — see table below)
+READ   → ctx_read (mode by goal — see table below; task profiles in .lean-ctx.toml)
 EDIT   → native StrReplace/Write (or ctx_edit fallback)
-VERIFY → ctx_read diff + lean-ctx -c "yarn check:forge" (or verify:forge before PR)
+VERIFY → ctx_read diff + lean-ctx -c "yarn check:forge" (or -VerifyStack on session finish)
 RECORD → ctx_knowledge remember + ctx_session finding/decision + ctx_agent diary
 CHECK  → ctx_compress (long chats; auto checkpoint ~every 15 MCP reads)
-END    → ctx_session save + ctx_knowledge consolidate
+END    → yarn agent:session:finish + ctx_session save + ctx_knowledge consolidate + yarn agent:audit
 ```
 
 ### Read modes (`ctx_read`)
@@ -162,6 +162,29 @@ Agents in Cursor should prefer MCP `ctx_shell` (same compression) over raw Shell
 
 ---
 
+## 4b. Config ensure workflow (smart-git Step 0)
+
+One command to detect misconfiguration and auto-apply safe ModMe defaults:
+
+```powershell
+yarn lean-ctx:ensure              # detect + auto-apply safe defaults
+yarn lean-ctx:ensure:check        # read-only pre-flight
+yarn lean-ctx:schema:sync         # refresh docs/lean-ctx/config-schema.json
+yarn lean-ctx:doctor
+```
+
+| Path | Role |
+|------|------|
+| `~/.config/lean-ctx/config.toml` | Global config (XDG) — active |
+| `.lean-ctx.toml` | Project overrides (this repo) |
+| `docs/lean-ctx/config-schema.json` | Reference snapshot — not read at runtime |
+
+Integrated into [`scripts/vibe-session-finish.ps1`](../scripts/vibe-session-finish.ps1) as advisory pre-flight (`-CheckOnly` default; `-ApplyLeanCtx` to auto-apply).
+
+Full workflow: [`.agents/skills/smart-git-automation/references/lean-ctx-config-workflow.md`](../.agents/skills/smart-git-automation/references/lean-ctx-config-workflow.md)
+
+---
+
 ## 5. Tool profiles (MCP surface area)
 
 Too many MCP tools inflate the system prompt. lean-ctx supports profiles:
@@ -197,12 +220,11 @@ Seed these via `ctx_knowledge` `remember` (or confirm with `recall`):
 
 **Safe pattern:** advisory hooks only — always `exit 0`, no `failClosed`, timeout ≤ 5s.
 
-Example opt-in config: [`.cursor/hooks.json.example`](../.cursor/hooks.json.example)
-
 Suggested hooks (enable manually):
 
 | Event | Purpose | Script |
 |-------|---------|--------|
+| `sessionStart` | lean-ctx config check (advisory, `-CheckOnly`) | `scripts/ensure-lean-ctx-config.ps1` |
 | `afterFileEdit` | Remind verify command for next-forge TS | `lean-ctx-post-edit.ps1` |
 | `stop` | Append session marker for memory pipelines | `lean-ctx-stop-marker.ps1` |
 
@@ -217,7 +239,10 @@ This repo also ships [`.github/hooks/hooks.json`](../.github/hooks/hooks.json) w
 ## 8. Diagnostics
 
 ```powershell
-lean-ctx doctor
+yarn lean-ctx:ensure          # detect + safe auto-apply ModMe defaults
+yarn lean-ctx:ensure -- -CheckOnly
+yarn lean-ctx:doctor
+yarn lean-ctx:schema:sync
 lean-ctx gain
 lean-ctx benchmark
 lean-ctx status
@@ -225,7 +250,9 @@ lean-ctx status
 
 If MCP tools return `"Not connected"`: restart Cursor MCP / run `lean-ctx onboard`.
 
-Config: `~/.config/lean-ctx/config.toml` (`compression_level`, `extra_ignore_patterns`, shell allowlist).
+**Config paths:** global `~/.config/lean-ctx/config.toml` (XDG; legacy `~/.lean-ctx/` is deprecated); project `<repo>/.lean-ctx.toml`; schema reference `docs/lean-ctx/config-schema.json` (not read at runtime).
+
+Ensure script: [`scripts/ensure-lean-ctx-config.ps1`](../scripts/ensure-lean-ctx-config.ps1) — backs up `.bak` before writes; use `-Force` only to overwrite customized keys.
 
 ---
 
@@ -249,4 +276,4 @@ After significant decisions: `ctx_knowledge remember` + inbox note + ADR when ap
 - Repo rule: `.cursor/rules/lean-ctx.mdc`
 - Agent tech guide: [docs/agent-tech-guide.md](./agent-tech-guide.md) §2
 
-**Last updated:** 2026-06-20
+**Last updated:** 2026-06-27

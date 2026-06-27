@@ -15,6 +15,6 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": ["base/**/*", "helpers/**/*", "evaluation/**/*"],
+  "include": ["base/**/*", "helpers/**/*", "evaluation/**/*", "workers/**/*", "models/greptimedb_client.ts"],
   "exclude": ["node_modules", "dist"]
 }

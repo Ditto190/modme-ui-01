@@ -13,6 +13,8 @@ Hosted project created via Supabase MCP on **2026-06-20**.
 
 ADR: [`next-forge/docs/adr/0002-cloud-first-supabase-with-prisma.md`](../next-forge/docs/adr/0002-cloud-first-supabase-with-prisma.md)
 
+**Hybrid + agents:** [`docs/supabase-agent-hybrid.md`](supabase-agent-hybrid.md) — hosted primary, optional local Studio, MCP/CLI/script paths.
+
 ---
 
 ## Step 1 — Get API keys (you, ~2 min)

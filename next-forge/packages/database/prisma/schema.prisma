@@ -38,12 +38,16 @@ model InboxEntry {
   severity        String           @default("medium")
   entryType       String?          @map("entry_type")
   status          String           @default("indexed")
+  sourceKind      String?          @map("source_kind")
+  codePatternIds  String[]         @default([]) @map("code_pattern_ids")
   storageUrl      String?          @map("storage_url")
   categoryId      String?          @map("category_id")
   category        Category?        @relation(fields: [categoryId], references: [id])
   relations       EntryRelation[]  @relation("from_entry")
   relatedBy       EntryRelation[]  @relation("to_entry")
   outputArtefacts OutputArtefact[]
+  scrapePages     ScrapePage[]
+  codePatternRefs CodePatternRef[]
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @updatedAt @map("updated_at")
   archivedAt      DateTime?        @map("archived_at")
@@ -110,4 +114,87 @@ model OutputArtefact {
   updatedAt     DateTime      @updatedAt @map("updated_at")
 
   @@map("output_artefacts")
+}
+
+model CodePatternRef {
+  id           String     @id @default(uuid())
+  inboxEntryId String     @map("inbox_entry_id")
+  greptimeId   String     @map("greptime_id")
+  path         String?
+  astKind      String?    @map("ast_kind")
+  contentHash  String?    @map("content_hash")
+  inboxEntry   InboxEntry @relation(fields: [inboxEntryId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  @@unique([inboxEntryId, greptimeId])
+  @@index([inboxEntryId])
+  @@index([greptimeId])
+  @@map("code_pattern_refs")
+}
+
+// ─── Scrape Staging Models ────────────────────────────────────────────────────
+// Crawl → classify → promote into inbox_entries (Scrapy + Ollama pipeline)
+
+model ScrapeManifest {
+  id        String      @id @default(uuid())
+  slug      String      @unique
+  seeds     Json
+  rules     Json
+  schedule  String?
+  jobs      ScrapeJob[]
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+
+  @@map("scrape_manifests")
+}
+
+model ScrapeJob {
+  id          String         @id @default(uuid())
+  manifestId  String         @map("manifest_id")
+  status      String         @default("pending")
+  startedAt   DateTime?      @map("started_at")
+  completedAt DateTime?      @map("completed_at")
+  error       String?
+  manifest    ScrapeManifest @relation(fields: [manifestId], references: [id], onDelete: Cascade)
+  pages       ScrapePage[]
+  createdAt   DateTime       @default(now()) @map("created_at")
+
+  @@index([manifestId, startedAt(sort: Desc)])
+  @@map("scrape_jobs")
+}
+
+model ScrapePage {
+  id             String                @id @default(uuid())
+  jobId          String                @map("job_id")
+  url            String
+  contentHash    String                @unique @map("content_hash")
+  html           String?
+  text           String?
+  status         String                @default("raw")
+  inboxEntryId   String?               @map("inbox_entry_id")
+  job            ScrapeJob             @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  inboxEntry     InboxEntry?           @relation(fields: [inboxEntryId], references: [id], onDelete: SetNull)
+  classification ScrapeClassification?
+  createdAt      DateTime              @default(now()) @map("created_at")
+  updatedAt      DateTime              @updatedAt @map("updated_at")
+
+  @@index([jobId, status])
+  @@map("scrape_pages")
+}
+
+model ScrapeClassification {
+  id         String     @id @default(uuid())
+  pageId     String     @unique @map("page_id")
+  entryType  String     @map("entry_type")
+  severity   String     @default("medium")
+  agentRole  String?    @map("agent_role")
+  title      String
+  summary    String
+  tags       String[]
+  features   Json       @default("{}")
+  promotedAt DateTime?  @map("promoted_at")
+  page       ScrapePage @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  createdAt  DateTime   @default(now()) @map("created_at")
+
+  @@map("scrape_classifications")
 }

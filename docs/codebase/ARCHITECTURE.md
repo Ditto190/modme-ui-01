@@ -46,3 +46,21 @@ Flow details:
 ### 6) Evidence
 
 - `GenerativeUI_monorepo/README_GENERATIVE_UI.md`
+
+### 7) Unified Knowledge Intake (dual-store)
+
+```text
+Scrapy / AST indexer → Zod gates (intake-contracts) → GreptimeDB (code) + Supabase (inbox)
+                              ↓ promote only
+                    inbox_entries.code_pattern_ids ↔ Greptime code_index.id
+```
+
+| Component | Path | Role |
+|-----------|------|------|
+| Validation spine | `packages/intake-contracts/` | Zod at classify/promote/code-chunk boundaries |
+| Scrape pipeline | `scripts/scrape-*.mjs` | Web crawl → classify → promote |
+| Code AST index | `scripts/code-index-orchestrator.mjs` | ts-morph → GreptimeDB |
+| Orchestrator | `scripts/intake-orchestrator.mjs` | `--mode=full` chains scrape + code-index + ingest |
+| RAG eval | `experiments/micro-agents/evaluation/runner.ts` | Hybrid retrieval Recall@5 |
+
+See [docs/inbox-pipeline/README.md](../inbox-pipeline/README.md) and [ADR-0010](../../next-forge/docs/adr/0010-dual-store-knowledge-intake.md).

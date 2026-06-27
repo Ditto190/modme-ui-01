@@ -98,7 +98,7 @@ async function loadJson(filePath) {
   );
 }
 
-async function validateWithSchema(obj, schemaPath) {
+export async function validateWithSchema(obj, schemaPath) {
   const schema = await loadJson(schemaPath);
   if (!schema) return { valid: true, errors: null, reason: "no schema found" };
   try {
@@ -174,7 +174,7 @@ export async function generateCollectionSet(inputPath, options = {}) {
 // CLI entrypoint
 if (
   import.meta.url === `file://${process.argv[1]}` ||
-  process.argv[1].endsWith("yaml-parser.mjs")
+  process.argv[1]?.endsWith("yaml-parser.mjs")
 ) {
   (async () => {
     const argv = process.argv.slice(2);

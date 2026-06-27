@@ -1,0 +1,13 @@
+{
+  "name": "@modme/intake-contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Zod validation schemas synced from docs/inbox-pipeline/contracts JSON",
+  "exports": {
+    ".": "./index.mjs"
+  },
+  "dependencies": {
+    "zod": "^3.24.2"
+  }
+}

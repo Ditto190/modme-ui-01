@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ScrapeJobCollection",
+  "type": "object",
+  "required": ["slug", "name", "seeds"],
+  "properties": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "seeds": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "format": "uri" }
+    },
+    "sitemap_url": { "type": "string", "format": "uri" },
+    "depth": { "type": "integer", "minimum": 0, "maximum": 10, "default": 2 },
+    "allowlist": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "rate_limit_seconds": { "type": "number", "minimum": 0, "default": 1 },
+    "use_playwright": { "type": "boolean", "default": false },
+    "obey_robots": { "type": "boolean", "default": true }
+  },
+  "additionalProperties": false
+}

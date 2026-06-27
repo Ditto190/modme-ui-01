@@ -29,6 +29,8 @@ Single onboarding map for Cursor agents, cloud agents, and Copilot. Run `/init` 
 | `yarn check:forge` / `yarn verify:forge` | next-forge CI parity |
 | `yarn verify:generative` | GenerativeUI CI parity |
 | `yarn pre-commit:check` | Staged-aware hook checks |
+| `yarn agent:tui` / `yarn agent:status` / `yarn agent:audit` | Agent terminal orchestration |
+| `yarn agent:session:start` / `yarn agent:session:finish` | Session envelope + beads |
 | `.\scripts\new-agent-worktree.ps1` | Isolated feature worktrees |
 
 ### Codebase deep docs (`docs/codebase/`)
@@ -119,6 +121,9 @@ Rollback: `yarn dev:generative` restores legacy stack; disable feature flags in 
 | Layer | Location |
 |-------|----------|
 | Onboarding command | `.cursor/commands/init.md` |
+| Beads command | `.cursor/commands/beads.md` — `/beads` (ready, create, close, session) |
+| ADR command | `.cursor/commands/architecture-decision-records.md` — `/architecture-decision-records` |
+| Session handover | [`docs/handover/latest.md`](handover/latest.md) |
 | Rules | `.cursor/rules/` — lean-ctx, monorepo-boundaries, multi-agent-worktrees, package-manager-scope |
 | Repo skills | `.agents/skills/` (17 skills — see table below) |
 | Cursor skills | `.cursor/skills/` (80+ vendor/project skills) |
@@ -126,6 +131,7 @@ Rollback: `yarn dev:generative` restores legacy stack; disable feature flags in 
 | Forge CI parity | `scripts/verify-forge-ci.ps1` |
 | Generative CI parity | `scripts/verify-generative-ci.ps1` |
 | Worktrees | `docs/multi-agent-worktrees.md` — **mandatory for feature work** |
+| Agent orchestration | `docs/agent-terminal-orchestration.md` — mprocs TUI, session envelopes, `yarn agent:*` |
 | Beads | `docs/beads-workflow.md` — issue tracking (`modme` prefix) |
 | Debug | `docs/debug-launch-guide.md`, `.vscode/launch.json`, `scripts/launch-manifest.json` |
 | Buildkite | `docs/buildkite-guide.md`, `.buildkite/pipeline.yml` (GenerativeUI) |

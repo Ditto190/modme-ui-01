@@ -1,0 +1,55 @@
+name: "Triage"
+description: "Maintainer/agent triage checklist for an open issue"
+title: "[Triage]: "
+labels: ["needs-triage", "status:triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Checklist: [.cursor/bugbot/TRIAGE.md](../blob/dev/.cursor/bugbot/TRIAGE.md)
+  - type: input
+    id: issue_ref
+    attributes:
+      label: Issue to triage (number or URL)
+    validations:
+      required: true
+  - type: dropdown
+    id: stack
+    attributes:
+      label: Stack classification
+      options:
+        - "stack:forge"
+        - "stack:generative"
+        - "stack:orchestration"
+        - "stack:root"
+        - "unknown"
+    validations:
+      required: true
+  - type: dropdown
+    id: citizen
+    attributes:
+      label: Route to agent citizen
+      options:
+        - "devops-ci-champion"
+        - "forge-reviewer"
+        - "generative-reviewer"
+        - "beads-orchestrator"
+        - "bugbot-merge-champion"
+        - "human-maintainer"
+    validations:
+      required: true
+  - type: checkboxes
+    id: triage_steps
+    attributes:
+      label: Triage steps
+      options:
+        - label: Stack label applied
+          required: true
+        - label: Duplicate search completed
+          required: true
+        - label: Acceptance criteria present or requested
+          required: false
+        - label: beads ID linked (if multi-session)
+          required: false
+        - label: Remove needs-triage when done
+          required: false

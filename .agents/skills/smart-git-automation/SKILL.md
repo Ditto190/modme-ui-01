@@ -1,6 +1,6 @@
 ---
 name: smart-git-automation
-description: ModMe overlay — worktree-first smart git grouping, commit, and PR to dev
+description: "Use when finishing a session, starting agent work in Monorepo_ModMe, lean-ctx is missing/misconfigured, agents bypass ctx_read/ctx_search, or configuring lean-ctx from config-schema.json. Worktree-first smart git grouping, commit, and PR to dev."
 ---
 
 # smart-git-automation (Monorepo_ModMe)
@@ -44,6 +44,17 @@ yarn check:forge          # fast lint during iteration
 ```
 
 ## Agent workflow (manual smart-git)
+
+### 0. lean-ctx ensure (before git)
+
+```powershell
+yarn lean-ctx:ensure
+# Check only: .\scripts\ensure-lean-ctx-config.ps1 -CheckOnly
+```
+
+- Auto-applies safe ModMe defaults if global/project config missing or invalid
+- Nudges hybrid adoption once per session if agents bypass lean-ctx
+- Details: [references/lean-ctx-config-workflow.md](references/lean-ctx-config-workflow.md)
 
 ### 1. Smart detection & grouping
 
@@ -92,5 +103,7 @@ PR body must include test plan with `yarn check:forge` / `yarn verify:forge` whe
 
 ## Related
 
+- [references/lean-ctx-config-workflow.md](./references/lean-ctx-config-workflow.md)
+- [`docs/lean-ctx-guide.md`](../../docs/lean-ctx-guide.md)
 - [`docs/multi-agent-worktrees.md`](../../docs/multi-agent-worktrees.md)
 - [`.agents/skills/next-forge/SKILL.md`](../next-forge/SKILL.md)

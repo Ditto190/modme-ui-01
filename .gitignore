@@ -41,6 +41,16 @@ yarn-debug.log*
 yarn-error.log*
 # Session logger logs (local-only)
 logs/copilot/
+logs/agent-orchestrator/
+
+# Agent task registry (local JSON)
+data/
+
+# Copilot/session exports (local only)
+session.md
+
+# Generated mprocs config (per-worktree ports)
+mprocs.yaml
 
 # OS and IDE
 .DS_Store
