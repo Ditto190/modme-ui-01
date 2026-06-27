@@ -181,11 +181,11 @@ if ($Fix) {
     $template = @'
 {
   "folders": [
-    { "name": "Root (Monorepo_ModMe)", "path": "." },
-    { "name": "next-forge", "path": "./next-forge" },
-    { "name": "GenerativeUI", "path": "./GenerativeUI_monorepo" },
-    { "name": "Scripts", "path": "./scripts" },
-    { "name": "Agent skills", "path": "./.agents/skills" }
+    { "name": "Root", "path": "." },
+    { "name": "next-forge", "path": "next-forge" },
+    { "name": "GenerativeUI", "path": "GenerativeUI_monorepo" },
+    { "name": "scripts", "path": "scripts" },
+    { "name": "agent-skills", "path": ".agents/skills" }
   ],
   "settings": {
     "git.ignoreLimitWarning": true
