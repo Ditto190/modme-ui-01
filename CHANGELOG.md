@@ -61,6 +61,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (repo) Advisory lean-ctx session config workflow — `yarn lean-ctx:ensure`, `scripts/ensure-lean-ctx-config.ps1`, smart-git Step 0 (ADR-0012)
 - (docs) Master operator guide `docs/monorepo-build-ci-setup.md` â€” dual-stack CI, Turbo GHA vs S3 remote cache, local `next-forge/.env` vs GitHub `vars`/`secrets` split
 - (adr) ADR-0011 Turbo self-hosted remote cache (`next-forge/docs/adr/0011-turbo-self-hosted-remote-cache.md`)
 - (ci) `yarn setup:turbo-cache` â€” `scripts/setup-turbo-remote-cache.ps1` (compose validation, optional server health check, `gh` command hints)

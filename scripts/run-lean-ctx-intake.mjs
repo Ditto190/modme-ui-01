@@ -2,7 +2,7 @@
 /**
  * Run lean-ctx intake process.
  */
-import { execSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -40,11 +40,22 @@ if (dryRun) {
 } else {
   try {
     console.log('Exporting lean-ctx knowledge...');
-    execSync('npx lean-ctx knowledge export --format json --output knowledge-base.json', { 
-      cwd: repoRoot,
-      stdio: 'inherit' 
-    });
-    console.log('Successfully exported to knowledge-base.json');
+    const result = spawnSync(
+      'npx',
+      ['lean-ctx', 'knowledge', 'export', '--format', 'json', '--output', 'knowledge-base.json'],
+      { cwd: repoRoot, encoding: 'utf8', shell: true },
+    );
+    if (result.status === 0) {
+      console.log('Successfully exported to knowledge-base.json');
+    } else {
+      const combined = `${result.stdout ?? ''}\n${result.stderr ?? ''}`;
+      if (/No knowledge stored/i.test(combined)) {
+        console.log('Skipping lean-ctx export: no project knowledge yet.');
+      } else {
+        console.error(combined.trim() || 'lean-ctx knowledge export failed');
+        process.exit(result.status ?? 1);
+      }
+    }
   } catch (error) {
     console.error('Failed to export lean-ctx knowledge:', error.message);
     process.exit(1);

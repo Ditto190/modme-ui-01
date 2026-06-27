@@ -85,6 +85,7 @@ Feature work **must not** happen in the main checkout. Use isolated Git worktree
 6. **Multi-Agent Coordination**: Register your presence using `ctx_agent action=register agent_type=<type> role=<role>`.
 7. **Agent Memory**: Keep a persistent lab notebook across sessions by writing to your diary via `ctx_agent action=diary category=<category> content="<notes>"`.
 8. **Shared Knowledge**: Use `ctx_session` and `ctx_knowledge` to store project-wide findings and share context handoffs with other agents working in the monorepo.
+9. Before smart-git session finish: `yarn lean-ctx:ensure` (or `-CheckOnly` via `vibe-session-finish.ps1` default). See ADR-0012.
 
 ## Environment & secrets (agents — read ADR-0010)
 
@@ -238,6 +239,8 @@ The pipeline runs on every push to `docs/inbox/` and ingests new entries into Su
 - Use `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (not legacy anon-only naming) for next-forge browser/SSR Supabase clients via `@repo/supabase`.
 - Do not wire Supabase Auth middleware into `apps/app` by default — ModMe uses Auth.js for sign-in.
 - On Windows, prefer `bunx supabase login --token sbp_...` (dashboard access token) over browser login; avoid bare `supabase` on PATH (often v1.x, HTTP 401).
+- lean-ctx hybrid integration: global `~/.config/lean-ctx/config.toml` with `tool_profile=power`, `proxy_enabled=true`, `compression_level=max`, `memory_profile=balanced`.
+- Run `yarn lean-ctx:ensure` at session start or before smart-git session finish; read-only check: `yarn lean-ctx:ensure:check`; schema reference at `docs/lean-ctx/config-schema.json` (`yarn lean-ctx:schema:sync` to refresh).
 - Integrate open feature-branch PRs into `dev` before merging `dev` → `main` (keeps `main` stable until features land).
 - Archive/remove stale worktrees after `git log` audit confirms nothing unique vs `dev`; do not merge stale branches by default.
 
@@ -253,5 +256,13 @@ The pipeline runs on every push to `docs/inbox/` and ingests new entries into Su
 - Schema deploy order: `bun run db:push` (Prisma) before `bunx supabase db push` — SQL migration 001 expects Prisma tables.
 - Supabase CLI config lives at `next-forge/supabase/`; use `bunx supabase` from `next-forge/packages/database` with `--workdir ../.. --dns-resolver https` on Windows.
 - next-forge default ports: app 3100, web 3101, api 3102, docs 3104, storybook 6106 (avoids GenerativeUI 3000–3004 block).
+- lean-ctx active global config: `~/.config/lean-ctx/config.toml` (XDG), not legacy `~/.lean-ctx/config.toml`; repo `.lean-ctx.toml` merges as project overrides; schema snapshot at `docs/lean-ctx/config-schema.json` (reference-only, `yarn lean-ctx:schema:sync`). ADR-0012 documents the ensure workflow.
 - gh-aw / secrets (ADR-0010): root `.env` → `yarn setup:env`; `COPILOT_GITHUB_TOKEN` on GitHub via `yarn setup:gh-aw`; token alias order COPILOT_GITHUB_TOKEN → GITHUB_PAT → GITHUB_PERSONAL_ACCESS_TOKEN; `gh aw compile` on native Windows → use WSL or CI.
 - Before commit/push during merge or rebase work, run `rg '<<<<<<<'` repo-wide; unresolved conflict markers have appeared in `.vscode/`, `.github/copilot-instructions.md`, and `.github/aw/` files.
+
+<!-- lean-ctx -->
+## lean-ctx
+
+Prefer lean-ctx MCP tools over native equivalents for token savings.
+Full rules: @LEAN-CTX.md
+<!-- /lean-ctx -->
