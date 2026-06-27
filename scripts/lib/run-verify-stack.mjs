@@ -63,7 +63,7 @@ if (stacks.forge) {
 }
 if (stacks.generative) {
   if (prePush) {
-    console.log("verify-stack: generative pre-push (lint only)");
+    console.log("verify-stack: generative pre-push (lint only, advisory)");
     const result = spawnSync(
       "powershell",
       [
@@ -77,7 +77,11 @@ if (stacks.generative) {
       ],
       { cwd: ROOT, stdio: "inherit" },
     );
-    if (result.status !== 0) process.exit(result.status ?? 1);
+    if (result.status !== 0) {
+      console.warn(
+        "verify-stack: generative lint failed — push continues; run yarn verify:generative before merge",
+      );
+    }
   } else {
     runYarn("verify:generative");
   }

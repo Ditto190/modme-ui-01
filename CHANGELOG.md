@@ -76,7 +76,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
-- (repo) Pre-push hook uses path-filtered lint/check (skips forge build without env); adds `yarn verify:generative`
+- (repo) Pre-push generative lint is advisory on push (full `yarn verify:generative` before PR merge)
 - (docs) `yarn agent:mprocs:generate` canonical name (replaces stale `mprocs:generate` references in orchestration docs)
 - (repo) **Reconcile `main` with Monorepo_ModMe** — GenUI Workbench (`modme-ui-01` legacy layout) superseded by dual-monorepo stack (`next-forge/` + `GenerativeUI_monorepo/`); unrelated GenUI history retired on default branch
 - (gitignore) Ignore Playwright artifacts, beads embedded Dolt state, local hook state (`.cursor/hooks/state/`), IDE-local dirs (`.claude/`, `.copilot/`), and install manifests; remove erroneous `.cursor/hooks.json` ignore

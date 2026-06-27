@@ -1,7 +1,8 @@
 # Session handover — ModMe
 
 **Updated:** 2026-06-27  
-**Branch:** `cursor/ignore-skills-f35ba` (main checkout — feature work should use a worktree)  
+- **Note:** You're on the **main checkout** (`cursor/ignore-skills-f35ba`), not a `Monorepo_ModMe-dev/` worktree. Future feature work should use worktrees per `docs/multi-agent-worktrees.md`.
+- **Pushed:** `cursor/ignore-skills-f35ba` → origin (4 commits including orchestration + hook fixes).  
 **Last major deliverable:** Agent Terminal Orchestration Layer (all 8 plan todos complete)
 
 ---
