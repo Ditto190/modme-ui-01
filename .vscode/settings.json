@@ -2,7 +2,7 @@
   "git.path": "C:/Program Files/Git/cmd/git.exe",
   "leanctx.binaryPath": "C:/Users/dylan/.gemini/antigravity/bin/lean-ctx.exe",
   "chat.agent.sandbox.enabled": "allowNetwork",
-  "npm.packageManager": "yarn@3.3.0",
+  "npm.packageManager": "yarn",
   "npm.exclude": [
     "**/.vendor/**",
     "!**/.vendor/awesome-copilot-main/**",
@@ -36,13 +36,13 @@
       "icon": "terminal-powershell"
     }
   },
-  "terminal.integrated.defaultProfile.windows": "PowerShell 7",
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
   "terminal.integrated.rightClickBehavior": "default",
   "debug.focusWindowOnBreak": false,
   "debug.focusEditorOnBreak": false,
   "files.autoSave": "afterDelay",
   "editor.formatOnSave": true,
-  "workbench.colorTheme": "Cursor Dark",
+  "workbench.colorTheme": "Default Dark Modern",
   "terminal.integrated.gpuAcceleration": "off",
   "explorer.autoReveal": true,
   "explorer.confirmDelete": false,

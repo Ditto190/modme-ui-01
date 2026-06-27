@@ -2,6 +2,9 @@
 .env
 .env.*
 !.env.example
+.orca/
+.orca.json
+orca.json
 
 # Dependencies and package managers
 node_modules/
