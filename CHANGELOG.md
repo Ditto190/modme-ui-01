@@ -61,7 +61,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
-- (repo) Repo alignment doctor (`yarn repo:doctor`), GitLab mirror workflow, and `docs/repo-alignment.md`
+- (next-forge) Vitest reconnect delay helpers and WebSocket resilience tests for generative UI hook
 - (repo) `yarn verify:generative` CI parity script and GenerativeUI pre-commit/CI suite
 - (repo) Pre-push hook (repo alignment + `--full` verify gate)
 - (repo) Inbox pipeline v1 — contracts (`docs/inbox-pipeline/contracts/`), audit/fix scripts, Supabase migrations, and `@repo/schemas` inbox types
