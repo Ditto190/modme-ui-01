@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "agents": [
+    {
+      "id": "cursor-dev",
+      "agent_type": "cursor",
+      "role": "dev",
+      "collection": "modme-core",
+      "intelligence": ["ctx_compose", "ctx_impact", "ctx_delta"]
+    },
+    {
+      "id": "cursor-review",
+      "agent_type": "cursor",
+      "role": "review",
+      "collection": "modme-core",
+      "intelligence": ["ctx_delta", "ctx_callgraph"]
+    },
+    {
+      "id": "cursor-test",
+      "agent_type": "cursor",
+      "role": "test",
+      "collection": "modme-core",
+      "intelligence": ["ctx_compose", "ctx_search"]
+    },
+    {
+      "id": "cursor-plan",
+      "agent_type": "cursor",
+      "role": "plan",
+      "collection": "modme-lean-ctx-advanced",
+      "intelligence": ["ctx_compose", "ctx_architecture", "ctx_graph"]
+    },
+    {
+      "id": "cursor-orchestrator",
+      "agent_type": "cursor",
+      "role": "orchestrator",
+      "collection": "modme-lean-ctx-advanced",
+      "intelligence": ["ctx_compose", "ctx_graph", "ctx_agent"]
+    }
+  ],
+  "mcp_gateways": [
+    {
+      "namespace": "context7",
+      "find_hint": "library docs",
+      "mcp_server": "plugin-context7-plugin-context7"
+    },
+    {
+      "namespace": "supabase",
+      "find_hint": "schema migration",
+      "mcp_server": "plugin-supabase-supabase"
+    },
+    {
+      "namespace": "gitlab",
+      "find_hint": "merge request pipeline",
+      "mcp_server": "plugin-gitlab-GitLab"
+    }
+  ]
+}

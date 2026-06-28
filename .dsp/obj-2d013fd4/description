@@ -1,0 +1,4 @@
+source: scripts/telemetry/telemetry-cli.mjs
+kind: object
+purpose: Observability CLI entry — sync, collect, report, ingest-copilot subcommands.
+scope: scripts

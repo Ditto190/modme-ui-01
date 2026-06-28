@@ -1,27 +1,26 @@
-# Handoff Report: Lean-CTX Configuration Design
+# Handoff Report: Telemetry Ingestor Strategy
 
 ## 1. Observation
-- `call_mcp_tool` is missing from the toolset and CODE_ONLY mode prevented direct web access. The main agent provided guidance to use local documentation `docs/lean-ctx-guide.md` and local configuration files.
-- Read `docs/lean-ctx-guide.md`: Identifies a "Three-layer memory model" (`ctx_knowledge`, `ctx_session`, `ctx_agent`), recommends `.lean-ctx/memory/` structure, and specifies rules for hooks and `.lean-ctx.toml` config parameters.
-- Read `.lean-ctx.toml`: Currently set with `graph_index_max_files = 12000`, `memory_profile = "balanced"`, and `memory_cleanup = "shared"`.
-- Read `.cursor/rules/lean-ctx.mdc`: Exists with hybrid mode rules for tools but lacks explicit guidelines for `ctx_agent` diary sharing in multi-agent workflows.
-- Evaluated `.cursor/hooks.json` (currently empty `{}`) and `.github/hooks/hooks.json` (configured with lean-ctx pre/post hooks).
-- Verified absence of `.lean-ctx/memory/` directory and `scripts/benchmark-lean-ctx.ps1`.
+- `SCOPE.md` specifies building `telemetry-ingestor.ts` that normalizes and writes raw events to the database via Prisma (`@repo/database`), implementing the `TelemetryPayload` interface and `ingestTelemetry` function.
+- `supabase-catalogue-fetcher.ts` uses an `isObjectRecord` type guard (`typeof value === 'object' && value !== null`) to validate data shapes dynamically.
+- The `TelemetryEvent` Prisma model uses a `Json` type for `metadata` (defaulting to `"{}"`) and includes an optional foreign key `categoryId` referencing `TelemetryCategory`. 
 
 ## 2. Logic Chain
-- **R1. Configuration**: To support the monorepo and multi-agent workflows, `.lean-ctx.toml` needs `compression_level = "max"`, `memory_profile = "adaptive"`, and `multi_agent_sync = true`. The `.cursor/hooks.json` should safely employ the `stop` and `afterFileEdit` hooks as advised by `docs/lean-ctx-guide.md`, without `failClosed`. `lean-ctx.mdc` should be updated to remind agents about the `ctx_agent` multi-agent diary workflow.
-- **R2. Memory Base**: A structured knowledge base directory (`.lean-ctx/memory/knowledge`, `sessions`, `diary`) will map to the Three-layer memory model. An indexing script `lean-ctx-index.ps1` is required to parse diary JSON records and consolidate findings into permanent agent knowledge.
-- **R3. Benchmarking**: A script `benchmark-lean-ctx.ps1` that measures the stopwatch time for shell wrappers (`lean-ctx -c "git status"`) and context loads (`ctx_session load`), then displays token metrics (`lean-ctx gain`), fulfills the requirement for validating context load times.
+- **Safe Type-Checking (`metadata`)**: Since Prisma `Json` types require valid json objects and can throw errors if they encounter `undefined` properties, our `isObjectRecord` must be strict. We should check `typeof val === 'object' && val !== null && !Array.isArray(val)`. Any valid `metadata` should be sanitized (e.g., via `JSON.parse(JSON.stringify(metadata))`) before queueing, to prevent Prisma serialization crashes on unsupported types like `undefined` or `Functions`.
+- **Batching & Queueing**: Calling `createMany` for each event individually is inefficient. We must use an in-memory queue that triggers a `flush()` on a size threshold or interval. To prevent race conditions, a mutex or boolean lock (`isFlushing`) must wrap the flush routine.
+- **Batch Insertion Edge Cases (Prisma & Postgres)**:
+  - **Parameter Limits**: PostgreSQL limits queries to 65,535 parameters. With ~6 mapped fields per `TelemetryEvent`, the max theoretical batch size is ~10,000. We must explicitly chunk the queue into sizes of 1,000 to 5,000 during `createMany`.
+  - **Foreign Key Violations**: `createMany` is atomic. If a single payload has a `categoryId` that does not exist, the entire batch fails. We should wrap `createMany` in a `try/catch`. On failure, the ingestor should fallback to individual `create` calls (or drop the invalid records) to ensure valid telemetry events are not lost due to one malformed record.
 
 ## 3. Caveats
-- Since the exact content of GitHub Context7 docs was not accessible natively, the local `lean-ctx-guide.md` served as the source of truth.
-- Creating the actual `.ps1` scripts and modifying the configuration files directly was outside the scope of this read-only exploration task.
-- The `benchmark-lean-ctx.ps1` is a proposed design and must be thoroughly tested for execution context on the target machines.
+- Using an in-memory queue entails data loss if the Node process crashes before flushing.
+- Parsing and stringifying JSON for deep sanitization is a performance overhead on very large payloads; this assumes `metadata` payloads are relatively small.
+- We rely on `createMany` transaction failures to detect invalid `categoryId` references to save an extra lookup query on the hot-path. 
 
 ## 4. Conclusion
-The comprehensive configuration design for `lean-ctx` in the ModMe monorepo has been generated and saved to `.agents/explorer_1/design.md`. The proposed design addresses R1, R2, and R3, implementing the "Three-layer memory model" and safely integrating Cursor hooks for adaptive learning and performance tuning. The implementation phase can now commence using this blueprint.
+We must implement `telemetry-ingestor.ts` using an in-memory queue that enforces a strict `!Array.isArray` object guard and `JSON` sanitization for `metadata`. The ingestor will asynchronously chunk payloads into batches of 1,000 for `prisma.telemetryEvent.createMany()`. It will lock during flushes to prevent concurrency issues, and must feature a fallback to row-by-row insertion when a batch transaction fails due to foreign key violations.
 
 ## 5. Verification Method
-- **Implementation check**: Validate the creation of `.lean-ctx.toml` edits, the `.lean-ctx/memory/` scaffolding, and the PowerShell scripts.
-- **Benchmark run**: Execute `pwsh.exe -File scripts/benchmark-lean-ctx.ps1` and assert that the timing metrics are outputted (e.g., Context session load time < 500ms).
-- **Hooks validation**: Create a temporary file edit to trigger `afterFileEdit` hook and verify it functions non-blockingly.
+1. Inspect `telemetry-ingestor.ts` to ensure batch chunking sizes are explicit (e.g. `<= 5000`) and the `isObjectRecord` function rejects arrays and primitives.
+2. Verify test files simulate foreign key violations in batch mode and successfully fallback to individual inserts for the remaining valid rows.
+3. Validate by running `yarn test` inside `next-forge/packages/observability` and observing the database state after invoking `ingestTelemetry` rapidly >10,000 times.

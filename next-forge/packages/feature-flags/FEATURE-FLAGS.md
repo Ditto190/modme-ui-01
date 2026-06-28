@@ -9,6 +9,7 @@ Flags are created via `createFlag(key)` and exported from `index.ts`.
 Example:
 
 - `showBetaFeature` is exported as `showBetaFeature` and created as `createFlag("showBetaFeature")`.
+- `showGenerativeUi` gates the `/generative-ui` route in `apps/app` (Phase 4 cutover prep). Default off until enabled in PostHog/analytics.
 
 ## Access control & decision source
 

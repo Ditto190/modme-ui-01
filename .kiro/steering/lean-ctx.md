@@ -4,17 +4,18 @@ inclusion: always
 
 # lean-ctx — Context Engineering Layer
 
-The workspace has the `lean-ctx` MCP server installed. You MUST prefer lean-ctx tools over native equivalents for token efficiency and caching.
+The workspace has the `lean-ctx` MCP server installed. **Never use native read/search/shell tools for repo files** — use lean-ctx with explicit read modes.
 
 ## Mandatory Tool Preferences
 
-| Use this | Instead of | Why |
-|----------|-----------|-----|
-| `mcp_lean_ctx_ctx_read` | `readFile`, `readCode` | Cached reads, 10 compression modes, re-reads cost ~13 tokens |
-| `mcp_lean_ctx_ctx_multi_read` | `readMultipleFiles` | Batch cached reads in one call |
-| `mcp_lean_ctx_ctx_shell` | `executeBash` | Pattern compression for git/npm/test output |
-| `mcp_lean_ctx_ctx_search` | `grepSearch` | Compact, .gitignore-aware results |
-| `mcp_lean_ctx_ctx_tree` | `listDirectory` | Compact directory maps with file counts |
+| Use this                    | Instead of              | Why                                                                                  |
+| --------------------------- | ----------------------- | ------------------------------------------------------------------------------------ |
+| `ctx_read(path, mode)`      | `readFile`, `Read`      | Cached reads, 10 modes — [read modes](https://leanctx.com/docs/concepts/read-modes/) |
+| `ctx_search`                | `grepSearch`, `Grep`    | Compact, .gitignore-aware results                                                    |
+| `ctx_shell` / `lean-ctx -c` | `executeBash`, `Shell`  | Pattern compression for git/npm/test output                                          |
+| `ctx_tree`                  | `listDirectory`, `Glob` | Compact directory maps                                                               |
+
+**Mode quick pick:** edit → `full`; re-read → `diff`; orient → `map`/`signatures`; unsure → `auto`.
 
 ## When to use native Kiro tools instead
 

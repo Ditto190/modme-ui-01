@@ -30,9 +30,11 @@ target/
 .tools/
 .lean-ctx/
 .node/
+.firecrawl/
 
 # Vendored mirrors (re-fetch via scripts)
 .vendor/
+# Firecrawl self-host clone: yarn firecrawl:setup → .vendor/firecrawl/
 
 # Logs and diagnostics
 *.log
@@ -42,9 +44,11 @@ yarn-error.log*
 # Session logger logs (local-only)
 logs/copilot/
 logs/agent-orchestrator/
+logs/lean-ctx/
 
 # Agent task registry (local JSON)
 data/
+!data/lean-ctx-task-profiles.toml.example
 
 # Copilot/session exports (local only)
 session.md
@@ -88,9 +92,8 @@ temp/
 
 # Local agent runtime (SQLite)
 **/.voltagent/*.db
-# lean-ctx machine-local
+# lean-ctx machine-local id (project config .lean-ctx.toml is tracked)
 .lean-ctx-id
-.lean-ctx.toml
 
 # agenttrace
 .agenttrace/

@@ -61,6 +61,9 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (repo) Distributed observability pipeline — `yarn telemetry:sync`, telemetry CLI/bridge, DSP bootstrap (`.dsp/`), observability runbooks, and `observability-pipeline-check` CI workflow
+- (next-forge) `@repo/observability` ingest/categorize package, API telemetry routes, knowledge session-ops panel, and observability schema contract tests
+- (repo) lean-ctx project config (`.lean-ctx.toml`), universal intake script, and agent terminal session finish/start enhancements
 - (GenerativeUI) Hexagonal refactor of `apps/agent-server` — domain/ports/adapters/app layout with DI in `create_app()`
 - (GenerativeUI) Pytest golden contract parity for agent-server Pydantic models (`tests/test_schemas_contract.py`)
 - (next-forge) Vitest contract tests for `@repo/schemas` and reconnect delay helpers for generative UI WebSocket hook

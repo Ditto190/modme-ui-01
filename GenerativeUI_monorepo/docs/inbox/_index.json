@@ -1,10 +1,197 @@
 {
   "version": "1.0",
-  "last_updated": "2026-06-20T11:51:48.029Z",
-  "entry_count": 24,
+  "last_updated": "2026-06-28T08:29:05.903Z",
+  "entry_count": 42,
   "entries": [
     {
-      "id": "697c7d07-aacf-4092-a58b-665f37d2f589",
+      "id": "8be2d57a-12e1-4b1a-90a3-1ff12cacc5d3",
+      "filename": "winml-cli-overview.md",
+      "title": "Agent Skill",
+      "summary": "---\r [link][https://microsoft.github.io/winml-cli/latest/getting-started/agent-skill/#example-agent-interaction]\r ---\r",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:29:05.397"
+    },
+    {
+      "id": "4a2929f4-0028-4dc6-a20c-169f8c0b87ba",
+      "filename": "w3c-specification-writer-agent.md",
+      "title": "W3C Specification Writer",
+      "summary": "[link][https://github.com/github/gh-aw/blob/v0.71.5/.github/agents/w3c-specification-writer.agent.md]\r You are an AI technical specification writer that produces formal, standards-grade specifications",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:29:04.832"
+    },
+    {
+      "id": "a2168337-fd6b-47b8-a1a2-49399682bd7a",
+      "filename": "the-plan.md",
+      "title": "Supabase + Hybrid Cloud Decision",
+      "summary": "PLAN v3: Multi-Format Inbox → Master Data Architect → Supabase Catalogue\r Dual-monorepo mapping, parallel agent teams, and production-grade next-forge integration.\r Goal\r",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:29:04.02"
+    },
+    {
+      "id": "a8f735d7-65c4-4d6b-bbf0-d3bc71aaf58a",
+      "filename": "smart-auto-categorization.md",
+      "title": "Smart Auto-Categorization Guide",
+      "summary": "The skill collection now uses intelligent auto-categorization to eliminate \"uncategorized\" and organize skills into meaningful categories based on their content. ✅ Current repository indexed through t",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:29:03.513"
+    },
+    {
+      "id": "f4f81c89-88cb-4f2f-9e1a-05608294c34e",
+      "filename": "schema-skeleton-pattern.md",
+      "title": "Template definitions: name -> (description, files)",
+      "summary": "\"\"\"Project templates for scaffolding.\r Built-in templates that create a project skeleton before the agent starts,\r giving it a solid foundation to build on.\r",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:29:01.727"
+    },
+    {
+      "id": "ba8cc4f3-e07a-439e-8982-a31318f9f735",
+      "filename": "lspmux_dx-ide.md",
+      "title": "~/.config/systemd/user/ra-mux.service",
+      "summary": "When looking to speed up your development environment using an LSP (Language Server Protocol) multiplexer, it is crucial to first distinguish between the **two completely different architectural probl",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:29:00.211"
+    },
+    {
+      "id": "62df6626-58ec-4603-8096-2bfdc21ee51d",
+      "filename": "local-config.md",
+      "title": "Local Skills Configuration",
+      "summary": "> **Current Status**: All 96 skills are available in the repository.   > **This Document**: Recommends 35 high-priority skills for typical usage. These are the skills recommended for most common devel",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:28:59.694"
+    },
+    {
+      "id": "4ba17dae-7132-44e1-a7e3-eb1385a78db4",
+      "filename": "lean-ctx_appendix_cmd_map.md",
+      "title": "Appendix — CLI Command Map",
+      "summary": "Every CLI command lean-ctx exposes, grouped by purpose. Source of truth:\r `rust/src/cli/dispatch/mod.rs`. Aliases are shown in parentheses.\r > Tip: `lean-ctx help` shows the short list of everyday com",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:28:59.168"
+    },
+    {
+      "id": "02b84ca9-148d-4259-8720-e1012373fd6f",
+      "filename": "lean-ctx-guide.md",
+      "title": "lean-ctx-guide",
+      "summary": "WEBSITE: https://leanctx.com\r GITHUB:  https://github.com/yvgude/lean-ctx\r Monorepo_ModMe [reconciliation-monorepo-merge]> lean-ctx cheatsheet\r",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:28:58.589"
+    },
+    {
+      "id": "36e86bef-9b69-401b-a16b-ad100fa4db11",
+      "filename": "jetski-cortex.md",
+      "title": "Jetski/Cortex + Gemini Integration Guide",
+      "summary": "This guide shows how to integrate the `antigravity-awesome-skills` repository with an agent based on **Jetski/Cortex + Gemini** (or similar frameworks) **without exceeding the model context window**. ",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:28:58.074"
+    },
+    {
+      "id": "28ae95ec-59c7-4a81-b4f9-99063e4c2f56",
+      "filename": "github-workflows-agent.md",
+      "title": "GitHub Agentic Workflows Agent",
+      "summary": "[Link][https://github.com/github/gh-aw/blob/v0.71.5/.github/aw/github-agentic-workflows.md]\r This agent helps you work with **GitHub Agentic Workflows (gh-aw)**, a CLI extension for creating AI-powere",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:28:57.307"
+    },
+    {
+      "id": "ce04459e-af7f-4b99-a487-5b8097cb797a",
+      "filename": "github-aw-workflows-syntax.md",
+      "title": "Basic infrastructure only (default)",
+      "summary": "[link][https://github.com/github/gh-aw/blob/v0.71.5/.github/aw/syntax.md]\r The YAML frontmatter supports these fields:\r - **`on:`** - Workflow triggers (required)\r",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:28:56.682"
+    },
+    {
+      "id": "92b0d100-7d2e-4287-9c71-d7c6e9aad82b",
+      "filename": "gh-agentic_workflows.md",
+      "title": "GitHub Agentic Workflows",
+      "summary": "Agentic workflows are markdown files with YAML frontmatter.\r ```markdown\r ---\r",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:28:55.683"
+    },
+    {
+      "id": "0f266031-9467-4f4a-ab05-c5de95fcd2dd",
+      "filename": "discovery-manifest.md",
+      "title": "Stable Skills Manifest v1",
+      "summary": "This page documents the `skills_index.json` manifest contract used by stable integrations. - **Canonical file:** `skills_index.json` at repository root. - **Mirror file:** `data/skills_index.json` mus",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:28:54.69"
+    },
+    {
+      "id": "646e5c56-c2ed-4c67-8192-6848decdc76b",
+      "filename": "copilot-27-06-triage-session.md",
+      "title": "Copilot CLI Session",
+      "summary": "> [!NOTE] > - **Session ID:** `94e9b416-dde8-44e9-845c-984d17348cfd`   > - **Started:** 27/06/2026, 1:20:27 pm  ",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:28:53.662"
+    },
+    {
+      "id": "40a42d86-48c1-489e-bac6-ae5c4ad3a62a",
+      "filename": "antigravitylibrary-implementation_plan.md",
+      "title": "Adoption of Antigravity-Awesome-Skills Techniques",
+      "summary": "This plan outlines the design and steps to adopt techniques from the `antigravity-awesome-skills` repository into our **Monorepo_ModMe** project.\r > [!IMPORTANT]\r > The adoption will modify how data i",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:28:52.433"
+    },
+    {
+      "id": "4d00b29f-c2aa-4d45-83d1-d2f467ec61e2",
+      "filename": "antigravity-library_walkthrough.md",
+      "title": "Walkthrough: Adoption of Antigravity-Awesome-Skills Techniques",
+      "summary": "This walkthrough documents the successfully completed changes adopting techniques from `antigravity-awesome-skills`.\r - Resolved Git merge conflicts in [package.json](file:///c:/Users/dylan/Monorepo_M",
+      "tags": [],
+      "type": "md",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:28:51.905"
+    },
+    {
+      "id": "bbd2bc9c-20e7-458e-b304-50ce665bfbc5",
       "filename": "voltagent-llms.txt",
       "title": "VoltAgent: The Comprehensive Developer & LLM Guide (v1.0.x)",
       "summary": "https://voltagent.dev/llms.txt\r VoltAgent is an open-source TypeScript framework for building, orchestrating, and observing sophisticated AI agents. It bridges the gap between pure code and visual too",
@@ -12,54 +199,58 @@
       "type": "txt",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:02.628"
+      "created_at": "2026-06-28T08:26:00.246"
     },
     {
-      "id": "51b9d81d-9432-47eb-b508-61436ff5bd46",
+      "id": "ef7cbea4-2baf-4cc9-a5b8-4b3cc19f0636",
+      "filename": "skills-index.v1.schema.json",
+      "title": "skills-index.v1.schema",
+      "summary": "{   \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",   \"$id\": \"https://sickn33.github.io/antigravity-awesome-skills/schemas/skills-index.v1.schema.json\",",
+      "tags": [],
+      "type": "snippet",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:25:59.769"
+    },
+    {
+      "id": "29980f24-02e0-4b1b-9c3e-e472b6d60a18",
       "filename": "skills-conversionTRAE.md",
       "title": "# Good next step: define the frontmatter contract first, then build the converter",
       "summary": "Effective_User_Documentation.md\r Link=[Ditto190/TRAE-Skills-modme](https://github.com/Ditto190/TRAE-Skills-modme)\r how can i create a list of agent skills using this repo? I want the agent skills to w",
       "tags": [],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:02.586"
+      "created_at": "2026-06-28T08:25:59.25"
     },
     {
-      "id": "809455c2-6a82-4512-91c0-e0b795a0aa38",
+      "id": "c9a7c3a2-042d-4a9d-8071-bc9869a7c3b8",
       "filename": "shopping-list.md",
       "title": "Shopping List",
       "summary": "> **How-to**: see [SHOPPING-LIST-GUIDE.md](./SHOPPING-LIST-GUIDE.md) · **ADR**: [0007](../../../next-forge/docs/adr/0007-shopping-list-url-indexing-pipeline.md) Drop URLs and GitHub repo links below —",
-      "tags": [],
-      "type": "shopping-list",
+      "tags": [
+        "shopping-list",
+        "urls",
+        "pipeline"
+      ],
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:02.556"
+      "created_at": "2026-06-28T08:25:58.739"
     },
     {
-      "id": "6e4719ba-892a-4677-a19e-7549998de331",
-      "filename": "shopping-list-links.txt",
-      "title": "shopping-list-links",
-      "summary": "https://github.com/cursor/plugins.git \r https://github.com/cursor/community-plugins \r https://github.com/scrapy-plugins/scrapy-playwright\r",
-      "tags": [],
-      "type": "txt",
-      "severity": "medium",
-      "status": "indexed",
-      "created_at": "2026-06-20T11:49:02.532"
-    },
-    {
-      "id": "22166875-f200-4106-bbe6-53d355be105c",
+      "id": "948b16ac-6011-49fe-9f32-9dd1ddd19059",
       "filename": "SHOPPING-LIST-GUIDE.md",
       "title": "Shopping List — Quick Guide",
       "summary": "> **Architecture record**: [ADR-0007](../../../next-forge/docs/adr/0007-shopping-list-url-indexing-pipeline.md)   > **Same file in this folder**: [`0007-shopping-list-url-indexing-pipeline.adr.md`](./",
       "tags": [],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:02.5"
+      "created_at": "2026-06-28T08:25:58.162"
     },
     {
-      "id": "58b5b035-89dc-48c6-8150-65357ba2db20",
+      "id": "9277106f-9126-4f71-a2bd-ee06bcd6196a",
       "filename": "session-auto-commit.sh",
       "title": "Session Auto-Commit Hook",
       "summary": "set -euo pipefail if [[ \"${SKIP_AUTO_COMMIT:-}\" == \"true\" ]]; then   echo \"⏭️  Auto-commit skipped (SKIP_AUTO_COMMIT=true)\"",
@@ -67,10 +258,10 @@
       "type": "snippet",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:02.481"
+      "created_at": "2026-06-28T08:25:57.682"
     },
     {
-      "id": "1da44f5f-2e9e-462e-9d13-fee187a47d5c",
+      "id": "989d8529-34b0-4511-9ebd-aa9ade580899",
       "filename": "parser.yaml",
       "title": "parser",
       "summary": "// YAML parser for frontmatter parsing using vfile-matter\r // [Link][https://github.com/Ditto190/awesome-copilot/blob/main/eng/yaml-parser.mjs]\r import fs from \"fs\";\r",
@@ -78,21 +269,21 @@
       "type": "snippet",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:02.437"
+      "created_at": "2026-06-28T08:25:57.176"
     },
     {
-      "id": "0b2341b6-b380-48f5-a30a-d971990788b0",
+      "id": "fa31b970-7886-4418-a8c6-0178e5fbe218",
       "filename": "next-forge-foundry-architecture.md",
       "title": "[Dated][20/06]|[Time][1400]",
       "summary": "---\r PLAN v3: Multi-Format Inbox → Master Data Architect → Supabase Catalogue\r Dual-monorepo mapping, parallel agent teams, and production-grade next-forge integration.\r",
       "tags": [],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:02.263"
+      "created_at": "2026-06-28T08:25:56.608"
     },
     {
-      "id": "98439c5d-a7ee-447a-8c62-383ad9a26ede",
+      "id": "f8285dee-ef2c-4860-9e9c-b8202bebc31a",
       "filename": "mantime-full-llms.txt",
       "title": "Mantine UI Library - Complete Documentation",
       "summary": "This file contains comprehensive documentation for the Mantine UI library including:\r - Complete component documentation with all usage examples\r - Full demo code for every example shown in the docume",
@@ -100,10 +291,10 @@
       "type": "txt",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:02.192"
+      "created_at": "2026-06-28T08:25:55.986"
     },
     {
-      "id": "594ee60e-680a-4703-9dd0-18ed569c4864",
+      "id": "b6ffe13e-70a7-4ccb-886a-1be3e6e9a310",
       "filename": "mantime-compact-llms.txt",
       "title": "Mantine UI - LLM Documentation",
       "summary": "https://mantine.dev/llms.txt\r This index lists Mantine documentation pages formatted for LLMs.\r Each link points to a standalone Markdown file under the /llms path.\r",
@@ -111,10 +302,10 @@
       "type": "txt",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:02.081"
+      "created_at": "2026-06-28T08:25:55.341"
     },
     {
-      "id": "cc410afe-2d77-4cb8-8c2c-1abd9711c213",
+      "id": "3149ab40-28f2-4e5e-97f5-ac761793e5b8",
       "filename": "hook_auto-commit_README.md",
       "title": "Session Auto-Commit Hook",
       "summary": "[URL][https://github.com/Ditto190/awesome-copilot/tree/main/hooks/session-auto-commit]\r Automatically commits and pushes changes when a GitHub Copilot coding agent session ends, ensuring your work is ",
@@ -123,35 +314,35 @@
         "git",
         "productivity"
       ],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:02.055"
+      "created_at": "2026-06-28T08:25:54.859"
     },
     {
-      "id": "12d20c1c-015a-45d6-8324-72ee8fdc7553",
+      "id": "072035ff-7825-4d53-bfc7-5d95d897c913",
       "filename": "github-actions.md",
       "title": "GitHub Actions Expert",
       "summary": "You are a GitHub Actions specialist helping teams build secure, efficient, and reliable CI/CD workflows with emphasis on security hardening, supply-chain safety, and operational best practices.\r Desig",
       "tags": [],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:02.025"
+      "created_at": "2026-06-28T08:25:54.366"
     },
     {
-      "id": "f4e42b3f-8ee5-4302-b3a1-27bdbd1373cb",
+      "id": "c16ba6eb-438a-4977-ba76-df3c694b62ac",
       "filename": "gh-copilot-pricing-guide.md",
       "title": "Run the audit script on your uploaded file",
       "summary": "https://github.com/pricing/calculator\r https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals\r Calculate my usage in the new usage based AI plan for github copilot if ",
       "tags": [],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:01.979"
+      "created_at": "2026-06-28T08:25:53.822"
     },
     {
-      "id": "b378d123-9caf-46b2-8ee4-5e3577dc9ee3",
+      "id": "618c99a5-85f3-4200-9ec2-de4a1290eee3",
       "filename": "extensions-feedback-themes_signals.json",
       "title": "extensions-feedback-themes signals",
       "summary": "[link\r ][https: //github.com/Ditto190/awesome-copilot/blob/main/extensions/feedback-themes/data/signals.json]\r     {\r",
@@ -159,43 +350,54 @@
       "type": "snippet",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:01.939"
+      "created_at": "2026-06-28T08:25:53.125"
     },
     {
-      "id": "39070044-bdd2-44fb-ae1a-b6444ce623a3",
+      "id": "8dae4653-7acf-419a-b3dd-17efe81623b8",
       "filename": "dynamic-agent-collection-pipeline-convo.md",
       "title": "Helper Module Data Flow & Dynamic Agent Pipeline Plan",
       "summary": "---\r \"Understanding the current flow is the foundation before designing the pipeline.\"\r [Link][https://github.com/search?q=repo%3Agithub%2Fawesome-copilot+collection+agent&type=code]\r",
       "tags": [],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:01.854"
+      "created_at": "2026-06-28T08:25:52.493"
     },
     {
-      "id": "148fc98e-89e1-493c-826d-c9a53f54bfbd",
+      "id": "aaddd51c-4c8f-4f2a-b21a-57ce16cb19e5",
+      "filename": "copilot-setup-steps.yml",
+      "title": "This workflow configures the environment for GitHub Copilot Agent with gh-aw MCP server",
+      "summary": "https://github.com/github/awesome-copilot/blob/main/.github/workflows/copilot-setup-steps.yml \r name: \"Copilot Setup Steps\"\r on:\r",
+      "tags": [],
+      "type": "snippet",
+      "severity": "medium",
+      "status": "indexed",
+      "created_at": "2026-06-28T08:25:52.015"
+    },
+    {
+      "id": "ffd20c44-b04d-49e0-a3f5-cb03ac70e9fa",
       "filename": "contextarch-init-workflow.md",
       "title": "contextarch-init-workflow",
       "summary": "how do i set up this repo so that it is called at every new project that i start or my github copilot cloud agents start (i.e. if i fork a repo)? I want to be able to set up the npx contextarch init a",
       "tags": [],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:01.821"
+      "created_at": "2026-06-28T08:25:51.52"
     },
     {
-      "id": "3eabe0ea-fa00-442d-b85c-ef47586a3a2c",
+      "id": "0e790172-aa02-4150-a2a2-6d9626ae07ad",
       "filename": "awesome-voltagent-skills.md",
       "title": "Awesome Agent Skills",
       "summary": "[Link](https://github.com/VoltAgent/awesome-agent-skills/blob/main/README.md)\r <a href=\"https://github.com/VoltAgent/voltagent\">\r      <img width=\"1500\" alt=\"claude-skills\" src=\"https://github.com/use",
       "tags": [],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:01.787"
+      "created_at": "2026-06-28T08:25:50.897"
     },
     {
-      "id": "2f49d529-9bce-46ad-95e3-7a46cb3b9276",
+      "id": "5761dced-59d4-4a67-af23-77bf3ecbe693",
       "filename": "awesome-copilot-llms.txt",
       "title": "Awesome GitHub Copilot",
       "summary": "https://awesome-copilot.github.com/llms.txt\r > A community-driven collection of custom agents, instructions, and skills to enhance GitHub Copilot experiences across various domains, languages, and use",
@@ -203,21 +405,21 @@
       "type": "txt",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:01.742"
+      "created_at": "2026-06-28T08:25:50.119"
     },
     {
-      "id": "21a928e7-d699-4744-a793-1c94bb76cdc5",
+      "id": "2dc22c0f-5eb6-4c1b-b2b3-f36ea92f3d73",
       "filename": "aidosadev-awesomeaitools.md",
       "title": "ai.dosa.dev — Awesome AI Tools",
       "summary": "[link](https://github.com/QAInsights/awesome-ai-tools)\r [link](https://github.com/QAInsights/awesome-ai-tools/blob/main/llms.txt)\r > A manually curated, categorized reference of AI-powered coding tool",
       "tags": [],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:01.702"
+      "created_at": "2026-06-28T08:25:49.578"
     },
     {
-      "id": "1c9493e0-8579-423f-930e-21c99a4c8d1d",
+      "id": "00628578-d4d7-4826-8b91-2731abc0a8fb",
       "filename": "aidosadev-awesomeaiagents-llms.txt",
       "title": "ai.dosa.dev — Awesome AI Tools",
       "summary": "> A manually curated, categorized reference of AI-powered coding tools, autonomous agents, and developer utilities. Hosted at [ai.dosa.dev](https://ai.dosa.dev). Updated as of March 2026.\r ai.dosa.dev",
@@ -225,51 +427,57 @@
       "type": "txt",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:01.674"
+      "created_at": "2026-06-28T08:25:49.09"
     },
     {
-      "id": "4b66fc7d-9fc0-4ec5-93eb-dc10d5ba2fbe",
+      "id": "7861e681-68c0-4586-aab7-fc0a93b46183",
       "filename": "agent-catalogue-sync-plan.md",
       "title": "Here is my prompt to GH Copilot",
       "summary": "\"Yes summarize the data flow between helper modules, the intent is to use this sync-repo and helper scripts in combination with other AI catalogue or generation pipelines we have previously built to c",
       "tags": [],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:01.622"
+      "created_at": "2026-06-28T08:25:48.527"
     },
     {
-      "id": "4642f3d7-36fe-4671-8b31-de3ad61856a0",
+      "id": "bfc58755-3fee-44ca-845b-8d22c63cff85",
       "filename": "ADR-GUIDE.md",
       "title": "ADR Collection — Quick Guide",
       "summary": "> **Architecture index**: [docs/adr/adr-index.json](../../../docs/adr/adr-index.json)   > **Canonical ADRs**: [next-forge/docs/adr/](../../../next-forge/docs/adr/)   > **Agent**: [.github/agents/adr-g",
       "tags": [],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:01.589"
+      "created_at": "2026-06-28T08:25:48.012"
     },
     {
-      "id": "5b48b94d-7544-49f0-983f-abfdf9d02949",
+      "id": "6b924684-2ba4-4c9a-ba45-1e69871a66e1",
       "filename": "2026-06-20T05-00-00_architecture_cursor_catalogue-pipeline.md",
       "title": "ADR-0008: Catalogue Pipeline Architecture Decision",
       "summary": "Proposed ModMe needs a unified, searchable index for ~1000+ vendor agent assets (agents, skills, rules, collections, patterns). Flat file walks do not scale; **skillsh-mcp** defines the reference API ",
-      "tags": [],
+      "tags": [
+        "catalogue",
+        "supabase",
+        "skills-sh",
+        "decision",
+        "adr-candidate"
+      ],
       "type": "architecture",
       "severity": "high",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:01.525"
+      "created_at": "2026-06-28T08:25:47.517"
     },
     {
-      "id": "b5b6f541-c443-467c-99d3-898cbcfdc3c7",
+      "id": "89fea771-30b5-4f6d-94ea-0fb5a146c1a3",
       "filename": "0007-shopping-list-url-indexing-pipeline.adr.md",
       "title": "ADR-0007: Shopping List URL Indexing Pipeline",
       "summary": "Accepted The inbox capture funnel (ADR-0002) accepts many file types, but users need a **repeatable way to bookmark GitHub repos and web URLs** in one place—a **Shopping List** note—and have the syste",
       "tags": [],
-      "type": "md",
+      "type": "research",
       "severity": "medium",
       "status": "indexed",
-      "created_at": "2026-06-20T11:49:01.321"
+      "created_at": "2026-06-28T08:25:46.874"
     }
   ]
 }

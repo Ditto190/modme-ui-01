@@ -78,11 +78,17 @@ flowchart TB
     TR[Cursor transcripts index]
     IE[intake_events audit]
     CT[catalogue local_usage]
+    LCJ[lean-ctx journal]
+    LCT[lean-ctx tee failures]
+    LCM[lean-ctx session markers]
+    LCA[lean-ctx archive refs]
+    ENV[agent envelope]
   end
 
-  subgraph normalize [Normalize — IntakeRecord-style]
+  subgraph normalize [Normalize — Zod]
     EC[agent-eval-collect.mjs]
-    EV[eval_events table / JSONL]
+    TC[telemetry-cli.mjs]
+    EV[eval_events / telemetry_events JSONL]
   end
 
   subgraph score [Score — dual layer]
@@ -101,7 +107,13 @@ flowchart TB
   TR --> EC
   IE --> EC
   CT --> EC
+  LCJ --> TC
+  LCT --> TC
+  LCM --> TC
+  LCA --> TC
+  ENV --> TC
   EC --> EV
+  TC --> EV
   EV --> AM
   EV --> BM
   AM --> HTML
@@ -109,6 +121,8 @@ flowchart TB
   BM --> CAT
   HTML --> CV
 ```
+
+> **lean-ctx collect layer (v1.1):** `telemetry-cli.mjs` now ingests five lean-ctx sources alongside session-logger. Correlation key: `AGENT_SESSION_ID` set by `agent-session-start.ps1`. See `docs/observability/README.md` for full source table.
 
 ### Layer 1 — AI metrics (agent-evaluation skill)
 
@@ -204,7 +218,7 @@ Inputs (fail-closed if missing when required):
 
 ## Parallel agent orchestration
 
-See **[`ORCHESTRATION.md`](ORCHESTRATION.md)** for role matrix, acceptance-orchestrator states, workbench verify phase, and synthesis template.
+See **[`ORCHESTRATION.md`](ORCHESTRATION.md)** for eval role matrix and **[`OBSERVABILITY-AGENTS.md`](OBSERVABILITY-AGENTS.md)** for observability Round 2 (DSP subgraph, `telemetry:audit`, `modme-observability` collection).
 
 Copy **`goal-contract.template.yaml`** → `goal-contract.yaml` before eval sprint work.
 
@@ -222,6 +236,64 @@ Current logger tracks UniversalWorkbench docs only. Extend `config.json`:
 
 Wire Cursor/Copilot hooks to call `session-logger.ps1 prompt` and new `event` action for behavioral signals.
 
+## Observability pipeline (unified telemetry)
+
+The eval stack now shares the **intake 3-stage model** with a tenant-scoped observability pipeline:
+
+| Stage | Tool | Store |
+|-------|------|-------|
+| collect | `session-logger`, `agenttrace`, `telemetry-cli sync` | JSONL / logs |
+| normalize | `packages/intake-contracts` + `telemetry-bridge.mjs` | Zod validation |
+| promote | `telemetry-cli`, `agent-eval-collect` bridge | `pipeline_runs`, `eval_signals`, `telemetry_events`, Greptime `agent_spans` |
+
+**CLI:** `yarn telemetry:sync`, `yarn telemetry:collect`, `yarn telemetry:report`, `yarn telemetry:test`  
+**Skill:** `.cursor/skills/observability-pipeline/SKILL.md`  
+**Orchestrator skill:** `.agents/skills/modme-distributed-observability/SKILL.md`  
+**Contract:** `docs/inbox-pipeline/contracts/observability-contract.v1.json`  
+**Migration:** `next-forge/supabase/migrations/009_observability_tenant.sql` (tenants, `pipeline_runs`, `trace_refs`, RLS, `match_observability_signals`)  
+**UI:** Knowledge → Session Ops tab (`OpsSignalCard` molecule)  
+**CI:** `.github/workflows/observability-pipeline-check.yml`  
+**Round 2:** `yarn telemetry:audit`, `yarn collection:validate`, `yarn dsp:observability:stats`, [`OBSERVABILITY-AGENTS.md`](OBSERVABILITY-AGENTS.md)
+
+### OTel + Greptime adapter layer (v2)
+
+Multi-agent OTel normalization sits between agent platforms and the dual store:
+
+```
+Agent platforms (Cursor/Copilot/Claude/VoltAgent/Cloud)
+  → agent_platform_adapters.mjs (normalize platform attributes)
+  → OpenTelemetry SDK (trace_id / span_id / resource attrs)
+  → telemetry-bridge.mjs (dual-write)
+       ├── Supabase: pipeline_runs, telemetry_events, trace_refs
+       └── Greptime: OTLP spans/metrics (agent_spans table)
+```
+
+**Correlation keys propagated on every span:**
+
+| Field | Source |
+|-------|--------|
+| `trace_id` | OTel trace |
+| `session_id` | `AGENT_SESSION_ID` env |
+| `agent_platform` | adapter detection (`cursor`/`copilot`/`claude`/`voltagent`/`cloud`) |
+| `parent_session_id` | `PARENT_SESSION_ID` — multi-agent handoff |
+| `tenant_id` | `DEV_TENANT_ID` |
+| `worktree` | git worktree slug |
+| `branch` | `git branch --show-current` |
+
+**Span taxonomy:**
+
+| Span | Attributes |
+|------|------------|
+| `agent.session` | `session_id`, `agent_platform`, `branch`, `worktree` |
+| `agent.tool_call` | `tool_name`, `lean_ctx_mode`, `duration_ms` |
+| `agent.handoff` | `parent_session_id`, `child_session_id` |
+| `telemetry.sync` | `pipeline_run_id`, `stage`, `events_count` |
+| `lean_ctx.read` | `path`, `mode`, `tokens_saved` |
+
+**VoltOps reference:** `docs/observability/voltops-mapping.md` maps VoltAgent/VoltOps concepts to ModMe equivalents (without vendor lock-in).
+
+**Docs entry point:** `docs/observability/README.md`
+
 ## ADR candidates
 
 | ADR | Decision |
@@ -236,5 +308,7 @@ Wire Cursor/Copilot hooks to call `session-logger.ps1 prompt` and new `event` ac
 - Orchestration: [`docs/evaluation/ORCHESTRATION.md`](ORCHESTRATION.md)
 - Contracts: [`docs/evaluation/contracts/`](contracts/)
 - Migration: [`next-forge/supabase/migrations/006_eval_pipeline.sql`](../next-forge/supabase/migrations/006_eval_pipeline.sql)
+- Observability tenant: [`next-forge/supabase/migrations/009_observability_tenant.sql`](../next-forge/supabase/migrations/009_observability_tenant.sql)
 - Collect: `scripts/agent-eval-collect.mjs`
 - Report: `scripts/agent-eval-report.mjs`
+- Telemetry CLI: `scripts/telemetry/telemetry-cli.mjs`

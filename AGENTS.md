@@ -59,13 +59,13 @@ Per-package scripts vary (Vite/Biome/Vitest vs Next.js). Check the nearest `pack
 
 Feature work **must not** happen in the main checkout. Use isolated Git worktrees so parallel agents avoid file/Git/port conflicts.
 
-| IDE | Start |
-|-----|-------|
-| Cursor Agents Window | Start agent (auto worktree via `.cursor/worktrees.json`) |
-| Cursor Editor | `/worktree <task>` |
-| VS Code Copilot | `.\scripts\new-agent-worktree.ps1 -Name "<task>" -Owner copilot` |
-| Claude Code | `-Owner claude` |
-| Antigravity | `-Owner antigravity` |
+| IDE                  | Start                                                            |
+| -------------------- | ---------------------------------------------------------------- |
+| Cursor Agents Window | Start agent (auto worktree via `.cursor/worktrees.json`)         |
+| Cursor Editor        | `/worktree <task>`                                               |
+| VS Code Copilot      | `.\scripts\new-agent-worktree.ps1 -Name "<task>" -Owner copilot` |
+| Claude Code          | `-Owner claude`                                                  |
+| Antigravity          | `-Owner antigravity`                                             |
 
 **Once:** `.\scripts\init-worktrees.ps1`  
 **Per task:** `.\scripts\new-agent-worktree.ps1 -Name "<task>" -Owner <owner>`  
@@ -77,12 +77,14 @@ Feature work **must not** happen in the main checkout. Use isolated Git worktree
 
 ## Agent behavior
 
-1. Read `package.json` in the target package before changing build/test commands.
-2. Use workspace protocol dependencies (`workspace:*`) for internal packages.
-3. Do not edit `UniversalWorkbench-staging` or `UniversalWorkbench-dev` unless the task explicitly targets them.
-4. Run verification in the affected package before marking work complete.
-5. For browser/UI work, use Cursor browser MCP skills (`visual-qa-testing`, `verifying-in-browser`).
-6. Before smart-git session finish: `yarn lean-ctx:ensure` (or `-CheckOnly` via `vibe-session-finish.ps1` default).
+1. **Read via lean-ctx only:** Do not use native `Read`, `Grep`, or `Glob` for codebase files. Use `ctx_read(path, mode)` with an explicit mode (`full` before edits, `diff` after, `map`/`signatures` to orient). See [`LEAN-CTX.md`](LEAN-CTX.md) and [read modes](https://leanctx.com/docs/concepts/read-modes/). Shell → `lean-ctx -c` or `ctx_shell`.
+2. Read `package.json` in the target package before changing build/test commands.
+3. Use workspace protocol dependencies (`workspace:*`) for internal packages.
+4. Do not edit `UniversalWorkbench-staging` or `UniversalWorkbench-dev` unless the task explicitly targets them.
+5. Run verification in the affected package before marking work complete.
+6. For browser/UI work, use Cursor browser MCP skills (`visual-qa-testing`, `verifying-in-browser`).
+7. Before smart-git session finish: `yarn lean-ctx:ensure` (or `-CheckOnly` via `vibe-session-finish.ps1` default).
+8. Session start: `ctx_session(action="load")` + `ctx_knowledge(action="wakeup")`. Skill: [`.agents/skills/lean-ctx/SKILL.md`](.agents/skills/lean-ctx/SKILL.md).
 
 ## End of session (vibe-coding / prototypes)
 
@@ -178,13 +180,14 @@ When making significant design decisions, architectural changes, code reviews, o
 **Filename**: `YYYY-MM-DDTHH-MM-SS_{type}_{agent-role}_{summary-slug}.{ext}`
 
 **Minimum frontmatter** (`.md` files):
+
 ```yaml
 ---
-timestamp: <ISO 8601>        # e.g. 2026-06-20T13:08:52Z
-agent: copilot               # your agent name
-agent_role: architect        # frontend|backend|devops|architect|reviewer|researcher
-type: architecture           # architecture|design|code-review|solution|research|snippet|link|component
-severity: high               # low|medium|high|critical
+timestamp: <ISO 8601> # e.g. 2026-06-20T13:08:52Z
+agent: copilot # your agent name
+agent_role: architect # frontend|backend|devops|architect|reviewer|researcher
+type: architecture # architecture|design|code-review|solution|research|snippet|link|component
+severity: high # low|medium|high|critical
 tags: [supabase, decision]
 branch: <current branch>
 ---
@@ -199,13 +202,13 @@ The pipeline runs on every push to `docs/inbox/` and ingests new entries into Su
 - Prefer cloud-first hosted Supabase over local Docker as the default database path; local Supabase is optional offline-only. Do not run `yarn supabase:local:env` after cloud setup — it overwrites root `.env` with localhost; use `node scripts/fix-cloud-supabase-url.mjs` if that happens.
 - When working with Supabase: use Cursor Supabase plugin MCP for project management; verify credentials from dashboard or `npx supabase status -o env` — not generic demo defaults; Rube/supabase-automation needs a separate Composio connection.
 - Run `yarn vibe:finish` / session finish only from a worktree under `Monorepo_ModMe-dev/`, not the main checkout.
-- Prefer `.\scripts\vibe-session-finish.ps1` directly in worktrees when `yarn` fails due to missing `yarn.lock`.
+- When asked to push or open a GitHub PR, complete with `gh` immediately — do not defer without attempting; use `--repo Ditto190/modme-ui-01` outside a git checkout; prefer `feature/cursor/<task>` branch names over auto-generated Cursor branches.
 - Use `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (not legacy anon-only naming) for next-forge browser/SSR Supabase clients via `@repo/supabase`.
 - Do not wire Supabase Auth middleware into `apps/app` by default — ModMe uses Auth.js for sign-in.
 - On Windows, prefer `bunx supabase login --token sbp_...` (dashboard access token) over browser login; avoid bare `supabase` on PATH (often v1.x, HTTP 401).
 - lean-ctx hybrid mode: global `~/.config/lean-ctx/config.toml` (`tool_profile=power`, `proxy_enabled=true`, `compression_level=max`, `memory_profile=balanced`); repo `.lean-ctx.toml` merges as project overrides; run `yarn lean-ctx:ensure` at session start/before smart-git finish; schema snapshot at `docs/lean-ctx/config-schema.json` (`yarn lean-ctx:schema:sync`).
 - Do not adopt Nx as a root meta-orchestrator — keep Turbo/Bun/Yarn inside each monorepo and use `yarn agent:*` terminal orchestration at the repo root instead.
-- Use beads (`bd`) for multi-session work with dependencies; chat todos only for single-session linear tasks.
+- Use beads (`bd`) for multi-session work with dependencies; chat todos only for single-session linear tasks; beads git hooks fall back to `npx @beads/bd` on Windows when global `bd` is broken.
 - Do not run `yarn contextarch init --overwrite` at repo root without review — root `AGENTS.md` and `.cursor/rules/` are hand-maintained.
 - Never run `prisma db push --accept-data-loss` on cloud — drops legacy tables outside Prisma schema (e.g. `copilot_*`, `agent_skills`).
 
@@ -214,28 +217,41 @@ The pipeline runs on every push to `docs/inbox/` and ingests new entries into Su
 - Hosted Supabase project: `modme-next-forge` (ref `aevemmmmouxqlfyxthzf`, region `us-east-1`); ADR-0002 supersedes ADR-0001 (local Docker).
 - Supabase setup: `docs/supabase-setup.md` (local: `yarn supabase:local:setup` then `yarn intake`); cloud checklist: `docs/supabase-cloud-setup.md`; hybrid agent guide: `docs/supabase-agent-hybrid.md` (`yarn supabase:env:diagnose`, `scripts/ensure-cloud-supabase-env.ps1`).
 - Root intake/scrape scripts load env via `scripts/lib/load-root-env.mjs` (root `.env` wins over stale shell exports); need `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`; Prisma DB URLs live in `next-forge/packages/database/.env`.
-- Worktrees branched from `dev` may lack `yarn.lock`; `worktree-copy-env.ps1` copies `yarn.lock`, `.yarnrc.yml`, and `.yarn/` from main.
-- `vibe-session-finish.ps1 -DryRun` skips interactive `Read-Host` and pre-commit; use `yarn vibe:finish:dry-run` or the script with `-DryRun -SkipPull`.
+- Worktrees branched from `dev` may lack `yarn.lock`; `worktree-copy-env.ps1` copies `yarn.lock`, `.yarnrc.yml`, and `.yarn/` from main; prefer `.\scripts\vibe-session-finish.ps1` when `yarn` fails in worktrees.
+- GitHub canonical remote: `Ditto190/modme-ui-01` (`https://github.com/Ditto190/modme-ui-01.git`); PRs target `dev` — push local `dev` to GitHub if the remote branch is missing.
 - `yarn intake` runs ingest only; `yarn intake:orchestrate` runs audit → ingest → embed → MDA; mode flags: `yarn intake:scrape|code-index|full` via `scripts/intake-orchestrator.mjs`.
 - Inbox data contract v1: `docs/inbox-pipeline/contracts/inbox-contract.v1.json` (ADR-0009). Quality: `yarn inbox:audit`, `yarn inbox:fix`, `yarn inbox:test`. Reports: `docs/inbox-pipeline/reports/latest.md`.
 - Schema deploy + Supabase CLI: `bun run db:push` from `next-forge/` before `bunx supabase db push` (no `--accept-data-loss`); config at `next-forge/supabase/` — run `bunx supabase` from `next-forge/packages/database` with `--workdir ../.. --dns-resolver https` on Windows.
 - next-forge default ports: app 3100, web 3101, api 3102, docs 3104, storybook 6106 (avoids GenerativeUI 3000–3004 block).
 - Unified intake: dual-store (GreptimeDB code/AST + Supabase pgvector inbox/knowledge, sync at promote); Zod contracts in `packages/intake-contracts/`; scrape via `yarn scrape:run|classify|promote` + `scripts/run-scrape-pipeline.ps1`; staging Prisma + `007_scrape_staging.sql`.
-- Agent terminal orchestration: `yarn agent:tui|status|audit|session:start|session:finish`; `yarn agent:tui` needs mprocs on PATH; session envelopes in `logs/agent-orchestrator/sessions/`; task registry `data/agent-registry.json`; smoke `yarn e2e:worktree-smoke`; guide `docs/agent-terminal-orchestration.md`.
+- Agent terminal orchestration: `yarn agent:tui|status|audit|session:start|session:finish`; `yarn agent:tui` needs mprocs on PATH; session envelopes in `logs/agent-orchestrator/sessions/`; task registry `data/agent-registry.json`; smoke `yarn e2e:worktree-smoke`; pre-push path-filtered verify (`scripts/lib/run-verify-stack.mjs --pre-push`: forge lint-only, generative lint advisory); full `yarn verify:generative` via `scripts/verify-generative-ci.ps1` before merge; guide `docs/agent-terminal-orchestration.md`.
 - Bugbot PR review rules: `.cursor/BUGBOT.md` (skills, Oracle→Postgres bug templates, `next-forge/packages/feature-flags/FEATURE-FLAGS.md`).
 
 <!-- lean-ctx-compression -->
+
 OUTPUT STYLE: dense
+
 - Each statement = one atomic fact line
 - Use abbreviations: fn, cfg, impl, deps, req, res, ctx, err, ret
 - Diff lines only (+/-/~), never repeat unchanged code
 - Symbols: → (causes), + (adds), − (removes), ~ (modifies), ∴ (therefore)
 - No narration, no filler, no hedging
 - BUDGET: ≤200 tokens per response unless code block required
-<!-- /lean-ctx-compression -->
-<!-- lean-ctx -->
-## lean-ctx
+  <!-- /lean-ctx-compression -->
+  <!-- lean-ctx -->
 
-Prefer lean-ctx MCP tools over native equivalents for token savings.
-Full rules: @LEAN-CTX.md
+## lean-ctx (mandatory)
+
+**Never** use native Read/Grep/Glob/Shell for repo exploration when lean-ctx MCP is available.
+
+| Native (forbidden) | Use instead                                                                             |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| Read               | `ctx_read(path, mode)` — `full` before edit, `diff` after, `map`/`signatures` to orient |
+| Grep               | `ctx_search(pattern, path)`                                                             |
+| Shell              | `lean-ctx -c "cmd"` or `ctx_shell`                                                      |
+
+Read modes: https://leanctx.com/docs/concepts/read-modes/ · Full rules: [`LEAN-CTX.md`](LEAN-CTX.md) · Skill: [`.agents/skills/lean-ctx/SKILL.md`](.agents/skills/lean-ctx/SKILL.md)
+
+Cursor user hooks (`~/.cursor/hooks.json`) redirect native read tools to lean-ctx. Run `yarn lean-ctx:ensure` at session start.
+
 <!-- /lean-ctx -->

@@ -1,0 +1,18 @@
+# GenerativeUI legacy stack — child overrides; root Monorepo_ModMe/.lean-ctx.toml wins via auto-reroot.
+
+extra_ignore_patterns = [
+  "node_modules/**",
+  "dist/**",
+  ".next/**",
+  "coverage/**",
+  "target/**",
+  "vendor/**",
+  "generated/**",
+  "UniversalWorkbench-staging/**",
+  "UniversalWorkbench-dev/**",
+  "playwright-report/**"
+]
+
+graph_index_max_files = 12000
+memory_profile = "balanced"
+memory_cleanup = "shared"

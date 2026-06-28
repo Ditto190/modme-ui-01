@@ -1,0 +1,99 @@
+{
+  "id": "modme-observability",
+  "name": "ModMe Observability & Telemetry Collection",
+  "description": "Parallel-agent skill bundle for observability pipeline hardening — telemetry-cli, bridge dual-write, Session Ops UI, data-quality audit, and DSP subgraph orientation. Global-only skills (parallel-agents, distributed-debugging-debug-trace, observability-engineer, context7-auto-research): npx skills add <owner/repo@skill> --agent cursor -y. Project skill: .cursor/skills/observability-pipeline/SKILL.md (not vendor-installable).",
+  "tags": ["observability", "telemetry", "eval", "supabase", "greptime", "pipeline"],
+  "display": { "ordering": "manual", "featured": true },
+  "items": [
+    {
+      "path": "skills/acquire-codebase-knowledge/SKILL.md",
+      "kind": "skill",
+      "role": "explorer-agent",
+      "usage": "Map observability subgraph entrypoints before edits; evidence-only codebase discovery"
+    },
+    {
+      "path": "agents/gem-devops.agent.md",
+      "kind": "agent",
+      "role": "backend-specialist",
+      "usage": "Diagnose telemetry-bridge, pipeline_runs, and sync failures"
+    },
+    {
+      "path": "agents/api-architect.agent.md",
+      "kind": "agent",
+      "role": "database-architect",
+      "usage": "Schema evolution for 009_observability_tenant.sql and Prisma alignment"
+    },
+    {
+      "path": "skills/postgresql-code-review/SKILL.md",
+      "kind": "skill",
+      "role": "database-architect",
+      "usage": "RLS, indexes, and Postgres review for observability tables"
+    },
+    {
+      "path": "skills/quality-playbook/SKILL.md",
+      "kind": "skill",
+      "role": "test-engineer",
+      "usage": "Spec-traced verification for telemetry:test and telemetry:audit gates"
+    },
+    {
+      "path": "skills/doublecheck/SKILL.md",
+      "kind": "skill",
+      "role": "test-engineer",
+      "usage": "Three-layer review of contract snapshots and audit findings"
+    },
+    {
+      "path": "skills/github-actions-efficiency/SKILL.md",
+      "kind": "skill",
+      "role": "devops-engineer",
+      "usage": "Extend observability-pipeline-check.yml without CI bloat"
+    },
+    {
+      "path": "skills/phoenix-tracing/SKILL.md",
+      "kind": "skill",
+      "role": "devops-engineer",
+      "usage": "Trace boundaries, span export, and OTel/Greptime debugging"
+    },
+    {
+      "path": "skills/appinsights-instrumentation/SKILL.md",
+      "kind": "skill",
+      "role": "devops-engineer",
+      "usage": "Instrumentation patterns for session-logger and agenttrace hooks"
+    },
+    {
+      "path": "skills/create-agentsmd/SKILL.md",
+      "kind": "skill",
+      "role": "documentation-writer",
+      "usage": "Regenerate AGENTS.md when observability commands or contracts change"
+    },
+    {
+      "path": "agents/ai-readiness-reporter.agent.md",
+      "kind": "agent",
+      "role": "documentation-writer",
+      "usage": "HTML report artefacts for telemetry:report and eval synthesis"
+    },
+    {
+      "path": "agents/dynatrace-expert.agent.md",
+      "kind": "agent",
+      "role": "debugger",
+      "usage": "Distributed trace analysis when sync or span export fails"
+    },
+    {
+      "path": "agents/comet-opik.agent.md",
+      "kind": "agent",
+      "role": "debugger",
+      "usage": "Eval signal tracing and LLM observability debugging"
+    },
+    {
+      "path": "agents/se-security-reviewer.agent.md",
+      "kind": "agent",
+      "role": "debugger",
+      "usage": "Secrets redaction review in telemetry payloads and session logs"
+    },
+    {
+      "path": "skills/memory-merger/SKILL.md",
+      "kind": "skill",
+      "role": "orchestrator",
+      "usage": "Merge observability runbook discoveries into agent instructions"
+    }
+  ]
+}

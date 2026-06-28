@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-06-28T08:17:28.461Z",
+  "source": "telemetry-audit",
+  "lens": "all",
+  "strict": false,
+  "passed": true,
+  "summary": {
+    "files": 4,
+    "errors": 0,
+    "warnings": 0,
+    "total": 0,
+    "automatable": 0,
+    "byLens": {},
+    "byCode": {}
+  },
+  "findings": [],
+  "automation": {
+    "revalidate": "yarn telemetry:audit",
+    "test": "yarn telemetry:test",
+    "syncDryRun": "yarn telemetry:sync:dry-run",
+    "dspStats": "yarn dsp:observability:stats"
+  },
+  "paths": {
+    "json": "docs/inbox-pipeline/reports/observability-latest.json",
+    "markdown": "docs/inbox-pipeline/reports/observability-latest.md",
+    "jsonl": ".cursor/hooks/state/observability-errors.jsonl"
+  },
+  "root": "C:\\Users\\dylan\\Monorepo_ModMe"
+}

@@ -4,34 +4,55 @@ alwaysApply: true
 ---
 
 # lean-ctx — Context Engineering Layer
-<!-- lean-ctx-rules-v11 -->
+
+<!-- lean-ctx-rules-v12 -->
 
 ## Mode: Hybrid (MCP reads + CLI shell)
 
-CRITICAL: ALWAYS use lean-ctx tools. This is NOT optional.
+**CRITICAL:** Native `Read`, `Grep`, `Glob`, and raw `Shell` are **forbidden** when lean-ctx MCP is available. Use `ctx_read` with an explicit read mode. Hooks in `~/.cursor/hooks.json` redirect `Read|Grep|Glob` → lean-ctx.
 
 ## Tool Mapping (MANDATORY)
-| Instead of | MUST USE | Example |
-|------------|----------|---------|
-| Read/cat/head/tail | `ctx_read(path, mode)` | `ctx_read("src/main.rs", "full")` |
-| Grep/rg/find | `ctx_search(pattern, path)` | `ctx_search("fn handle", "src/")` |
-| Shell/bash | `lean-ctx -c "<cmd>"` | `lean-ctx -c "cargo test"` |
-| ls/find | `lean-ctx ls [path]` | `lean-ctx ls src/ --depth 3` |
-| Edit (when Read unavail.) | `ctx_edit(path, old, new)` | `ctx_edit("f.rs", "old", "new")` |
 
-## ctx_read Modes
-| Goal | Mode |
-|------|------|
-| Edit target | `full` |
-| API surface | `signatures` |
-| Post-edit check | `diff` |
-| Overview | `map` |
-| Region | `lines:N-M` |
+| Instead of                   | MUST USE                             | Example                           |
+| ---------------------------- | ------------------------------------ | --------------------------------- |
+| Read/cat/head/tail           | `ctx_read(path, mode)`               | `ctx_read("src/main.rs", "full")` |
+| Grep/rg/find                 | `ctx_search(pattern, path)`          | `ctx_search("fn handle", "src/")` |
+| Shell/bash                   | `lean-ctx -c "<cmd>"` or `ctx_shell` | `lean-ctx -c "yarn test"`         |
+| ls/find tree                 | `ctx_tree(path, depth)`              | `ctx_tree("src", 3)`              |
+| Edit (when Read unavailable) | `ctx_edit(path, old, new)`           | `ctx_edit("f.rs", "old", "new")`  |
+
+Native `Edit` / `Write` / `StrReplace` remain allowed for writes after `ctx_read(..., "full")`.
+
+## ctx_read — pick a mode (never omit mode on purpose)
+
+Docs: [Read Modes](https://leanctx.com/docs/concepts/read-modes/)
+
+| Goal                   | Mode         | Notes                              |
+| ---------------------- | ------------ | ---------------------------------- |
+| Will edit this file    | `full`       | First read before any edit         |
+| After edit             | `diff`       | ~13 tok on unchanged re-read       |
+| API / exports only     | `signatures` | ~87% savings                       |
+| File role / deps       | `map`        | ~85–95% savings                    |
+| Large boilerplate file | `entropy`    | Shannon-filtered                   |
+| Verbose comments       | `aggressive` | Strips comments/whitespace         |
+| Task-scoped slice      | `task`       | Requires `ctx_session` task set    |
+| Pointer only           | `reference`  | ~1 line, no body                   |
+| Known line range       | `lines:N-M`  | Surgical (e.g. `lines:42-80`)      |
+| Unsure                 | `auto`       | lean-ctx picks; use when exploring |
+
+**Decision:** edit → `full`; re-read → `diff`; orient → `map`/`signatures`; unsure → `auto`.
 
 ## Workflow: Orient → Locate → Read → Edit → Verify → Record
-Use `ctx_overview` or `ctx_compose` first. Then `ctx_search`/`ctx_semantic_search`.
-Read with `ctx_read(path, mode)`. Edit with native Edit or `ctx_edit`.
-Verify: `ctx_read(path, "diff")` + `lean-ctx -c "test cmd"`.
 
-REMINDER: You MUST use lean-ctx tools. NEVER use native Read, Grep, or Shell directly.
+1. `ctx_overview(task)` or `ctx_compose(task)` — orient
+2. `ctx_search` / `ctx_semantic_search` — locate
+3. `ctx_read(path, mode)` — read with correct mode
+4. Native Edit / `ctx_edit` — write
+5. `ctx_read(path, "diff")` + `lean-ctx -c "verify cmd"` — verify
+6. `ctx_knowledge(action="remember")` — record non-obvious facts
+
+Session start: `ctx_session(action="load")` + `ctx_knowledge(action="wakeup")`.
+
+REMINDER: NEVER use native Read, Grep, Glob, or Shell when ctx\_\* / lean-ctx equivalents exist.
+
 <!-- /lean-ctx -->

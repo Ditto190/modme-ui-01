@@ -124,7 +124,7 @@ class AgentGroupChat:
         return AgentAction(
             id=str(uuid.uuid4()),
             type="render",
-            timestamp=datetime.now().timestamp(),
+            timestamp=int(datetime.now().timestamp() * 1000),
             componentType="text",
             props={"title": "Agent Response"},
             content="Response from AI agents",
@@ -136,7 +136,7 @@ class AgentGroupChat:
         return AgentAction(
             id=str(uuid.uuid4()),
             type="render",
-            timestamp=datetime.now().timestamp(),
+            timestamp=int(datetime.now().timestamp() * 1000),
             componentType="card",
             props={
                 "title": "Mock Agent Response",

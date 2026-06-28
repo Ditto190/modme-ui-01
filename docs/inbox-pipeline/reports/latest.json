@@ -1,20 +1,749 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-06-27T10:10:13.122Z",
-  "source": "test",
+  "generatedAt": "2026-06-28T08:30:10.030Z",
+  "source": "inbox-audit",
   "lens": "funnel",
   "strict": false,
-  "passed": true,
+  "passed": false,
   "summary": {
-    "files": 1,
-    "errors": 0,
-    "warnings": 0,
-    "total": 0,
-    "automatable": 0,
-    "byLens": {},
-    "byCode": {}
+    "files": 42,
+    "errors": 49,
+    "warnings": 31,
+    "total": 80,
+    "automatable": 49,
+    "byLens": {
+      "funnel": 80
+    },
+    "byCode": {
+      "INBOX.FM.FILENAME_CONVENTION": 31,
+      "INBOX.FM.MISSING_TIMESTAMP": 16,
+      "INBOX.FM.MISSING_AGENT": 16,
+      "INBOX.FM.MISSING_TYPE": 16,
+      "INBOX.FM.MALFORMED_YAML": 1
+    }
   },
-  "findings": [],
+  "findings": [
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: 0007-shopping-list-url-indexing-pipeline.adr.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "0007-shopping-list-url-indexing-pipeline.adr.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: ADR-GUIDE.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "ADR-GUIDE.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: agent-catalogue-sync-plan.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "agent-catalogue-sync-plan.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: aidosadev-awesomeaitools.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "aidosadev-awesomeaitools.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "antigravity-library_walkthrough.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "antigravity-library_walkthrough.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "antigravity-library_walkthrough.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: antigravity-library_walkthrough.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "antigravity-library_walkthrough.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "antigravitylibrary-implementation_plan.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "antigravitylibrary-implementation_plan.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "antigravitylibrary-implementation_plan.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: antigravitylibrary-implementation_plan.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "antigravitylibrary-implementation_plan.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: awesome-voltagent-skills.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "awesome-voltagent-skills.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: contextarch-init-workflow.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "contextarch-init-workflow.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "copilot-27-06-triage-session.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "copilot-27-06-triage-session.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "copilot-27-06-triage-session.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: copilot-27-06-triage-session.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "copilot-27-06-triage-session.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "discovery-manifest.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "discovery-manifest.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "discovery-manifest.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: discovery-manifest.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "discovery-manifest.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: dynamic-agent-collection-pipeline-convo.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "dynamic-agent-collection-pipeline-convo.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "gh-agentic_workflows.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "gh-agentic_workflows.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "gh-agentic_workflows.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: gh-agentic_workflows.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "gh-agentic_workflows.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: gh-copilot-pricing-guide.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "gh-copilot-pricing-guide.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: github-actions.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "github-actions.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "github-aw-workflows-syntax.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "github-aw-workflows-syntax.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "github-aw-workflows-syntax.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: github-aw-workflows-syntax.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "github-aw-workflows-syntax.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "github-workflows-agent.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "github-workflows-agent.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "github-workflows-agent.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: github-workflows-agent.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "github-workflows-agent.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: hook_auto-commit_README.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "hook_auto-commit_README.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "jetski-cortex.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "jetski-cortex.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "jetski-cortex.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: jetski-cortex.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "jetski-cortex.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "lean-ctx-guide.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "lean-ctx-guide.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "lean-ctx-guide.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: lean-ctx-guide.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "lean-ctx-guide.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "lean-ctx_appendix_cmd_map.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "lean-ctx_appendix_cmd_map.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "lean-ctx_appendix_cmd_map.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: lean-ctx_appendix_cmd_map.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "lean-ctx_appendix_cmd_map.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "local-config.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "local-config.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "local-config.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: local-config.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "local-config.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "lspmux_dx-ide.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "lspmux_dx-ide.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "lspmux_dx-ide.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: lspmux_dx-ide.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "lspmux_dx-ide.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: next-forge-foundry-architecture.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "next-forge-foundry-architecture.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "schema-skeleton-pattern.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "schema-skeleton-pattern.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "schema-skeleton-pattern.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: schema-skeleton-pattern.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "schema-skeleton-pattern.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: SHOPPING-LIST-GUIDE.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "SHOPPING-LIST-GUIDE.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: shopping-list.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "shopping-list.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: skills-conversionTRAE.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "skills-conversionTRAE.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "smart-auto-categorization.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "smart-auto-categorization.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "smart-auto-categorization.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: smart-auto-categorization.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "smart-auto-categorization.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "the-plan.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "the-plan.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "the-plan.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: the-plan.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "the-plan.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TIMESTAMP",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.timestamp",
+      "fixHint": "Set timestamp from file mtime (ISO 8601 UTC)",
+      "file": "w3c-specification-writer-agent.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_AGENT",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.agent",
+      "fixHint": "Set agent: unknown",
+      "file": "w3c-specification-writer-agent.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MISSING_TYPE",
+      "severity": "error",
+      "automatable": true,
+      "message": "Missing required frontmatter.type",
+      "fixHint": "Infer type from filename prefix or use research",
+      "file": "w3c-specification-writer-agent.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: w3c-specification-writer-agent.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "w3c-specification-writer-agent.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.MALFORMED_YAML",
+      "severity": "error",
+      "automatable": true,
+      "message": "Frontmatter YAML could not be parsed",
+      "fixHint": "Re-serialize frontmatter with gray-matter",
+      "file": "winml-cli-overview.md",
+      "lens": "funnel"
+    },
+    {
+      "code": "INBOX.FM.FILENAME_CONVENTION",
+      "severity": "warning",
+      "automatable": false,
+      "message": "Filename does not match structured convention: winml-cli-overview.md",
+      "fixHint": "Use YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md for structured captures",
+      "file": "winml-cli-overview.md",
+      "lens": "funnel"
+    }
+  ],
   "automation": {
     "fixAllDryRun": "yarn inbox:fix",
     "fixAllApply": "yarn inbox:fix:apply",

@@ -198,3 +198,195 @@ model ScrapeClassification {
 
   @@map("scrape_classifications")
 }
+
+// ─── Observability & Telemetry Models ─────────────────────────────────────────
+
+model TelemetryCategory {
+  id          String           @id @default(uuid())
+  name        String           @unique
+  description String?
+  events      TelemetryEvent[]
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  @@map("telemetry_categories")
+}
+
+model Tenant {
+  id                  String               @id @default(uuid())
+  slug                String               @unique
+  name                String
+  metadata            Json                 @default("{}")
+  telemetryEvents     TelemetryEvent[]
+  evalSessions        EvalSession[]
+  evalSignals         EvalSignal[]
+  evalEvents          EvalEvent[]
+  evalContractResults EvalContractResult[]
+  pipelineRuns        PipelineRun[]
+  traceRefs           TraceRef[]
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+
+  @@map("tenants")
+}
+
+model TelemetryEvent {
+  id         String             @id @default(uuid())
+  tenantId   String             @map("tenant_id")
+  sessionId  String?            @map("session_id")
+  message    String
+  source     String
+  level      String             @default("info")
+  metadata   Json               @default("{}")
+  categoryId String?            @map("category_id")
+  category   TelemetryCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tenant     Tenant             @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  traceRefs  TraceRef[]
+  createdAt  DateTime           @default(now()) @map("created_at")
+
+  @@index([tenantId, createdAt(sort: Desc)])
+  @@index([sessionId])
+  @@index([level, createdAt(sort: Desc)])
+  @@map("telemetry_events")
+}
+
+model PipelineRun {
+  id                String    @id @default(uuid())
+  tenantId          String    @map("tenant_id")
+  pipeline          String    @default("telemetry")
+  mode              String    @default("collect")
+  triggerSource     String    @default("manual") @map("trigger_source")
+  status            String    @default("running")
+  startedAt         DateTime  @default(now()) @map("started_at")
+  finishedAt        DateTime? @map("finished_at")
+  sourcePath        String?   @map("source_path")
+  stats             Json      @default("{}")
+  errorMessage      String?   @map("error_message")
+  metadata          Json      @default("{}")
+  sessionsParsed    Int       @default(0) @map("sessions_parsed")
+  toolCallsUpserted Int       @default(0) @map("tool_calls_upserted")
+  metricsWritten    Int       @default(0) @map("metrics_written")
+  errors            Int       @default(0)
+  durationMs        BigInt?   @map("duration_ms")
+  tenant            Tenant    @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  @@index([tenantId, createdAt(sort: Desc)])
+  @@index([pipeline, status, startedAt(sort: Desc)])
+  @@map("pipeline_runs")
+}
+
+model TraceRef {
+  id               String         @id @default(uuid())
+  telemetryEventId String         @map("telemetry_event_id")
+  greptimeSpanId   String         @map("greptime_span_id")
+  tenantId         String         @map("tenant_id")
+  traceId          String?        @map("trace_id")
+  sessionId        String?        @map("session_id")
+  spanName         String?        @map("span_name")
+  attributes       Json           @default("{}")
+  telemetryEvent   TelemetryEvent @relation(fields: [telemetryEventId], references: [id], onDelete: Cascade)
+  tenant           Tenant         @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  createdAt        DateTime       @default(now()) @map("created_at")
+
+  @@unique([telemetryEventId, greptimeSpanId])
+  @@index([telemetryEventId])
+  @@index([greptimeSpanId])
+  @@index([tenantId, createdAt(sort: Desc)])
+  @@map("trace_refs")
+}
+
+// Managed by: 006_eval_pipeline.sql + agent-eval scripts
+// See: docs/evaluation/ARCHITECTURE.md
+
+model EvalTheme {
+  id           String       @id
+  label        String
+  description  String?
+  taxonomyCode String?      @map("taxonomy_code")
+  aliases      Json         @default("[]")
+  signals      EvalSignal[]
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  @@map("eval_themes")
+}
+
+model EvalSession {
+  id                String       @id @default(uuid())
+  tenantId          String       @map("tenant_id")
+  externalSessionId String       @unique @map("external_session_id")
+  agent             String?
+  worktreePath      String?      @map("worktree_path")
+  branch            String?
+  startedAt         DateTime?    @map("started_at")
+  endedAt           DateTime?    @map("ended_at")
+  metadata          Json         @default("{}")
+  tenant            Tenant       @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  signals           EvalSignal[]
+  createdAt         DateTime     @default(now()) @map("created_at")
+
+  @@index([tenantId, createdAt(sort: Desc)])
+  @@index([startedAt(sort: Desc)])
+  @@map("eval_sessions")
+}
+
+model EvalSignal {
+  id           String       @id @default(uuid())
+  tenantId     String       @map("tenant_id")
+  sessionId    String?      @map("session_id")
+  themeId      String?      @map("theme_id")
+  source       String
+  title        String
+  description  String?
+  impact       String       @default("medium")
+  evidence     Json         @default("{}")
+  taxonomyCode String?      @map("taxonomy_code")
+  tenant       Tenant       @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  session      EvalSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  theme        EvalTheme?   @relation(fields: [themeId], references: [id], onDelete: SetNull)
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  @@index([tenantId, createdAt(sort: Desc)])
+  @@index([themeId])
+  @@index([impact])
+  @@map("eval_signals")
+}
+
+model EvalEvent {
+  id              String               @id @default(uuid())
+  tenantId        String               @map("tenant_id")
+  pipeline        String               @default("agent-eval")
+  mode            String               @default("collect")
+  triggerSource   String               @default("manual") @map("trigger_source")
+  status          String               @default("running")
+  startedAt       DateTime             @default(now()) @map("started_at")
+  finishedAt      DateTime?            @map("finished_at")
+  stats           Json                 @default("{}")
+  errorMessage    String?              @map("error_message")
+  metadata        Json                 @default("{}")
+  tenant          Tenant               @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  contractResults EvalContractResult[]
+  createdAt       DateTime             @default(now()) @map("created_at")
+
+  @@index([tenantId, startedAt(sort: Desc)])
+  @@map("eval_events")
+}
+
+model EvalContractResult {
+  id           String     @id @default(uuid())
+  tenantId     String     @map("tenant_id")
+  evalEventId  String?    @map("eval_event_id")
+  contractName String     @map("contract_name")
+  ruleId       String     @map("rule_id")
+  passed       Boolean
+  severity     String
+  evidence     Json       @default("{}")
+  tenant       Tenant     @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  evalEvent    EvalEvent? @relation(fields: [evalEventId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  @@index([tenantId, createdAt(sort: Desc)])
+  @@index([evalEventId])
+  @@map("eval_contract_results")
+}

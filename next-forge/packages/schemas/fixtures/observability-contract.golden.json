@@ -1,0 +1,105 @@
+{
+  "contractVersion": "1.1",
+  "enums": {
+    "telemetryLevels": ["debug", "info", "warn", "error"],
+    "pipelineStatuses": ["running", "completed", "failed", "skipped"],
+    "evalImpactLevels": ["low", "medium", "high"],
+    "severities": ["low", "medium", "high", "critical"],
+    "agentRoles": [
+      "frontend",
+      "backend",
+      "devops",
+      "architect",
+      "reviewer",
+      "researcher"
+    ],
+    "telemetrySources": [
+      "session-logger",
+      "session-logger-prompt",
+      "agent-orchestrator",
+      "test-results",
+      "telemetry-bridge",
+      "lean-ctx-journal",
+      "lean-ctx-tee",
+      "lean-ctx-debug",
+      "lean-ctx-marker",
+      "lean-ctx-archive"
+    ]
+  },
+  "leanCtxTelemetryEvent": {
+    "tenant_id": "00000000-0000-4000-8000-000000000001",
+    "session_id": "sess-lean-ctx-001",
+    "message": "lean-ctx:marker agent-session-start",
+    "source": "lean-ctx-marker",
+    "level": "info",
+    "metadata": {
+      "event": "agent-session-start",
+      "branch": "feature/cursor/observability",
+      "agent_platform": "cursor-agent"
+    }
+  },
+  "telemetryEvent": {
+    "tenant_id": "00000000-0000-4000-8000-000000000001",
+    "session_id": "sess-abc-123",
+    "message": "Orphan session detected",
+    "source": "telemetry-bridge",
+    "level": "warn",
+    "severity": "medium",
+    "agent_role": "architect",
+    "metadata": { "pipeline_run_id": "run-001" }
+  },
+  "pipelineRun": {
+    "tenant_id": "00000000-0000-4000-8000-000000000001",
+    "pipeline": "telemetry",
+    "mode": "sync",
+    "trigger_source": "cli",
+    "status": "completed",
+    "started_at": "2026-06-28T12:00:00.000Z",
+    "finished_at": "2026-06-28T12:00:05.000Z",
+    "stats": { "events_normalized": 12, "events_stored": 12 },
+    "duration_ms": 5000
+  },
+  "evalSignal": {
+    "tenant_id": "00000000-0000-4000-8000-000000000001",
+    "session_id": "sess-abc-123",
+    "theme_id": "session-continuity",
+    "source": "session-logger",
+    "title": "Orphan session (no sessionEnd)",
+    "description": "Session started but never ended",
+    "impact": "medium",
+    "severity": "medium",
+    "evidence": { "sessionId": "sess-abc-123" }
+  },
+  "testResult": {
+    "tenant_id": "00000000-0000-4000-8000-000000000001",
+    "contract_name": "modme-agent-core",
+    "rule_id": "verify-before-done",
+    "passed": true,
+    "severity": "high",
+    "framework": "vitest",
+    "evidence": { "note": "golden fixture" }
+  },
+  "traceRef": {
+    "tenant_id": "00000000-0000-4000-8000-000000000001",
+    "session_id": "sess-abc-123",
+    "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+    "greptime_span_id": "00f067aa0ba902b7",
+    "agent_platform": "cursor",
+    "service_name": "modme-agent-orchestrator",
+    "branch": "dev",
+    "worktree": "Monorepo_ModMe"
+  },
+  "otelSpan": {
+    "span_id": "00f067aa0ba902b7",
+    "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+    "tenant_id": "00000000-0000-4000-8000-000000000001",
+    "session_id": "sess-abc-123",
+    "span_name": "agent.session",
+    "duration_ms": 5000,
+    "attributes": {
+      "agent.platform": "cursor",
+      "git.branch": "dev",
+      "session.id": "sess-abc-123"
+    }
+  }
+}

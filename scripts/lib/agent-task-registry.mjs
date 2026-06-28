@@ -2,8 +2,8 @@
  * Lightweight task registry for multi-agent duplicate detection and path claims.
  * Persists to data/agent-registry.json (gitignored).
  */
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
-import { resolve, dirname } from "node:path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -11,7 +11,7 @@ const ROOT = resolve(__dirname, "../..");
 const DATA_DIR = resolve(ROOT, "data");
 const REGISTRY_PATH = resolve(DATA_DIR, "agent-registry.json");
 
-const DEFAULT_STATE = { tasks: [], claims: [] };
+const DEFAULT_STATE = { tasks: [], claims: [], agents: [] };
 
 function loadState() {
   if (!existsSync(REGISTRY_PATH)) {
@@ -50,9 +50,7 @@ function similarity(a, b) {
 
 export function findDuplicateTask(description, { threshold = 0.55 } = {}) {
   const state = loadState();
-  const active = state.tasks.filter((t) =>
-    ["pending", "in_progress"].includes(t.status),
-  );
+  const active = state.tasks.filter((t) => ["pending", "in_progress"].includes(t.status));
   for (const task of active) {
     const ratio = similarity(description, task.description);
     if (ratio >= threshold) {
@@ -124,7 +122,27 @@ export function claimPaths(sessionId, paths) {
 export function releaseClaims(sessionId) {
   const state = loadState();
   state.claims = state.claims.map((c) =>
-    c.sessionId === sessionId ? { ...c, status: "released" } : c,
+    c.sessionId === sessionId ? { ...c, status: "released" } : c
   );
   saveState(state);
+}
+
+/** Sync agents[] from lean-ctx catalog (called on session start / catalog seed). */
+export function syncAgentsFromCatalog(catalog) {
+  const state = loadState();
+  const agents = (catalog?.agents ?? []).map((a) => ({
+    id: a.id,
+    agent_type: a.agent_type ?? "cursor",
+    role: a.role,
+    collection: a.collection ?? null,
+    intelligence: a.intelligence ?? [],
+    syncedAt: new Date().toISOString(),
+  }));
+  state.agents = agents;
+  saveState(state);
+  return agents;
+}
+
+export function getCatalogAgents() {
+  return loadState().agents ?? [];
 }

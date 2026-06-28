@@ -1,0 +1,1 @@
+Dual-write path emits agent_spans via Greptime client when configured.

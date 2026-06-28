@@ -1,0 +1,82 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`@repo/schemas genui agent contract > snapshots enum contract from golden fixtures 1`] = `
+{
+  "agentActionTypes": [
+    "create",
+    "update",
+    "delete",
+    "render",
+  ],
+  "agentStateStatuses": [
+    "idle",
+    "processing",
+    "streaming",
+    "complete",
+    "error",
+  ],
+  "optimisticMessageRoles": [
+    "user",
+    "assistant",
+  ],
+  "webSocketMessageTypes": [
+    "state_update",
+    "action",
+    "error",
+    "ping",
+    "pong",
+    "token",
+    "tool_start",
+    "tool_result",
+    "done",
+  ],
+}
+`;
+
+exports[`@repo/schemas observability contract > snapshots observability enum contract from golden fixtures 1`] = `
+{
+  "agentRoles": [
+    "frontend",
+    "backend",
+    "devops",
+    "architect",
+    "reviewer",
+    "researcher",
+  ],
+  "evalImpactLevels": [
+    "low",
+    "medium",
+    "high",
+  ],
+  "pipelineStatuses": [
+    "running",
+    "completed",
+    "failed",
+    "skipped",
+  ],
+  "severities": [
+    "low",
+    "medium",
+    "high",
+    "critical",
+  ],
+  "telemetryLevels": [
+    "debug",
+    "info",
+    "warn",
+    "error",
+  ],
+  "telemetrySources": [
+    "session-logger",
+    "session-logger-prompt",
+    "agent-orchestrator",
+    "test-results",
+    "telemetry-bridge",
+    "lean-ctx-journal",
+    "lean-ctx-tee",
+    "lean-ctx-debug",
+    "lean-ctx-marker",
+    "lean-ctx-archive",
+  ],
+}
+`;

@@ -27,6 +27,12 @@ export interface ScrapeClassificationResult {
 export interface ClassifyPageInput {
   url: string;
   text: string;
+  shoppingListHints?: {
+    fragments?: string[];
+    annotations?: string[];
+    tags?: string[];
+    priority?: string;
+  };
 }
 
 const DEFAULT_BASE_URL = 'http://localhost:11434';
@@ -43,19 +49,31 @@ function loadContractEnums() {
 
 function buildPrompt(input: ClassifyPageInput): string {
   const enums = loadContractEnums();
+  const hints = input.shoppingListHints;
+  const hintsBlock = hints
+    ? `\nSHOPPING LIST HINTS (store in features.shopping_list_hints):
+fragments: ${JSON.stringify(hints.fragments ?? [])}
+annotations: ${JSON.stringify(hints.annotations ?? [])}
+tags: ${JSON.stringify(hints.tags ?? [])}
+priority: ${hints.priority ?? 'normal'}
+Map URL fragments to lean-ctx tools when relevant (ctx_impact, ctx_compose, ctx_graph, etc.).\n`
+    : '';
   return `Role: Intake taxonomy classifier for ModMe knowledge pipeline.
 Situation: Page text + URL from scrape_pages staging row.
 Constraints: Return ONLY valid JSON matching ScrapeClassificationSchema. If unsure, set entry_type=research, severity=medium. Max summary 300 chars. tags max 8.
-Instructions: Classify entry_type (${enums.entryType.join('|')}), severity (${enums.severity.join('|')}), agent_role (${enums.agentRole.join('|')}), title, summary, tags, features object (key topics, code_blocks_present, api_docs, version_hints).
+Instructions: Classify entry_type (${enums.entryType.join('|')}), severity (${enums.severity.join('|')}), agent_role (${enums.agentRole.join('|')}), title, summary, tags, features object (key topics, code_blocks_present, api_docs, version_hints, shopping_list_hints when hints provided).
 Template: {"entry_type":"","severity":"","agent_role":"","title":"","summary":"","tags":[],"features":{}}
-
+${hintsBlock}
 URL: ${input.url}
 
 PAGE TEXT:
 ${input.text.slice(0, 8000)}`;
 }
 
-function normalizeResult(raw: Record<string, unknown>): ScrapeClassificationResult {
+function normalizeResult(
+  raw: Record<string, unknown>,
+  shoppingListHints?: ClassifyPageInput['shoppingListHints']
+): ScrapeClassificationResult {
   const enums = loadContractEnums();
   const entryType = String(raw.entry_type || 'research');
   const severity = String(raw.severity || 'medium');
@@ -66,6 +84,20 @@ function normalizeResult(raw: Record<string, unknown>): ScrapeClassificationResu
     ? raw.tags.map(String).slice(0, 8)
     : [];
 
+  const features =
+    typeof raw.features === 'object' && raw.features !== null
+      ? (raw.features as Record<string, unknown>)
+      : {};
+
+  if (shoppingListHints) {
+    features.shopping_list_hints = {
+      fragments: shoppingListHints.fragments ?? [],
+      annotations: shoppingListHints.annotations ?? [],
+      tags: shoppingListHints.tags ?? [],
+      priority: shoppingListHints.priority ?? 'normal',
+    };
+  }
+
   return {
     entry_type: enums.entryType.includes(entryType) ? entryType : 'research',
     severity: enums.severity.includes(severity) ? severity : 'medium',
@@ -73,9 +105,7 @@ function normalizeResult(raw: Record<string, unknown>): ScrapeClassificationResu
     title,
     summary,
     tags,
-    features: typeof raw.features === 'object' && raw.features !== null
-      ? (raw.features as Record<string, unknown>)
-      : {},
+    features,
   };
 }
 
@@ -117,7 +147,7 @@ export async function classifyScrapePage(
     throw new Error(`Ollama JSON parse failed: ${content.slice(0, 200)}`);
   }
 
-  return normalizeResult(parsed);
+  return normalizeResult(parsed, input.shoppingListHints);
 }
 
 export async function classifyScrapePageWithRetry(

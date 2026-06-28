@@ -3,6 +3,10 @@ import { safeValidate, formatZodIssues } from './lib/result.mjs';
 import { classifyOutputSchema } from './schemas/classify-output.mjs';
 import { promoteEntrySchema } from './schemas/promote-contract.mjs';
 import { codeChunkSchema } from './schemas/code-chunk.mjs';
+import { telemetryEventSchema } from './schemas/telemetry-event.mjs';
+import { pipelineRunSchema } from './schemas/pipeline-run.mjs';
+import { evalSignalSchema } from './schemas/eval-signal.mjs';
+import { testResultSchema } from './schemas/test-result.mjs';
 
 export { safeValidate, formatZodIssues } from './lib/result.mjs';
 export {
@@ -21,6 +25,23 @@ export {
   codeChunkBatchSchema,
   AST_KINDS,
 } from './schemas/code-chunk.mjs';
+export {
+  TELEMETRY_LEVELS,
+  telemetryEventSchema,
+  telemetryEventBatchSchema,
+} from './schemas/telemetry-event.mjs';
+export {
+  PIPELINE_STATUSES,
+  pipelineRunSchema,
+} from './schemas/pipeline-run.mjs';
+export {
+  EVAL_IMPACT_LEVELS,
+  evalSignalSchema,
+} from './schemas/eval-signal.mjs';
+export {
+  TEST_FRAMEWORKS,
+  testResultSchema,
+} from './schemas/test-result.mjs';
 
 export const SCRAPE_PAGE_STATUSES = ['raw', 'classified', 'promoted', 'failed'];
 
@@ -63,4 +84,24 @@ export function validateScrapePromoteBatchOutput(output) {
 /** Validate single code chunk from AST indexer */
 export function validateCodeChunk(chunk) {
   return safeValidate(codeChunkSchema, chunk);
+}
+
+/** Validate telemetry event before telemetry-bridge upsert */
+export function validateTelemetryEvent(event) {
+  return safeValidate(telemetryEventSchema, event);
+}
+
+/** Validate pipeline run open/close payload */
+export function validatePipelineRun(run) {
+  return safeValidate(pipelineRunSchema, run);
+}
+
+/** Validate eval friction signal before eval_signals insert */
+export function validateEvalSignal(signal) {
+  return safeValidate(evalSignalSchema, signal);
+}
+
+/** Validate normalized Playwright/JUnit test result */
+export function validateTestResult(result) {
+  return safeValidate(testResultSchema, result);
 }

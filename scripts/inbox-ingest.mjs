@@ -6,33 +6,33 @@
  * Usage:
  *   node scripts/inbox-ingest.mjs [--inbox-dir <path>] [--dry-run] [--skip-validation]
  */
-import { createHash, randomUUID } from 'node:crypto';
-import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { resolve, join, extname, basename } from 'node:path';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
+import { randomUUID } from "node:crypto";
+import { readFileSync, writeFileSync } from "node:fs";
+import { basename, extname, join, resolve } from "node:path";
 import {
-  FORMAT_MAP,
-  SKIP_FILES,
-  TEXT_FORMATS,
+  listInboxFilesSync,
   loadContract,
   parseInboxFile,
   validateFunnelFile,
-  listInboxFilesSync,
-} from './lib/inbox-contract.mjs';
+} from "./lib/inbox-contract.mjs";
+import { loadRootEnv } from "./lib/load-root-env.mjs";
 
-const INBOX_DIR = process.argv.includes('--inbox-dir')
-  ? process.argv[process.argv.indexOf('--inbox-dir') + 1]
-  : resolve(import.meta.dirname, '../GenerativeUI_monorepo/docs/inbox');
+loadRootEnv({ fileWins: true });
 
-const DRY_RUN = process.argv.includes('--dry-run');
-const SKIP_VALIDATION = process.argv.includes('--skip-validation');
+const INBOX_DIR = process.argv.includes("--inbox-dir")
+  ? process.argv[process.argv.indexOf("--inbox-dir") + 1]
+  : resolve(import.meta.dirname, "../GenerativeUI_monorepo/docs/inbox");
+
+const DRY_RUN = process.argv.includes("--dry-run");
+const SKIP_VALIDATION = process.argv.includes("--skip-validation");
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-  console.error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
-  console.error('Run: yarn supabase:local:setup');
+  console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+  console.error("Run: yarn supabase:local:setup");
   process.exit(1);
 }
 
@@ -43,13 +43,13 @@ function extractTitle(content, filename) {
   const h1Match = content.match(/^#\s+(.+)$/m);
   if (h1Match) return h1Match[1].trim();
   return basename(filename, extname(filename))
-    .replace(/^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}_/, '')
-    .replace(/_/g, ' ');
+    .replace(/^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}_/, "")
+    .replace(/_/g, " ");
 }
 
 function extractSummary(body) {
-  const lines = body.split('\n').filter((l) => l.trim() && !l.startsWith('#'));
-  return lines.slice(0, 3).join(' ').slice(0, 500) || null;
+  const lines = body.split("\n").filter((l) => l.trim() && !l.startsWith("#"));
+  return lines.slice(0, 3).join(" ").slice(0, 500) || null;
 }
 
 async function ingestInbox() {
@@ -69,7 +69,7 @@ async function ingestInbox() {
 
       if (!SKIP_VALIDATION) {
         const validationFindings = validateFunnelFile(parsed, contract);
-        const blocking = validationFindings.filter((f) => f.severity === 'error');
+        const blocking = validationFindings.filter((f) => f.severity === "error");
         if (blocking.length > 0) {
           for (const f of blocking) {
             console.error(`  ERROR [${f.code}]: ${filename} — ${f.message}`);
@@ -80,9 +80,9 @@ async function ingestInbox() {
       }
 
       const { data: existing } = await supabase
-        .from('inbox_entries')
-        .select('id, content_hash')
-        .eq('content_hash', contentHash)
+        .from("inbox_entries")
+        .select("id, content_hash")
+        .eq("content_hash", contentHash)
         .maybeSingle();
 
       if (existing) {
@@ -97,7 +97,7 @@ async function ingestInbox() {
       const entryType = frontmatter.type || format;
       const severity = contract.enums.severity.includes(frontmatter.severity)
         ? frontmatter.severity
-        : 'medium';
+        : "medium";
 
       const now = new Date().toISOString();
       const entry = {
@@ -117,7 +117,7 @@ async function ingestInbox() {
         tags,
         severity,
         entry_type: entryType,
-        status: 'indexed',
+        status: "indexed",
         created_at: now,
         updated_at: now,
       };
@@ -129,7 +129,7 @@ async function ingestInbox() {
         continue;
       }
 
-      const { error } = await supabase.from('inbox_entries').insert(entry);
+      const { error } = await supabase.from("inbox_entries").insert(entry);
       if (error) {
         console.error(`  ERROR: ${filename} — ${error.message}`);
         errors++;
@@ -139,7 +139,7 @@ async function ingestInbox() {
       if (isBinary) {
         const fileBuffer = readFileSync(filePath);
         const { error: storageError } = await supabase.storage
-          .from('inbox-files')
+          .from("inbox-files")
           .upload(`${contentHash}/${filename}`, fileBuffer, { upsert: true });
         if (storageError) {
           console.warn(`  Storage warning for ${filename}: ${storageError.message}`);
@@ -158,14 +158,14 @@ async function ingestInbox() {
 
   if (!DRY_RUN) {
     const { data: allEntries } = await supabase
-      .from('inbox_entries')
-      .select('id, source_file, title, summary, tags, entry_type, severity, status, created_at')
-      .order('created_at', { ascending: false })
+      .from("inbox_entries")
+      .select("id, source_file, title, summary, tags, entry_type, severity, status, created_at")
+      .order("created_at", { ascending: false })
       .limit(500);
 
     if (allEntries) {
       const index = {
-        version: '1.0',
+        version: "1.0",
         last_updated: new Date().toISOString(),
         entry_count: allEntries.length,
         entries: allEntries.map((e) => ({
@@ -180,13 +180,13 @@ async function ingestInbox() {
           created_at: e.created_at,
         })),
       };
-      writeFileSync(join(INBOX_DIR, '_index.json'), JSON.stringify(index, null, 2));
+      writeFileSync(join(INBOX_DIR, "_index.json"), JSON.stringify(index, null, 2));
       console.log(`\nUpdated _index.json with ${allEntries.length} total entries`);
     }
   }
 }
 
 ingestInbox().catch((err) => {
-  console.error('Fatal error:', err);
+  console.error("Fatal error:", err);
   process.exit(1);
 });

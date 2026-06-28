@@ -531,10 +531,11 @@ flowchart LR
 
 | Stage | Location |
 |-------|----------|
-| Crawl | `GenerativeUI_monorepo/scrape-pipeline/` (Scrapy + scrapy-playwright) |
+| Crawl (Scrapy) | `GenerativeUI_monorepo/scrape-pipeline/` (Scrapy + scrapy-playwright) |
+| Crawl (Firecrawl) | `scripts/firecrawl-scrape-stage.mjs` + self-hosted Docker (`scripts/firecrawl/`) |
 | Classify | `scripts/scrape-classify.mjs` + `experiments/micro-agents/helpers/scrape-classifier-helper.ts` |
 | Promote | `scripts/scrape-promote.mjs` |
-| Orchestrate | `scripts/intake-orchestrator.mjs --mode=scrape` |
+| Orchestrate | `scripts/scrape-orchestrator.mjs` or `scripts/intake-orchestrator.mjs --mode=scrape` |
 
 ### Environment
 
@@ -542,6 +543,8 @@ flowchart LR
 |----------|---------|
 | `OLLAMA_BASE_URL` | Ollama API base (default `http://localhost:11434`) |
 | `OLLAMA_MODEL` | Classifier model (e.g. `llama3.2:3b`) |
+| `FIRECRAWL_API_URL` | Self-hosted Firecrawl base URL (default `http://127.0.0.1:3022`) |
+| `FIRECRAWL_USE_CLI` | Set `1` to use `firecrawl` CLI instead of HTTP client |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Pipeline writes (never in browser) |
 | `DATABASE_URL` | Prisma reads (`next-forge/packages/database/.env`) |
@@ -557,6 +560,14 @@ yarn scrape:run -- --manifest docs-sitemap [--dry-run]
 yarn scrape:classify [--dry-run]
 yarn scrape:promote [--dry-run] [--export-md]
 yarn intake:scrape -- --manifest=docs-sitemap   # run → classify → promote
+
+# Firecrawl self-host (local-only, no cloud login)
+yarn firecrawl:setup    # clone .vendor/firecrawl + seed .env (PORT=3022)
+yarn firecrawl:up       # docker compose up -d (requires Docker)
+yarn firecrawl:status   # health check
+yarn firecrawl:down     # stop stack
+yarn scrape:firecrawl -- --manifest=lean-ctx-shopping-list [--dry-run]
+yarn scrape:shopping-list --dry-run   # orchestrator: firecrawl → classify → promote
 ```
 
 ### Verification
@@ -570,6 +581,9 @@ cd packages/database && bunx supabase db push --workdir ../..
 yarn scrape:run -- --manifest docs-sitemap --dry-run
 yarn scrape:classify --dry-run
 yarn scrape:promote --dry-run
+yarn firecrawl:status
+yarn scrape:firecrawl -- --manifest=lean-ctx-shopping-list --dry-run
+yarn scrape:shopping-list --dry-run
 
 # 3. Pipeline quality gate
 yarn inbox:audit --lens pipeline
@@ -652,6 +666,30 @@ cd next-forge/packages/database && bunx supabase db push --workdir ../.. --dns-r
 Location: `GenerativeUI_monorepo/scrape-pipeline/`  
 Install: `pip install -e GenerativeUI_monorepo/scrape-pipeline`  
 Pattern for Supabase upsert: `intake-pipeline/supabase_syncer.py`
+
+---
+
+## Observability pipeline (ADR-0009 parity)
+
+Extends inbox patterns to **tenant-scoped telemetry** without forking enums.
+
+| Artifact | Path |
+|----------|------|
+| JSON contract | `docs/inbox-pipeline/contracts/observability-contract.v1.json` |
+| Zod (runtime) | `packages/intake-contracts/schemas/telemetry-event.mjs`, `pipeline-run.mjs`, `eval-signal.mjs`, `test-result.mjs` |
+| Golden + Vitest | `next-forge/packages/schemas/fixtures/observability-contract.golden.json` |
+| CLI | `scripts/telemetry/telemetry-cli.mjs` (`sync`, `collect`, `report`, `ingest-copilot`) |
+| Bridge | `scripts/telemetry/lib/telemetry-bridge.mjs` |
+| DB migration | `next-forge/supabase/migrations/009_observability_tenant.sql` |
+| UI molecule | `next-forge/apps/app/.../ops-signal-card.tsx` |
+| CI | `.github/workflows/observability-pipeline-check.yml` |
+
+```powershell
+yarn telemetry:sync --dry-run   # via node scripts/telemetry/telemetry-cli.mjs sync --dry-run
+yarn telemetry:test
+```
+
+Skill: `.cursor/skills/observability-pipeline/SKILL.md`
 
 ---
 

@@ -1,0 +1,3 @@
+source: experiments/micro-agents/models/greptimedb_client.ts
+kind: external
+purpose: Greptime agent_spans and agent_metrics client for dual-store spans.

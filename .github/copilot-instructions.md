@@ -7,6 +7,7 @@ This dual-monorepo contains two independent Turborepo projects: **next-forge** (
 ### Build, Test, Lint Commands
 
 **next-forge** (from repo root):
+
 ```bash
 yarn dev:forge              # Start all next-forge apps (app:3100, web:3101, api:3102)
 yarn dev:forge:core         # Just core apps (faster iteration)
@@ -24,6 +25,7 @@ npx bun run analyze         # Bundle analysis
 ```
 
 **GenerativeUI_monorepo** (from `GenerativeUI_monorepo/` directory):
+
 ```bash
 yarn install                # Install deps
 yarn dev                    # Start all services (web-dashboard + agent-server)
@@ -86,6 +88,7 @@ Monorepo_ModMe (root)
 **Tech Stack:** Bun, TypeScript strict, React 18, Next.js 15 (App Router), TanStack Router/Query, Tailwind CSS, Prisma (Supabase), Auth.js, Vitest
 
 **Frontend-Backend Flow:**
+
 - Desktop app and web frontend share the same backend API
 - Auth via Auth.js (no third-party; uses Postgres sessions)
 - Database: Supabase (Postgres) + Prisma migrations
@@ -93,6 +96,7 @@ Monorepo_ModMe (root)
 - Design system: shadcn/ui components + Tailwind utilities
 
 **Port Allocation (development):**
+
 - App: `:3100` (Desktop app)
 - Web: `:3101` (Web frontend)
 - API: `:3102` (REST API)
@@ -104,6 +108,7 @@ Monorepo_ModMe (root)
 **Tech Stack:** Yarn 3, TypeScript, React 18, Next.js 14, CopilotKit, Python FastAPI, AG2 (AutoGen), Zod/Pydantic
 
 **Frontend-Backend Communication:**
+
 ```
 web-dashboard (Next.js + CopilotKit)
          ↓ WebSocket (ws://localhost:8000/ws/agent)
@@ -113,6 +118,7 @@ web-dashboard re-renders GenerativeCanvas
 ```
 
 **Key Integration Points:**
+
 - `shared-schemas/` defines Zod (frontend) + Pydantic (backend) schemas
 - WebSocket streams agent state changes in real-time
 - `GenerativeCanvas` renders dynamic UI based on agent output
@@ -139,6 +145,7 @@ web-dashboard re-renders GenerativeCanvas
 ### Dependency Resolution
 
 Before adding a new dependency:
+
 1. Check if it's already in the monorepo root `package.json`
 2. If not, confirm the specific version needed for your use case
 3. Never use conflicting versions across workspaces
@@ -203,7 +210,13 @@ Use with `@skill-name` syntax in Cursor or GitHub Copilot CLI:
 
 ### Key Coding Tools
 
-- **lean-ctx** (context compression): Caches file reads and shell output
+- **lean-ctx** (context compression — **mandatory for file reads**)
+  - **Do not** use native Read/Grep/Glob for repo files when lean-ctx MCP is available
+  - **Read:** `ctx_read(path, mode)` — `full` before edits, `diff` after, `map`/`signatures` to orient ([read modes](https://leanctx.com/docs/concepts/read-modes/))
+  - **Search:** `ctx_search(pattern, path)`
+  - **Shell:** `lean-ctx -c "command"` or `ctx_shell`
+  - Rules: `LEAN-CTX.md`, `.cursor/rules/lean-ctx.mdc`, skill `.agents/skills/lean-ctx/SKILL.md`
+  - Config: `yarn lean-ctx:ensure` · hooks redirect reads via `~/.cursor/hooks.json`
 - **MCP servers**: Playwright (visual testing), genkit, etc.
 - **GitHub CLI** (`gh`): For PR/issue operations
 
@@ -307,6 +320,7 @@ npx bun run prisma generate
 ## Key Reminders
 
 ✅ **DO:**
+
 - Read `package.json` in target package before changing build/test commands
 - Use `yarn` in GenerativeUI, `bun` in next-forge
 - Run verification before claiming work is done
@@ -314,6 +328,7 @@ npx bun run prisma generate
 - Check `.github/instructions/` for file-scoped rules
 
 ❌ **DON'T:**
+
 - Mix package managers (no npm/yarn in next-forge, no bun in GenerativeUI)
 - Commit secrets, API keys, or credentials
 - Refactor unrelated code (scope discipline)
@@ -332,6 +347,5 @@ npx bun run prisma generate
 
 ---
 
-*Last updated: 2026-06-20*  
-*For updates to this file, edit `.github/copilot-instructions.md` at the repository root.*
-
+_Last updated: 2026-06-20_  
+_For updates to this file, edit `.github/copilot-instructions.md` at the repository root._

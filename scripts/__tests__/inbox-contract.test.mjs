@@ -66,4 +66,26 @@ describe('inbox contract', () => {
     const finding = validateMdFilename('shopping-list.md');
     expect(finding?.code).toBe('INBOX.FM.FILENAME_CONVENTION');
   });
+
+  it('validates scrape-promote funnel export frontmatter fixture', () => {
+    const now = '2026-06-28T12:00:00.000Z';
+    const findings = validateFrontmatter(
+      {
+        timestamp: now,
+        agent: 'scrape-pipeline',
+        agent_role: 'researcher',
+        type: 'research',
+        severity: 'medium',
+        tags: ['lean-ctx', 'shopping-list'],
+        title: 'Lean-ctx performance tuning',
+        summary: 'Performance tuning checklist and slow-log guidance.',
+      },
+      contract
+    );
+    expect(findings.filter((f) => f.severity === 'error')).toHaveLength(0);
+    expect(
+      validateMdFilename('2026-06-28T12-00-00_research_researcher_leanctx-com-docs-performance-tuning.md')
+        ?.severity
+    ).not.toBe('error');
+  });
 });

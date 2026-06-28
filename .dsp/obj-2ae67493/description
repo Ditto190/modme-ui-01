@@ -1,0 +1,3 @@
+source: scripts/telemetry-audit.mjs
+kind: object
+purpose: Data-quality audit CLI with contracts, pipeline, and sync lenses.

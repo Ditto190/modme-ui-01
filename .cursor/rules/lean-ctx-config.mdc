@@ -30,8 +30,18 @@ Script: `scripts/ensure-lean-ctx-config.ps1` — backs up `.bak` before writes; 
 
 Use CLI as source of truth (`lean-ctx config set`); do not hand-convert JSON schema to TOML.
 
-## Hybrid tool mapping
+## Hybrid tool mapping (mandatory)
 
-See always-on [lean-ctx.mdc](./lean-ctx.mdc): `ctx_read` / `ctx_search` (MCP) + `lean-ctx -c` (shell).
+Native Read/Grep/Glob/Shell are **forbidden** for repo exploration when lean-ctx MCP is connected.
 
-Full workflow: [`.agents/skills/smart-git-automation/references/lean-ctx-config-workflow.md`](../.agents/skills/smart-git-automation/references/lean-ctx-config-workflow.md)
+| Native | MCP / CLI                                                                            |
+| ------ | ------------------------------------------------------------------------------------ |
+| Read   | `ctx_read(path, mode)` — [read modes](https://leanctx.com/docs/concepts/read-modes/) |
+| Grep   | `ctx_search(pattern, path)`                                                          |
+| Shell  | `lean-ctx -c "cmd"` or `ctx_shell`                                                   |
+
+Always-on rule: [lean-ctx.mdc](./lean-ctx.mdc). User hooks: `~/.cursor/hooks.json` (`preToolUse` redirect).
+
+Project `[setup]` in `.lean-ctx.toml`: `auto_inject_rules = true`, `auto_inject_skills = true`.
+
+Full workflow: [`.agents/skills/lean-ctx/SKILL.md`](../.agents/skills/lean-ctx/SKILL.md)

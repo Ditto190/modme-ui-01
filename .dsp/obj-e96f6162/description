@@ -1,0 +1,3 @@
+source: next-forge/apps/app/app/(authenticated)/knowledge/components/ops-signal-card.tsx
+kind: object
+purpose: OpsSignalCard molecule rendering eval_signals and pipeline metrics.

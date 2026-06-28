@@ -2,7 +2,7 @@
 
 # next-forge
 
-Frontend workshops connected to a backend factory — Turborepo for ModMe apps, Mintlify docs, and Storybook (Bun, @repo/*).
+Frontend workshops connected to a backend factory — Turborepo for ModMe apps, Mintlify docs, and Storybook (Bun, @repo/\*).
 
 ## Key Docs
 
@@ -21,6 +21,7 @@ Frontend workshops connected to a backend factory — Turborepo for ModMe apps, 
 ## Stack conventions
 
 ### TypeScript
+
 - Prefer `type` for object shapes, `interface` only when extending third-party types.
 - Never use `any` — use `unknown` and narrow, or write a proper type.
 - No non-null assertions (`!`) except in tests or when a type guard just ran.
@@ -29,10 +30,12 @@ Frontend workshops connected to a backend factory — Turborepo for ModMe apps, 
 - Import types with `import type { ... }` to avoid runtime import cost.
 
 **Avoid:**
+
 - Declaration-merging global namespaces.
 - Using `Function`, `Object`, or `{}` as types.
 
 ### Next.js (App Router)
+
 - App Router (`app/`) is the default. Only use Pages Router in an existing project that uses it.
 - Server Components by default. Add `"use client"` only when you need state, effects, or browser APIs.
 - Data fetching lives in Server Components or Route Handlers — not in `useEffect`.
@@ -43,10 +46,12 @@ Frontend workshops connected to a backend factory — Turborepo for ModMe apps, 
 - Metadata goes in `generateMetadata` or a static `metadata` export, not ad-hoc.
 
 **Avoid:**
+
 - Putting server-only secrets in client components (they'll leak into the bundle).
 - Calling an API route from a Server Component on the same server — just call the function directly.
 
 ### React
+
 - Function components only. No class components.
 - Prefer composition over props drilling. Lift state only when siblings need it.
 - `useState` for local UI state, `useReducer` for state with multiple transitions, a store (Zustand/Jotai) only for cross-tree state.
@@ -56,28 +61,33 @@ Frontend workshops connected to a backend factory — Turborepo for ModMe apps, 
 - Accessibility isn't optional — buttons are `<button>`, links are `<a>`, inputs have labels.
 
 **Avoid:**
+
 - Fetching in `useEffect` without cleanup/abort.
 - Mutating state objects directly before setting.
 - `dangerouslySetInnerHTML` with un-sanitized content.
 
 ### Tailwind CSS
+
 - Use utility classes; extract to a component only when a class list repeats 3+ times.
 - Use design tokens (`tailwind.config.ts`) — no magic `#hex` values in markup.
 - Use `clsx` / `cn()` for conditional classes. Don't build class strings with template literals.
 - Prefer `@apply` in global CSS only for truly reused primitives (buttons, inputs).
 
 ### Prisma
+
 - Schema is the source of truth. Migrations via `prisma migrate`, never raw SQL drift.
 - Select only needed fields (`select: { ... }`) — don't return full rows to clients.
 - Wrap multi-step mutations in `prisma.$transaction([...])`.
 - Singleton client in server code; don't instantiate `new PrismaClient()` per request.
 
 ### Vitest
+
 - Co-locate test files (`*.test.ts`) with the code they test.
 - Prefer `describe` only when grouping helps. Flat tests are fine.
 - Mock at the boundary (network, fs, clock) — never mock the unit under test.
 
 ### Node.js
+
 - Node 20+ features are fair game (top-level await, fetch, test runner).
 - ESM only for new code. If the repo is CJS, match it — don't mix.
 - Never block the event loop. Long work goes to workers or a queue.
@@ -85,7 +95,7 @@ Frontend workshops connected to a backend factory — Turborepo for ModMe apps, 
 
 ## Project-specific rules
 
-- Use Bun only in this tree (npx bun). Never yarn install here. Respect @repo/* workspace boundaries. Do not add workspace:* deps to GenerativeUI_monorepo.
+- Use Bun only in this tree (npx bun). Never yarn install here. Respect @repo/_ workspace boundaries. Do not add workspace:_ deps to GenerativeUI_monorepo.
 
 ## Guardrails
 
@@ -106,17 +116,17 @@ When making significant design decisions, architectural changes, code reviews, o
 **Filename**: `YYYY-MM-DDTHH-MM-SS_{type}_{agent-role}_{summary-slug}.{ext}`
 
 **Minimum frontmatter** (`.md` files):
+
 ```yaml
 ---
 timestamp: <ISO 8601>
 agent: copilot
-agent_role: frontend          # frontend|backend|devops|architect|reviewer|researcher
-type: design                  # architecture|design|code-review|solution|research|snippet|link|component
-severity: medium              # low|medium|high|critical
+agent_role: frontend # frontend|backend|devops|architect|reviewer|researcher
+type: design # architecture|design|code-review|solution|research|snippet|link|component
+severity: medium # low|medium|high|critical
 tags: [nextjs, decision]
 branch: <current branch>
 ---
 ```
 
 For non-`.md` formats (links, PDFs, code snippets, React components), just drop the file — the ingestor handles extraction automatically.
-

@@ -1,0 +1,70 @@
+{
+  "version": "1.0",
+  "suite": "observability",
+  "expectations": [
+    {
+      "id": "obs.tenant_id.not_null",
+      "code": "OBS.DB.MISSING_TENANT",
+      "dimension": "completeness",
+      "severity": "error",
+      "automatable": false,
+      "rule": "pipeline_runs, telemetry_events, and eval_signals rows must have tenant_id"
+    },
+    {
+      "id": "obs.pipeline_run.status_valid",
+      "code": "OBS.DB.INVALID_PIPELINE_STATUS",
+      "dimension": "validity",
+      "severity": "error",
+      "automatable": false,
+      "rule": "pipeline_runs.status must be in observability-contract pipelineStatus enum"
+    },
+    {
+      "id": "obs.eval_signal.impact_valid",
+      "code": "OBS.DB.INVALID_EVAL_IMPACT",
+      "dimension": "validity",
+      "severity": "error",
+      "automatable": false,
+      "rule": "eval_signals.impact must be in observability-contract evalImpact enum"
+    },
+    {
+      "id": "obs.telemetry.level_valid",
+      "code": "OBS.DB.INVALID_TELEMETRY_LEVEL",
+      "dimension": "validity",
+      "severity": "warning",
+      "automatable": false,
+      "rule": "telemetry_events.level must be in observability-contract telemetryLevel enum when set"
+    },
+    {
+      "id": "obs.trace_ref.bidirectional",
+      "code": "OBS.DB.TRACE_REF_ORPHAN",
+      "dimension": "consistency",
+      "severity": "warning",
+      "automatable": false,
+      "rule": "trace_refs must link telemetry_event_id to greptime_span_id when Greptime dual-write is enabled"
+    },
+    {
+      "id": "obs.contract.snapshot_drift",
+      "code": "OBS.CONTRACT.SNAPSHOT_DRIFT",
+      "dimension": "consistency",
+      "severity": "error",
+      "automatable": true,
+      "rule": "Vitest golden enums must match observability-contract.v1.json"
+    },
+    {
+      "id": "obs.sync.dry_run_passes",
+      "code": "OBS.SYNC.DRY_RUN_FAILED",
+      "dimension": "timeliness",
+      "severity": "error",
+      "automatable": true,
+      "rule": "telemetry-cli sync --dry-run must exit 0 in CI"
+    },
+    {
+      "id": "obs.secrets.not_in_payload",
+      "code": "OBS.PAYLOAD.SECRET_LEAK",
+      "dimension": "validity",
+      "severity": "error",
+      "automatable": true,
+      "rule": "telemetry-bridge redactSecrets must strip known secret patterns from test fixtures"
+    }
+  ]
+}

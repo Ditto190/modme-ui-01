@@ -28,6 +28,24 @@ try {
     Write-Host "2/3 yarn test..." -ForegroundColor Cyan
     yarn test
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+    $AgentServerDir = Join-Path $GenerativeRoot "apps/agent-server"
+    if (Test-Path (Join-Path $AgentServerDir "pyproject.toml")) {
+      Write-Host "2b/3 agent-server pytest (golden contract)..." -ForegroundColor Cyan
+      Push-Location $AgentServerDir
+      try {
+        if (Get-Command poetry -ErrorAction SilentlyContinue) {
+          poetry run pytest
+        }
+        else {
+          python -m pytest
+        }
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      }
+      finally {
+        Pop-Location
+      }
+    }
   }
 
   if (-not $SkipBuild) {

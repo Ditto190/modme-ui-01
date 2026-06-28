@@ -22,23 +22,23 @@ Failed to clone ... Error: spawn git ENOENT
 
 ## What gets configured
 
-| Source | Cursor | Copilot |
-|--------|--------|---------|
-| [PatrickJS/awesome-cursorrules](https://github.com/PatrickJS/awesome-cursorrules) | `.cursor/rules/patrickjs-*.mdc` | — |
-| [sanjeed5/awesome-cursor-rules-mdc](https://github.com/sanjeed5/awesome-cursor-rules-mdc) | `.cursor/rules/sanjeed5-*.mdc` | — |
-| [github/awesome-copilot](https://github.com/github/awesome-copilot) | `.cursor/rules/copilot-*.mdc`, `.agents/skills/` | `.github/copilot-instructions.md`, `.github/instructions/` |
-| [obra/superpowers](https://github.com/obra/superpowers) | global `~/.agents/skills/` | — |
-| [spencerpauly/awesome-cursor-skills](https://github.com/spencerpauly/awesome-cursor-skills) | global `~/.cursor/skills/`, project pointer `.cursor/skills/awesome-cursor-skills/` | — |
+| Source                                                                                      | Cursor                                                                              | Copilot                                                    |
+| ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| [PatrickJS/awesome-cursorrules](https://github.com/PatrickJS/awesome-cursorrules)           | `.cursor/rules/patrickjs-*.mdc`                                                     | —                                                          |
+| [sanjeed5/awesome-cursor-rules-mdc](https://github.com/sanjeed5/awesome-cursor-rules-mdc)   | `.cursor/rules/sanjeed5-*.mdc`                                                      | —                                                          |
+| [github/awesome-copilot](https://github.com/github/awesome-copilot)                         | `.cursor/rules/copilot-*.mdc`, `.agents/skills/`                                    | `.github/copilot-instructions.md`, `.github/instructions/` |
+| [obra/superpowers](https://github.com/obra/superpowers)                                     | global `~/.agents/skills/`                                                          | —                                                          |
+| [spencerpauly/awesome-cursor-skills](https://github.com/spencerpauly/awesome-cursor-skills) | global `~/.cursor/skills/`, project pointer `.cursor/skills/awesome-cursor-skills/` | —                                                          |
 
 Curated install set includes browser QA, port-conflict detection, cursor rules/hooks suggestions, PR workflow, and parallel explore patterns. Browse the full catalog in `.vendor/awesome-cursor-skills-main/resources/`.
 
 ## MCP servers (project)
 
-| Server | Config | Auth |
-|--------|--------|------|
-| `skills-sh` | `.cursor/mcp.json` (stdio) | None |
-| `buildkite` | `.cursor/mcp.json` (remote `https://mcp.buildkite.com/mcp`) | OAuth on first connect — no `BUILDKITE_API_TOKEN` in repo |
-| `mantine` | `.cursor/mcp.json`, `.vscode/mcp.json`, `.github/mcp.json` | Mantine docs/components (`list_items`, `get_item_doc`, `get_item_props`, `search_docs`) |
+| Server      | Config                                                      | Auth                                                                                    |
+| ----------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `skills-sh` | `.cursor/mcp.json` (stdio)                                  | None                                                                                    |
+| `buildkite` | `.cursor/mcp.json` (remote `https://mcp.buildkite.com/mcp`) | OAuth on first connect — no `BUILDKITE_API_TOKEN` in repo                               |
+| `mantine`   | `.cursor/mcp.json`, `.vscode/mcp.json`, `.github/mcp.json`  | Mantine docs/components (`list_items`, `get_item_doc`, `get_item_props`, `search_docs`) |
 
 After editing `.cursor/mcp.json`, restart Cursor. First Buildkite use: authorize in browser and pick your organization. Details: `docs/agent-tech-guide.md` § Buildkite MCP.
 
@@ -63,6 +63,17 @@ yarn contextarch:bootstrap next-forge # non-interactive (scripts/contextarch-tar
 ```
 
 Root `AGENTS.md` and `.cursor/rules/` are custom; prefer contextarch for new packages or greenfield sub-trees.
+
+## Agent DX: lean-ctx reads + disabled learning mode
+
+| Item                          | Location                                                                                      |
+| ----------------------------- | --------------------------------------------------------------------------------------------- |
+| **No native Read/Grep**       | `.cursor/rules/lean-ctx.mdc` (always-on), `LEAN-CTX.md`, `.agents/skills/lean-ctx/SKILL.md`   |
+| **Read modes**                | https://leanctx.com/docs/concepts/read-modes/                                                 |
+| **Hook redirect**             | `~/.cursor/hooks.json` — `lean-ctx hook redirect` on Read\|Grep\|Glob                         |
+| **Config ensure**             | `yarn lean-ctx:ensure` · `.lean-ctx.toml` (`auto_inject_rules/skills = true`)                 |
+| **learning-output-style off** | `.cursor/settings.json` → `"claude-code-plugins/learning-output-style": { "enabled": false }` |
+| **Re-patch hook popup**       | `.\scripts\cursor-ai\fix-learning-output-style-hook.ps1` (if plugin re-enabled)               |
 
 ## Refresh vendored sources
 

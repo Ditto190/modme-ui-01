@@ -61,6 +61,7 @@ import { Search } from "./search";
 
 interface GlobalSidebarProperties {
   readonly children: ReactNode;
+  readonly generativeUiEnabled?: boolean;
 }
 
 const data = {
@@ -198,8 +199,14 @@ const data = {
   ],
 };
 
-export const GlobalSidebar = ({ children }: GlobalSidebarProperties) => {
+export const GlobalSidebar = ({
+  children,
+  generativeUiEnabled = false,
+}: GlobalSidebarProperties) => {
   const sidebar = useSidebar();
+  const navMain = generativeUiEnabled
+    ? data.navMain
+    : data.navMain.filter((item) => item.url !== "/generative-ui");
 
   return (
     <>
@@ -226,7 +233,7 @@ export const GlobalSidebar = ({ children }: GlobalSidebarProperties) => {
           <SidebarGroup>
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
             <SidebarMenu>
-              {data.navMain.map((item) => (
+              {navMain.map((item) => (
                 <Collapsible
                   asChild
                   defaultOpen={item.isActive}

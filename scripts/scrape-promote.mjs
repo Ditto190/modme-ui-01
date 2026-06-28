@@ -5,13 +5,13 @@
  * Zod promote contract gate via packages/intake-contracts.
  *
  * Usage:
- *   node scripts/scrape-promote.mjs [--dry-run] [--export-md] [--limit 50]
+ *   node scripts/scrape-promote.mjs [--dry-run] [--export-md] [--local-only --manifest=lean-ctx-shopping-list] [--limit 50]
  */
 import { createClient } from '@supabase/supabase-js';
 import { randomUUID } from 'node:crypto';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { existsSync, writeFileSync, mkdirSync, appendFileSync } from 'node:fs';
+import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { loadContract } from './lib/inbox-contract.mjs';
 import { loadRootEnv } from './lib/load-root-env.mjs';
 import { appendValidationError } from './lib/intake-validation-report.mjs';
@@ -25,11 +25,14 @@ import { maybeGenerateSpecifyArtefacts } from './lib/specify-artefacts.mjs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const INBOX_DIR = join(ROOT, 'GenerativeUI_monorepo/docs/inbox');
-const REPORT_DIR = resolve(ROOT, 'docs/inbox-pipeline/reports');
+const STAGING_DIR = join(ROOT, '.firecrawl/staging');
 
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
 const EXPORT_MD = args.includes('--export-md');
+const LOCAL_ONLY = args.includes('--local-only');
+const manifestArg = args.find((a) => a.startsWith('--manifest='));
+const MANIFEST = manifestArg ? manifestArg.split('=')[1] : 'lean-ctx-shopping-list';
 const limitIdx = args.indexOf('--limit');
 const LIMIT = limitIdx >= 0 ? Number(args[limitIdx + 1] || 50) : 50;
 
@@ -44,6 +47,7 @@ function exportMarkdown(page, classification) {
   const now = new Date().toISOString();
   const slug = slugifyUrl(page.url);
   const filename = `${now.replace(/[:.]/g, '-').slice(0, 19)}_${classification.entry_type}_researcher_${slug}.md`;
+  const tagList = (classification.tags || []).map((t) => String(t)).join(', ');
   const frontmatter = [
     '---',
     `timestamp: ${now}`,
@@ -51,7 +55,7 @@ function exportMarkdown(page, classification) {
     `agent_role: ${classification.agent_role || 'researcher'}`,
     `type: ${classification.entry_type}`,
     `severity: ${classification.severity}`,
-    `tags: [${(classification.tags || []).join(', ')}]`,
+    `tags: [${tagList}]`,
     `title: ${classification.title}`,
     `summary: ${classification.summary}`,
     '---',
@@ -89,8 +93,66 @@ function appendValidationReport(stage, url, issues) {
   });
 }
 
+function loadLocalStaging() {
+  const pagesPath = join(STAGING_DIR, `${MANIFEST}.pages.json`);
+  const clsPath = join(STAGING_DIR, `${MANIFEST}.classifications.json`);
+  if (!existsSync(pagesPath)) {
+    if (DRY_RUN) {
+      console.log(`No local staging (dry-run): ${pagesPath}`);
+      return [];
+    }
+    console.error(`Local pages not found: ${pagesPath}`);
+    process.exit(2);
+  }
+  const pages = JSON.parse(readFileSync(pagesPath, 'utf8')).pages ?? [];
+  const classifications = existsSync(clsPath)
+    ? JSON.parse(readFileSync(clsPath, 'utf8'))
+    : [];
+  const clsByUrl = new Map(classifications.map((c) => [c.url, c]));
+  return pages.map((p) => ({
+    ...p,
+    classification: clsByUrl.get(p.url) ?? {
+      entry_type: 'research',
+      severity: 'medium',
+      agent_role: 'researcher',
+      title: p.url,
+      summary: (p.text || '').slice(0, 300),
+      tags: p.annotations?.tags ?? ['shopping-list'],
+      features: p.annotations ? { shopping_list_hints: p.annotations } : {},
+    },
+  }));
+}
+
+async function promoteLocalExport() {
+  const rows = loadLocalStaging().slice(0, LIMIT);
+  if (!rows.length) {
+    console.log('No local staging rows for export.');
+    return;
+  }
+
+  let exported = 0;
+  for (const row of rows) {
+    const classification = row.classification;
+    if (DRY_RUN) {
+      console.log(`  DRY RUN export: ${row.url}`);
+      exported++;
+      continue;
+    }
+    const filename = exportMarkdown({ url: row.url, text: row.text }, classification);
+    console.log(`  EXPORTED md: ${filename}`);
+    exported++;
+  }
+  console.log(`\nLocal export: ${exported} funnel file(s) → ${INBOX_DIR}`);
+}
+
 async function main() {
   loadRootEnv({ fileWins: true });
+
+  if (LOCAL_ONLY && EXPORT_MD) {
+    await promoteLocalExport();
+    return;
+  }
+
   const contract = loadContract();
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

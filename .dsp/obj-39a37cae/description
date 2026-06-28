@@ -1,0 +1,3 @@
+source: next-forge/apps/app/app/(authenticated)/knowledge/components/session-ops-panel.tsx
+kind: object
+purpose: Session Ops panel — data-dense pipeline run table in Knowledge UI.

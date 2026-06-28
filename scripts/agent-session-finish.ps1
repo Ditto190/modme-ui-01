@@ -31,6 +31,12 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $RepoRoot = Split-Path -Parent $ScriptDir
 $registryCli = Join-Path $ScriptDir 'agent-task-registry-cli.mjs'
 
+# Load lean-ctx env (idempotent — safe to call even if already loaded at session start)
+$loadLeanCtx = Join-Path $ScriptDir 'load-lean-ctx-env.ps1'
+if (Test-Path $loadLeanCtx) {
+  . $loadLeanCtx | Out-Null
+}
+
 if (-not $SessionId -and $env:AGENT_SESSION_ENVELOPE -and (Test-Path $env:AGENT_SESSION_ENVELOPE)) {
   try {
     $envData = Get-Content $env:AGENT_SESSION_ENVELOPE -Raw | ConvertFrom-Json
@@ -48,6 +54,29 @@ if (Get-Command yarn -ErrorAction SilentlyContinue) {
 $sessionLogger = Join-Path $RepoRoot '.github/hooks/session-logger/session-logger.ps1'
 if ($SessionId -and (Test-Path $sessionLogger)) {
   & $sessionLogger -Action end -SessionId $SessionId | Out-Host
+}
+
+$evalSync = Join-Path $ScriptDir 'telemetry/lib/eval-session-sync.mjs'
+if ($SessionId -and (Test-Path $evalSync)) {
+  node $evalSync finish --session-id $SessionId 2>&1 | Out-Host
+}
+
+# OTel flush — write final trace_ref span and close agent.session span in Greptime
+$otelStart = Join-Path $ScriptDir 'telemetry/otel-session-start.mjs'
+if ($SessionId -and (Test-Path $otelStart) -and (Get-Command node -ErrorAction SilentlyContinue)) {
+  $otelFlush = node $otelStart --session-id $SessionId --dry-run 2>&1
+  Write-Host "[otel-flush] $otelFlush" -ForegroundColor DarkCyan
+}
+
+$telemetryCli = Join-Path $ScriptDir 'telemetry/telemetry-cli.mjs'
+if (Test-Path $telemetryCli) {
+  # Async fire-and-forget telemetry collect (non-blocking session finish)
+  Start-Job -ScriptBlock {
+    param($Cli, $Root)
+    Set-Location $Root
+    node $Cli collect --since=1d 2>&1 | Out-Null
+  } -ArgumentList $telemetryCli, $RepoRoot | Out-Null
+  Write-Host '[telemetry] async collect job started (1d window)' -ForegroundColor DarkGray
 }
 
 # Optional stack verify

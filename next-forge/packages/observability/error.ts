@@ -2,7 +2,10 @@
 import * as Sentry from "@sentry/nextjs";
 import { log } from "./log";
 
-export const parseError = (error: unknown): string => {
+export const parseError = (
+  error: unknown,
+  metadata?: Record<string, unknown>
+): string => {
   let message = "An error occurred";
 
   if (error instanceof Error) {
@@ -14,7 +17,7 @@ export const parseError = (error: unknown): string => {
   }
 
   try {
-    Sentry.captureException(error);
+    Sentry.captureException(error, metadata ? { extra: metadata } : undefined);
     log.error(`Parsing error: ${message}`);
   } catch (newError) {
     console.error("Error parsing error:", newError);

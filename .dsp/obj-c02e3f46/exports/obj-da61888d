@@ -1,0 +1,1 @@
+Ingest route validates payloads with observability Zod schemas.

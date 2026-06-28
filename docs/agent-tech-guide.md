@@ -2,12 +2,12 @@
 
 Canonical reference for **AI agents** and **humans** working in this repository: tooling paths, documentation workflows, changelog automation, and cross-session handoff.
 
-| Audience | Start here |
-|----------|------------|
-| New agent session | `/init` in Cursor â†’ `AGENTS.md` â†’ this guide â†’ `CHANGELOG.md` (Agent Update Protocol) |
-| Human contributor | `/init`, `AGENTS.md`, `docs/debug-launch-guide.md`, `scripts/cursor-ai/README.md` |
-| CI / cloud agent | `CHANGELOG.md` (protocol), `scripts/validate-changelog.mjs`, `.github/workflows/changelog-check.yml` |
-| Local debugging | `docs/debug-launch-guide.md`, `.vscode/launch.json`, `scripts/validate-launch-json.mjs` |
+| Audience          | Start here                                                                                           |
+| ----------------- | ---------------------------------------------------------------------------------------------------- |
+| New agent session | `/init` in Cursor â†’ `AGENTS.md` â†’ this guide â†’ `CHANGELOG.md` (Agent Update Protocol)          |
+| Human contributor | `/init`, `AGENTS.md`, `docs/debug-launch-guide.md`, `scripts/cursor-ai/README.md`                    |
+| CI / cloud agent  | `CHANGELOG.md` (protocol), `scripts/validate-changelog.mjs`, `.github/workflows/changelog-check.yml` |
+| Local debugging   | `docs/debug-launch-guide.md`, `.vscode/launch.json`, `scripts/validate-launch-json.mjs`              |
 
 ---
 
@@ -50,11 +50,11 @@ Monorepo_ModMe/
 
 **Global (user machine, not in repo):**
 
-| Path | Purpose |
-|------|---------|
-| `~/.agents/skills/` | Globally installed agent skills |
-| `~/.cursor/mcp.json` | User-level MCP servers |
-| `~/.config/lean-ctx/config.toml` | lean-ctx compression settings |
+| Path                             | Purpose                         |
+| -------------------------------- | ------------------------------- |
+| `~/.agents/skills/`              | Globally installed agent skills |
+| `~/.cursor/mcp.json`             | User-level MCP servers          |
+| `~/.config/lean-ctx/config.toml` | lean-ctx compression settings   |
 
 ---
 
@@ -62,12 +62,12 @@ Monorepo_ModMe/
 
 Inbox captures in `GenerativeUI_monorepo/docs/inbox/` are validated against **contract v1** before ingest.
 
-| Command | Purpose |
-|---------|---------|
-| `yarn inbox:audit:funnel` | Structural validation (frontmatter, enums) |
-| `yarn inbox:fix` / `yarn inbox:fix:apply` | Safe auto-fixes (timestamp, agent, type) |
-| `yarn intake:orchestrate` | Audit → ingest → embed → MDA |
-| `yarn inbox:test` | Contract unit tests |
+| Command                                   | Purpose                                    |
+| ----------------------------------------- | ------------------------------------------ |
+| `yarn inbox:audit:funnel`                 | Structural validation (frontmatter, enums) |
+| `yarn inbox:fix` / `yarn inbox:fix:apply` | Safe auto-fixes (timestamp, agent, type)   |
+| `yarn intake:orchestrate`                 | Audit → ingest → embed → MDA               |
+| `yarn inbox:test`                         | Contract unit tests                        |
 
 Reports: `docs/inbox-pipeline/reports/latest.md` · ADR: `next-forge/docs/adr/0009-inbox-data-contract-and-quality-gates.md`
 
@@ -77,11 +77,14 @@ Reports: `docs/inbox-pipeline/reports/latest.md` · ADR: `next-forge/docs/adr/00
 
 This repo uses **lean-ctx** as the context compression layer (see `.cursor/rules/lean-ctx.mdc`).
 
-### Agent expectations
+### Agent expectations (mandatory)
 
-- Prefer lean-ctx MCP tools (`ctx_read`, `ctx_search`, `lean-ctx -c "â€¦"`) over raw file dumps when available.
-- Use read modes intentionally: `map` for orientation, `signatures` for APIs, `full` before edits.
-- If output is over-compressed, use `raw` mode or `lean-ctx doctor`.
+- **Never** use native `Read`, `Grep`, or `Glob` for repo files when lean-ctx MCP is available — use `ctx_read(path, mode)` with an explicit mode.
+- **Read mode quick pick:** edit → `full`; re-read → `diff`; orient → `map` or `signatures`; unsure → `auto`. See [read modes](https://leanctx.com/docs/concepts/read-modes/).
+- **Search:** `ctx_search(pattern, path)` · **Shell:** `lean-ctx -c "…"` or `ctx_shell`.
+- **Enforcement:** `.cursor/rules/lean-ctx.mdc` (always-on) + `~/.cursor/hooks.json` (`hook redirect` on Read|Grep|Glob).
+- **Skill:** [`.agents/skills/lean-ctx/SKILL.md`](../.agents/skills/lean-ctx/SKILL.md) · **Rules:** [`LEAN-CTX.md`](../LEAN-CTX.md).
+- If output is over-compressed: `ctx_read(path, "lines:N-M")` then `full`, or `ctx_shell(cmd, raw=true)`.
 
 ### Diagnostics (human or agent)
 
@@ -189,10 +192,10 @@ Limit toolsets via header (example: user, pipelines, builds):
 
 Use the **local** server only for automated pipelines or pinned versions—not for interactive Cursor use. Requires `BUILDKITE_API_TOKEN` (scopes: at minimum `read_builds`, `read_pipelines`, `read_user`). See [Installing the Buildkite MCP server locally](https://buildkite.com/docs/apis/mcp-server/local/installing).
 
-| Variable | Remote MCP | Local MCP |
-|----------|------------|-----------|
-| `BUILDKITE_API_TOKEN` | Not used (OAuth) | Required (`bkua_…`) |
-| Org selection | OAuth authorize screen | Implicit from token |
+| Variable              | Remote MCP             | Local MCP           |
+| --------------------- | ---------------------- | ------------------- |
+| `BUILDKITE_API_TOKEN` | Not used (OAuth)       | Required (`bkua_…`) |
+| Org selection         | OAuth authorize screen | Implicit from token |
 
 Create API tokens: [Buildkite → Personal Settings → API Access Tokens](https://buildkite.com/user/api-access-tokens).
 
@@ -227,12 +230,12 @@ If your organization uses an **API IP allowlist**, add Buildkite egress IPs so t
 
 ### Tools
 
-| Tool | Purpose |
-|------|---------|
-| `list_items` | List Mantine components/hooks |
-| `get_item_doc` | Full documentation for a component |
-| `get_item_props` | Props table for a component |
-| `search_docs` | Search Mantine docs |
+| Tool             | Purpose                            |
+| ---------------- | ---------------------------------- |
+| `list_items`     | List Mantine components/hooks      |
+| `get_item_doc`   | Full documentation for a component |
+| `get_item_props` | Props table for a component        |
+| `search_docs`    | Search Mantine docs                |
 
 Restart Cursor / VS Code after editing MCP config. On Windows Antigravity, use `"command": "npx.cmd"` if spawn fails (see root `AGENTS.md`).
 
@@ -244,41 +247,41 @@ Restart Cursor / VS Code after editing MCP config. On Windows Antigravity, use `
 
 ### Repo-local (`.agents/skills/`)
 
-| Skill | Use when |
-|-------|----------|
-| `create-agentsmd` | Generate or refresh `AGENTS.md` |
-| `acquire-codebase-knowledge` | Map architecture, onboarding docs |
-| `quality-playbook` | Spec-traced audits, defect hunting |
-| `github-actions-efficiency` | CI cost/efficiency review |
-| `doublecheck` | Verify agent claims with sources |
+| Skill                        | Use when                           |
+| ---------------------------- | ---------------------------------- |
+| `create-agentsmd`            | Generate or refresh `AGENTS.md`    |
+| `acquire-codebase-knowledge` | Map architecture, onboarding docs  |
+| `quality-playbook`           | Spec-traced audits, defect hunting |
+| `github-actions-efficiency`  | CI cost/efficiency review          |
+| `doublecheck`                | Verify agent claims with sources   |
 
 ### Global (`~/.agents/skills/`) â€” installed for this initiative
 
-| Skill | Install command | Status |
-|-------|-----------------|--------|
-| `changelog-automation` | `npx skills add wshobson/agents@changelog-automation --agent cursor -g -y` | Installed |
-| `documentation-writer` | `npx skills add github/awesome-copilot@documentation-writer --agent cursor -g -y` | Installed |
-| `doc-coauthoring` | `npx skills add anthropics/skills@doc-coauthoring --agent cursor -g -y` | Installed |
-| `agents-md` | `npx skills add getsentry/skills@agents-md --agent cursor -g -y` | Installed |
-| `changelog-generator` | `npx skills add composiohq/awesome-claude-skills@changelog-generator --agent cursor -g -y` | Installed |
-| `internal-comms` | `npx skills add anthropics/skills@internal-comms --agent cursor -g -y` | Installed |
-| `mcp-builder` | `npx skills add anthropics/skills@mcp-builder --agent cursor -g -y` | Installed |
-| `find-skills` | `npx skills add vercel-labs/skills@find-skills --agent cursor -g -y` | Installed |
-| `awesome-agent-skills` | project pointer at `.cursor/skills/awesome-agent-skills` | Installed (Cursor) |
+| Skill                  | Install command                                                                            | Status             |
+| ---------------------- | ------------------------------------------------------------------------------------------ | ------------------ |
+| `changelog-automation` | `npx skills add wshobson/agents@changelog-automation --agent cursor -g -y`                 | Installed          |
+| `documentation-writer` | `npx skills add github/awesome-copilot@documentation-writer --agent cursor -g -y`          | Installed          |
+| `doc-coauthoring`      | `npx skills add anthropics/skills@doc-coauthoring --agent cursor -g -y`                    | Installed          |
+| `agents-md`            | `npx skills add getsentry/skills@agents-md --agent cursor -g -y`                           | Installed          |
+| `changelog-generator`  | `npx skills add composiohq/awesome-claude-skills@changelog-generator --agent cursor -g -y` | Installed          |
+| `internal-comms`       | `npx skills add anthropics/skills@internal-comms --agent cursor -g -y`                     | Installed          |
+| `mcp-builder`          | `npx skills add anthropics/skills@mcp-builder --agent cursor -g -y`                        | Installed          |
+| `find-skills`          | `npx skills add vercel-labs/skills@find-skills --agent cursor -g -y`                       | Installed          |
+| `awesome-agent-skills` | project pointer at `.cursor/skills/awesome-agent-skills`                                   | Installed (Cursor) |
 
 ### Top catalog matches (not all installed)
 
-| Skill | Installs | Best for |
-|-------|----------|----------|
-| `wshobson/agents@changelog-automation` | ~9.4K | Keep a Changelog, Conventional Commits, release CI |
-| `composiohq/awesome-claude-skills@changelog-generator` | ~4.7K | Git history â†’ user-facing release notes |
-| `github/awesome-copilot@documentation-writer` | ~20.5K | Technical documentation |
-| `github/awesome-copilot@create-agentsmd` | ~11K | AGENTS.md generation (also in repo) |
-| `anthropics/skills@internal-comms` | ~48.5K | Status reports, 3P updates (install if needed) |
-| `getsentry/skills@agents-md` | ~3.1K | AGENTS.md maintenance |
-| `anthropics/skills@doc-coauthoring` | official | Structured co-authoring workflow |
-| `akillness/oh-my-skills@changelog-maintenance` | ~191 | Ongoing changelog hygiene |
-| `phuryn/release-notes` | catalog | PM-style release notes from tickets |
+| Skill                                                  | Installs | Best for                                           |
+| ------------------------------------------------------ | -------- | -------------------------------------------------- |
+| `wshobson/agents@changelog-automation`                 | ~9.4K    | Keep a Changelog, Conventional Commits, release CI |
+| `composiohq/awesome-claude-skills@changelog-generator` | ~4.7K    | Git history â†’ user-facing release notes          |
+| `github/awesome-copilot@documentation-writer`          | ~20.5K   | Technical documentation                            |
+| `github/awesome-copilot@create-agentsmd`               | ~11K     | AGENTS.md generation (also in repo)                |
+| `anthropics/skills@internal-comms`                     | ~48.5K   | Status reports, 3P updates (install if needed)     |
+| `getsentry/skills@agents-md`                           | ~3.1K    | AGENTS.md maintenance                              |
+| `anthropics/skills@doc-coauthoring`                    | official | Structured co-authoring workflow                   |
+| `akillness/oh-my-skills@changelog-maintenance`         | ~191     | Ongoing changelog hygiene                          |
+| `phuryn/release-notes`                                 | catalog  | PM-style release notes from tickets                |
 
 Refresh AI config after vendor changes:
 
@@ -292,13 +295,13 @@ Refresh AI config after vendor changes:
 
 ### Layered documentation model
 
-| Layer | File | Owner | Update trigger |
-|-------|------|-------|----------------|
-| Agent bootstrap | `AGENTS.md` | Humans + `create-agentsmd` / `agents-md` | New commands, layout, agent rules |
-| Deep tech guide | `docs/agent-tech-guide.md` | Humans + agents | Tooling/path/workflow changes |
-| lean-ctx | `docs/lean-ctx-guide.md` | Agents using lean-ctx | Compression behavior changes |
-| Release log | `CHANGELOG.md` | All agents + CI | Notable shipped changes |
-| Package/app | nearest `README` / `docs/` | Feature owners | Feature-specific behavior |
+| Layer           | File                       | Owner                                    | Update trigger                    |
+| --------------- | -------------------------- | ---------------------------------------- | --------------------------------- |
+| Agent bootstrap | `AGENTS.md`                | Humans + `create-agentsmd` / `agents-md` | New commands, layout, agent rules |
+| Deep tech guide | `docs/agent-tech-guide.md` | Humans + agents                          | Tooling/path/workflow changes     |
+| lean-ctx        | `docs/lean-ctx-guide.md`   | Agents using lean-ctx                    | Compression behavior changes      |
+| Release log     | `CHANGELOG.md`             | All agents + CI                          | Notable shipped changes           |
+| Package/app     | nearest `README` / `docs/` | Feature owners                           | Feature-specific behavior         |
 
 ### Agent session checklist (end of task)
 
@@ -389,25 +392,25 @@ flowchart LR
 
 Skills to use by phase:
 
-| Phase | Skill |
-|-------|-------|
-| Commit discipline | `changelog-automation` (Conventional Commits) |
-| Draft from git | `changelog-generator` |
-| User-facing polish | `documentation-writer`, `internal-comms` |
-| Version bump PR | `changelog-automation` (standard-version / semantic-release refs) |
+| Phase              | Skill                                                             |
+| ------------------ | ----------------------------------------------------------------- |
+| Commit discipline  | `changelog-automation` (Conventional Commits)                     |
+| Draft from git     | `changelog-generator`                                             |
+| User-facing polish | `documentation-writer`, `internal-comms`                          |
+| Version bump PR    | `changelog-automation` (standard-version / semantic-release refs) |
 
 ---
 
 ## 7. MCP configuration summary
 
-| File | Servers | Notes |
-|------|---------|-------|
-| `.cursor/mcp.json` | `skills-sh`, `buildkite` (remote HTTP), `mantine` (stdio) | Skills catalog; Buildkite pipelines/builds (OAuth); Mantine component docs |
-| `.vscode/mcp.json` | `mantine` (stdio) | VS Code MCP extension |
-| `.github/mcp.json` | `GitLab` (http), `mantine` (stdio) | Copilot / GitHub MCP integration |
-| `GenerativeUI_monorepo/mcp.json` | context7, playwright, markitdown, github, `mantine` | Turborepo-scoped VS Code MCP registry |
-| `.gitlab/duo/mcp.json` | `mantine` (stdio) | GitLab Duo MCP |
-| `~/.cursor/mcp.json` | User-defined | May duplicate skills-sh, context7, lean-ctx, mantine, etc. |
+| File                             | Servers                                                   | Notes                                                                      |
+| -------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `.cursor/mcp.json`               | `skills-sh`, `buildkite` (remote HTTP), `mantine` (stdio) | Skills catalog; Buildkite pipelines/builds (OAuth); Mantine component docs |
+| `.vscode/mcp.json`               | `mantine` (stdio)                                         | VS Code MCP extension                                                      |
+| `.github/mcp.json`               | `GitLab` (http), `mantine` (stdio)                        | Copilot / GitHub MCP integration                                           |
+| `GenerativeUI_monorepo/mcp.json` | context7, playwright, markitdown, github, `mantine`       | Turborepo-scoped VS Code MCP registry                                      |
+| `.gitlab/duo/mcp.json`           | `mantine` (stdio)                                         | GitLab Duo MCP                                                             |
+| `~/.cursor/mcp.json`             | User-defined                                              | May duplicate skills-sh, context7, lean-ctx, mantine, etc.                 |
 
 After editing MCP JSON, restart the host (Cursor / VS Code).
 
@@ -415,13 +418,13 @@ After editing MCP JSON, restart the host (Cursor / VS Code).
 
 ## 8. Gaps and limitations
 
-| Gap | Workaround |
-|-----|------------|
-| No single â€œagent handoffâ€ skill in catalog | Use `CHANGELOG.md` protocol + `acquire-codebase-knowledge` |
-| Phase 2 release automation (git-cliff / release-please) | Not in repo; Phase 1 manual append + CI validation is active |
-| No dedicated AGENTS.md CI check | Extend `validate-changelog.mjs` or add `agents-md` check later |
-| `changelog-generator` flagged higher gen risk | Review output; prefer `changelog-automation` for CI templates |
-| Monorepo sub-project changelogs | App-specific notes can live under `GenerativeUI_monorepo/<pkg>/CHANGELOG.md` with a bullet in root `[Unreleased]` |
+| Gap                                                     | Workaround                                                                                                        |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| No single â€œagent handoffâ€ skill in catalog           | Use `CHANGELOG.md` protocol + `acquire-codebase-knowledge`                                                        |
+| Phase 2 release automation (git-cliff / release-please) | Not in repo; Phase 1 manual append + CI validation is active                                                      |
+| No dedicated AGENTS.md CI check                         | Extend `validate-changelog.mjs` or add `agents-md` check later                                                    |
+| `changelog-generator` flagged higher gen risk           | Review output; prefer `changelog-automation` for CI templates                                                     |
+| Monorepo sub-project changelogs                         | App-specific notes can live under `GenerativeUI_monorepo/<pkg>/CHANGELOG.md` with a bullet in root `[Unreleased]` |
 
 ---
 
@@ -435,21 +438,21 @@ Run **`/init`** in Cursor chat â€” initializes beads (optional), verifies d
 
 ### Key files
 
-| File | Role |
-|------|------|
-| `.vscode/launch.json` | Run configurations + full-stack compounds |
-| `.vscode/tasks.json` | Background dev/build tasks for `preLaunchTask` |
-| `scripts/launch-manifest.json` | Canonical app list, ports, required config names |
-| `scripts/validate-launch-json.mjs` | Local + CI drift detection |
-| `.github/workflows/launch-json-check.yml` | PR check when launch files change |
+| File                                      | Role                                             |
+| ----------------------------------------- | ------------------------------------------------ |
+| `.vscode/launch.json`                     | Run configurations + full-stack compounds        |
+| `.vscode/tasks.json`                      | Background dev/build tasks for `preLaunchTask`   |
+| `scripts/launch-manifest.json`            | Canonical app list, ports, required config names |
+| `scripts/validate-launch-json.mjs`        | Local + CI drift detection                       |
+| `.github/workflows/launch-json-check.yml` | PR check when launch files change                |
 
 ### Port map (primary apps)
 
-| App | Launch name | Port |
-|-----|-------------|------|
-| vibe-web-app | Vibe Web App (Chrome) | 3000 |
+| App           | Launch name             | Port |
+| ------------- | ----------------------- | ---- |
+| vibe-web-app  | Vibe Web App (Chrome)   | 3000 |
 | web-dashboard | Web Dashboard (Next.js) | 3001 |
-| agent-server | Agent Server (FastAPI) | 8000 |
+| agent-server  | Agent Server (FastAPI)  | 8000 |
 
 ### Validate before push
 
@@ -504,9 +507,9 @@ node scripts/validate-launch-json.mjs --require-manifest-sync
 
 Full guide: **[docs/multi-agent-worktrees.md](./multi-agent-worktrees.md)**.
 
-| Layer | Files | Who |
-|-------|-------|-----|
-| Cursor auto-bootstrap | `.cursor/worktrees.json`, `setup-worktree-*.ps1/.sh` | Cursor Agents Window, `/worktree` |
+| Layer                  | Files                                                  | Who                                  |
+| ---------------------- | ------------------------------------------------------ | ------------------------------------ |
+| Cursor auto-bootstrap  | `.cursor/worktrees.json`, `setup-worktree-*.ps1/.sh`   | Cursor Agents Window, `/worktree`    |
 | Explicit Git worktrees | `scripts/init-worktrees.ps1`, `new-agent-worktree.ps1` | Copilot, Claude, Antigravity, humans |
 
 ```powershell
@@ -519,17 +522,17 @@ Debug Cursor setup: **Output → Worktrees Setup**. Cleanup: `cursor.worktreeMax
 
 ---
 
-*Last updated: 2026-06-19 — multi-agent worktrees, port allocation, Cursor worktrees.json.*
+_Last updated: 2026-06-19 — multi-agent worktrees, port allocation, Cursor worktrees.json._
 
 ## Continuous integration
 
 GitHub Actions workflows under [`.github/workflows/`](../.github/workflows/):
 
-| Workflow | Trigger | Purpose |
-|----------|---------|---------|
-| `ci.yml` | Push/PR to `main`, `master`, or `develop` | Secret guard (no tracked `.env`), Yarn 3 + Turbo lint/test/build in `GenerativeUI_monorepo`, PR changelog validation |
-| `changelog-check.yml` | PR (monitored paths) | CHANGELOG format and required updates |
-| `launch-json-check.yml` | PR/push (launch config paths) | Validates `.vscode/launch.json` against manifest |
+| Workflow                | Trigger                                   | Purpose                                                                                                              |
+| ----------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `ci.yml`                | Push/PR to `main`, `master`, or `develop` | Secret guard (no tracked `.env`), Yarn 3 + Turbo lint/test/build in `GenerativeUI_monorepo`, PR changelog validation |
+| `changelog-check.yml`   | PR (monitored paths)                      | CHANGELOG format and required updates                                                                                |
+| `launch-json-check.yml` | PR/push (launch config paths)             | Validates `.vscode/launch.json` against manifest                                                                     |
 
 CI uses Node 20 with Corepack for Yarn 3. Deploy workflows are not configured; add a deploy job when a hosting target is chosen.
 

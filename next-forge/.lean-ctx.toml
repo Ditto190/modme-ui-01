@@ -1,0 +1,17 @@
+# next-forge (Bun/Turbo) — child overrides; root Monorepo_ModMe/.lean-ctx.toml wins via auto-reroot.
+# Open parent Monorepo_ModMe as workspace, or run from next-forge/ with allow_auto_reroot.
+
+extra_ignore_patterns = [
+    "node_modules/**",
+    ".turbo/**",
+    "dist/**",
+    ".next/**",
+    "coverage/**",
+    "storybook-static/**",
+    ".vercel/**",
+    "packages/database/generated/**",
+]
+
+graph_index_max_files = 8000
+memory_profile = "balanced"
+memory_cleanup = "shared"

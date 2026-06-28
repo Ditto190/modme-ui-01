@@ -1,4 +1,10 @@
 import { Client } from "pg";
+import type {
+  GreptimeAgentMetricRecord,
+  GreptimeAgentSpanRecord,
+} from "./greptimedb-types";
+
+export type { GreptimeAgentMetricRecord, GreptimeAgentSpanRecord } from "./greptimedb-types";
 
 export interface GreptimeEmbeddingRecord {
   id: string;
@@ -83,6 +89,36 @@ export class GreptimeDBClient {
     await this.client.query(`
       ALTER TABLE code_index ADD COLUMN IF NOT EXISTS content_hash TEXT;
     `).catch(() => undefined);
+
+    await this.client.query(`
+      CREATE TABLE IF NOT EXISTS agent_spans (
+        span_id TEXT PRIMARY KEY,
+        trace_id TEXT NOT NULL,
+        tenant_id TEXT NOT NULL,
+        session_id TEXT,
+        span_name TEXT,
+        parent_span_id TEXT,
+        duration_ms BIGINT,
+        status_code TEXT,
+        service_name TEXT,
+        attributes TEXT,
+        started_at BIGINT,
+        ended_at BIGINT
+      );
+    `);
+
+    await this.client.query(`
+      CREATE TABLE IF NOT EXISTS agent_metrics (
+        id TEXT PRIMARY KEY,
+        tenant_id TEXT NOT NULL,
+        session_id TEXT,
+        metric_name TEXT NOT NULL,
+        metric_value DOUBLE PRECISION,
+        unit TEXT,
+        attributes TEXT,
+        timestamp BIGINT
+      );
+    `);
   }
 
   async upsertEmbedding(record: GreptimeEmbeddingRecord): Promise<void> {
@@ -207,6 +243,60 @@ export class GreptimeDBClient {
       ast_kind: r.ast_kind as string | undefined,
       content_hash: r.content_hash as string | undefined,
     };
+    });
+  }
+
+  async upsertAgentSpan(record: GreptimeAgentSpanRecord): Promise<void> {
+    return this.withQueryLock(async () => {
+      if (!this.client) await this.init();
+      const ts = record.timestamp ?? Date.now();
+      const sql = `
+        INSERT INTO agent_spans(span_id, trace_id, tenant_id, session_id, span_name, duration_ms, attributes, started_at, ended_at)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)
+        ON CONFLICT (span_id) DO UPDATE SET
+          trace_id = EXCLUDED.trace_id,
+          tenant_id = EXCLUDED.tenant_id,
+          session_id = EXCLUDED.session_id,
+          duration_ms = EXCLUDED.duration_ms,
+          span_name = EXCLUDED.span_name,
+          attributes = EXCLUDED.attributes,
+          started_at = EXCLUDED.started_at,
+          ended_at = EXCLUDED.ended_at;
+      `;
+      await this.client!.query(sql, [
+        record.span_id,
+        record.trace_id,
+        record.tenant_id,
+        record.session_id ?? null,
+        record.span_name ?? null,
+        record.duration_ms ?? 0,
+        JSON.stringify(record.attributes ?? {}),
+        ts,
+        ts + (record.duration_ms ?? 0),
+      ]);
+    });
+  }
+
+  async upsertAgentMetric(record: GreptimeAgentMetricRecord): Promise<void> {
+    return this.withQueryLock(async () => {
+      if (!this.client) await this.init();
+      const id = `${record.tenant_id}:${record.metric_name}:${record.timestamp ?? Date.now()}`;
+      const sql = `
+        INSERT INTO agent_metrics(id, tenant_id, session_id, metric_name, metric_value, attributes, timestamp)
+        VALUES($1,$2,$3,$4,$5,$6,$7)
+        ON CONFLICT (id) DO UPDATE SET
+          metric_value = EXCLUDED.metric_value,
+          attributes = EXCLUDED.attributes;
+      `;
+      await this.client!.query(sql, [
+        id,
+        record.tenant_id,
+        record.session_id ?? null,
+        record.metric_name,
+        record.metric_value,
+        JSON.stringify(record.attributes ?? {}),
+        record.timestamp ?? Date.now(),
+      ]);
     });
   }
 }

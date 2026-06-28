@@ -158,10 +158,17 @@ export class GreptimeDBObservability {
  */
 let observabilityInstance: GreptimeDBObservability | null = null;
 
+/**
+ * Guard: only initialize when GREPTIME_OTEL_ENABLED=1.
+ * Safe to call unconditionally — returns null when flag is absent.
+ */
 export function initializeObservability(config?: Partial<GreptimeDBConfig>): {
   meter: Meter;
   tracer: Tracer;
-} {
+} | null {
+  if (process.env.GREPTIME_OTEL_ENABLED !== "1") {
+    return null;
+  }
   if (!observabilityInstance) {
     observabilityInstance = new GreptimeDBObservability(config);
   }

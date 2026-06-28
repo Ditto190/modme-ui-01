@@ -1,0 +1,3 @@
+source: docs/inbox-pipeline/contracts/observability-contract.v1.json
+kind: external
+purpose: Published observability contract enums shared with inbox ADR-0009.

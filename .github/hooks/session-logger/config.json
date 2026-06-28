@@ -7,5 +7,24 @@
     "GenerativeUI_monorepo\\UniversalWorkbench\\.flow\\behavior-management.md",
     "GenerativeUI_monorepo\\UniversalWorkbench\\docs\\FEATURE-TAXONOMY.md"
   ],
-  "powershellWrapper": "session-logger.ps1"
+  "powershellWrapper": "session-logger.ps1",
+  "events": [
+    "sessionStart",
+    "sessionEnd",
+    "prompt",
+    "toolCall",
+    "userCorrection",
+    "hookFire",
+    "handoff"
+  ],
+  "emitFields": [
+    "agent",
+    "agent_platform",
+    "worktree",
+    "branch",
+    "parent_session_id"
+  ],
+  "handoff": {
+    "propagateFields": ["parent_session_id", "trace_id", "agent_platform"]
+  }
 }

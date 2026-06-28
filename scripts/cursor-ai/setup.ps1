@@ -634,6 +634,12 @@ Install-AwesomeCopilot
 Write-AgentsMd
 Install-GitHooks
 
+$hookFixScript = Join-Path $PSScriptRoot 'fix-learning-output-style-hook.ps1'
+if (Test-Path $hookFixScript) {
+    Write-Host '[patch] learning-output-style SessionStart hook (Windows popup fix)...' -ForegroundColor Cyan
+    & $hookFixScript
+}
+
 Write-Host ''
 Write-Host '=== Environment verification ===' -ForegroundColor Cyan
 $checkResults = @(

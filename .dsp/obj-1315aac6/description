@@ -1,0 +1,3 @@
+source: packages/intake-contracts/schemas/pipeline-run.mjs
+kind: object
+purpose: Intake contract schema for pipeline_runs lifecycle.

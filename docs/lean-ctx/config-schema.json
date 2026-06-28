@@ -1,6 +1,57 @@
 ﻿{
   "version": 1,
   "sections": {
+    "addons": {
+      "description": "Addon ecosystem security floor: install policy, signature requirement, per-addon capability sandbox (#863, P1). Global-only.",
+      "keys": {
+        "allowlist": {
+          "type": "array",
+          "default": [],
+          "description": "Addon slugs permitted when policy = allowlist"
+        },
+        "block_risky": {
+          "type": "bool",
+          "default": false,
+          "description": "Refuse to install an addon that has a high-risk (Danger) capability"
+        },
+        "enforce_capabilities": {
+          "type": "bool",
+          "default": false,
+          "description": "Fail closed when an addon declares restricted [capabilities] but no OS sandbox launcher is available to enforce them"
+        },
+        "metering": {
+          "type": "bool",
+          "default": true,
+          "description": "Record per-addon / per-tool gateway usage to <data_dir>/addons/usage.json (analytics + billing base)"
+        },
+        "policy": {
+          "type": "enum",
+          "default": "open",
+          "description": "Addon install policy: open (any) | verified_only | allowlist | locked",
+          "values": [
+            "open",
+            "verified_only",
+            "allowlist",
+            "locked"
+          ]
+        },
+        "require_signature": {
+          "type": "bool",
+          "default": false,
+          "description": "Honour a user-override registry only if signed by a trusted org key"
+        },
+        "sandbox": {
+          "type": "enum",
+          "default": "off",
+          "description": "Sandbox spawned addon stdio servers: off | auto (block network) | strict (read-only fs + refuse if no launcher)",
+          "values": [
+            "off",
+            "auto",
+            "strict"
+          ]
+        }
+      }
+    },
     "archive": {
       "description": "Settings for the zero-loss compression archive (large tool outputs saved to disk)",
       "keys": {
@@ -13,6 +64,11 @@
           "type": "bool",
           "default": true,
           "description": "Replace large results with summary+ref (ctx_expand to retrieve). Env: LEAN_CTX_EPHEMERAL"
+        },
+        "ephemeral_min_tokens": {
+          "type": "usize",
+          "default": 2000,
+          "description": "Minimum output tokens before the ephemeral firewall replaces inline body with summary+ref. Env: LEAN_CTX_EPHEMERAL_MIN_TOKENS"
         },
         "max_age_hours": {
           "type": "u64",
@@ -68,9 +124,15 @@
         },
         "cognition_loop_max_steps": {
           "type": "u8",
-          "default": 8,
-          "description": "Maximum steps per cognition loop iteration",
+          "default": 9,
+          "description": "Maximum steps per cognition loop iteration (>= 9 enables observation synthesis)",
           "env_override": "LEAN_CTX_COGNITION_LOOP_MAX_STEPS"
+        },
+        "cognition_synthesis_min_cluster": {
+          "type": "usize",
+          "default": 3,
+          "description": "Minimum facts per entity before observation synthesis writes a summary (needs cognition_loop_max_steps >= 9)",
+          "env_override": "LEAN_CTX_COGNITION_SYNTHESIS_MIN_CLUSTER"
         },
         "consolidate_cooldown_secs": {
           "type": "u64",
@@ -127,10 +189,36 @@
     "cloud": {
       "description": "Cloud feature settings",
       "keys": {
+        "auto_sync": {
+          "type": "bool",
+          "default": false,
+          "description": "Push the Personal Cloud (knowledge, commands, CEP, gotchas, buddy, feedback) silently once per day at session end (Pro; toggle: `lean-ctx cloud autosync on|off`)"
+        },
         "contribute_enabled": {
           "type": "bool",
           "default": false,
           "description": "Enable contributing anonymized stats to lean-ctx cloud"
+        }
+      }
+    },
+    "context": {
+      "description": "Fixed-context budget accounting (#964)",
+      "keys": {
+        "budget_tokens": {
+          "type": "usize",
+          "default": 8000,
+          "description": "Fixed per-session context budget (tool schemas + MCP instructions + auto-loaded rules + wakeup briefing). `doctor overhead` warns past this; `doctor overhead --gate` exits non-zero for CI. 0 disables the warning",
+          "env_override": "LEAN_CTX_CONTEXT_BUDGET_TOKENS"
+        }
+      }
+    },
+    "cost": {
+      "description": "Model declaration for measured-vs-estimated cost reporting",
+      "keys": {
+        "default_model": {
+          "type": "string?",
+          "default": null,
+          "description": "Fallback pricing model for MCP-only IDEs whose real model lean-ctx cannot observe (Cursor, Copilot, Windsurf, ΓÇª). Unset ΓåÆ blended heuristic. Per-IDE overrides live in [cost.models]"
         }
       }
     },
@@ -152,10 +240,27 @@
     "embedding": {
       "description": "Semantic-embedding engine settings (model selection for ctx_semantic_search)",
       "keys": {
+        "auto_download": {
+          "type": "bool",
+          "default": null,
+          "description": "Download the embedding model in the background on first semantic need (default: allowed). Set false for air-gapped machines; semantic features then stay off until a model is provided manually.",
+          "env_override": "LEAN_CTX_EMBEDDINGS_AUTO_DOWNLOAD"
+        },
+        "deterministic": {
+          "type": "bool",
+          "default": null,
+          "description": "Pin embedding inference to a single CPU thread with no GPU provider so vectors are bit-identical across machines (default: off, multi-threaded GPU-capable path). Extractive prose ranking is already deterministic via score quantization; enable this only for cross-machine reproducibility, at a throughput cost.",
+          "env_override": "LEAN_CTX_EMBEDDING_DETERMINISTIC"
+        },
+        "dimensions": {
+          "type": "integer",
+          "default": null,
+          "description": "Declared embedding width for hf: custom models (fallback only ΓÇö the real width is probed from the ONNX graph at load time). Built-in models ignore this key."
+        },
         "model": {
           "type": "string",
           "default": "minilm",
-          "description": "Local ONNX embedding model for ctx_semantic_search. One of: minilm (all-MiniLM-L6-v2, 384d, default), jina-code-v2 (768d, code-optimized), nomic (768d). Switching models re-indexes once on the next search.",
+          "description": "Local ONNX embedding model for ctx_semantic_search. One of: minilm (all-MiniLM-L6-v2, 384d, default), nomic (768d) ΓÇö or any HuggingFace repo with an ONNX export via hf:org/repo[@revision] (e.g. hf:jinaai/jina-embeddings-v2-base-code for code). Switching models re-indexes once on the next search.",
           "env_override": "LEAN_CTX_EMBEDDING_MODEL"
         }
       }
@@ -178,10 +283,95 @@
           "default": null,
           "description": "Optional display name shown on your published card / leaderboard entry"
         },
+        "last_auto_publish": {
+          "type": "string?",
+          "default": null,
+          "description": "Timestamp of the last automatic publish (written by lean-ctx for throttling ΓÇö not meant to be edited)"
+        },
         "leaderboard": {
           "type": "bool",
           "default": true,
           "description": "When auto-publishing, also list the card on the public opt-in leaderboard"
+        }
+      }
+    },
+    "gateway": {
+      "description": "MCP Tool-Catalog Gateway: aggregate + query-route downstream MCP servers (#210). Global-only.",
+      "keys": {
+        "cache_ttl_secs": {
+          "type": "integer",
+          "default": 300,
+          "description": "Aggregated-catalog cache lifetime in seconds"
+        },
+        "call_timeout_secs": {
+          "type": "integer",
+          "default": 30,
+          "description": "Per-operation timeout for downstream connect/list/call (seconds)"
+        },
+        "enabled": {
+          "type": "bool",
+          "default": false,
+          "description": "Enable the MCP Tool-Catalog Gateway (no-op when false)"
+        },
+        "top_n": {
+          "type": "integer",
+          "default": 5,
+          "description": "How many tools `ctx_tools find` returns per query (clamped 1..=50)"
+        }
+      }
+    },
+    "gateway.servers": {
+      "description": "Downstream MCP servers (array of tables: `[[gateway.servers]]`)",
+      "keys": {
+        "args": {
+          "type": "array",
+          "default": [],
+          "description": "Arguments for the spawned command (stdio transport)"
+        },
+        "command": {
+          "type": "string",
+          "default": "",
+          "description": "Executable to spawn (stdio transport)"
+        },
+        "enabled": {
+          "type": "bool",
+          "default": true,
+          "description": "Per-server switch (default true)"
+        },
+        "env": {
+          "type": "table",
+          "default": {},
+          "description": "Extra environment variables for the child process (stdio transport)"
+        },
+        "headers": {
+          "type": "table",
+          "default": {},
+          "description": "Extra request headers, e.g. Authorization (http transport)"
+        },
+        "name": {
+          "type": "string",
+          "default": "",
+          "description": "Stable server id; becomes the catalog namespace (`name::tool`)"
+        },
+        "transport": {
+          "type": "string",
+          "default": "stdio",
+          "description": "Transport: stdio (spawn command) or http (connect to url)"
+        },
+        "url": {
+          "type": "string",
+          "default": "",
+          "description": "Streamable-HTTP endpoint (http transport)"
+        }
+      }
+    },
+    "graph": {
+      "description": "Code-graph settings, including traversal (co-access) edges learned from sessions",
+      "keys": {
+        "traversal_edges": {
+          "type": "bool",
+          "default": true,
+          "description": "Learn co-access edges from real sessions (files surfaced together), surface them as decaying `co_access` graph edges, and boost recall by them. Set false for a purely static AST-only graph."
         }
       }
     },
@@ -387,10 +577,25 @@
     "memory.lifecycle": {
       "description": "Knowledge lifecycle policy (decay, staleness, dedup)",
       "keys": {
+        "archetype_aware_decay": {
+          "type": "bool",
+          "default": false,
+          "description": "Scale Ebbinghaus stability by fact archetype so structural evidence decays slower than inference (default false)"
+        },
+        "base_stability_days": {
+          "type": "f32",
+          "default": 90.0,
+          "description": "Characteristic memory stability (days) for the Ebbinghaus curve"
+        },
         "decay_rate": {
           "type": "f32",
           "default": 0.01,
           "description": "Rate at which knowledge confidence decays over time"
+        },
+        "forgetting_model": {
+          "type": "string",
+          "default": "ebbinghaus",
+          "description": "Forgetting curve: ebbinghaus (default, exponential + spacing) or linear"
         },
         "low_confidence_threshold": {
           "type": "f32",
@@ -497,20 +702,137 @@
     "proxy": {
       "description": "Proxy upstream configuration for API routing",
       "keys": {
+        "allow_insecure_http_upstream": {
+          "type": "bool",
+          "default": false,
+          "description": "Allow a non-loopback plaintext http:// upstream (trusted local network only, e.g. http://host.docker.internal:2455 in front of codex-lb). Opt-in; default false",
+          "env_override": "LEAN_CTX_ALLOW_INSECURE_HTTP_UPSTREAM"
+        },
         "anthropic_upstream": {
           "type": "string?",
           "default": null,
           "description": "Custom upstream URL for Anthropic API proxy"
+        },
+        "cache_aligner": {
+          "type": "bool",
+          "default": false,
+          "description": "Opt-in cache-aligner volatile-field telemetry (#940). When on, the proxy scans each unanchored Anthropic system prompt for volatile, cache-busting fields (ISO dates/datetimes, UUIDs, git SHAs) and reports how many it found on /status cache_safety (volatile_system_requests, volatile_fields_detected) - purely to quantify how much prompt-cache the client leaks. Measurement only: the request body is never mutated, so it is strictly cache-safe. The deterministic scan is the precursor to an opt-in tail-relocate. Default false",
+          "env_override": "LEAN_CTX_PROXY_CACHE_ALIGNER"
+        },
+        "cache_breakpoint": {
+          "type": "bool",
+          "default": false,
+          "description": "Opt-in active prompt-cache breakpoint injection for Anthropic (#939). When on and the client set no cache_control of its own, the proxy adds one cache_control: {type:ephemeral} marker to the system field so an otherwise-uncached, stable system prompt bills later turns at the cached rate (the win a raw API client leaves on the table). Anthropic-only: OpenAI/Gemini cache prefixes automatically and ignore the marker, so those paths stay byte-unchanged. Deterministic, never adds a second breakpoint, and skipped below Anthropic's minimum cacheable size. Default false",
+          "env_override": "LEAN_CTX_PROXY_CACHE_BREAKPOINT"
+        },
+        "ccr_inband": {
+          "type": "bool",
+          "default": false,
+          "description": "Opt-in in-band CCR retrieval for a remote proxy with no shared filesystem (#493). When on, a lossy stub advertises a compact <lc_expand:HASH> marker instead of a local tee path; when the model echoes that marker, the proxy splices the verbatim original (from its local tee store) back inline next turn ΓÇö one turn of latency, no MCP/filesystem on the agent host. The splice is a strict no-op on marker-less turns, so it never perturbs the provider cache prefix unless the model asked to expand. Default false",
+          "env_override": "LEAN_CTX_PROXY_CCR_INBAND"
+        },
+        "chatgpt_upstream": {
+          "type": "string?",
+          "default": null,
+          "description": "Custom upstream URL for ChatGPT/Codex subscription API proxy"
+        },
+        "cold_prefix_repack": {
+          "type": "bool",
+          "default": false,
+          "description": "Opt-in big-gap cold-prefix repack (#480): on a session-resume request the proxy may predict (from idle time vs the provider cache TTL) that the client-cached prefix has already expired, then prune that now-cold prefix to re-seed a leaner cache and keep applying the same deterministic compression on later turns so warm follow-ups hit it (sticky; baselines persist across restarts, #499). A wrong guess re-bills cache reads as writes (~12x), so default false",
+          "env_override": "LEAN_CTX_PROXY_COLD_PREFIX_REPACK"
+        },
+        "effort": {
+          "type": "enum",
+          "default": "off",
+          "description": "Cache-safe cross-provider reasoning-effort control (#834). off (default) = no-op. minimal|low|medium|high pins the model's reasoning depth across providers: lean-ctx translates it to OpenAI reasoning_effort / reasoning.effort, Anthropic output_config.effort, and Gemini thinkingConfig (thinkingLevel on 3.x, thinkingBudget on 2.5 pro/flash), only on models that accept it and only when the client didn't set its own value. The level is a constant, so it never breaks the provider prompt cache (unlike per-turn effort routing). Anthropic is dialed only when the client already requested adaptive thinking",
+          "values": [
+            "off",
+            "minimal",
+            "low",
+            "medium",
+            "high"
+          ],
+          "env_override": "LEAN_CTX_PROXY_EFFORT"
         },
         "gemini_upstream": {
           "type": "string?",
           "default": null,
           "description": "Custom upstream URL for Gemini API proxy"
         },
+        "history_mode": {
+          "type": "enum",
+          "default": "cache-aware",
+          "description": "History pruning strategy. cache-aware: frozen boundaries that keep provider prompt caches valid (default). rolling: legacy moving window (max raw savings, breaks prompt caching). off: never prune",
+          "values": [
+            "cache-aware",
+            "rolling",
+            "off"
+          ],
+          "env_override": "LEAN_CTX_PROXY_HISTORY_MODE"
+        },
+        "live_compress": {
+          "type": "bool",
+          "default": true,
+          "description": "Live-compress non-protected tool_result content on the wire (#481). Default true. Set false for a meter-only proxy ΓÇö real billed/cache token metering with zero request rewriting (combine with history_mode = \"off\" and no role_aggressiveness for a byte-unchanged body)",
+          "env_override": "LEAN_CTX_PROXY_LIVE_COMPRESS"
+        },
+        "live_compress_exclude": {
+          "type": "string[]",
+          "default": [
+            "serena"
+          ],
+          "description": "Tool-name patterns (case-insensitive substring) whose tool_result is never live-compressed ΓÇö treated as protected, like a file read (#481). Unset protects Serena's code-reading tools; set an explicit list to narrow it, or [] to disable"
+        },
+        "meter_openai_usage": {
+          "type": "bool",
+          "default": true,
+          "description": "Inject stream_options.include_usage into streamed OpenAI Chat Completions so the final chunk reports real token usage for the measured spend meter. Default true"
+        },
         "openai_upstream": {
           "type": "string?",
           "default": null,
           "description": "Custom upstream URL for OpenAI API proxy"
+        },
+        "output_holdout": {
+          "type": "f64",
+          "default": 0.0,
+          "description": "Fraction 0.0-1.0 of conversations placed in the output-savings control arm (#895). 0 (default) = no holdout (every conversation is output-shaped). When > 0, a deterministic cohort = blake3(system + first user message) puts ~this fraction in a control arm that skips output-shaping (effort control + verbosity steer) but is still metered, yielding an honest measured output-token reduction (lean-ctx output-savings). The cohort is a pure function of conversation identity, so a conversation keeps one arm across all turns - cache-safe",
+          "env_override": "LEAN_CTX_PROXY_OUTPUT_HOLDOUT"
+        },
+        "prose_ranker": {
+          "type": "enum",
+          "default": "auto",
+          "description": "How the proxy squeezes prose it must shrink (#895). auto (default) and extractive use embedding-based extractive ranking ΓÇö keeping the most central sentences instead of just the prefix ΓÇö when the local embedding engine is available, else fall back to truncation; truncate keeps the original deterministic FIFO squeeze and never loads the engine. Wire rewrites are memoized per content so the engine's coldΓåÆwarm transition never changes an already-emitted frozen-region rewrite (cache-safe, #448/#498)",
+          "values": [
+            "auto",
+            "extractive",
+            "truncate"
+          ],
+          "env_override": "LEAN_CTX_PROXY_PROSE_RANKER"
+        },
+        "verbosity_steer": {
+          "type": "bool",
+          "default": false,
+          "description": "Opt-in cache-safe wire verbosity steer (#895). When true, the proxy appends a single constant 'be concise' instruction to the last user turn of each request - output-shaping for raw API clients that do not load lean-ctx rules. The suffix is constant and appended strictly after the last cache_control breakpoint (a new trailing text block, never modifying a cache-anchored block), so the provider prompt-cache prefix stays byte-stable. Under an output_holdout the control arm skips it so its effect is measured. Default false",
+          "env_override": "LEAN_CTX_PROXY_VERBOSITY_STEER"
+        }
+      }
+    },
+    "proxy.role_aggressiveness": {
+      "description": "Opt-in per-role prose compression for the proxy's frozen request region (#710). Assistant turns are always passed through verbatim",
+      "keys": {
+        "system": {
+          "type": "f64",
+          "default": null,
+          "description": "Opt-in prose compression intensity (0.0ΓÇô1.0) for system prompts in the proxy's frozen request region. Unset = leave untouched. Higher = more aggressive. Cache-safe (deterministic, never touches the client-cached prefix)",
+          "env_override": "LEAN_CTX_PROXY_SYSTEM_AGGR"
+        },
+        "user": {
+          "type": "f64",
+          "default": null,
+          "description": "Opt-in prose compression intensity (0.0ΓÇô1.0) for free-text user turns (never tool results) in the proxy's frozen request region. Unset = leave untouched",
+          "env_override": "LEAN_CTX_PROXY_USER_AGGR"
         }
       }
     },
@@ -528,6 +850,12 @@
           "description": "Allow automatic project-root re-rooting when absolute paths outside the jail are seen",
           "env_override": "LEAN_CTX_ALLOW_REROOT"
         },
+        "allow_ide_config_dirs": {
+          "type": "bool",
+          "default": null,
+          "description": "Allow jailed ctx_* tools to read home-level IDE config dirs (registry-derived; covers all editors). Off by default ΓÇö exposes other agents' sessions/credentials",
+          "env_override": "LEAN_CTX_ALLOW_IDE_DIRS"
+        },
         "allow_paths": {
           "type": "string[]",
           "default": [],
@@ -538,6 +866,12 @@
           "type": "bool",
           "default": true,
           "description": "Automatic knowledge capture from tool findings"
+        },
+        "auto_mode_learning": {
+          "type": "bool",
+          "default": false,
+          "description": "Opt-in: let adaptive learning signals (predictor, bandit, heatmap, adaptive policy, bounce/path memory) influence `auto` mode. Off by default for a deterministic, I/O-light cascade (capability guards + size/task heuristic only) that keeps output byte-stable for prompt caching. Override via LEAN_CTX_AUTO_MODE_LEARNING",
+          "env_override": "LEAN_CTX_AUTO_MODE_LEARNING"
         },
         "bm25_max_cache_mb": {
           "type": "u64",
@@ -550,6 +884,23 @@
           "default": true,
           "description": "Enable the buddy system for multi-agent coordination"
         },
+        "bypass_hints": {
+          "type": "enum",
+          "default": "on",
+          "description": "Bypass-hint mode: when agents use native Read/Grep instead of lean-ctx tools, a hint is appended to the next tool response. on (default), off, aggressive (hint on every call, no cooldown). Override via LEAN_CTX_BYPASS_HINTS",
+          "values": [
+            "on",
+            "off",
+            "aggressive"
+          ],
+          "env_override": "LEAN_CTX_BYPASS_HINTS"
+        },
+        "cache_max_tokens": {
+          "type": "usize",
+          "default": 0,
+          "description": "Token budget for the in-memory ctx_read cache (0 = built-in default 500k). When exceeded, least-valuable entries are evicted immediately via RRF (recency x frequency x size) so reads never block; eviction is not deferred to the staleness TTL",
+          "env_override": "LEAN_CTX_CACHE_MAX_TOKENS"
+        },
         "cache_policy": {
           "type": "enum(aggressive|safe|off)",
           "default": "aggressive",
@@ -560,6 +911,12 @@
           "type": "u32",
           "default": 15,
           "description": "Session checkpoint interval in minutes"
+        },
+        "compression_aggressiveness": {
+          "type": "f64",
+          "default": null,
+          "description": "Global compression intensity 0.0 (lossless) ΓÇô 1.0 (max), mapped onto read modes/entropy/IB. Empty = per-mode defaults",
+          "env_override": "LEAN_CTX_AGGRESSIVENESS"
         },
         "compression_level": {
           "type": "enum",
@@ -578,15 +935,32 @@
           "default": false,
           "description": "Enable Rabin-Karp chunking for cache-optimal output ordering"
         },
+        "crush_verbatim_json": {
+          "type": "bool",
+          "default": false,
+          "description": "Opt-in: losslessly crush array-heavy JSON from verbatim data commands (gh api, jq, kubectl get -o json, curl). Off by default keeps them verbatim. Reshapes only when it at least halves the payload; fully reconstructible",
+          "env_override": "LEAN_CTX_CRUSH_VERBATIM_JSON"
+        },
         "custom_aliases": {
           "type": "array",
           "default": [],
           "description": "Custom command aliases (array of {command, alias} entries)"
         },
+        "debug_log": {
+          "type": "bool",
+          "default": false,
+          "description": "Opt-in (default off): write a human-readable debug log of intercepted MCP tool calls and hook routing decisions (lean-ctx vs native, with the reason) to <state_dir>/logs/debug.log. View with `lean-ctx debug-log`",
+          "env_override": "LEAN_CTX_DEBUG_LOG"
+        },
         "default_tool_categories": {
           "type": "string[]",
           "default": [],
           "description": "Tool categories active by default (core, arch, debug, memory, metrics, session). Override via LCTX_DEFAULT_CATEGORIES"
+        },
+        "delta_explicit": {
+          "type": "boolean",
+          "default": false,
+          "description": "Serve explicit full/lines re-reads of changed cached files as diffs (opt-in). Override via LCTX_DELTA_EXPLICIT=1"
         },
         "disabled_tools": {
           "type": "string[]",
@@ -629,6 +1003,12 @@
           "default": 0,
           "description": "Simplified disk budget in MB (0 = disabled). Distributes: archive ~25%, BM25 ~10%",
           "env_override": "LEAN_CTX_MAX_DISK_MB"
+        },
+        "max_index_threads": {
+          "type": "usize",
+          "default": 0,
+          "description": "Cap rayon threads for the CPU-heavy index build (0 = all cores). Bounds per-instance CPU so concurrent sessions don't saturate the host on startup",
+          "env_override": "LEANCTX_INDEX_THREADS"
         },
         "max_ram_percent": {
           "type": "u8",
@@ -690,6 +1070,11 @@
           "default": [],
           "description": "URLs to pass through without proxy interception"
         },
+        "path_jail": {
+          "type": "bool?",
+          "default": null,
+          "description": "Filesystem path jail. null/true = enforced (tools confined to the project root + allow_paths). false = the blanket \"any path\" opt-out ΓÇö every tool path is allowed (for containers/sandboxes where the boundary is external). Compression and secret redaction are unaffected. Flip both planes at once with `lean-ctx yolo` / `lean-ctx secure`"
+        },
         "permission_inheritance": {
           "type": "enum",
           "default": "off",
@@ -698,6 +1083,17 @@
             "off",
             "on"
           ]
+        },
+        "persona": {
+          "type": "string",
+          "default": "coding",
+          "description": "Active context persona (persona-spec-v1): selects the domain bundle ΓÇö tool surface, read-mode/compressor/chunker defaults, intent taxonomy, sensitivity floor. Built-ins: coding (default), research, lead-gen, support, data-analysis; or a custom <name>.toml from the personas dir. Override via LEAN_CTX_PERSONA",
+          "env_override": "LEAN_CTX_PERSONA"
+        },
+        "prefer_native_editor": {
+          "type": "bool",
+          "default": false,
+          "description": "Disable lean-ctx edit tools (ctx_edit) so the host's native editor handles edits (#454)"
         },
         "preserve_compact_formats": {
           "type": "string[]",
@@ -727,10 +1123,21 @@
           "default": null,
           "description": "Custom proxy port (default: 4444). Useful for multi-user systems. Env: LEAN_CTX_PROXY_PORT"
         },
+        "proxy_require_token": {
+          "type": "bool",
+          "default": false,
+          "description": "Require lean-ctx Bearer token authentication and disable provider API key fallback"
+        },
         "proxy_timeout_ms": {
           "type": "u64?",
           "default": null,
           "description": "Proxy reachability timeout in ms (default: 200). Override via LEAN_CTX_PROXY_TIMEOUT_MS"
+        },
+        "read_only_roots": {
+          "type": "string[]",
+          "default": [],
+          "description": "Read-only sibling roots: reads allowed, writes always denied (edit/refactor/export)",
+          "env_override": "LEAN_CTX_READ_ONLY_ROOTS"
         },
         "redirect_exclude": {
           "type": "string[]",
@@ -757,10 +1164,11 @@
         "rules_injection": {
           "type": "enum",
           "default": "shared",
-          "description": "How rules load for CLAUDE.md/AGENTS.md/GEMINI.md agents: shared block, or dedicated (no shared-file edits; SessionStart hook / instructions[] / context.fileName). Override via LEAN_CTX_RULES_INJECTION",
+          "description": "How rules load for CLAUDE.md/AGENTS.md/GEMINI.md agents: shared block, dedicated (no shared-file edits; SessionStart hook / instructions[] / context.fileName), or off (write no rules file ΓÇö for hosts that supply their own steering or phase-isolated/non-caching harnesses). Override via LEAN_CTX_RULES_INJECTION",
           "values": [
             "shared",
-            "dedicated"
+            "dedicated",
+            "off"
           ]
         },
         "rules_scope": {
@@ -793,7 +1201,7 @@
         "shadow_mode": {
           "type": "bool",
           "default": false,
-          "description": "Transparently intercept native Read/Grep/Shell calls via hooks and route them through lean-ctx",
+          "description": "Opt-in (default off): transparently route native Read/Grep/Edit/Shell through lean-ctx ΓÇö via hooks for hook-based agents, via the interception plugin for OpenCode",
           "env_override": "LEAN_CTX_SHADOW_MODE"
         },
         "shell_activation": {
@@ -807,6 +1215,12 @@
           ],
           "env_override": "LEAN_CTX_SHELL_ACTIVATION"
         },
+        "shell_allow_writes": {
+          "type": "bool",
+          "default": false,
+          "description": "Allow ctx_shell file-write redirects (>, >>, tee, heredoc-to-file, curl -o, wget default mode). Default false ΓÇö prefer the native Write/Edit tool. The real command gating (allowlist, dangerous-pattern, interpreter-eval) still applies",
+          "env_override": "LEAN_CTX_SHELL_ALLOW_WRITES"
+        },
         "shell_allowlist": {
           "type": "array",
           "default": [],
@@ -818,26 +1232,65 @@
           "default": [],
           "description": "Commands merged on top of shell_allowlist without replacing the defaults. Managed via `lean-ctx allow <cmd>`"
         },
+        "shell_heavy_timeout_secs": {
+          "type": "u64?",
+          "default": null,
+          "description": "Shell command timeout (seconds) for heavy commands (cargo build/test, make, docker build, git commit/push). null = built-in 10-minute ceiling",
+          "env_override": "LEAN_CTX_SHELL_HEAVY_TIMEOUT_SECS"
+        },
         "shell_hook_disabled": {
           "type": "bool",
           "default": false,
           "description": "Disable shell hook injection",
           "env_override": "LEAN_CTX_NO_HOOK"
         },
+        "shell_security": {
+          "type": "string",
+          "default": "enforce",
+          "description": "Shell command gating: enforce (default, secure), warn (log only, never block) or off (skip allowlist + hard blocks; compression stays active)",
+          "env_override": "LEAN_CTX_SHELL_SECURITY"
+        },
         "shell_strict_mode": {
           "type": "bool",
           "default": false,
           "description": "Block $(), backticks, <() in shell arguments. Default false = warn only."
+        },
+        "shell_timeout_secs": {
+          "type": "u64?",
+          "default": null,
+          "description": "Shell command timeout (seconds) for normal commands. null = built-in 2-minute default. LEAN_CTX_SHELL_TIMEOUT_MS overrides both tiers (in ms)",
+          "env_override": "LEAN_CTX_SHELL_TIMEOUT_SECS"
         },
         "slow_command_threshold_ms": {
           "type": "u64",
           "default": 5000,
           "description": "Commands taking longer than this (ms) are recorded in the slow log. Set to 0 to disable"
         },
+        "structure_first": {
+          "type": "bool",
+          "default": false,
+          "description": "Opt-in: bias `auto` toward structure-first reads (map) for medium code files on a cold read. Off by default ΓÇö for phase-isolated harnesses with no warm-session cache payback. Override via LEAN_CTX_STRUCTURE_FIRST",
+          "env_override": "LEAN_CTX_STRUCTURE_FIRST"
+        },
         "symbol_map_auto": {
           "type": "bool",
           "default": false,
           "description": "Opt-in: ╬▒-code identifier substitution in aggressive reads (>50-file projects). Off by default ΓÇö abbreviated symbols hinder editing/refactoring"
+        },
+        "team_auto_push": {
+          "type": "bool",
+          "default": false,
+          "description": "Opt-in: daemon periodically pushes your signed savings batch to team_url (off by default; requires team_url + team_token)"
+        },
+        "team_token": {
+          "type": "string?",
+          "default": null,
+          "description": "Bearer token for the team server (push needs a member token; pull/auto-push needs the configured team token)"
+        },
+        "team_url": {
+          "type": "string?",
+          "default": null,
+          "description": "Team server base URL for the opt-in savings roll-up (push/pull)"
         },
         "tee_mode": {
           "type": "enum",
@@ -869,7 +1322,7 @@
         "tool_profile": {
           "type": "enum",
           "default": "",
-          "description": "Tool visibility profile: minimal (6 tools), standard (22), power (all). Override via LEAN_CTX_TOOL_PROFILE",
+          "description": "Tool visibility profile: minimal (6 tools), standard (17), power (all). Override via LEAN_CTX_TOOL_PROFILE",
           "values": [
             "minimal",
             "standard",
@@ -912,6 +1365,11 @@
           "default": 75,
           "description": "Number of dense candidates to retrieve before fusion"
         },
+        "dense_enabled": {
+          "type": "bool",
+          "default": true,
+          "description": "Enable the dense (embedding) retrieval path. false ΓåÆ hybrid search ranks with BM25 + graph + rerank (+ SPLADE) only, skipping the embedding engine and the persistent embeddings.json (lighter footprint, no embed latency). An explicit mode=dense query still forces dense."
+        },
         "dense_weight": {
           "type": "f64",
           "default": 1.0,
@@ -944,6 +1402,26 @@
         }
       }
     },
+    "sensitivity": {
+      "description": "Per-item sensitivity model with a uniform policy floor (#212)",
+      "keys": {
+        "action": {
+          "type": "string",
+          "default": "redact",
+          "description": "How to enforce the floor: redact (mask spans) or drop (withhold item)"
+        },
+        "enabled": {
+          "type": "bool",
+          "default": false,
+          "description": "Enable the per-item sensitivity policy floor (no-op when false)"
+        },
+        "policy_floor": {
+          "type": "string",
+          "default": "secret",
+          "description": "Block items at/above this level: public|internal|confidential|secret"
+        }
+      }
+    },
     "setup": {
       "description": "Controls what lean-ctx injects during setup and updates. Fresh installs default to non-invasive (rules/skills off, MCP on).",
       "keys": {
@@ -961,6 +1439,55 @@
           "type": "bool",
           "default": true,
           "description": "Register lean-ctx MCP server in editor configs during setup/update"
+        }
+      }
+    },
+    "skillify": {
+      "description": "Skillify miner: distill recurring session diary + knowledge patterns into rules",
+      "keys": {
+        "enabled": {
+          "type": "bool",
+          "default": true,
+          "description": "Master switch for the skillify miner (codify recurring session patterns into .cursor/rules). Only acts when explicitly invoked."
+        },
+        "min_confidence": {
+          "type": "f32",
+          "default": 0.699999988079071,
+          "description": "Minimum confidence for a single curated knowledge fact to be codified without repetition (0.0..=1.0)."
+        },
+        "min_recurrence": {
+          "type": "u32",
+          "default": 2,
+          "description": "Minimum reinforcements (confirmations / repeated mentions) before a sub-threshold-confidence pattern is codified."
+        },
+        "scope": {
+          "type": "enum",
+          "default": "project",
+          "description": "Where generated rules are written: project (<repo>/.cursor/rules, git-committable) or global (~/.cursor/rules).",
+          "values": [
+            "project",
+            "global"
+          ]
+        }
+      }
+    },
+    "summaries": {
+      "description": "AI session summaries: periodic, semantically-recallable session digests",
+      "keys": {
+        "enabled": {
+          "type": "bool",
+          "default": true,
+          "description": "Record periodic, semantically-recallable AI session summaries (what was done, files, decisions)."
+        },
+        "every_n_turns": {
+          "type": "u32",
+          "default": 25,
+          "description": "Tool calls between automatic session summaries (gated by the auto-checkpoint cadence)."
+        },
+        "max_kept": {
+          "type": "u32",
+          "default": 100,
+          "description": "Maximum session summaries kept per project (oldest pruned first)."
         }
       }
     },

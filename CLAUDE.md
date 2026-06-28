@@ -238,18 +238,18 @@ Toolsets support:
 
 ## Key Files & Responsibilities
 
-| File | Purpose |
-|------|---------|
-| `src/app/api/copilotkit/route.ts` | Backend for CopilotKit; handles agent calls & tool routing |
-| `src/app/canvas/GenerativeCanvas.tsx` | Main GenUI interface; Chat+ style persistent canvas |
-| `src/components/registry/` | All reusable GenUI components; source of truth for available UI molecules |
-| `src/lib/types.ts` | Shared TypeScript interfaces for state, props, tools |
-| `agent/main.py` | Agent definition, tool registration, state management |
-| `agent/toolset_manager.py` | Toolset lifecycle: validation, deprecation, alias resolution |
-| `agent/toolsets.json` | Toolset definitions & configuration |
-| `.copilot/knowledge/architecture.md` | System architecture reference |
-| `.copilot/instructions/genui-development.md` | GenUI development patterns & guidelines |
-| `CONTRIBUTING.md` | Development workflow, testing, PR process |
+| File                                         | Purpose                                                                   |
+| -------------------------------------------- | ------------------------------------------------------------------------- |
+| `src/app/api/copilotkit/route.ts`            | Backend for CopilotKit; handles agent calls & tool routing                |
+| `src/app/canvas/GenerativeCanvas.tsx`        | Main GenUI interface; Chat+ style persistent canvas                       |
+| `src/components/registry/`                   | All reusable GenUI components; source of truth for available UI molecules |
+| `src/lib/types.ts`                           | Shared TypeScript interfaces for state, props, tools                      |
+| `agent/main.py`                              | Agent definition, tool registration, state management                     |
+| `agent/toolset_manager.py`                   | Toolset lifecycle: validation, deprecation, alias resolution              |
+| `agent/toolsets.json`                        | Toolset definitions & configuration                                       |
+| `.copilot/knowledge/architecture.md`         | System architecture reference                                             |
+| `.copilot/instructions/genui-development.md` | GenUI development patterns & guidelines                                   |
+| `CONTRIBUTING.md`                            | Development workflow, testing, PR process                                 |
 
 ## Testing
 
@@ -339,6 +339,20 @@ Toolsets support:
 6. **Lock file conflicts**: Each developer generates their own lock file with preferred package manager; never commit lock files.
 
 7. **Toolset alias resolution failing**: Use exact names in lookups; names with spaces should use underscores (e.g., `"Data Analyst"` → `"Data_Analyst"`)
+
+## lean-ctx (mandatory for all agents)
+
+Do **not** use native Read, Grep, Glob, or raw Shell for codebase exploration when lean-ctx MCP is connected.
+
+| Instead of | Use                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| Read       | `ctx_read(path, mode)` — see [read modes](https://leanctx.com/docs/concepts/read-modes/) |
+| Grep       | `ctx_search(pattern, path)`                                                              |
+| Shell      | `lean-ctx -c "command"` or `ctx_shell`                                                   |
+
+**Mode quick pick:** edit → `full`; re-read → `diff`; orient → `map` or `signatures`; unsure → `auto`.
+
+Full playbook: `LEAN-CTX.md`, `docs/lean-ctx-guide.md`. Ensure config: `yarn lean-ctx:ensure`.
 
 ## References & Documentation
 

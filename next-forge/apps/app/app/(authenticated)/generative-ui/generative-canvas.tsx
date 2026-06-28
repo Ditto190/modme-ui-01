@@ -103,26 +103,60 @@ function renderComponent(action: AgentAction) {
   }
 }
 
+function getConnectionLabel(
+  isConnected: boolean,
+  runStatus: AgentRunStatus,
+  reconnectAttempt: number
+): string {
+  if (isConnected) {
+    return "Connected";
+  }
+  if (runStatus === "reconnecting") {
+    return `Reconnecting (${reconnectAttempt})…`;
+  }
+  if (runStatus === "connecting") {
+    return "Connecting…";
+  }
+  return "Disconnected";
+}
+
+function getConnectionIndicatorClass(
+  isConnected: boolean,
+  runStatus: AgentRunStatus
+): string {
+  if (isConnected) {
+    return "bg-emerald-500";
+  }
+  if (runStatus === "reconnecting" || runStatus === "connecting") {
+    return "animate-pulse bg-amber-500";
+  }
+  return "bg-destructive";
+}
+
 function ConnectionBar({
   isConnected,
+  reconnectAttempt,
   status,
   runStatus,
 }: {
   isConnected: boolean;
+  reconnectAttempt: number;
   status?: string;
   runStatus: AgentRunStatus;
 }) {
+  const connectionLabel = getConnectionLabel(
+    isConnected,
+    runStatus,
+    reconnectAttempt
+  );
+
   return (
     <div className="flex flex-wrap items-center gap-4">
       <div className="flex items-center gap-2">
         <div
-          className={`h-3 w-3 rounded-full ${
-            isConnected ? "bg-emerald-500" : "bg-destructive"
-          }`}
+          className={`h-3 w-3 rounded-full ${getConnectionIndicatorClass(isConnected, runStatus)}`}
         />
-        <span className="text-muted-foreground text-sm">
-          {isConnected ? "Connected" : "Disconnected"}
-        </span>
+        <span className="text-muted-foreground text-sm">{connectionLabel}</span>
       </div>
       {status ? (
         <span className="text-muted-foreground text-sm">
@@ -216,6 +250,7 @@ function CanvasOutput({
 function AgentChatForm({
   draft,
   isConnected,
+  isBusy,
   runStatus,
   onDraftChange,
   onSubmit,
@@ -223,30 +258,28 @@ function AgentChatForm({
 }: {
   draft: string;
   isConnected: boolean;
+  isBusy: boolean;
   runStatus: AgentRunStatus;
   onDraftChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onCancel: () => void;
 }) {
-  const isBusy = runStatus === "streaming" || runStatus === "tool";
+  const isInputDisabled = !isConnected || isBusy;
 
   return (
     <form className="flex gap-3" onSubmit={onSubmit}>
       <input
         className="flex-1 rounded-xl border bg-background px-4 py-3 text-sm focus:border-primary focus:outline-none"
-        disabled={!isConnected || runStatus === "streaming"}
+        disabled={isInputDisabled}
         onChange={(event) => onDraftChange(event.target.value)}
         placeholder="Describe the UI you want…"
         type="text"
         value={draft}
       />
-      <Button
-        disabled={!isConnected || runStatus === "streaming"}
-        type="submit"
-      >
+      <Button disabled={isInputDisabled} type="submit">
         Send
       </Button>
-      {isBusy ? (
+      {runStatus === "streaming" || runStatus === "tool" ? (
         <Button onClick={onCancel} type="button" variant="outline">
           Cancel
         </Button>
@@ -262,6 +295,7 @@ export function GenerativeCanvas() {
     error,
     streamingText,
     runStatus,
+    reconnectAttempt,
     optimisticMessages,
     sendUserMessage,
     cancelRun,
@@ -287,9 +321,16 @@ export function GenerativeCanvas() {
   const showSkeleton =
     !isConnected ||
     runStatus === "connecting" ||
+    runStatus === "reconnecting" ||
     (runStatus === "streaming" &&
       !streamingText &&
       !renderedComponents?.length);
+
+  const isBusy =
+    runStatus === "streaming" ||
+    runStatus === "tool" ||
+    runStatus === "connecting" ||
+    runStatus === "reconnecting";
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -300,7 +341,7 @@ export function GenerativeCanvas() {
     setDraft("");
   };
 
-  if (error && !isConnected) {
+  if (error && !isConnected && runStatus === "error") {
     return (
       <div className="rounded-xl border border-destructive/40 bg-destructive/5 p-6">
         <h2 className="mb-2 font-semibold text-destructive">
@@ -318,6 +359,7 @@ export function GenerativeCanvas() {
     <div className="space-y-6">
       <ConnectionBar
         isConnected={isConnected}
+        reconnectAttempt={reconnectAttempt}
         runStatus={runStatus}
         status={state?.status}
       />
@@ -331,6 +373,7 @@ export function GenerativeCanvas() {
       />
       <AgentChatForm
         draft={draft}
+        isBusy={isBusy}
         isConnected={isConnected}
         onCancel={cancelRun}
         onDraftChange={setDraft}
