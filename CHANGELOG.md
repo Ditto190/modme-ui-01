@@ -39,7 +39,8 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 - (scope) Short description (#PR)
 
 ### Changed
-- (scope) Short description
+
+- (repo) Add pre-push verify scripts to worktree hook path (`scripts/pre-push-checks.mjs`, `run-verify-stack.mjs`)- (scope) Short description
 
 ### Fixed
 - (scope) Short description (#issue)
@@ -88,6 +89,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
+- (repo) Add pre-push verify scripts to worktree hook path (`scripts/pre-push-checks.mjs`, `run-verify-stack.mjs`)
 - (repo) Resolved `AGENTS.md` and `package.json` merge conflicts; dual-monorepo `workspace.code-workspace` layout
 - (ci) GitLab CI aligned with GitHub generative-ui job; pre-commit workflow installs Bun
 - (GenerativeUI) Agent-server WebSocket timestamps aligned to Unix milliseconds to match `@repo/schemas` golden contract
@@ -145,6 +147,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
+- (repo) Add pre-push verify scripts to worktree hook path (`scripts/pre-push-checks.mjs`, `run-verify-stack.mjs`)
 - (ci) Worktree bootstrap (`setup-worktree-windows.ps1`, `setup-worktree-unix.sh`, `new-agent-worktree.ps1`) auto-installs git pre-commit hooks
 - (next-forge) Replace Clerk with Auth.js credentials in `@repo/auth`; replace Neon adapter with Supabase local Postgres + Prisma
 - (docs/ci) Post-restart agent tooling validation: lean-ctx 3.7.5, skills-sh MCP, global skills, changelog-check CI â€” all verified; installed `internal-comms` globally
