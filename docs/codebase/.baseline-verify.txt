@@ -1,0 +1,16 @@
+# Baseline verify snapshot — dual-monorepo audit worktree
+
+Generated: 2026-06-28  
+Worktree: `../Monorepo_ModMe-dev/dev-agent-cursor-monorepo-audit`  
+Branch: `feature/cursor/monorepo-audit`
+
+| Command | Result | Notes |
+|---------|--------|-------|
+| `python scan.py --output docs/codebase/.codebase-scan.txt` | **PASS** | EXCLUDE_DIRS includes `.conda`, `.vendor` |
+| `yarn lint:harness` | **PASS** | ECL + encoding lint |
+| `yarn worktree:doctor` | **PASS** (7 ok, 2 warn) | warn: hooks missing, no root `.env` |
+| `bun test packages/schemas/websocket-contract.test.ts` | **PASS** (7 tests) | next-forge partial install |
+| `yarn verify:forge` | **FAIL** | 50 Biome/Ultracite errors in worktree (pre-existing) |
+| `yarn verify:generative` | **FAIL** | GenerativeUI `node_modules` not installed in worktree |
+
+Harness-specific changes do not modify forge product code beyond `websocket-contract.test.ts`.

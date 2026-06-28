@@ -47,8 +47,12 @@ jobs:
     outputs:
       forge: ${{ steps.filter.outputs.forge }}
       generative: ${{ steps.filter.outputs.generative }}
+      harness: ${{ steps.filter.outputs.harness }}
+      e2e: ${{ steps.filter.outputs.e2e }}
+      moleculeContract: ${{ steps.filter.outputs.moleculeContract }}
     steps:
       - uses: actions/checkout@v4
+      # Path globs must stay in sync with scripts/lib/stack-paths.json (validated by validate-stack-paths-ci-sync.mjs)
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -57,6 +61,40 @@ jobs:
               - 'next-forge/**'
             generative:
               - 'GenerativeUI_monorepo/**'
+            rootLegacy:
+              - 'src/**'
+              - 'agent/**'
+            orchestration:
+              - 'scripts/**'
+              - 'docs/**'
+              - '.cursor/**'
+              - '.agents/**'
+              - '.github/**'
+              - 'harness/**'
+              - 'package.json'
+              - 'CHANGELOG.md'
+              - 'e2e/worktree-smoke/**'
+              - '.githooks/**'
+            harness:
+              - 'harness/**'
+              - 'docs/ECL.md'
+              - 'docs/STATUS.md'
+              - 'docs/ARCHITECTURE.md'
+              - 'C4-Documentation/**'
+            e2e:
+              - 'next-forge/tests/e2e/**'
+              - 'next-forge/playwright.config.ts'
+              - 'next-forge/packages/schemas/ws-contract.test.ts'
+              - 'next-forge/packages/schemas/molecule-index.test.ts'
+              - 'scripts/molecule-index-orchestrator.mjs'
+              - 'scripts/__tests__/molecule-index.test.mjs'
+              - 'data/molecule-index/**'
+            moleculeContract:
+              - 'next-forge/packages/schemas/**'
+              - 'packages/intake-contracts/**'
+              - 'scripts/molecule-index*.mjs'
+              - 'scripts/__tests__/molecule-index.test.mjs'
+              - 'data/molecule-index/**'
 
   changelog:
     if: github.event_name == 'pull_request'
@@ -120,3 +158,64 @@ jobs:
         run: bun run test
       - name: Build
         run: bun run build
+
+  harness-lint:
+    needs: [secret-guard, changes]
+    if: needs.changes.outputs.harness == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Lint ECL harness
+        run: |
+          node scripts/lint-ecl.mjs
+          node scripts/lint-encoding.mjs
+          node scripts/lib/validate-stack-paths-ci-sync.mjs
+
+  e2e-smoke:
+    needs: [secret-guard, changes]
+    if: needs.changes.outputs.e2e == 'true'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: next-forge
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: next-forge/package.json
+      - name: Install deps
+        run: bun install --frozen-lockfile
+      - name: Install Playwright browsers
+        run: bunx playwright install chromium --with-deps
+      - name: Schema + WS contract tests
+        run: bun test packages/schemas/ws-contract.test.ts packages/schemas/observability.test.ts
+      - name: Playwright smoke (skipped without agent-server)
+        run: |
+          echo "e2e-smoke: Playwright requires agent-server on :8000 — run locally with full stack"
+          echo "See next-forge/tests/e2e/generative-ui.spec.ts"
+
+  molecule-contract:
+    needs: [secret-guard, changes]
+    if: needs.changes.outputs.moleculeContract == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: next-forge/package.json
+      - name: Generate molecule manifest
+        run: node scripts/molecule-index-orchestrator.mjs --stack forge --semver 1.0.0
+      - name: Molecule contract tests
+        run: yarn molecule-index:verify
+      - name: WS schema contract tests
+        working-directory: next-forge
+        run: |
+          bun install --frozen-lockfile
+          bun test packages/schemas/ws-contract.test.ts

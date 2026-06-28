@@ -1,71 +1,78 @@
 # Architecture
 
-## Core Sections (Required)
+## System overview
 
-### 1) Architectural Style
+ModMe is a **federated dual-monorepo**: next-forge (primary SaaS) + GenerativeUI agent-server (Python satellite) + root meta-orchestration. Integration is HTTP/WebSocket and golden schema JSON only.
 
-- Primary style: Multi-tier, event-driven WebSocket streaming.
-- Why this classification: Next.js frontend connects to a Python FastAPI backend over WebSockets, passing state from multi-agent chat (AG2) to a dynamic rendering canvas (GenerativeCanvas).
-- Primary constraints: Type synchronization between TS/Python (handled via shared-schemas).
-
-### 2) System Flow
-
-```text
-User Input (CopilotKit) -> WebSocket -> FastAPI Server -> AG2 GroupChat -> AgentAction -> WebSocket -> GenerativeCanvas
+```mermaid
+flowchart TB
+  subgraph forge [next-forge Bun]
+    App[apps/app generative-ui island]
+    Schemas["@repo/schemas"]
+    DB[(Supabase Postgres)]
+  end
+  subgraph legacy [GenerativeUI Yarn]
+    Agent[agent-server :8000 WS]
+  end
+  subgraph root [Root Yarn]
+    Harness[harness/ ECL]
+    Intake[intake orchestrator]
+  end
+  App -->|WS /ws/agent| Agent
+  Schemas -.->|golden JSON| Agent
+  Intake --> DB
+  Harness --> root
 ```
 
-Flow details:
-1. Frontend connects to backend via WebSocket (`ws://localhost:8000/ws/agent`).
-2. User interacts with CopilotKit chat interface.
-3. Backend processes messages through AG2 GroupChat.
-4. Agents generate actions (create/update UI components) which conform to `AgentActionSchema`.
-5. Backend streams state updates via WebSocket.
-6. Frontend receives updates and renders UI components dynamically.
+Product C4 detail: [`C4-Documentation/c4-container.md`](../../C4-Documentation/c4-container.md)
 
-### 3) Layer/Module Responsibilities
+## next-forge SaaS layer
 
-| Layer or module | Owns | Must not own | Evidence |
-|-----------------|------|--------------|----------|
-| `GenerativeCanvas` | Rendering UI based on agent actions | AI logic or chat orchestration | `GenerativeUI_monorepo/README_GENERATIVE_UI.md` |
-| `AgentGroupChat` | AG2 multi-agent conversations | UI definitions | `GenerativeUI_monorepo/README_GENERATIVE_UI.md` |
-| `shared-schemas` / `@repo/schemas` | Cross-language payload structures | Business logic | `next-forge/packages/schemas`, golden contract fixtures |
+- **apps/app:** Auth.js, Prisma, generative-ui client island (`use-agent-state.ts`)
+- **packages/schemas:** Canonical Zod contracts + golden JSON
+- **packages/database:** Prisma + Supabase alignment
+- **Feature flags:** Phase 4 cutover via `@repo/feature-flags`
 
-### 3b) Agent-server hexagonal layout (Ports & Adapters)
+Evidence: `next-forge/apps/app/app/(authenticated)/generative-ui/`, ADRs in `next-forge/docs/adr/`
 
-`GenerativeUI_monorepo/apps/agent-server/src/` follows hexagonal architecture so WebSocket routing stays thin and AG2 stays swappable:
+## agent-server (hexagonal)
 
-```text
-apps/agent-server/src/
-  domain/           # AgentState builders, preview extraction (pure)
-  ports/
-    inbound/        # (reserved) WebSocket handler contracts
-    outbound/       # AgentOrchestratorPort, ConnectionManagerPort
-  adapters/
-    inbound/        # FastAPI `/ws/agent` route (thin delegate)
-    outbound/       # GroupChatAdapter, WebSocketConnectionManager
-  app/              # create_app(), create_container() DI wiring
-  models/           # Pydantic wire types (mirror @repo/schemas)
-  agents/           # AG2 GroupChat implementation detail
-```
+Legacy stack retains Python agent runtime:
 
-**Dependency rule:** `domain` → nothing; `ports` → domain types; `adapters` → ports + domain; `app` wires adapters. The inbound WebSocket adapter depends on port interfaces, not AG2 directly.
+| Layer | Path |
+|-------|------|
+| Adapters | `apps/agent-server/src/adapters/` |
+| Domain | `apps/agent-server/src/domain/` |
+| WebSocket | `/ws/agent` stream |
 
-**Contract parity:** Vitest (`next-forge/packages/schemas`) and pytest (`apps/agent-server/tests/test_schemas_contract.py`) both parse `genui-agent-contract.golden.json` (copied fixture, no cross-monorepo imports). Timestamps are Unix milliseconds.
+Evidence: `GenerativeUI_monorepo/README_GENERATIVE_UI.md`, `C4-Documentation/components/c4-component-agent-server.md`
 
-**Frontend resilience:** `next-forge/apps/app/.../hooks/use-agent-state.ts` uses exponential backoff (3s base, 30s cap, max 10 attempts), `retryConnection`, and `visibilitychange` reconnect; pure delay logic lives in `reconnect-delay.ts` with Vitest coverage.
+## Intake dual-store
 
+- **Supabase pgvector:** inbox/knowledge promotion
+- **GreptimeDB:** code/AST index
+- Orchestrator: `scripts/intake-orchestrator.mjs`
 
-| Pattern | Where found | Why it exists |
-|---------|-------------|---------------|
-| Type Sharing | `packages/shared-schemas` | Ensures React payload shapes match Python models (Zod <-> Pydantic). |
-| WebSocket Streaming | `apps/agent-server` to `apps/web-dashboard` | Real-time agent state reflection on UI. |
+Evidence: `docs/inbox-pipeline/README.md`, ADR-0009 inbox contract
 
-### 5) Known Architectural Risks
+## Migration phases
 
-- State desync between frontend and backend if WebSocket disconnects after max reconnect attempts (10) or during long offline periods.
-- **Reconnection (next-forge):** `use-agent-state.ts` implements exponential backoff (3s base, 30s cap), `reconnecting` run status, and manual `retryConnection` after exhaustion.
-- Agent logic blocking the FastAPI event loop if synchronous tools are called incorrectly.
+| Phase | Status | Deliverable |
+|-------|--------|-------------|
+| 1 Workshop | In progress | Storybook ModMe workshop |
+| 2 Schemas | Done | `@repo/schemas` |
+| 3 Client island | Done | generative-ui route group |
+| 4 Cutover | Pending | Feature flags, web-dashboard deprecation |
 
-### 6) Evidence
+Evidence: `.agents/skills/modme-generative-ui-migrate/SKILL.md`, `docs/migration/phase4-cutover.md`
 
-- `GenerativeUI_monorepo/README_GENERATIVE_UI.md`
+## Root legacy (sunset)
+
+- `src/` + `agent/` — original GenUI R&D; **deprecated** for new work
+- Archive plan: `docs/migration/legacy-archive-plan.md`
+
+## Evidence
+
+- `docs/agent-index.md`
+- `docs/codebase/STRUCTURE.md`
+- `harness/config/environment.json`

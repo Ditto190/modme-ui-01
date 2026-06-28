@@ -1,23 +1,70 @@
 
 === DIRECTORY TREE (max depth 3, source files only) ===
+.agent
+.agent\rules
+.agent\rules\smart-mcp.md
 .agents
+.agents\install-report.json
 .agents\skills
-.agents\skills\.antigravity-install-manifest.json
+.agents\skills\accessibility
+.agents\skills\accessibility\SKILL.md
+.agents\skills\accessibility-runtime-tester
+.agents\skills\accessibility-runtime-tester\SKILL.md
 .agents\skills\acquire-codebase-knowledge
 .agents\skills\acquire-codebase-knowledge\assets
 .agents\skills\acquire-codebase-knowledge\references
 .agents\skills\acquire-codebase-knowledge\scripts
 .agents\skills\acquire-codebase-knowledge\SKILL.md
+.agents\skills\adr-generator
+.agents\skills\adr-generator\SKILL.md
+.agents\skills\api-architect
+.agents\skills\api-architect\SKILL.md
 .agents\skills\create-agentsmd
 .agents\skills\create-agentsmd\SKILL.md
 .agents\skills\create-voltagent
 .agents\skills\create-voltagent\SKILL.md
+.agents\skills\dependabot
+.agents\skills\dependabot\references
+.agents\skills\dependabot\SKILL.md
+.agents\skills\devops-expert
+.agents\skills\devops-expert\SKILL.md
 .agents\skills\doublecheck
 .agents\skills\doublecheck\assets
 .agents\skills\doublecheck\SKILL.md
+.agents\skills\gem-devops
+.agents\skills\gem-devops\SKILL.md
+.agents\skills\gem-documentation-writer
+.agents\skills\gem-documentation-writer\SKILL.md
+.agents\skills\gem-reviewer
+.agents\skills\gem-reviewer\SKILL.md
 .agents\skills\github-actions-efficiency
 .agents\skills\github-actions-efficiency\references
 .agents\skills\github-actions-efficiency\SKILL.md
+.agents\skills\github-actions-expert
+.agents\skills\github-actions-expert\SKILL.md
+.agents\skills\mcp-security-audit
+.agents\skills\mcp-security-audit\SKILL.md
+.agents\skills\memory-merger
+.agents\skills\memory-merger\SKILL.md
+.agents\skills\modme-generative-ui-migrate
+.agents\skills\modme-generative-ui-migrate\SKILL.md
+.agents\skills\multi-stage-dockerfile
+.agents\skills\multi-stage-dockerfile\SKILL.md
+.agents\skills\next-forge
+.agents\skills\next-forge\references
+.agents\skills\next-forge\SKILL.md
+.agents\skills\playwright-automation-fill-in-form
+.agents\skills\playwright-automation-fill-in-form\SKILL.md
+.agents\skills\playwright-explore-website
+.agents\skills\playwright-explore-website\SKILL.md
+.agents\skills\playwright-generate-test
+.agents\skills\playwright-generate-test\SKILL.md
+.agents\skills\postgresql-code-review
+.agents\skills\postgresql-code-review\SKILL.md
+.agents\skills\postgresql-optimization
+.agents\skills\postgresql-optimization\SKILL.md
+.agents\skills\premium-frontend-ui
+.agents\skills\premium-frontend-ui\SKILL.md
 .agents\skills\quality-playbook
 .agents\skills\quality-playbook\agents
 .agents\skills\quality-playbook\LICENSE.txt
@@ -25,19 +72,60 @@
 .agents\skills\quality-playbook\quality_gate.py
 .agents\skills\quality-playbook\references
 .agents\skills\quality-playbook\SKILL.md
+.agents\skills\react-audit-grep-patterns
+.agents\skills\react-audit-grep-patterns\references
+.agents\skills\react-audit-grep-patterns\SKILL.md
+.agents\skills\react18-batching-patterns
+.agents\skills\react18-batching-patterns\references
+.agents\skills\react18-batching-patterns\SKILL.md
 .agents\skills\react18-dep-compatibility
 .agents\skills\react18-dep-compatibility\references
 .agents\skills\react18-dep-compatibility\SKILL.md
+.agents\skills\se-security-reviewer
+.agents\skills\se-security-reviewer\SKILL.md
+.agents\skills\se-system-architecture-reviewer
+.agents\skills\se-system-architecture-reviewer\SKILL.md
+.agents\skills\secret-scanning
+.agents\skills\secret-scanning\references
+.agents\skills\secret-scanning\SKILL.md
+.agents\skills\security-review
+.agents\skills\security-review\references
+.agents\skills\security-review\SKILL.md
+.agents\skills\smart-git-automation
+.agents\skills\smart-git-automation\SKILL.md
+.agents\skills\supabase
+.agents\skills\supabase\assets
+.agents\skills\supabase\CHANGELOG.md
+.agents\skills\supabase\references
+.agents\skills\supabase\SKILL.md
+.agents\skills\supabase-postgres-best-practices
+.agents\skills\supabase-postgres-best-practices\CHANGELOG.md
+.agents\skills\supabase-postgres-best-practices\references
+.agents\skills\supabase-postgres-best-practices\SKILL.md
+.agents\skills\ui-screenshots
+.agents\skills\ui-screenshots\SKILL.md
 .agents\skills\voltagent-best-practices
 .agents\skills\voltagent-best-practices\SKILL.md
 .agents\skills\voltagent-docs-bundle
 .agents\skills\voltagent-docs-bundle\SKILL.md
-.agents\temp_skills
-.agents\temp_skills\awesome-agent-skills-main
-.agents\temp_skills\awesome-agent-skills-main\.gitignore
-.agents\temp_skills\awesome-agent-skills-main\CONTRIBUTING.md
-.agents\temp_skills\awesome-agent-skills-main\LICENSE
-.agents\temp_skills\awesome-agent-skills-main\README.md
+.beads
+.beads\.gitignore
+.beads\.local_version
+.beads\backup
+.beads\backup\backup_state.json
+.beads\backup\fqsbrrs1nahl64pmh4v3il13du8u9g0c.darc
+.beads\backup\LOCK
+.beads\backup\manifest
+.beads\config.yaml
+.beads\hooks
+.beads\hooks\post-checkout
+.beads\hooks\post-merge
+.beads\hooks\pre-commit
+.beads\hooks\pre-push
+.beads\hooks\prepare-commit-msg
+.beads\last-touched
+.beads\metadata.json
+.beads\README.md
 .buildkite
 .buildkite\annotation.md
 .buildkite\pipeline.yml
@@ -50,168 +138,259 @@
 .buildkite\scripts\secret-guard.sh
 .buildkite\scripts\test.sh
 .buildkite\template.yml
+.claude
+.claude\commands
+.claude\commands\speckit.analyze.md
+.claude\commands\speckit.checklist.md
+.claude\commands\speckit.clarify.md
+.claude\commands\speckit.constitution.md
+.claude\commands\speckit.implement.md
+.claude\commands\speckit.plan.md
+.claude\commands\speckit.specify.md
+.claude\commands\speckit.tasks.md
+.claude\commands\speckit.taskstoissues.md
+.claude\settings.json
+.claude\settings.local.json
 .clinerules
-.clinerules\hooks
-.conda
-.conda\.gitignore
-.conda\.nonadmin
-.conda\api-ms-win-core-console-l1-1-0.dll
-.conda\api-ms-win-core-console-l1-2-0.dll
-.conda\api-ms-win-core-datetime-l1-1-0.dll
-.conda\api-ms-win-core-debug-l1-1-0.dll
-.conda\api-ms-win-core-errorhandling-l1-1-0.dll
-.conda\api-ms-win-core-fibers-l1-1-0.dll
-.conda\api-ms-win-core-fibers-l1-1-1.dll
-.conda\api-ms-win-core-file-l1-1-0.dll
-.conda\api-ms-win-core-file-l1-2-0.dll
-.conda\api-ms-win-core-file-l2-1-0.dll
-.conda\api-ms-win-core-handle-l1-1-0.dll
-.conda\api-ms-win-core-heap-l1-1-0.dll
-.conda\api-ms-win-core-interlocked-l1-1-0.dll
-.conda\api-ms-win-core-kernel32-legacy-l1-1-1.dll
-.conda\api-ms-win-core-libraryloader-l1-1-0.dll
-.conda\api-ms-win-core-localization-l1-2-0.dll
-.conda\api-ms-win-core-memory-l1-1-0.dll
-.conda\api-ms-win-core-namedpipe-l1-1-0.dll
-.conda\api-ms-win-core-processenvironment-l1-1-0.dll
-.conda\api-ms-win-core-processthreads-l1-1-0.dll
-.conda\api-ms-win-core-processthreads-l1-1-1.dll
-.conda\api-ms-win-core-profile-l1-1-0.dll
-.conda\api-ms-win-core-rtlsupport-l1-1-0.dll
-.conda\api-ms-win-core-string-l1-1-0.dll
-.conda\api-ms-win-core-synch-l1-1-0.dll
-.conda\api-ms-win-core-synch-l1-2-0.dll
-.conda\api-ms-win-core-sysinfo-l1-1-0.dll
-.conda\api-ms-win-core-sysinfo-l1-2-0.dll
-.conda\api-ms-win-core-timezone-l1-1-0.dll
-.conda\api-ms-win-core-util-l1-1-0.dll
-.conda\api-ms-win-crt-conio-l1-1-0.dll
-.conda\api-ms-win-crt-convert-l1-1-0.dll
-.conda\api-ms-win-crt-environment-l1-1-0.dll
-.conda\api-ms-win-crt-filesystem-l1-1-0.dll
-.conda\api-ms-win-crt-heap-l1-1-0.dll
-.conda\api-ms-win-crt-locale-l1-1-0.dll
-.conda\api-ms-win-crt-math-l1-1-0.dll
-.conda\api-ms-win-crt-multibyte-l1-1-0.dll
-.conda\api-ms-win-crt-private-l1-1-0.dll
-.conda\api-ms-win-crt-process-l1-1-0.dll
-.conda\api-ms-win-crt-runtime-l1-1-0.dll
-.conda\api-ms-win-crt-stdio-l1-1-0.dll
-.conda\api-ms-win-crt-string-l1-1-0.dll
-.conda\api-ms-win-crt-time-l1-1-0.dll
-.conda\api-ms-win-crt-utility-l1-1-0.dll
-.conda\concrt140.dll
-.conda\conda-meta
-.conda\conda-meta\bzip2-1.0.8-h0ad9c76_9.json
-.conda\conda-meta\ca-certificates-2026.6.17-h4c7d964_0.json
-.conda\conda-meta\history
-.conda\conda-meta\libexpat-2.8.1-hac47afa_1.json
-.conda\conda-meta\libffi-3.5.2-h3d046cb_0.json
-.conda\conda-meta\liblzma-5.8.3-hfd05255_0.json
-.conda\conda-meta\libsqlite-3.53.2-hf5d6505_0.json
-.conda\conda-meta\libzlib-1.3.2-hfd05255_2.json
-.conda\conda-meta\openssl-3.6.3-hf411b9b_0.json
-.conda\conda-meta\packaging-26.2-pyhc364b38_0.json
-.conda\conda-meta\pip-26.1.2-pyh8b19718_0.json
-.conda\conda-meta\python-3.11.15-h0159041_1_cpython.json
-.conda\conda-meta\setuptools-82.0.1-pyh332efcf_0.json
-.conda\conda-meta\tk-8.6.13-h6ed50ae_3.json
-.conda\conda-meta\tzdata-2025c-hc9c84f9_1.json
-.conda\conda-meta\ucrt-10.0.26100.0-h57928b3_0.json
-.conda\conda-meta\vc-14.3-h2df5915_12.json
-.conda\conda-meta\vc14_runtime-14.51.36231-h1b9f54f_39.json
-.conda\conda-meta\vcomp14-14.51.36231-h1b9f54f_39.json
-.conda\conda-meta\wheel-0.47.0-pyhd8ed1ab_0.json
-.conda\DLLs
-.conda\DLLs\_asyncio.pyd
-.conda\DLLs\_bz2.pyd
-.conda\DLLs\_ctypes.pyd
-.conda\DLLs\_ctypes_test.pyd
-.conda\DLLs\_decimal.pyd
-.conda\DLLs\_elementtree.pyd
-.conda\DLLs\_hashlib.pyd
-.conda\DLLs\_lzma.pyd
-.conda\DLLs\_msi.pyd
-.conda\DLLs\_multiprocessing.pyd
-.conda\DLLs\_overlapped.pyd
-.conda\DLLs\_queue.pyd
-.conda\DLLs\_socket.pyd
-.conda\DLLs\_sqlite3.pyd
-.conda\DLLs\_ssl.pyd
-.conda\DLLs\_testbuffer.pyd
-.conda\DLLs\_testcapi.pyd
-.conda\DLLs\_testconsole.pyd
-.conda\DLLs\_testimportmultiple.pyd
-.conda\DLLs\_testinternalcapi.pyd
-.conda\DLLs\_testmultiphase.pyd
-.conda\DLLs\_tkinter.pyd
-.conda\DLLs\_uuid.pyd
-.conda\DLLs\_zoneinfo.pyd
-.conda\DLLs\py.ico
-.conda\DLLs\pyc.ico
-.conda\DLLs\pyexpat.pyd
-.conda\DLLs\select.pyd
-.conda\DLLs\unicodedata.pyd
-.conda\DLLs\winsound.pyd
-.conda\DLLs\xxlimited.pyd
-.conda\DLLs\xxlimited_35.pyd
-.conda\etc
-.conda\etc\conda
-.conda\etc\conda\activate.d
-.conda\etc\conda\deactivate.d
-.conda\include
-.conda\include\abstract.h
-.conda\include\bltinmodule.h
-.conda\include\boolobject.h
-.conda\include\bytearrayobject.h
-.conda\include\bytesobject.h
-.conda\include\ceval.h
-.conda\include\codecs.h
-.conda\include\compile.h
-.conda\include\complexobject.h
-.conda\include\cpython
-.conda\include\cpython\abstract.h
-.conda\include\cpython\bytearrayobject.h
-.conda\include\cpython\bytesobject.h
-.conda\include\cpython\cellobject.h
-.conda\include\cpython\ceval.h
-.conda\include\cpython\classobject.h
-.conda\include\cpython\code.h
-.conda\include\cpython\compile.h
-.conda\include\cpython\complexobject.h
-.conda\include\cpython\context.h
-.conda\include\cpython\descrobject.h
-.conda\include\cpython\dictobject.h
-.conda\include\cpython\fileobject.h
-.conda\include\cpython\fileutils.h
-.conda\include\cpython\floatobject.h
-.conda\include\cpython\frameobject.h
-.conda\include\cpython\funcobject.h
-.conda\include\cpython\genobject.h
-.conda\include\cpython\import.h
-.conda\include\cpython\initconfig.h
-.conda\include\cpython\listobject.h
-.conda\include\cpython\longintrepr.h
-.conda\include\cpython\longobject.h
-.conda\include\cpython\methodobject.h
-.conda\include\cpython\modsupport.h
-.conda\include\cpython\object.h
-.conda\include\cpython\objimpl.h
-.conda\include\cpython\odictobject.h
-.conda\include\cpython\picklebufobject.h
-.conda\include\cpython\pthread_stubs.h
+.clinerules\01-smart-mcp.md
+.config
+.config\bash
+.config\bash\bashrc
+.config\powershell
+.config\powershell\Microsoft.PowerShell_profile.ps1
+.config\QUICKSTART.md
+.config\README.md
+.copilot
+.copilot\collections
+.copilot\collections\TEMPLATE.md
+.copilot\copilot-instructions.md
+.copilot\instructions
+.copilot\instructions\genui-development.md
+.copilot\knowledge
+.copilot\knowledge\architecture.md
+.copilot\knowledge\PRIOR_ART.md
+.copilot\mcp-servers
+.copilot\mcp-servers\example-config.json
+.copilot\mcp-servers\README.md
+.copilot\mcp-servers\start-everything.ps1
+.copilot\mcp-servers\start-everything.sh
+.copilot\mcp-servers\USAGE.md
+.copilot\prompts
+.copilot\prompts\awesome-copilot_template.md
+.copilot\README.md
+.copilot\templates
+.copilot\templates\agent-tool-template.py
+.copilot\templates\AGENTS.md
+.copilot\templates\component-template.tsx
+.copilot\templates\source-of-truth.md
+.copilot\templates\spec
+.copilot\templates\spec\spec.md
+.cursor
+.cursor\agents
+.cursor\agents\agents-memory-updater.md
+.cursor\agents\ci-watcher.md
+.cursor\agents\compatibility-scan-review.md
+.cursor\agents\docs-reliability-review.md
+.cursor\agents\plugin-architect.md
+.cursor\agents\poteto-agent.md
+.cursor\agents\startup-review.md
+.cursor\agents\thermo-nuclear-code-quality-review-subagent.md
+.cursor\agents\thermo-nuclear-code-quality-review.md
+.cursor\agents\thermo-nuclear-review-subagent.md
+.cursor\agents\validation-review.md
+.cursor\commands
+.cursor\commands\init.md
 
 === STACK DETECTION (manifest files) ===
 
+--- package-lock.json ---
+{
+  "name": "monorepo_modme-root",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "monorepo_modme-root",
+      "dependencies": {
+        "@supabase/ssr": "^0.12.0",
+        "@supabase/supabase-js": "^2.108.2",
+        "gray-matter": "^4.0.3"
+      },
+      "devDependencies": {
+        "prisma": "^7.8.0",
+        "vitest": "^4.0.18"
+      }
+    },
+    "node_modules/@electric-sql/pglite": {
+      "version": "0.4.1",
+      "resolved": "https://registry.npmjs.org/@electric-sql/pglite/-/pglite-0.4.1.tgz",
+      "integrity": "sha512-mZ9NzzUSYPOCnxHH1oAHPRzoMFJHY472raDKwXl/+6oPbpdJ7g8LsCN4FSaIIfkiCKHhb3iF/Zqo3NYxaIhU7Q==",
+      "dev": true,
+      "license": "Apache-2.0"
+    },
+    "node_modules/@electric-sql/pglite-socket": {
+      "version": "0.1.1",
+      "resolved": "https://registry.npmjs.org/@electric-sql/pglite-socket/-/pglite-socket-0.1.1.tgz",
+      "integrity": "sha512-p2hoXw3Z3LQHwTeikdZNsFBOvXGqKY2hk51BBw+8NKND8eoH+8LFOtW9Z8CQKmTJ2qqGYu82ipqiyFZOTTXNfw==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "bin": {
+        "pglite-server": "dist/scripts/server.js"
+      },
+      "peerDependencies": {
+        "@electric-sql/pglite": "0.4.1"
+      }
+    },
+    "node_modules/@electric-sql/pglite-tools": {
+      "version": "0.3.1",
+      "resolved": "https://registry.npmjs.org/@electric-sql/pglite-tools/-/pglite-tools-0.3.1.tgz",
+      "integrity": "sha512-C+T3oivmy9bpQvSxVqXA1UDY8cB9Eb9vZHL9zxWwEUfDixbXv4G3r2LjoTdR33LD8aomR3O9ZXEO3XEwr/cUCA==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "peerDependencies": {
+        "@electric-sql/pglite": "0.4.1"
+      }
+    },
+    "node_modules/@emnapi/core": {
+      "version": "1.10.0",
+      "resolved": "https://registry.npmjs.org/@emnapi/core/-/core-1.10.0.tgz",
+      "integrity": "sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==",
+      "dev": true,
+      "license": "MIT",
+      "optional": true,
+      "dependencies": {
+        "@emnapi/wasi-threads": "1.2.1",
+        "tslib": "^2.4.0"
+      }
+    },
+    "node_modules/@emnapi/runtime": {
+      "version": "1.10.0",
+      "resolved": "https://registry.npmjs.org/@emnapi/runtime/-/runtime-1.10.0.tgz",
+      "integrity": "sha512-ewvYlk86xUoGI0zQRNq/mC+16R1QeDlKQy21Ki3oSYXNgLb45GV1P6A0M+/s6nyCuNDqe5VpaY84BzXGwVbwFA==",
+      "dev": true,
+      "license": "MIT",
+      "optional": true,
+      "dependencies": {
+        "tslib": "^2.4.0"
+      }
+    },
+    "node_modules/@emnapi/wasi-threads": {
+      "version": "1.2.1",
+      "resolved": "https://registry.npmjs.org/@emnapi/wasi-threads/-/wasi-threads-1.2.1.tgz",
+      "integrity": "sha512-uTII7OYF+/Mes/MrcIOYp5yOtSMLBWSIoLPpcgwipoiKbli6k322tcoFsxoIIxPDqW01SQGAgko4EzZi2BNv2w==",
+      "dev": true,
+      "license": "MIT",
+      "optional": true,
+      "dependencies": {
+        "tslib": "^2.4.0"
+      }
+
+[TRUNCATED] Showing first 80 of 2650 lines.
 --- package.json ---
 {
   "name": "monorepo_modme-root",
   "private": true,
   "packageManager": "yarn@3.3.0",
   "scripts": {
-    "agenttrace": ".tools/agenttrace.exe"
+    "contextarch": "node ./scripts/run-contextarch.mjs",
+    "contextarch:bootstrap": "node ./scripts/contextarch-bootstrap.mjs",
+    "contextarch:verify": "powershell -ExecutionPolicy Bypass -File ./scripts/verify-contextarch.ps1",
+    "contextarch:install": "powershell -ExecutionPolicy Bypass -File ./scripts/install-contextarch.ps1",
+    "agenttrace": ".tools/agenttrace.exe",
+    "dev:generative": "yarn --cwd GenerativeUI_monorepo dev",
+    "dev:forge": "powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run dev",
+    "dev:forge:core": "powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run dev:core",
+    "dev:forge:workshop": "powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run dev:workshop",
+    "dev:forge:supabase": "powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run db:start",
+    "dev:forge:docs": "powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run dev --filter docs",
+    "dev:forge:storybook": "powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run dev --filter storybook",
+    "check:forge": "powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run check",
+    "fix:forge": "powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run fix",
+    "verify:forge": "powershell -ExecutionPolicy Bypass -File ./scripts/verify-forge-ci.ps1",
+    "verify:generative": "powershell -ExecutionPolicy Bypass -File ./scripts/verify-generative-ci.ps1",
+    "verify:all": "node scripts/lib/run-verify-all.mjs",
+    "lint:harness": "node scripts/lint-ecl.mjs && node scripts/lint-encoding.mjs",
+    "harness:change": "node scripts/harness-change.mjs",
+    "repo:doctor": "powershell -ExecutionPolicy Bypass -File ./scripts/repo-alignment-doctor.ps1",
+    "repo:doctor:fix": "powershell -ExecutionPolicy Bypass -File ./scripts/repo-alignment-doctor.ps1 -Fix",
+    "pre-commit:check": "node scripts/pre-commit-checks.mjs",
+    "hooks:install": "powershell -ExecutionPolicy Bypass -File ./scripts/install-git-hooks.ps1",
+    "vibe:finish": "powershell -ExecutionPolicy Bypass -File ./scripts/vibe-session-finish.ps1",
+    "vibe:finish:dry-run": "powershell -ExecutionPolicy Bypass -File ./scripts/vibe-session-finish.ps1 -DryRun -SkipPull",
+    "worktree:ensure": "powershell -ExecutionPolicy Bypass -File ./scripts/ensure-worktree.ps1",
+    "worktree:migrate": "powershell -ExecutionPolicy Bypass -File ./scripts/migrate-main-to-worktree.ps1",
+    "worktree:doctor": "powershell -ExecutionPolicy Bypass -File ./scripts/worktree-doctor.ps1",
+    "worktree:doctor:fix": "powershell -ExecutionPolicy Bypass -File ./scripts/worktree-doctor.ps1 -Fix",
+    "worktree:ports": "powershell -ExecutionPolicy Bypass -File ./scripts/load-worktree-ports.ps1",
+    "worktree:tmux": "bash ./scripts/agent-workspace-tmux.sh",
+    "supabase:setup": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-supabase-cloud.ps1",
+    "supabase:local:setup": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-supabase-local.ps1",
+    "supabase:local:env": "powershell -ExecutionPolicy Bypass -File ./scripts/sync-supabase-local-env.ps1",
+    "intake": "node scripts/run-intake.mjs",
+    "intake:dry-run": "node scripts/run-intake.mjs --dry-run",
+    "intake:orchestrate": "node scripts/intake-orchestrator.mjs --mode=session",
+    "inbox:audit": "node scripts/inbox-audit.mjs --lens all",
+    "inbox:audit:funnel": "node scripts/inbox-audit.mjs --lens funnel",
+    "inbox:fix": "node scripts/inbox-fix.mjs --dry-run",
+    "inbox:fix:apply": "node scripts/inbox-fix.mjs --apply",
+    "inbox:test": "vitest run scripts/__tests__",
+    "inbox:export-contract": "node next-forge/packages/schemas/scripts/export-inbox-contract.mjs",
+    "eval:collect": "node scripts/agent-eval-collect.mjs",
+    "eval:collect:dry-run": "node scripts/agent-eval-collect.mjs --dry-run",
+    "eval:report": "node scripts/agent-eval-report.mjs",
+    "eval:report:dry-run": "node scripts/agent-eval-report.mjs --dry-run",
+    "beads:init": "powershell -ExecutionPolicy Bypass -File ./scripts/init-beads-starter-issues.ps1",
+    "beads:ready": "npx --yes @beads/bd ready",
+    "beads:list": "npx --yes @beads/bd list --all",
+    "beads:push": "npx --yes @beads/bd dolt push",
+    "beads:pull": "npx --yes @beads/bd dolt pull",
+    "beads:compact": "npx --yes @beads/bd admin compact --analyze"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.108.2",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "prisma": "^7.8.0",
+    "vitest": "^4.0.18"
   }
 }
+
+--- pyproject.toml ---
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+    "--disable-warnings",
+]
+
+# Coverage options (if using pytest-cov)
+[tool.coverage.run]
+source = ["agent/skills_ref"]
+omit = [
+    "tests/*",
+    "agent/skills_ref/cli.py",  # CLI tested separately
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __name__ == .__main__.:",
+    "raise AssertionError",
+    "raise NotImplementedError",
+]
+
+--- uv.lock ---
+version = 1
+revision = 3
+requires-python = ">=3.11"
 
 --- yarn.lock ---
 # This file is generated by running "yarn install" inside your project.
@@ -219,19 +398,91 @@
 
 __metadata:
   version: 6
+  cacheKey: 8
 
-"monorepo_modme-root@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "monorepo_modme-root@workspace:."
-  languageName: unknown
-  linkType: soft
+"@electric-sql/pglite-socket@npm:0.1.1":
+  version: 0.1.1
+  resolution: "@electric-sql/pglite-socket@npm:0.1.1"
+  peerDependencies:
+    "@electric-sql/pglite": 0.4.1
+  bin:
+    pglite-server: dist/scripts/server.js
+  checksum: 061b8a329c8348b8545f56f7f6a2a95fa5c5e6277b222c661be55c5f5780326c42e32f8446291b484e525dbf3892e1014b9a70ac9162188750a4662ff9585a5f
+  languageName: node
+  linkType: hard
 
+"@electric-sql/pglite-tools@npm:0.3.1":
+  version: 0.3.1
+  resolution: "@electric-sql/pglite-tools@npm:0.3.1"
+  peerDependencies:
+    "@electric-sql/pglite": 0.4.1
+  checksum: b5a432daa07231e259b3c4f9290b4d5c9293a60927ddeaed9f9de3fd98846b728c0a81492454b3ba0877b21e51e63db19f271766ccc4edc26c9aa32a54b9b2b6
+  languageName: node
+  linkType: hard
+
+"@electric-sql/pglite@npm:0.4.1":
+  version: 0.4.1
+  resolution: "@electric-sql/pglite@npm:0.4.1"
+  checksum: 147f10bd9f7bca48714b6564ea43a9acd4ae9e5435cdc21f2882087abc480b284faaed05ef8838c2be4939c16803dc206b1d537539a76abaa9da730c8f97933d
+  languageName: node
+  linkType: hard
+
+"@emnapi/core@npm:1.10.0":
+  version: 1.10.0
+  resolution: "@emnapi/core@npm:1.10.0"
+  dependencies:
+    "@emnapi/wasi-threads": 1.2.1
+    tslib: ^2.4.0
+  checksum: d8cf0d6e0668db456190dda05bffb299395e58e814bacfbe78e6306aea9df8c48c0c276ad9ca787d5bbd4272e765fcc879e8156c0fc40398d5f43658819b7314
+  languageName: node
+  linkType: hard
+
+"@emnapi/runtime@npm:1.10.0":
+  version: 1.10.0
+  resolution: "@emnapi/runtime@npm:1.10.0"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: cc403db36a6875495f4f4a776eea8379c028d83d7d37a018b50079db226e7484f269a0447fc1e49235216d4fb2378bf2c61fa7f047d9f9c50e21698ce9b6e531
+  languageName: node
+  linkType: hard
+
+"@emnapi/wasi-threads@npm:1.2.1":
+  version: 1.2.1
+  resolution: "@emnapi/wasi-threads@npm:1.2.1"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: a2360553f8056e3e676f708b7e1639bae84212714ace6ee13b6e0ce667b3057bea6d120c7a4f5b32851f93d287fd4b5a0fd58b14f43363d365cb83bc538254d1
+  languageName: node
+  linkType: hard
+
+"@hono/node-server@npm:1.19.11":
+  version: 1.19.11
+  resolution: "@hono/node-server@npm:1.19.11"
+  peerDependencies:
+    hono: ^4
+  checksum: 5270444b197f4ee0f1f25a6fb6420c9a5eb96c347c6a3b26413e33353fe52de4533da66ab7deb4e75cdea35e852aa1c24bca82544ccc09d1db2a960d438b7e35
+  languageName: node
+  linkType: hard
+
+"@isaacs/fs-minipass@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "@isaacs/fs-minipass@npm:4.0.1"
+  dependencies:
+    minipass: ^7.0.4
+  checksum: 5d36d289960e886484362d9eb6a51d1ea28baed5f5d0140bbe62b99bac52eaf06cc01c2bc0d3575977962f84f6b2c4387b043ee632216643d4787b0999465bf2
+  languageName: node
+  linkType: hard
+
+
+[TRUNCATED] Showing first 80 of 1986 lines.
 
 === ENTRY POINTS ===
 No common entry points found. Check 'main' or 'scripts.start' in manifest files above.
 
 === LINTING AND FORMATTING CONFIG ===
-No linting or formatting config files found in project root.
+Found: eslint.config.mjs
+Found: .prettierrc.json
+Found: tsconfig.json
 
 === ENVIRONMENT VARIABLE TEMPLATES ===
 --- .env.example ---
@@ -245,130 +496,138 @@ No linting or formatting config files found in project root.
 # SUPABASE_ANON_KEY=
 
 === TODO / FIXME / HACK (production code only, test dirs excluded) ===
+knowledge-base.json:542: "content": "/**\n * registry-fetcher.ts\n * \n * Fetches and parses the MCP servers registry from modelcontextprotocol/servers.\n * Returns structured ServerSpec[] with tools, parameters, and documentation.\n */\n\nimport { z } from 'zod';\n\n/**\n * JSON Schema representation (simplified for MCP tools)\n */\nexport const JSONSchemaSchema = z.object({\n  type: z.string().optional(),\n  properties: z.record(z.any()).optional(),\n  required: z.array(z.string()).optional(),\n  description: z.string().optional(),\n  items: z.any().optional(),\n  enum: z.array(z.any()).optional(),\n  default: z.any().optional(),\n  pattern: z.string().optional(),\n  minLength: z.number().optional(),\n  maxLength: z.number().optional(),\n  minimum: z.number().optional(),\n  maximum: z.number().optional(),\n});\n\nexport type JSONSchema = z.infer<typeof JSONSchemaSchema>;\n\n/**\n * MCP Tool definition - single method/function provided by an MCP server\n */\nexport const MCPToolSchema = z.object({\n  name: z.string().describe('Tool identifier (e.g., \"read_file\")'),\n  description: z.string().describe('What this tool does'),\n  inputSchema: JSONSchemaSchema.optional().describe('JSON Schema for tool parameters'),\n  returns: JSONSchemaSchema.optional().describe('JSON Schema for return value'),\n  examples: z.array(z.object({\n    input: z.any(),\n    output: z.any(),\n    description: z.string().optional(),\n  })).optional().describe('Usage examples'),\n});\n\nexport type MCPTool = z.infer<typeof MCPToolSchema>;\n\n/**\n * MCP Server specification - a collection of tools from one server\n */\nexport const ServerSpecSchema = z.object({\n  id: z.string().describe('Server identifier (e.g., \"filesystem\", \"git\", \"postgres\")'),\n  name: z.string().describe('Human-readable name'),\n  description: z.string().describe('What this server does'),\n  repository: z.string().url().optional().describe('GitHub/source repository'),\n  category: z.enum([\n    'development',\n    'database',\n    'productivity',\n    'research',\n    'utilities',\n    'experimental'\n  ]).optional(),\n  tools: z.array(MCPToolSchema).describe('Available tools/methods'),\n  transport: z.enum(['stdio', 'sse']).default('stdio').describe('Supported transports'),\n  requirements: z.object({\n    nodeVersion: z.string().optional(),\n    pythonVersion: z.string().optional(),\n    systemDeps: z.array(z.string()).optional(),\n  }).optional().describe('System requirements'),\n  installation: z.object({\n    npm: z.string().optional().describe('NPM package (e.g., @modelcontextprotocol/server-filesystem)'),\n    python: z.string().optional().describe('PyPI package'),\n    docker: z.string().optional().describe('Docker image'),\n  }).optional().describe('How to install'),\n  documentation: z.string().url().optional().describe('Link to docs'),\n  status: z.enum(['stable', 'beta', 'experimental', 'deprecated']).default('stable'),\n});\n\nexport type ServerSpec = z.infer<typeof ServerSpecSchema>;\n\n/**\n * Complete registry snapshot\n */\nexport const MCPRegistrySchema = z.object({\n  version: z.string().describe('Registry version'),\n  lastUpdated: z.string().datetime().describe('When registry was last updated'),\n  servers: z.array(ServerSpecSchema).describe('All available servers'),\n  metadata: z.object({\n    totalServers: z.number(),\n    totalTools: z.number(),\n    categories: z.array(z.string()),\n  }).optional(),\n});\n\nexport type MCPRegistry = z.infer<typeof MCPRegistrySchema>;\n\n/**\n * Fetch and parse the MCP servers registry\n * \n * This function:\n * 1. Fetches from modelcontextprotocol/servers (real repo)\n * 2. Parses README and configuration files\n * 3. Extracts tool specs from each server implementation\n * 4. Returns structured ServerSpec[] with validation\n */\nexport async function fetchMCPRegistry(): Promise<MCPRegistry> {\n  // TODO: Implement in phases\n  \n  // Phase 1: Manual bootstrap\n  // - Hardcode canonical MCP servers from modelcontextprotocol/servers\n  // - Use GitHub API to fetch server specs\n  \n  // Phase 2: Dynamic fetching\n  // - Parse README.md for server list\n  // - Crawl each server's package.json + documentation\n  // - Extract tool definitions from source code\n  \n  // Phase 3: Caching + hot-reload\n  // - Cache parsed registry locally\n  // - Watch for upstream changes\n  // - Notify on new servers/tools\n  \n  const registry = await bootstrapCanonicalServers();\n  \n  return {\n    version: '1.0.0',\n    lastUpdated: new Date().toISOString(),\n    servers: registry,\n    metadata: {\n      totalServers: registry.length,\n      totalTools: registry.reduce((sum, s) => sum + s.tools.length, 0),\n      categories: [...new Set(registry.map(s => s.category).filter(Boolean))],\n    },\n  };\n}\n\n/**\n * Bootstrap with canonical MCP servers\n * These are the reference implementations from modelcontextprotocol/servers\n */\nasync function bootstrapCanonicalServers(): Promise<ServerSpec[]> {\n  return [\n    {\n      id: 'filesystem',\n      name: 'Filesystem',\n      description: 'Read, write, and navigate the file system',\n      category: 'utilities',\n      tools: [\n        {\n          name",
 .agents\skills\acquire-codebase-knowledge\scripts\scan.py:28: TODO_LIMIT = 60
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:291: """Search for TODO/FIXME/HACK comments."""
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:291: """Search for TODO/FIXME/HACK comments."""
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:291: """Search for TODO/FIXME/HACK comments."""
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:293: patterns = ["TODO", "FIXME", "HACK"]
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:293: patterns = ["TODO", "FIXME", "HACK"]
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:293: patterns = ["TODO", "FIXME", "HACK"]
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:320: return todos[:TODO_LIMIT]
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:617: # TODOs
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:620: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", todos, output_file)
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:620: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", todos, output_file)
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:620: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", todos, output_file)
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:622: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", ["None found."], output_file)
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:622: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", ["None found."], output_file)
-.agents\skills\acquire-codebase-knowledge\scripts\scan.py:622: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", ["None found."], output_file)
-.conda\conda-meta\python-3.11.15-h0159041_1_cpython.json:1061: "Lib/idlelib/TODO.txt",
-.conda\conda-meta\python-3.11.15-h0159041_1_cpython.json:9695: "_path": "Lib/idlelib/TODO.txt",
-.conda\include\abstract.h:314: /* FIXME:  usage of these should all be replaced in Python itself
-.conda\include\internal\pycore_runtime.h:41: /* TODO: Given interp_main, it may be possible to kill this ref */
-.conda\Lib\datetime.py:294: # TODO(pganssle): Document this
-.conda\Lib\enum.py:428: # TODO: uncomment next three lines in 3.13
-.conda\Lib\enum.py:879: # TODO: replace the frame hack if a blessed way to know the calling
-.conda\Lib\getopt.py:24: # TODO for gnu_getopt():
-.conda\Lib\gettext.py:37: # TODO:
-.conda\Lib\nntplib.py:61: # TODO:
-.conda\Lib\ntpath.py:625: # TODO (bpo-38186): Request the real file name from the directory
-.conda\Lib\numbers.py:6: TODO: Fill out more detailed documentation on the operators."""
-.conda\Lib\runpy.py:64: # TODO: Replace these helpers with importlib._bootstrap_external functions.
-.conda\Lib\smtpd.py:66: # TODO:
-.conda\Lib\smtplib.py:939: # TODO implement heuristics to guess the correct Resent-* block with an
-.conda\Lib\statistics.py:342: # FIXME: what do we do if this overflows?
-.conda\Lib\statistics.py:548: # FIXME: investigate ways to calculate medians without sorting? Quickselect?
-.conda\Lib\types.py:211: # TODO: Implement this in C.
-.conda\Lib\types.py:266: # TODO: Implement this in C.
-.conda\Lib\asyncio\staggered.py:74: # TODO: when we have aiter() and anext(), allow async iterables in coro_fns.
-.conda\Lib\idlelib\autocomplete.py:32: # TODO Update this here and elsewhere.
-.conda\Lib\idlelib\autocomplete_w.py:498: # TODO: autocomplete/w htest here
-.conda\Lib\idlelib\colorizer.py:171: "TODO": {'background': None, 'foreground': None},
-.conda\Lib\idlelib\colorizer.py:195: self.tag_add("TODO", index1, index2)
-.conda\Lib\idlelib\colorizer.py:270: if self.allow_colorizing and self.tag_nextrange("TODO", "1.0"):
-.conda\Lib\idlelib\colorizer.py:277: while todo_tag_range := self.tag_nextrange("TODO", next):
-.conda\Lib\idlelib\colorizer.py:312: self.tag_add("TODO", next)
-.conda\Lib\idlelib\config.py:26: # TODOs added Oct 2014, tjr
-.conda\Lib\idlelib\config.py:55: # TODO Use default as fallback, at least if not None
-.conda\Lib\idlelib\config.py:160: self.cfg = {}  # TODO use to select userCfg vs defaultCfg
-.conda\Lib\idlelib\config.py:211: # TODO continue without userDIr instead of exit
-.conda\Lib\idlelib\config.py:307: # TODO copy theme from a class attribute.
-.conda\Lib\idlelib\config.py:438: if editor_only or shell_only:  # TODO both True contradict
-.conda\Lib\idlelib\config.py:468: extName = extn  # TODO return here?
-.conda\Lib\idlelib\config.py:545: # TODO (Ned?): the "Option" modifier does not work properly
-.conda\Lib\idlelib\config.py:581: # TODO make keyBindings a file or class attribute used for test above
-.conda\Lib\idlelib\config.py:600: # TODO: = dict(sorted([(v-event, keys), ...]))?
-.conda\Lib\idlelib\config.py:879: # TODO Revise test output, write expanded unittest
-.conda\Lib\idlelib\debugger.py:264: # TODO redo entire section, tries not needed.
-.conda\Lib\idlelib\debugger.py:562: # TODO recheck above; see debugger_r 159ff, debugobj 60.
-.conda\Lib\idlelib\debugger.py:602: # TODO: htest?
-.conda\Lib\idlelib\debugobj.py:98: # TODO return sorted(self.object)
-.conda\Lib\idlelib\editor.py:41: # TODO remove unneeded function since .chm no longer installed
-.conda\Lib\idlelib\editor.py:995: # TODO: move to iomenu.
-.conda\Lib\idlelib\editor.py:1299: return self.text.tag_prevrange("TODO", text_index) or \
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:292: """Search for TODO/FIXME/HACK comments."""
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:292: """Search for TODO/FIXME/HACK comments."""
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:292: """Search for TODO/FIXME/HACK comments."""
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:294: patterns = ["TODO", "FIXME", "HACK"]
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:294: patterns = ["TODO", "FIXME", "HACK"]
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:294: patterns = ["TODO", "FIXME", "HACK"]
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:321: return todos[:TODO_LIMIT]
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:618: # TODOs
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:621: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", todos, output_file)
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:621: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", todos, output_file)
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:621: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", todos, output_file)
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:623: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", ["None found."], output_file)
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:623: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", ["None found."], output_file)
+.agents\skills\acquire-codebase-knowledge\scripts\scan.py:623: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", ["None found."], output_file)
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:28: TODO_LIMIT = 60
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:291: """Search for TODO/FIXME/HACK comments."""
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:291: """Search for TODO/FIXME/HACK comments."""
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:291: """Search for TODO/FIXME/HACK comments."""
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:293: patterns = ["TODO", "FIXME", "HACK"]
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:293: patterns = ["TODO", "FIXME", "HACK"]
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:293: patterns = ["TODO", "FIXME", "HACK"]
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:320: return todos[:TODO_LIMIT]
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:617: # TODOs
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:620: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", todos, output_file)
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:620: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", todos, output_file)
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:620: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", todos, output_file)
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:622: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", ["None found."], output_file)
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:622: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", ["None found."], output_file)
+.cursor\skills\acquire-codebase-knowledge\scripts\scan.py:622: print_section("TODO / FIXME / HACK (production code only, test dirs excluded)", ["None found."], output_file)
+agent\genai-toolbox\docs\en\getting-started\quickstart\python\quickstart_test.py:48: # TODO: Add better validation for ADK once we have a way to capture its
+agent\genai-toolbox\docs\en\getting-started\quickstart\python\adk\quickstart.py:5: # TODO(developer): update the TOOLBOX_URL to your toolbox endpoint
+agent\genai-toolbox\docs\en\getting-started\quickstart\python\langchain\quickstart.py:5: # TODO(developer): replace this with another import if needed
+agent\genai-toolbox\docs\en\getting-started\quickstart\python\langchain\quickstart.py:35: # TODO(developer): replace this with another model if needed
+agent\genai-toolbox\docs\en\getting-started\quickstart\python\llamaindex\quickstart.py:8: # TODO(developer): replace this with another import if needed
+agent\genai-toolbox\docs\en\getting-started\quickstart\python\llamaindex\quickstart.py:36: # TODO(developer): replace this with another model if needed
+agent\genai-toolbox\internal\server\api.go:123: // TODO: this can be optimized later with some caching
+agent\genai-toolbox\internal\tools\mongodb\mongodbfind\mongodbfind.go:192: err = cur.All(context.TODO(), &data)
+agent\tools\code_tools.py:116: <div>TODO: Implement {component_name}</div>
+agent-generator\src\mcp-registry\molecule-generator.ts:369: // TODO: Generate molecules from MCP tools dynamically
+agent-generator\src\mcp-registry\registry-fetcher.ts:136: // TODO: Implement in phases
+agent-generator\src\skills\skill-creator\scripts\init_skill.py:20: description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+agent-generator\src\skills\skill-creator\scripts\init_skill.py:27: [TODO: 1-2 sentences explaining what this skill enables]
+agent-generator\src\skills\skill-creator\scripts\init_skill.py:31: [TODO: Choose the structure that best fits this skill's purpose. Common patterns:
+agent-generator\src\skills\skill-creator\scripts\init_skill.py:57: ## [TODO: Replace with the first main section based on chosen structure]
+agent-generator\src\skills\skill-creator\scripts\init_skill.py:59: [TODO: Add content here. See examples in existing skills:
+agent-generator\src\skills\skill-creator\scripts\init_skill.py:119: # TODO: Add actual script logic here
+agent-generator\src\skills\skill-creator\scripts\init_skill.py:266: print("1. Edit SKILL.md to complete the TODO items and update the description")
+experiments\micro-agents\evaluation\runner.ts:63: // TODO: Replace with actual agent execution
+GenerativeUI_monorepo\apps\agent-generator\src\mcp-registry\molecule-generator.ts:382: // TODO: Implement proper runtime Zod schema generation from JSON Schema
+GenerativeUI_monorepo\apps\agent-generator\src\mcp-registry\registry-fetcher.ts:107: // TODO: Implement in phases
+GenerativeUI_monorepo\scripts\generate_missing_playwright_tests.js:42: const testContent = `import { test, expect } from '@playwright/test';\n\n// TODO: implement test for ${file}\ntest('placeholder for ${file}', async ({ page }) => {\n  // Add interactions here\n  expect(true).toBeTruthy();\n});\n`;
+GenerativeUI_monorepo\scripts\generate_missing_playwright_tests.ts:45: const testContent = `import { test, expect } from '@playwright/test';\n\n// TODO: implement test for ${file}\ntest('placeholder for ${file}', async ({ page }) => {\n  // Add interactions here\n  expect(true).toBeTruthy();\n});\n`;
+GenerativeUI_monorepo\UniversalWorkbench\apps\agent-generator\src\mcp-registry\molecule-generator.ts:382: // TODO: Implement proper runtime Zod schema generation from JSON Schema
+GenerativeUI_monorepo\UniversalWorkbench\apps\agent-generator\src\mcp-registry\registry-fetcher.ts:107: // TODO: Implement in phases
+GenerativeUI_monorepo\UniversalWorkbench\apps\agent-generator\src\mcp-registry\storybook-story-generator.ts:74: // TODO: Replace with actual component import
+GenerativeUI_monorepo\UniversalWorkbench\apps\api\src\routes\users.test.ts:48: // TODO: Implement test
+GenerativeUI_monorepo\UniversalWorkbench\apps\api\src\routes\users.test.ts:53: // TODO: Implement test
+GenerativeUI_monorepo\UniversalWorkbench\apps\api\src\routes\users.test.ts:58: // TODO: Implement test
 
 === GIT RECENT COMMITS (last 20) ===
-b424215d commit
-3de1685b feat: add ibcs trainer game
-f38bad01 fix(vscode): set git.path for Cursor Agent Review on Windows
-1dd449da feat(ci): add pre-commit checks and pipeline integration
-95b34eab docs(agent-tech-guide): update MCP.json description and last updated date
-1bd98d64 chore(agent-tooling): add Buildkite CI, awesome-cursor-skills, and direnv hook
-6c9474c9 chore: include GenerativeUI monorepo sources for CI
-8b4c5b6d chore: add GitHub CI, git hygiene, and agent tooling docs
+e4b4347d docs: document hexagonal agent-server and contract mitigations
+b3d1324b merge: websocket reconnect resilience into dev
+a795269c merge: hexagonal agent-server ports/adapters into dev
+b9ff2551 test(next-forge): add WebSocket reconnect Vitest coverage
+463d86e2 refactor(generative): hexagonal ports/adapters for agent-server
+7eb6dcb0 feat(generative): lock Python agent contract with golden pytest
+ba20ef86 Consolidate: pr78-worktree-ports
+abfc8345 Consolidate: pr78-merge-local-reports
+56213d22 Consolidate: pr78-merge-wip
+01356b15 fix(ci): green GenerativeUI verify gate and product-scoped builds
+026060f8 merge: reconcile dev with origin/main for PR #78
+6f01007f docs: note canonical CI commands in buildkite guide
+5dc22051 chore(repo): alignment doctor, CI parity, and source-of-truth cleanup
+8c7e2b1e merge: reconciliation into dev
+607ac65a Reconciliation monorepo merge (#77)
+915acc05 feat: Merge chore/adr-readme-pipeline into reconciliation-monorepo-merge with unrelated histories
+3229c9a7 feat(repo): reconcile Monorepo_ModMe as default branch replacing GenUI
+e270c2a4 chore: fix session-logger.ps1 Resolve-Path bug on line 8
+9f8c8fb4 feat(loki): bootstrap .loki/ SDLC framework + installer --details/--export-collection + arch review
+48a51aea chore: add ADR README update pipeline (Fixes #0)
 
 === HIGH-CHURN FILES (last 90 days, top 20) ===
-   4 CHANGELOG.md
-   4 docs/agent-tech-guide.md
-   3 scripts/cursor-ai/setup.ps1
-   2 .gitignore
-   2 .vscode/settings.json
-   2 .buildkite/pipeline.yml
-   2 scripts/cursor-ai/README.md
-   1 .cursor/hooks.json
-   1 .cursor/hooks/update-skills-on-stop.mjs
-   1 scripts/install-cursor-cookbook.ps1
-   1 ibcs.html
-   1 .buildkite/scripts/pre-commit-check.sh
-   1 .githooks/pre-commit
-   1 .github/workflows/pre-commit-check.yml
-   1 scripts/install-git-hooks.ps1
-   1 scripts/pre-commit-checks.mjs
-   1 scripts/validate-cursor-skills.mjs
-   1 .buildkite/README.md
-   1 .buildkite/annotation.md
-   1 .buildkite/scripts/build.sh
+  18 CHANGELOG.md
+  10 .gitignore
+   9 .github/workflows/ci.yml
+   9 docs/agent-tech-guide.md
+   8 AGENTS.md
+   7 GenerativeUI_monorepo/package.json
+   6 GenerativeUI_monorepo/apps/agent-server/src/models/schemas.py
+   6 package.json
+   6 scripts/pre-commit-checks.mjs
+   6 .cursor/hooks.json
+   6 .cursor/settings.json
+   6 .vscode/mcp.json
+   6 .vscode/settings.json
+   6 next-forge/bun.lock
+   6 scripts/cursor-ai/setup.ps1
+   6 scripts/install-cursor-cookbook.ps1
+   5 GenerativeUI_monorepo/apps/agent-server/src/routes/websocket.py
+   5 GenerativeUI_monorepo/packages/shared-schemas/src/index.ts
+   5 .github/workflows/pre-commit-check.yml
+   5 docs/multi-agent-worktrees.md
 
 === MONOREPO SIGNALS ===
 No monorepo signals detected.
 
 === CODE METRICS ===
-Total files scanned: 7857
-Total lines of code: 964615
+Total files scanned: 4284
+Total lines of code: 282880
 
 Files by language:
-  Other: 5207
-  Python: 1864
-  C Header: 364
-  TypeScript: 294
-  TypeScript/React: 83
-  JavaScript: 18
-  C#: 8
-  Go: 7
-  Java: 7
-  JavaScript/React: 3
-  C: 2
+  Other: 2745
+  Go: 595
+  TypeScript: 497
+  TypeScript/React: 248
+  Python: 133
+  JavaScript: 64
+  JavaScript/React: 2
 
 Top 10 largest files:
-.node\node.exe: 67629.6KB
-.conda\python311.pdb: 16668.0KB
-.tools\agenttrace.exe: 12887.5KB
-.conda\python311.dll: 6048.0KB
-.vendor\awesome-copilot-main\website\public\images\learning-hub\copilot-cli-for-beginners\02\multi-turn-demo.gif: 4143.4KB
-.vendor\awesome-copilot-main\website\public\images\learning-hub\copilot-cli-for-beginners\03\test-gen-demo.gif: 3721.5KB
-.vendor\awesome-copilot-main\website\public\images\learning-hub\copilot-cli-for-beginners\03\code-review-demo.gif: 3113.7KB
-.vendor\awesome-copilot-main\website\public\images\learning-hub\copilot-cli-for-beginners\05\skill-trigger-demo.gif: 2899.2KB
-.vendor\awesome-copilot-main\website\public\images\learning-hub\copilot-cli-for-beginners\03\fix-bug-demo.gif: 2824.0KB
-.vendor\cursor-cookbook\sdk\dag-task-runner\docs\demo_vid_dag.gif: 2676.2KB
+agent\genai-toolbox\docs\en\how-to\toolbox-ui\edit-headers.gif: 36959.9KB
+with-a2a-a2ui\Demo.gif: 28356.1KB
+agent\genai-toolbox\docs\en\how-to\toolbox-ui\run-tool.gif: 5559.1KB
+with-a2a-a2ui\agent\images\italian restaurant 2.png: 1851.4KB
+with-a2a-a2ui\agent\images\italian1.png: 1841.1KB
+with-a2a-a2ui\agent\images\margharita.png: 1841.1KB
+with-a2a-a2ui\agent\images\italian2.png: 1674.1KB
+with-a2a-a2ui\agent\images\lasagna.png: 1674.1KB
+with-a2a-a2ui\agent\images\italian restaurant1.png: 1627.3KB
+with-a2a-a2ui\agent\images\classic tiramasu.png: 1537.2KB
 
 === CI/CD PIPELINES ===
 CI/CD: GitHub Actions

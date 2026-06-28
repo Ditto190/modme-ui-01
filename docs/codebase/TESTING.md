@@ -4,38 +4,68 @@
 
 ### 1) Test Frameworks
 
-- next-forge: Vitest (evidence: `docs/codebase/.codebase-scan.txt` and `.github/copilot-instructions.md` which reference `npx bun run test` and Vitest in next-forge commands).
-- GenerativeUI_monorepo: Yarn workspace tests; some packages use Jest/Vitest depending on package (evidence: `docs/codebase/.codebase-scan.txt`, package.json entries under `GenerativeUI_monorepo/packages`).
-- End-to-end: Playwright referenced by Playwright MCP assets and Playwright test templates in repository (evidence: Playwright-related skills in `.agents/skills` and Playwright MCP references).
+| Stack | Framework | Evidence |
+|-------|-----------|----------|
+| next-forge | Vitest | `next-forge/package.json` `test` script, `.github/workflows/ci.yml` |
+| GenerativeUI | Jest / Vitest per package | `GenerativeUI_monorepo/package.json`, CI `yarn test` |
+| agent-server | pytest | `apps/agent-server/tests/`, `test_schemas_contract.py` |
+| WS contracts | Vitest + golden JSON | `next-forge/packages/schemas/ws-contract.test.ts` |
+| E2E (local) | Playwright | `next-forge/playwright.config.ts` |
+| Root scripts | Vitest | `scripts/__tests__/`, `yarn inbox:test` |
 
 ### 2) Test Organization
 
-- Unit tests: per-package under `tests/`, `__tests__/`, or `src/__tests__/` (workspace layout follows Yarn workspaces in `GenerativeUI_monorepo/` and Bun workspaces in `next-forge/`). [TODO: enumerate exact test folders per workspace — requires deeper per-package inspection].
-- Integration tests: API-focused integration tests expected under `GenerativeUI_monorepo/apps/agent-server/tests/` per typical FastAPI layouts (evidence: `apps/agent-server` exists; explicit test folders not enumerated in scan output).
-- E2E tests: stored in `tests/e2e` or `playwright` config locations when present — [TODO: confirm exact paths].
+| Area | Location | Evidence |
+|------|----------|----------|
+| Schema unit tests | `next-forge/packages/schemas/*.test.ts` | `schemas.test.ts`, `ws-contract.test.ts` |
+| Agent-server contract | `GenerativeUI_monorepo/apps/agent-server/tests/` | `test_schemas_contract.py` |
+| Generative UI hooks | `next-forge/apps/app/.../generative-ui/` | `reconnect-delay.ts` Vitest |
+| E2E specs | `next-forge/tests/e2e/` | `generative-ui.spec.ts` [if present] |
+| CI smoke | `.github/workflows/ci.yml` `e2e-smoke` job | Schema tests only in CI; full Playwright needs stack |
 
 ### 3) Test Runners and Commands
 
-- next-forge: `npx bun run test` or `npx bun run vitest` per package scripts (evidence: `.github/copilot-instructions.md`, `next-forge` package.json scripts referenced in `docs/codebase/STACK.md`).
-- GenerativeUI: `yarn workspace <pkg> run test` (evidence: repo's monorepo conventions in `.github/copilot-instructions.md`).
-- Playwright: `npx playwright test --project=chromium` (evidence: Playwright templates and MCP skills).
+```powershell
+# next-forge (from root)
+yarn verify:forge          # check + test + build
+
+# GenerativeUI
+yarn verify:generative     # lint + test + build:product
+
+# Both stacks
+yarn verify:all
+
+# Harness / ECL
+yarn lint:harness
+
+# Schema WS contract only (from next-forge/)
+cd next-forge && bun test packages/schemas/ws-contract.test.ts
+
+# agent-server pytest
+cd GenerativeUI_monorepo/apps/agent-server && poetry run pytest tests/test_schemas_contract.py
+```
 
 ### 4) Mocking and Test Data
 
-- Shared-schemas (`packages/shared-schemas`) used as canonical types and fixtures across TS/Python boundaries — evidence: `GenerativeUI_monorepo/packages/shared-schemas` and references in `apps/agent-server` code.
-- Python backend tests (agent-server) likely use pytest or unittest — [ASK USER] 2: confirm whether backend Python tests use pytest or unittest.
+- **Golden contract:** `genui-agent-contract.golden.json` duplicated in `@repo/schemas/fixtures/` and `agent-server/tests/fixtures/` — no cross-monorepo imports
+- **Observability snapshots:** `next-forge/packages/schemas/__snapshots__/observability.test.ts.snap`
+- **Inbox contracts:** Zod schemas in `@repo/schemas/inbox.js`
 
 ### 5) CI Integration
 
-- Tests run in CI via GitHub Actions and Buildkite workflows (evidence: `docs/codebase/.codebase-scan.txt`, `.github/workflows/`, `.buildkite/`).
-- Some verification tasks are grouped into `verify:forge` and `verify:generative` scripts (evidence: `AGENTS.md` and `docs/codebase/CONVENTIONS.md`).
-- Artifacts and reports: Workflows mention test reporting (JUnit/XML) in some action files — [TODO: enumerate exact workflow files and artifact upload steps].
+| Job | Trigger (path filter) | Steps | Evidence |
+|-----|----------------------|-------|----------|
+| `next-forge` | `next-forge/**` | check, test, build | `ci.yml` |
+| `generative-ui` | `GenerativeUI_monorepo/**` | lint, test, build:product | `ci.yml` |
+| `harness-lint` | harness docs | lint-ecl, lint-encoding, stack-paths sync | `ci.yml` |
+| `e2e-smoke` | e2e + ws-contract | Vitest schema tests; Playwright documented as local-only | `ci.yml` (`continue-on-error: true`) |
+
+**Playwright in CI:** Full E2E requires agent-server (:8000) + app (:3100). CI runs schema/contract tests only; run Playwright locally with full stack (`docs/codebase/CONCERNS.md`).
 
 ### 6) Evidence
 
-- `docs/codebase/.codebase-scan.txt`
-- `.github/copilot-instructions.md`
-- `.agents/skills` (Playwright & testing-related skills)
-- `AGENTS.md`
-
-[ASK USER] 2: Confirm whether backend Python tests use pytest or unittest, and whether E2E Playwright runs are included in PR checks or only in nightly CI.
+- `.github/workflows/ci.yml`
+- `scripts/lib/stack-paths.json`
+- `next-forge/packages/schemas/ws-contract.test.ts`
+- `GenerativeUI_monorepo/apps/agent-server/tests/test_schemas_contract.py`
+- `docs/codebase/.codebase-scan.txt` (CI/CD PIPELINES section)

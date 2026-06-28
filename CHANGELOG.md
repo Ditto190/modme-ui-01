@@ -61,7 +61,11 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
-- (GenerativeUI) Pytest golden contract parity for agent-server Pydantic models against `@repo/schemas` fixture
+- (repo) Thermo-nuclear review workflow — skill, runbook, `modme-migration-review` collection, bounded-parallel synthesis report
+- (repo) Molecule index orchestrator (`yarn molecule-index`, `yarn molecule-index:verify`), manifest contract tests, optional CI `molecule-contract` job
+- (repo) PORTING_GUIDE ECL structured changes (component registry, schema crawler, toolset, knowledge, genai-toolbox slices)
+- (next-forge) ADR-0012 bounded parallel agent lifecycle (Gas City pattern); `@repo/schemas` molecule-index branded types
+- (repo) Dual-monorepo audit merge — ECL harness, C4 docs, stack-paths.json, schema contract tests, migration phase-4 docs
 - (GenerativeUI) Hexagonal ports/adapters refactor for agent-server WebSocket and DI wiring
 - (next-forge) Vitest reconnect delay helpers and WebSocket resilience tests for generative UI hook
 - (repo) `yarn verify:generative` CI parity script and GenerativeUI pre-commit/CI suite
@@ -78,6 +82,9 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - (cursor) Cursor marketplace plugin skills under `.cursor/skills/` — thermos, fix-ci, orchestrate, principle-*, voltagent, and related agent workflows
 - (copilot) Expanded root `.github/copilot-instructions.md` for dual-monorepo (next-forge + GenerativeUI) commands and verification workflow
 - (cursor) Additional Claude plugin enables in `.cursor/settings.json` (commit-commands, supabase, typescript-lsp, rust-analyzer-lsp, agent-sdk-dev)
+- (repo) Dual monorepo audit — ECL harness (`harness/`, `yarn lint:harness`), `stack-paths.json`, C4 product docs, refreshed `docs/codebase/*`, schema contract tests, migration phase4 notes
+- (repo) Thermo-nuclear workflow — `thermo-nuclear-monorepo-review` skill, `modme-migration-review` collection, molecule-index orchestrator, ADR-0012 bounded-parallel lifecycle
+- (repo) `yarn molecule-index:verify` + `molecule-contract` CI job; PORTING_GUIDE ECL slices in `docs/migration/porting-guide-slices.md`
 
 ### Changed
 
@@ -87,6 +94,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - (docs) `ARCHITECTURE.md` documents hexagonal ports/adapters layout for agent-server
 - (repo) Pre-push generative lint is advisory on push (full `yarn verify:generative` before PR merge)
 - (docs) `yarn agent:mprocs:generate` canonical name (replaces stale `mprocs:generate` references in orchestration docs)
+- (docs) Slim root `AGENTS.md` (80–120 line map); canonical agent index at `docs/agent-index.md`
 - (repo) **Reconcile `main` with Monorepo_ModMe** — GenUI Workbench (`modme-ui-01` legacy layout) superseded by dual-monorepo stack (`next-forge/` + `GenerativeUI_monorepo/`); unrelated GenUI history retired on default branch
 - (gitignore) Ignore Playwright artifacts, beads embedded Dolt state, local hook state (`.cursor/hooks/state/`), IDE-local dirs (`.claude/`, `.copilot/`), and install manifests; remove erroneous `.cursor/hooks.json` ignore
 

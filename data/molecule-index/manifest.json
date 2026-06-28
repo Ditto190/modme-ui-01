@@ -1,0 +1,150 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-06-28T07:37:45.913Z",
+  "stack": "forge",
+  "schema_version": "1.0.0",
+  "record_kinds": [
+    "ts_ast",
+    "zod_module",
+    "mcp_molecule",
+    "toolset_entry",
+    "knowledge_chunk",
+    "legacy_satellite"
+  ],
+  "stages": [
+    {
+      "stage": "generate_schemas",
+      "ok": true
+    },
+    {
+      "stage": "schema_crawler",
+      "ok": true,
+      "path": "GenerativeUI_monorepo\\apps\\agent-generator\\src\\mcp-registry\\schema-crawler.ts"
+    }
+  ],
+  "molecules": [
+    {
+      "kind": "mcp_molecule",
+      "id": "file_explorer",
+      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "component"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "code_editor",
+      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "component"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "file_manager",
+      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "component"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "git_workspace",
+      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "component"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "knowledge_intake",
+      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "audit"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "web_fetcher",
+      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "component"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "code_pattern_scanner",
+      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "component"
+    },
+    {
+      "kind": "zod_module",
+      "id": "f8a31d497031ed09",
+      "path": "next-forge/packages/schemas/inbox.ts",
+      "semver": "1.0.0",
+      "zod_export": null,
+      "greptime_id": null,
+      "route_hint": "audit"
+    },
+    {
+      "kind": "zod_module",
+      "id": "26cdda3a8d91292b",
+      "path": "next-forge/packages/schemas/index.ts",
+      "semver": "1.0.0",
+      "zod_export": null,
+      "greptime_id": null,
+      "route_hint": "audit"
+    },
+    {
+      "kind": "zod_module",
+      "id": "5427812cbead9dee",
+      "path": "next-forge/packages/schemas/molecule-index.test.ts",
+      "semver": "1.0.0",
+      "zod_export": null,
+      "greptime_id": null,
+      "route_hint": "audit"
+    },
+    {
+      "kind": "zod_module",
+      "id": "bfe50696ee5dc636",
+      "path": "next-forge/packages/schemas/molecule-index.ts",
+      "semver": "1.0.0",
+      "zod_export": null,
+      "greptime_id": null,
+      "route_hint": "audit"
+    },
+    {
+      "kind": "zod_module",
+      "id": "98b4d62406c05385",
+      "path": "next-forge/packages/schemas/schemas.test.ts",
+      "semver": "1.0.0",
+      "zod_export": null,
+      "greptime_id": null,
+      "route_hint": "audit"
+    },
+    {
+      "kind": "zod_module",
+      "id": "d421a98483b43633",
+      "path": "next-forge/packages/schemas/ws-contract.test.ts",
+      "semver": "1.0.0",
+      "zod_export": null,
+      "greptime_id": null,
+      "route_hint": "audit"
+    }
+  ],
+  "source_only": true,
+  "excludes": [
+    "node_modules",
+    ".vendor",
+    "dist"
+  ]
+}

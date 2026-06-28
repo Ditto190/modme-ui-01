@@ -231,6 +231,12 @@ Wire Cursor/Copilot hooks to call `session-logger.ps1 prompt` and new `event` ac
 | Behavioral source of truth | Transcript replay + session-logger, not live model judging |
 | Popularity | Composite score; never rank on installs alone |
 
+## Bounded parallel agent lifecycle
+
+**Accepted:** [ADR-0012 — Bounded parallel agent lifecycle (Gas City pattern)](../../next-forge/docs/adr/0012-bounded-parallel-agent-lifecycle.md)
+
+Thermo-nuclear review teams use plan → execute waves → serial commit. Wave 1 publishes `docs/workflows/reports/manifest.json` before wave-2 thermo reviewers. Runbook: [`docs/workflows/thermo-nuclear-dual-monorepo-review.md`](../workflows/thermo-nuclear-dual-monorepo-review.md).
+
 ## Related paths
 
 - Orchestration: [`docs/evaluation/ORCHESTRATION.md`](ORCHESTRATION.md)
