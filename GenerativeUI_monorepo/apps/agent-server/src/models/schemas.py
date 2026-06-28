@@ -1,10 +1,13 @@
 """
 Pydantic models for the agent server.
-These models mirror the Zod schemas from @generative-ui/shared-schemas
+These models mirror the Zod schemas from @repo/schemas (next-forge).
 """
-from typing import Any, Dict, List, Literal, Optional
-from pydantic import BaseModel, Field
 from datetime import datetime
+from typing import Any, Dict, List, Literal, Optional
+
+from pydantic import BaseModel, Field
+
+GOLDEN_CONTRACT_VERSION = 1
 
 
 class AgentAction(BaseModel):
@@ -16,7 +19,9 @@ class AgentAction(BaseModel):
     type: Literal["create", "update", "delete", "render"] = Field(
         ..., description="Type of action"
     )
-    timestamp: float = Field(..., description="Unix timestamp of when the action occurred")
+    timestamp: int = Field(
+        ..., description="Unix timestamp in milliseconds when the action occurred"
+    )
     componentType: Optional[str] = Field(None, description="Type of UI component to render")
     props: Optional[Dict[str, Any]] = Field(None, description="Properties to pass to the component")
     content: Optional[Any] = Field(None, description="Content or data associated with the action")
@@ -33,6 +38,53 @@ class AgentState(BaseModel):
     )
     error: Optional[str] = Field(None, description="Error message if status is error")
     metadata: Optional[Dict[str, Any]] = Field(None, description="Additional state metadata")
+
+
+class TokenEventPayload(BaseModel):
+    """Streaming token delta emitted during agent runs."""
+
+    delta: str
+    seq: int
+    runId: Optional[str] = None
+
+
+class ToolStartPayload(BaseModel):
+    """Tool invocation start event."""
+
+    name: str
+    callId: str
+    runId: Optional[str] = None
+
+
+class ToolResultPayload(BaseModel):
+    """Tool invocation result event."""
+
+    callId: str
+    output: Any
+    runId: Optional[str] = None
+
+
+class DoneUsage(BaseModel):
+    """Token usage summary on run completion."""
+
+    promptTokens: Optional[int] = None
+    completionTokens: Optional[int] = None
+
+
+class DonePayload(BaseModel):
+    """Run completion event."""
+
+    runId: str
+    usage: Optional[DoneUsage] = None
+
+
+class OptimisticMessage(BaseModel):
+    """Optimistic chat message shown before server confirmation."""
+
+    id: str
+    role: Literal["user", "assistant"]
+    content: str
+    pending: Optional[bool] = None
 
 
 class WebSocketMessage(BaseModel):
@@ -53,9 +105,9 @@ class WebSocketMessage(BaseModel):
         ..., description="Message type"
     )
     payload: Optional[Any] = Field(None, description="Message payload")
-    timestamp: float = Field(
-        default_factory=lambda: datetime.now().timestamp(),
-        description="Unix timestamp"
+    timestamp: int = Field(
+        default_factory=lambda: int(datetime.now().timestamp() * 1000),
+        description="Unix timestamp in milliseconds",
     )
 
 

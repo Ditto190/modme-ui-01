@@ -1,0 +1,81 @@
+{
+  "$schema": "./stack-paths.schema.json",
+  "version": 1,
+  "description": "Canonical path filters for CI (dorny/paths-filter), pre-push verify, and agent orchestration. Single source of truth — do not duplicate globs in ci.yml or path-filter.mjs.",
+  "filters": {
+    "forge": {
+      "prefixes": ["next-forge/"],
+      "ciGlobs": ["next-forge/**"]
+    },
+    "generative": {
+      "prefixes": ["GenerativeUI_monorepo/"],
+      "ciGlobs": ["GenerativeUI_monorepo/**"]
+    },
+    "rootLegacy": {
+      "prefixes": ["src/", "agent/"],
+      "ciGlobs": ["src/**", "agent/**"],
+      "status": "deprecated",
+      "note": "Root GenUI R&D stub — sunset Phase 4; see docs/migration/phase4-cutover.md"
+    },
+    "orchestration": {
+      "prefixes": [
+        "scripts/",
+        "docs/",
+        ".cursor/",
+        ".agents/",
+        ".github/",
+        "harness/",
+        "package.json",
+        "CHANGELOG.md"
+      ],
+      "ciGlobs": [
+        "scripts/**",
+        "docs/**",
+        ".cursor/**",
+        ".agents/**",
+        ".github/**",
+        "harness/**",
+        "package.json",
+        "CHANGELOG.md",
+        "e2e/worktree-smoke/**",
+        ".githooks/**"
+      ]
+    },
+    "harness": {
+      "prefixes": ["harness/", "docs/ECL.md", "docs/STATUS.md", "docs/ARCHITECTURE.md"],
+      "ciGlobs": ["harness/**", "docs/ECL.md", "docs/STATUS.md", "docs/ARCHITECTURE.md", "C4-Documentation/**"]
+    },
+    "e2e": {
+      "prefixes": [
+        "next-forge/tests/e2e/",
+        "next-forge/playwright.config.ts",
+        "next-forge/packages/schemas/ws-contract.test.ts",
+        "next-forge/packages/schemas/molecule-index.test.ts"
+      ],
+      "ciGlobs": [
+        "next-forge/tests/e2e/**",
+        "next-forge/playwright.config.ts",
+        "next-forge/packages/schemas/ws-contract.test.ts",
+        "next-forge/packages/schemas/molecule-index.test.ts",
+        "scripts/molecule-index-orchestrator.mjs",
+        "scripts/__tests__/molecule-index.test.mjs",
+        "data/molecule-index/**"
+      ]
+    },
+    "moleculeContract": {
+      "prefixes": [
+        "next-forge/packages/schemas/",
+        "packages/intake-contracts/",
+        "scripts/molecule-index-orchestrator.mjs",
+        "data/molecule-index/"
+      ],
+      "ciGlobs": [
+        "next-forge/packages/schemas/**",
+        "packages/intake-contracts/**",
+        "scripts/molecule-index*.mjs",
+        "scripts/__tests__/molecule-index.test.mjs",
+        "data/molecule-index/**"
+      ]
+    }
+  }
+}

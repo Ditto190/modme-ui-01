@@ -39,7 +39,8 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 - (scope) Short description (#PR)
 
 ### Changed
-- (scope) Short description
+
+- (repo) Add pre-push verify scripts to worktree hook path (`scripts/pre-push-checks.mjs`, `run-verify-stack.mjs`)- (scope) Short description
 
 ### Fixed
 - (scope) Short description (#issue)
@@ -61,9 +62,19 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
-- (repo) Repo alignment doctor (`yarn repo:doctor`), GitLab mirror workflow, and `docs/repo-alignment.md`
+- (repo) Thermo-nuclear review workflow — skill, runbook, `modme-migration-review` collection, bounded-parallel synthesis report
+- (repo) Molecule index orchestrator (`yarn molecule-index`, `yarn molecule-index:verify`), manifest contract tests, optional CI `molecule-contract` job
+- (repo) PORTING_GUIDE ECL structured changes (component registry, schema crawler, toolset, knowledge, genai-toolbox slices)
+- (next-forge) ADR-0012 bounded parallel agent lifecycle (Gas City pattern); `@repo/schemas` molecule-index branded types
+- (repo) Dual-monorepo audit merge — ECL harness, C4 docs, stack-paths.json, schema contract tests, migration phase-4 docs
+- (GenerativeUI) Hexagonal ports/adapters refactor for agent-server WebSocket and DI wiring
+- (next-forge) Vitest reconnect delay helpers and WebSocket resilience tests for generative UI hook
 - (repo) `yarn verify:generative` CI parity script and GenerativeUI pre-commit/CI suite
 - (repo) Pre-push hook (repo alignment + `--full` verify gate)
+- (repo) Agent terminal orchestration layer — mprocs TUI (`yarn agent:tui`), session envelopes (`agent-session-start/finish`), task registry, extended git hooks, `yarn e2e:worktree-smoke`
+- (repo) Cursor commands `/beads` and `/architecture-decision-records`; session handover at `docs/handover/latest.md`
+- (next-forge) ADR-0011 terminal orchestration without Nx; ADR-0010 dual-store knowledge intake
+- (repo) Unified intake/scrape pipeline — `packages/intake-contracts`, scrape-pipeline, GreptimeDB code index workers, Supabase staging migrations 007–008
 - (repo) Inbox pipeline v1 — contracts (`docs/inbox-pipeline/contracts/`), audit/fix scripts, Supabase migrations, and `@repo/schemas` inbox types
 - (repo) GitHub Agentic Workflows assets (`.github/aw/`, agent definitions, workflow-health and inbox-pipeline-check CI)
 - (repo) GenerativeUI devops-voltagent app, intake-pipeline Python orchestrator, and Playwright test scaffolding
@@ -72,11 +83,20 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - (cursor) Cursor marketplace plugin skills under `.cursor/skills/` — thermos, fix-ci, orchestrate, principle-*, voltagent, and related agent workflows
 - (copilot) Expanded root `.github/copilot-instructions.md` for dual-monorepo (next-forge + GenerativeUI) commands and verification workflow
 - (cursor) Additional Claude plugin enables in `.cursor/settings.json` (commit-commands, supabase, typescript-lsp, rust-analyzer-lsp, agent-sdk-dev)
+- (repo) Dual monorepo audit — ECL harness (`harness/`, `yarn lint:harness`), `stack-paths.json`, C4 product docs, refreshed `docs/codebase/*`, schema contract tests, migration phase4 notes
+- (repo) Thermo-nuclear workflow — `thermo-nuclear-monorepo-review` skill, `modme-migration-review` collection, molecule-index orchestrator, ADR-0012 bounded-parallel lifecycle
+- (repo) `yarn molecule-index:verify` + `molecule-contract` CI job; PORTING_GUIDE ECL slices in `docs/migration/porting-guide-slices.md`
 
 ### Changed
 
+- (repo) Add pre-push verify scripts to worktree hook path (`scripts/pre-push-checks.mjs`, `run-verify-stack.mjs`)
 - (repo) Resolved `AGENTS.md` and `package.json` merge conflicts; dual-monorepo `workspace.code-workspace` layout
 - (ci) GitLab CI aligned with GitHub generative-ui job; pre-commit workflow installs Bun
+- (GenerativeUI) Agent-server WebSocket timestamps aligned to Unix milliseconds to match `@repo/schemas` golden contract
+- (docs) `ARCHITECTURE.md` documents hexagonal ports/adapters layout for agent-server
+- (repo) Pre-push generative lint is advisory on push (full `yarn verify:generative` before PR merge)
+- (docs) `yarn agent:mprocs:generate` canonical name (replaces stale `mprocs:generate` references in orchestration docs)
+- (docs) Slim root `AGENTS.md` (80–120 line map); canonical agent index at `docs/agent-index.md`
 - (repo) **Reconcile `main` with Monorepo_ModMe** — GenUI Workbench (`modme-ui-01` legacy layout) superseded by dual-monorepo stack (`next-forge/` + `GenerativeUI_monorepo/`); unrelated GenUI history retired on default branch
 - (gitignore) Ignore Playwright artifacts, beads embedded Dolt state, local hook state (`.cursor/hooks/state/`), IDE-local dirs (`.claude/`, `.copilot/`), and install manifests; remove erroneous `.cursor/hooks.json` ignore
 
@@ -127,6 +147,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
+- (repo) Add pre-push verify scripts to worktree hook path (`scripts/pre-push-checks.mjs`, `run-verify-stack.mjs`)
 - (ci) Worktree bootstrap (`setup-worktree-windows.ps1`, `setup-worktree-unix.sh`, `new-agent-worktree.ps1`) auto-installs git pre-commit hooks
 - (next-forge) Replace Clerk with Auth.js credentials in `@repo/auth`; replace Neon adapter with Supabase local Postgres + Prisma
 - (docs/ci) Post-restart agent tooling validation: lean-ctx 3.7.5, skills-sh MCP, global skills, changelog-check CI â€” all verified; installed `internal-comms` globally

@@ -218,6 +218,9 @@ function main() {
     runNode("scripts/validate-launch-json.mjs");
     runNode("scripts/validate-launch-json.mjs", ["--require-manifest-sync"]);
     runNode("scripts/validate-cursor-skills.mjs", ["--project-only"]);
+    runNode("scripts/lint-ecl.mjs");
+    runNode("scripts/lint-encoding.mjs");
+    runNode("scripts/lib/validate-stack-paths-ci-sync.mjs");
 
     const ciFiles = stagedFiles();
     runForgeCiSuite(ciFiles);
@@ -254,6 +257,17 @@ function main() {
   const skillsPaths = [".cursor/skills/", ".vendor/", "scripts/cursor-ai/"];
   if (files.some((f) => matchesAny(f, skillsPaths))) {
     runNode("scripts/validate-cursor-skills.mjs", ["--project-only"]);
+  }
+
+  const harnessPaths = ["harness/", "docs/ECL.md", "docs/STATUS.md", "docs/ARCHITECTURE.md", "C4-Documentation/"];
+  if (files.some((f) => matchesAny(f, harnessPaths))) {
+    runNode("scripts/lint-ecl.mjs");
+    runNode("scripts/lint-encoding.mjs");
+  }
+
+  const stackManifestPaths = ["scripts/lib/stack-paths.json", ".github/workflows/ci.yml"];
+  if (files.some((f) => stackManifestPaths.includes(f))) {
+    runNode("scripts/lib/validate-stack-paths-ci-sync.mjs");
   }
 
   runForgeCheckIfNeeded(files);

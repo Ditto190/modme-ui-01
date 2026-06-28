@@ -53,6 +53,16 @@ flowchart TB
 
 Worktrees apply slot offsets via `.worktree-ports.env` (see `docs/multi-agent-worktrees.md`).
 
+### Root legacy stack (deprecated)
+
+| Path | Role | Status |
+|------|------|--------|
+| `src/` | Original Next.js GenUI canvas stub | **Deprecated** — use `next-forge/apps/app` |
+| `agent/` | Python ADK + vendored toolbox | **Deprecated** — use `GenerativeUI_monorepo/apps/agent-server` |
+| Root `package.json` | Meta-orchestration only | Active |
+
+Sunset plan: [`docs/migration/legacy-archive-plan.md`](../migration/legacy-archive-plan.md)
+
 ---
 
 ## Core Sections
