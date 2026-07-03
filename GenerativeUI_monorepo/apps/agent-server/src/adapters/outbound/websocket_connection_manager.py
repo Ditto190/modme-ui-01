@@ -67,8 +67,17 @@ class WebSocketConnectionManager:
             self.disconnect(websocket)
 
     async def broadcast(self, message: WebSocketMessage) -> None:
-        disconnected: set[WebSocket] = set()
-        for connection in self.active_connections:
+        if not self.active_connections:
+            return
+        
+        async def send(conn: WebSocket):
+            try:
+                await conn.send_text(message.model_dump_json())
+            except Exception as e:
+                print(f"Error broadcasting to connection: {e}")
+                self.disconnect(conn)
+
+        await asyncio.gather(*(send(conn) for conn in list(self.active_connections)))
             try:
                 await connection.send_text(message.model_dump_json())
             except Exception as e:
