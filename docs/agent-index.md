@@ -186,6 +186,11 @@ Track and resolve these during onboarding maintenance:
 | CHANGELOG `[Unreleased]` bucket hygiene | Updated |
 | Path filters single manifest | Done — `scripts/lib/stack-paths.json` |
 | Root `src/`/`agent/` legacy status | Documented in AGENTS.md + CONCERNS.md |
+| `harness-setup-dual-monorepo` STATUS vs archive location | Fixed 2026-07-04 — see [`thermo-nuclear-baseline-2026-07-04.md`](workflows/reports/thermo-nuclear-baseline-2026-07-04.md) |
+| GH `generative-ui` job missing agent-server pytest | Open — local `verify-generative-ci.ps1` runs it |
+| Golden fixtures byte-identity (forge vs agent-server) | Open — semantic match only (formatting drift) |
+| Agent-server WS auth on `/ws/agent` | Open — required before production cutover |
+| Triple GenerativeCanvas redundancy | Documented — forge CANONICAL; web-dashboard FREEZE; root ARCHIVE |
 
 ---
 

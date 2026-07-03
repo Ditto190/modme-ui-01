@@ -1,12 +1,22 @@
 # STATUS — Agent Handoff
 
-> Last updated: 2026-06-28 (dual-monorepo audit harness — complete)
+> Last updated: 2026-07-04 (thermo-nuclear baseline review)
 
-## Active structured change
+## Active structured changes
 
-**`harness-setup-dual-monorepo`** — ready to archive after PR merge.
+Five PORTING_GUIDE slices under [`harness/changes/active/`](../harness/changes/active/):
 
-Location: [`harness/changes/active/harness-setup-dual-monorepo/CHANGE.md`](../harness/changes/active/harness-setup-dual-monorepo/CHANGE.md)
+| Slice | Priority (baseline review) |
+|-------|----------------------------|
+| `porting-guide-component-registry` | 1 — complete next |
+| `porting-guide-schema-crawler` | 2 |
+| `porting-guide-toolset-management` | 3 |
+| `porting-guide-knowledge-chromadb` | 4 — park until inbox green |
+| `porting-guide-genai-toolbox` | 5 — document as legacy_satellite only |
+
+## Archived
+
+- **`harness-setup-dual-monorepo`** — in [`harness/changes/archive/harness-setup-dual-monorepo/`](../harness/changes/archive/harness-setup-dual-monorepo/) (STATUS previously listed this as active; drift fixed 2026-07-04).
 
 ## Completed
 
@@ -19,17 +29,21 @@ Location: [`harness/changes/active/harness-setup-dual-monorepo/CHANGE.md`](../ha
 - `yarn verify:all`, `yarn lint:harness` in root package.json
 - Phase 4 + legacy archive plan: [`docs/migration/phase4-cutover.md`](migration/phase4-cutover.md)
 - Baseline recorded: [`docs/audit-baseline.md`](audit-baseline.md)
+- Thermo-nuclear baseline review: [`docs/workflows/reports/thermo-nuclear-baseline-2026-07-04.md`](workflows/reports/thermo-nuclear-baseline-2026-07-04.md)
 
 ## Next agent actions
 
-1. `cd next-forge && npx bun install` then `yarn verify:forge` in worktree
-2. `yarn verify:generative` if GenerativeUI touched
-3. `yarn lint:harness` before commit
-4. Archive change after PR: `node scripts/harness-change.mjs archive harness-setup-dual-monorepo`
+1. Complete `porting-guide-component-registry` acceptance (molecule manifest + Storybook/contract test)
+2. Add agent-server golden pytest to GitHub `generative-ui` job (CI parity gap)
+3. Add WS auth + inbound Pydantic validation on `/ws/agent` before production cutover
+4. Enforce golden fixture byte-identity between forge and agent-server
+5. `yarn lint:harness` before commit; `yarn verify:forge` / `yarn verify:generative` as touched
 
 ## Blockers
 
 - **Baseline debt:** `verify:forge` fails without next-forge `bun install` (ultracite not found)
+- **Disk:** Full worktree checkouts fail when C: is near full; prefer sparse checkout excluding `src/models/gemma3n` until that tree is untracked
+- **Cutover precondition:** Unauthenticated agent-server WebSocket (see baseline report S1/S2)
 
 ## Canonical map
 

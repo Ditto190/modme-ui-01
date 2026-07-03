@@ -1,24 +1,58 @@
 {
+  "run_id": "thermo-nuclear-baseline-2026-07-04",
   "wave": 1,
-  "generated_at": "2026-06-28T12:00:00.000Z",
-  "branch": "feature/cursor/thermo-nuclear-workflow-index",
-  "explorers": {
+  "status": "complete",
+  "blocked_wave_2_until": null,
+  "branch": "feature/cursor/thermo-nuclear-baseline",
+  "head": "e1b58faa9f7d9be01b82c61b0dd3e422413d1a4f",
+  "worktree": "C:\\Users\\dylan\\Monorepo_ModMe-dev\\dev-agent-cursor-thermo-nuclear-baseline",
+  "scope": "full-repo-baseline-redundancy-migration-fit",
+  "exclusions": [
+    "UniversalWorkbench-staging",
+    "UniversalWorkbench-dev"
+  ],
+  "agents": {
     "explorer-forge": {
       "status": "complete",
-      "focus_paths": ["next-forge/apps", "next-forge/packages"],
-      "acquire_docs": ["docs/codebase/ARCHITECTURE.md", "docs/codebase/STRUCTURE.md", "docs/codebase/STACK.md"]
+      "mode": "orchestrator-inline",
+      "summary": "next-forge apps/packages mapped; generative-ui island CANONICAL; @repo/schemas CANONICAL; basehub-types.d.ts 1750L generated waived; no cross-monorepo workspace imports found"
     },
     "explorer-legacy": {
       "status": "complete",
-      "focus_paths": ["GenerativeUI_monorepo/apps", "src", "agent"],
-      "acquire_docs": ["docs/codebase/INTEGRATIONS.md", "docs/migration/phase4-cutover.md"]
+      "mode": "orchestrator-inline",
+      "summary": "web-dashboard FREEZE; agent-server SATELLITE; shared-schemas FREEZE/thin-mirror; root src+agent ARCHIVE; triple GenerativeCanvas confirmed"
     },
     "contract-auditor": {
       "status": "complete",
-      "focus_paths": ["next-forge/packages/schemas", "packages/intake-contracts"],
-      "contracts": ["genui-agent-contract.golden.json", "ws-contract.test.ts"]
+      "mode": "orchestrator-inline",
+      "summary": "Golden fixtures semantically identical (contractVersion 1) but not byte-identical (formatting); root types.ts fully drifted (elements vs actions); shared-schemas mirrors forge Zod shape"
+    },
+    "parallel-code-review-security": {
+      "status": "complete",
+      "mode": "orchestrator-inline",
+      "summary": "WS /ws/agent has no auth; inbound messages not Pydantic-validated; CORS default localhost:3000 only"
+    },
+    "parallel-code-review-performance": {
+      "status": "complete",
+      "mode": "orchestrator-inline",
+      "summary": "Forge use-agent-state has capped exponential reconnect; visibility-reset can restart attempts; no second hook in web-dashboard path audited as primary"
+    },
+    "parallel-code-review-correctness": {
+      "status": "complete",
+      "mode": "orchestrator-inline",
+      "summary": "Schema triple field-aligned for agent contract; golden hash mismatch is whitespace-only; root types.ts incompatible"
+    },
+    "parallel-code-review-readability": {
+      "status": "complete",
+      "mode": "orchestrator-inline",
+      "summary": "GenerativeCanvas 326/227/19 lines; agent/main.py 410L under 1k bar; no hand-written 1k violations in hotspots"
     }
   },
-  "blocked_wave_2_until": "this manifest published",
-  "molecule_manifest": "data/molecule-index/manifest.json"
+  "hotspots_validated": [
+    "triple-generative-canvas",
+    "schema-triple",
+    "component-registry-porting-slices",
+    "ci-parity-gaps"
+  ],
+  "published_at": "2026-07-04T00:00:00Z"
 }

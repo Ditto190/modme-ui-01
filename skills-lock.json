@@ -7,6 +7,24 @@
       "skillPath": "skills/create-voltagent/SKILL.md",
       "computedHash": "c128fdcdf93d5e40fe87e044ba4ca6b78b0251cf4c51b6179699c282906e5a8a"
     },
+    "legacy-modernizer": {
+      "source": "jeffallan/claude-skills",
+      "sourceType": "github",
+      "skillPath": "skills/legacy-modernizer/SKILL.md",
+      "computedHash": "220ecebefbd971b2c33025d67f4fb00ad0ee7598eed717ce5506fa2b9c16369f"
+    },
+    "monorepo-management": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/monorepo-management/SKILL.md",
+      "computedHash": "cf1d2a2c07684475c76e4fcc9ab472f589c5b4e302311b2649e7c210abd28e3c"
+    },
+    "playwright-skill": {
+      "source": "testdino-hq/playwright-skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "b422e6a5e3faf8f57954e88ce949c450caba53ea14d6b9e665fa9fc782c18383"
+    },
     "supabase": {
       "source": "supabase/agent-skills",
       "sourceType": "github",
