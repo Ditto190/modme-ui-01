@@ -30,7 +30,7 @@ yarn pre-commit:check
 ## Worktree-specific
 
 ```powershell
-cd ..\Monorepo_ModMe-dev\dev-agent-cursor-<task>
+cd .worktrees\dev-agent-cursor-<task>
 yarn worktree:doctor -Json
 yarn agent:status --json
 ```

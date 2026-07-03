@@ -209,7 +209,7 @@ $env:LEAN_CTX_PROFILE = "orchestration"   # or inbox-intake | forge-dev
 
 ### Multi-repo workspace
 
-Open **parent** `Monorepo_ModMe` as Cursor workspace. `allow_auto_reroot = true` detects `next-forge/`, `GenerativeUI_monorepo/`, `src/`, `agent/`. Optional `extra_roots = ["../Monorepo_ModMe-dev/dev"]` for persistent dev worktree (skipped when path missing).
+Open **parent** `Monorepo_ModMe` as Cursor workspace. `allow_auto_reroot = true` detects `next-forge/`, `GenerativeUI_monorepo/`, `src/`, `agent/`. Optional `extra_roots = [".worktrees/dev"]` for persistent dev worktree (skipped when path missing).
 
 **Config hierarchy (project-first):**
 
@@ -313,7 +313,7 @@ Seed these via `ctx_knowledge` `remember` (or confirm with `recall`):
 
 | Key                | Value (example)                                                             |
 | ------------------ | --------------------------------------------------------------------------- |
-| `worktree_policy`  | Feature work in `../Monorepo_ModMe-dev/dev-agent-*`, not main checkout      |
+| `worktree_policy`  | Feature work in `.worktrees/dev-agent-*`, not main checkout      |
 | `package_managers` | Root Yarn 3; `next-forge/` Bun; never cross-install                         |
 | `forge_ports`      | app 3100, web 3101, api 3102 (main); worktrees use `.worktree-ports.env`    |
 | `supabase_adr`     | ADR-0002 accepted; ADR-0001 superseded; cloud project modme-next-forge      |

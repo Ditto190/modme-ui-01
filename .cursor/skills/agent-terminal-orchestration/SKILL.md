@@ -39,7 +39,7 @@ yarn agent:status
 
 ## Rules
 
-1. **Never commit on main** — pre-commit blocks; use worktrees under `Monorepo_ModMe-dev/`.
+1. **Never commit on main** — pre-commit blocks; use worktrees under `.worktrees/`.
 2. **Load ports** before `yarn dev:*` in worktrees: `. .\scripts\load-worktree-ports.ps1`.
 3. **Regenerate mprocs** after port reallocation: `yarn agent:mprocs:generate`.
 4. **VerifyStack** uses same path filters as CI (`next-forge/**`, `GenerativeUI_monorepo/**`).
