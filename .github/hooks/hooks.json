@@ -5,6 +5,8 @@
         "bash": "C:/Users/dylan/.gemini/antigravity/bin/lean-ctx.exe hook observe",
         "timeoutSec": 5,
         "type": "command"
-	}
-      ]
+      }
+    ]
+  },
+  "version": 1
 }
