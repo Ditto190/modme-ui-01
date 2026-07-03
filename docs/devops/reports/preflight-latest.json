@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-06-26T21:27:10.394Z",
+  "profile": "fast",
+  "branch": "cursor/ignore-skills-f35ba",
+  "affected": {
+    "forge": false,
+    "generative": false,
+    "inbox": false
+  },
+  "ok": false,
+  "durationMs": 4291,
+  "summary": {
+    "total": 6,
+    "passed": 5,
+    "failed": 1,
+    "skipped": 0,
+    "failureClasses": [
+      "lint"
+    ]
+  },
+  "steps": [
+    {
+      "id": "session-verify",
+      "title": "Session env bootstrap",
+      "status": "passed",
+      "durationMs": 472,
+      "failureClass": "env",
+      "logExcerpt": ""
+    },
+    {
+      "id": "forge-env-verify",
+      "title": "next-forge env keys",
+      "status": "passed",
+      "durationMs": 484,
+      "failureClass": "env",
+      "logExcerpt": ""
+    },
+    {
+      "id": "secret-guard",
+      "title": "No tracked .env files",
+      "status": "passed",
+      "durationMs": 58,
+      "failureClass": "guard",
+      "logExcerpt": ""
+    },
+    {
+      "id": "worktree-doctor",
+      "title": "Worktree health (warn)",
+      "status": "passed",
+      "durationMs": 934,
+      "failureClass": "guard",
+      "logExcerpt": ""
+    },
+    {
+      "id": "scripts-test",
+      "title": "Root script unit tests",
+      "status": "passed",
+      "durationMs": 1326,
+      "failureClass": "unit-test",
+      "logExcerpt": ""
+    },
+    {
+      "id": "forge-check",
+      "title": "next-forge ultracite check",
+      "status": "failed",
+      "durationMs": 1012,
+      "failureClass": "lint",
+      "logExcerpt": "forge-check exited 1"
+    }
+  ]
+}

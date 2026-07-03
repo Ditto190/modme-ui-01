@@ -1,0 +1,50 @@
+# Path globs → PR/issue labels (mirrors scripts/lib/path-filter.mjs)
+# Consumed by .github/labeler.yml and scripts/lib/issue-autotag.mjs
+
+stack:forge:
+  - "next-forge/**"
+
+stack:generative:
+  - "GenerativeUI_monorepo/**"
+
+stack:orchestration:
+  - "scripts/**"
+  - "docs/**"
+  - ".cursor/**"
+  - ".agents/**"
+  - ".github/**"
+  - "package.json"
+  - "CHANGELOG.md"
+  - "mprocs.yaml"
+  - "data/agent-citizens/**"
+
+ci-cd:
+  - ".github/workflows/**"
+  - ".github/actions/**"
+  - ".gitlab/**"
+  - ".gitlab-ci.yml"
+  - "GenerativeUI_monorepo/.gitlab-ci.yml"
+  - ".githooks/**"
+  - "scripts/pre-push-checks.mjs"
+  - "scripts/lib/run-verify-stack.mjs"
+
+documentation:
+  - "**/*.md"
+  - "docs/**"
+  - "README.md"
+  - "AGENTS.md"
+
+testing:
+  - "**/*.test.{ts,tsx,js,jsx,mjs}"
+  - "**/*.spec.{ts,tsx,js,jsx,py}"
+  - "scripts/__tests__/**"
+  - "e2e/**"
+
+security:
+  - ".github/workflows/*security*"
+  - "**/SECURITY.md"
+
+developer-experience:
+  - ".vscode/**"
+  - ".cursor/**"
+  - "scripts/cursor-ai/**"

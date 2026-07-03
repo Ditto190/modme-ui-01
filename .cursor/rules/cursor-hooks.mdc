@@ -1,11 +1,14 @@
 ---
-description: Cursor project hooks — disabled by default (focus-safe)
+description: Cursor project hooks — disabled; lean-ctx enforcement lives in user hooks
 globs: .cursor/hooks/**,.cursor/hooks.json
 ---
 
 # Cursor project hooks
 
-- **Project hooks are disabled.** `.cursor/hooks.json` contains an empty `hooks` map.
-- Cursor hooks with `failClosed: true` were causing blocking errors and have been permanently removed.
+- **Project hooks are disabled.** `.cursor/hooks.json` contains an empty `hooks` map (avoids fail-closed blocking).
+- **lean-ctx enforcement** is in **user-level** `~/.cursor/hooks.json`:
+  - `preToolUse` → `lean-ctx hook redirect` matcher `Read|Grep|Glob`
+  - `preToolUse` → `lean-ctx hook rewrite` matcher `Shell`
+  - `sessionStart` / tool lifecycle → `lean-ctx hook observe`
+- Do not re-enable project hooks without reviewing fail-closed behavior.
 - `scripts/install-cursor-cookbook.ps1` skips hook installation.
-

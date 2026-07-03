@@ -1,0 +1,241 @@
+﻿# ModMe project overrides (tracked template) â€” wins over ~/.config/lean-ctx/config.toml
+# Priority: env vars > this file > global config (see docs/lean-ctx/configuration-reference.md)
+# Data dirs: data/lean-ctx (persistent), logs/lean-ctx (state/journal/tee) via scripts/load-lean-ctx-env.ps1
+# Schema: docs/lean-ctx/config-schema.json | validate: lean-ctx config validate
+
+# â”€â”€ Compression & multi-agent surface â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+compression_level = "max"          # off | lite | standard | max
+memory_profile = "balanced"        # low | balanced | performance
+memory_cleanup = "shared"        # shared = 30min cache retention (multi-IDE / parallel agents)
+max_ram_percent = 5
+max_disk_mb = 1024
+max_staleness_days = 7
+
+tool_profile = "power"           # minimal | standard | power
+proxy_enabled = true
+cache_policy = "aggressive"        # aggressive | safe | off
+minimal_overhead = false           # keep checkpoints + meta for orchestration visibility
+
+# â”€â”€ Adaptive retrieval â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+structure_first = true
+dense_enabled = true
+reference_results = true
+content_defined_chunking = true
+symbol_map_auto = false            # off â€” abbreviations hinder editing
+
+rules_injection = "shared"
+rules_scope = "both"
+agent_token_budget = 500000        # 0 = unlimited
+
+# â”€â”€ Monorepo scan exclusions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+extra_ignore_patterns = [
+    "node_modules/**",
+    "dist/**",
+    ".next/**",
+    "coverage/**",
+    "target/**",
+    "vendor/**",
+    ".vendor/**",
+    "generated/**",
+    "UniversalWorkbench-staging/**",
+    "UniversalWorkbench-dev/**",
+    ".lean-ctx/memory/diary/**",
+    ".tools/**",
+    "data/**",
+    "logs/**",
+    ".firecrawl/**",
+]
+
+bm25_max_cache_mb = 512
+graph_index_max_files = 15000
+
+# â”€â”€ Output & session â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ultra_compact = false
+tee_mode = "failures"              # never | failures | always â€” tee â†’ LEAN_CTX_STATE_DIR/tee/
+output_density = "normal"
+response_verbosity = "full"
+terse_agent = "full"
+savings_footer = "auto"
+checkpoint_interval = 15
+slow_command_threshold_ms = 5000
+journal_enabled = true
+auto_capture = true
+theme = "default"
+preserve_compact_formats = ["toon"]
+bypass_hints = "on"                # nudge when native Read/Grep used
+
+# â”€â”€ Proxy & routing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+buddy_enabled = true
+enable_wakeup_ctx = true
+redirect_exclude = []
+passthrough_urls = []
+excluded_commands = []
+custom_aliases = []
+disabled_tools = []
+default_tool_categories = []
+tools_enabled = []
+no_degrade = false
+
+# â”€â”€ PathJail & workspace â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+allow_paths = []
+extra_roots = []
+allow_auto_reroot = true           # monorepo + worktrees
+
+# â”€â”€ Shell hook & security â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Pipe guard (v2.21.6): auto-bypasses compression when stdout is piped â€” no config key needed
+shell_hook_disabled = false
+shell_activation = "agents-only"   # always | agents-only | off
+shadow_mode = false
+shell_strict_mode = false
+sandbox_level = 0
+
+shell_allowlist_extra = [
+    "gain",
+    "Set-Location",
+    "py",
+    "poetry",
+    "where.exe",
+    "Get-Command",
+    "Test-Path",
+    "Select-Object",
+    "agenttrace",
+    "node",
+    "yarn",
+    "git",
+    "bun",
+    "npx",
+]
+
+update_check_disabled = false
+
+[setup]
+auto_inject_rules = true
+auto_inject_skills = true
+auto_update_mcp = true
+
+[proxy]
+anthropic_upstream = "https://api.anthropic.com"
+
+# Tool Result Archive â€” zero-loss compression (retrieve via ctx_expand)
+# Storage: $LEAN_CTX_DATA_DIR/archive/ (default under data/lean-ctx when env loaded)
+[archive]
+enabled = true
+ephemeral = true
+ephemeral_min_tokens = 2000
+threshold_chars = 800
+max_age_hours = 168                # 7 days â€” multi-session agent work
+max_disk_mb = 1024
+
+[cloud]
+contribute_enabled = true
+
+[gain]
+auto_publish = false
+leaderboard = true
+auto_publish_interval_hours = 24
+
+[autonomy]
+enabled = true
+auto_preload = true
+auto_dedup = true
+auto_related = true
+auto_consolidate = true
+silent_preload = true
+dedup_threshold = 8
+consolidate_every_calls = 20
+consolidate_cooldown_secs = 120
+cognition_loop_enabled = true
+cognition_loop_interval_secs = 3600
+cognition_loop_max_steps = 9
+cognition_synthesis_min_cluster = 3
+
+[providers]
+enabled = true
+auto_index = true
+cache_ttl_secs = 120
+
+[providers.github]
+enabled = true
+
+[providers.gitlab]
+enabled = true
+
+# Loop detection + per-fingerprint throttling + cross-tool search tracking (v3.1.2)
+[loop_detection]
+normal_threshold = 2
+reduced_threshold = 3
+blocked_threshold = 6              # 0 = disabled; block after N identical calls in window
+window_secs = 300
+search_group_limit = 10            # ctx_search + ctx_shell grep + ctx_semantic_search group cap
+
+[loop_detection.tool_total_limits]
+ctx_read = 150
+ctx_search = 100
+ctx_shell = 60
+ctx_semantic_search = 80
+
+[search]
+bm25_weight = 1.0
+dense_weight = 1.0
+bm25_candidates = 75
+dense_candidates = 75
+splade_weight = 0.5
+
+[memory.knowledge]
+max_facts = 300
+max_patterns = 75
+max_history = 150
+contradiction_threshold = 0.5
+recall_facts_limit = 15
+rooms_limit = 30
+timeline_limit = 30
+relations_limit = 50
+
+[memory.episodic]
+max_episodes = 750
+max_actions_per_episode = 50
+summary_max_chars = 200
+
+[memory.procedural]
+min_repetitions = 3
+min_sequence_len = 2
+max_procedures = 150
+max_window_size = 10
+
+[memory.lifecycle]
+decay_rate = 0.01
+low_confidence_threshold = 0.3
+stale_days = 30
+similarity_threshold = 0.85
+
+[memory.embeddings]
+max_facts = 3000
+
+[memory.gotcha]
+max_gotchas_per_project = 150
+retrieval_budget_per_room = 12
+default_decay_rate = 0.03
+
+[boundary_policy]
+cross_project_search = true
+cross_project_import = false
+audit_cross_access = true
+universal_gotchas_enabled = true
+
+[secret_detection]
+enabled = true
+redact = true
+custom_patterns = []
+
+[llm]
+enabled = true
+
+[embedding]
+model = "minilm"
+auto_download = true
+timeout_secs = 10
+
+[updates]
+auto_update = true
+check_interval_hours = 18
+notify_only = false

@@ -1,0 +1,3 @@
+source: packages/intake-contracts/schemas/eval-signal.mjs
+kind: object
+purpose: Intake contract schema for eval_signals themes and impact.

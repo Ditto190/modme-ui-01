@@ -7,11 +7,13 @@ import {
   WebSocketMessageSchema,
 } from "@repo/schemas";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { getReconnectDelay, MAX_RECONNECT_ATTEMPTS } from "./reconnect-delay";
 import { handleAgentWebSocketMessage } from "./websocket-message-handler";
 
 export type AgentRunStatus =
   | "idle"
   | "connecting"
+  | "reconnecting"
   | "streaming"
   | "tool"
   | "done"
@@ -23,6 +25,7 @@ export interface UseAgentStateReturn {
   error: string | null;
   isConnected: boolean;
   optimisticMessages: OptimisticMessage[];
+  reconnectAttempt: number;
   retryConnection: () => void;
   runStatus: AgentRunStatus;
   sendMessage: (message: WebSocketMessage) => void;
@@ -38,6 +41,7 @@ export function useAgentState(): UseAgentStateReturn {
   const [streamingText, setStreamingText] = useState("");
   const [runStatus, setRunStatus] = useState<AgentRunStatus>("idle");
   const [activeRunId, setActiveRunId] = useState<string | null>(null);
+  const [reconnectAttempt, setReconnectAttempt] = useState(0);
   const [optimisticMessages, setOptimisticMessages] = useState<
     OptimisticMessage[]
   >([]);
@@ -45,6 +49,8 @@ export function useAgentState(): UseAgentStateReturn {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const seqRef = useRef(0);
+  const reconnectAttemptsRef = useRef(0);
+  const intentionalCloseRef = useRef(false);
 
   const clearReconnectTimer = useCallback(() => {
     if (reconnectTimerRef.current) {
@@ -52,6 +58,36 @@ export function useAgentState(): UseAgentStateReturn {
       reconnectTimerRef.current = null;
     }
   }, []);
+
+  const scheduleReconnect = useCallback(
+    (reconnect: () => void) => {
+      clearReconnectTimer();
+
+      const attempts = reconnectAttemptsRef.current;
+      if (attempts >= MAX_RECONNECT_ATTEMPTS) {
+        setError(
+          "Unable to reconnect to agent server after multiple attempts. Retry manually."
+        );
+        setRunStatus("error");
+        setReconnectAttempt(attempts);
+        return;
+      }
+
+      setRunStatus("reconnecting");
+      setError((current) => current ?? "Connection lost. Reconnecting…");
+      setReconnectAttempt(attempts + 1);
+
+      const delay = getReconnectDelay(attempts);
+      reconnectAttemptsRef.current += 1;
+
+      reconnectTimerRef.current = setTimeout(() => {
+        if (document.visibilityState === "visible") {
+          reconnect();
+        }
+      }, delay);
+    },
+    [clearReconnectTimer]
+  );
 
   const connectWebSocket = useCallback(() => {
     clearReconnectTimer();
@@ -65,7 +101,9 @@ export function useAgentState(): UseAgentStateReturn {
       wsRef.current = null;
     }
 
-    setRunStatus("connecting");
+    setRunStatus(
+      reconnectAttemptsRef.current > 0 ? "reconnecting" : "connecting"
+    );
 
     try {
       const wsUrl =
@@ -76,6 +114,8 @@ export function useAgentState(): UseAgentStateReturn {
       wsRef.current = websocket;
 
       websocket.onopen = () => {
+        reconnectAttemptsRef.current = 0;
+        setReconnectAttempt(0);
         setIsConnected(true);
         setError(null);
         setRunStatus("idle");
@@ -104,32 +144,41 @@ export function useAgentState(): UseAgentStateReturn {
       websocket.onerror = () => {
         setError("WebSocket connection error");
         setIsConnected(false);
-        setRunStatus("error");
       };
 
-      websocket.onclose = () => {
+      websocket.onclose = (event) => {
         setIsConnected(false);
-        setRunStatus("idle");
         wsRef.current = null;
 
-        reconnectTimerRef.current = setTimeout(() => {
-          if (document.visibilityState === "visible") {
-            connectWebSocket();
-          }
-        }, 3000);
+        if (intentionalCloseRef.current) {
+          intentionalCloseRef.current = false;
+          setRunStatus("idle");
+          return;
+        }
+
+        if (event.code === 1000) {
+          setRunStatus("idle");
+          return;
+        }
+
+        scheduleReconnect(() => connectWebSocketRef.current());
       };
     } catch (err) {
       console.error("Failed to create WebSocket:", err);
       setError("Failed to connect to agent server");
       setRunStatus("error");
     }
-  }, [clearReconnectTimer]);
+  }, [clearReconnectTimer, scheduleReconnect]);
+
+  const connectWebSocketRef = useRef(connectWebSocket);
+  connectWebSocketRef.current = connectWebSocket;
 
   useEffect(() => {
     connectWebSocket();
 
     return () => {
       clearReconnectTimer();
+      intentionalCloseRef.current = true;
       if (wsRef.current) {
         wsRef.current.close();
         wsRef.current = null;
@@ -137,13 +186,43 @@ export function useAgentState(): UseAgentStateReturn {
     };
   }, [connectWebSocket, clearReconnectTimer]);
 
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== "visible") {
+        return;
+      }
+
+      const socket = wsRef.current;
+      if (socket?.readyState === WebSocket.OPEN) {
+        return;
+      }
+
+      if (reconnectAttemptsRef.current >= MAX_RECONNECT_ATTEMPTS) {
+        return;
+      }
+
+      clearReconnectTimer();
+      reconnectAttemptsRef.current = 0;
+      setReconnectAttempt(0);
+      setError(null);
+      connectWebSocket();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [clearReconnectTimer, connectWebSocket]);
+
   const sendMessage = useCallback((message: WebSocketMessage) => {
     const socket = wsRef.current;
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify(message));
-    } else {
-      console.error("WebSocket is not connected");
+      return;
     }
+
+    setError("WebSocket is not connected");
+    console.error("WebSocket is not connected");
   }, []);
 
   const sendUserMessage = useCallback(
@@ -184,9 +263,12 @@ export function useAgentState(): UseAgentStateReturn {
   }, [sendMessage]);
 
   const retryConnection = useCallback(() => {
+    clearReconnectTimer();
+    reconnectAttemptsRef.current = 0;
+    setReconnectAttempt(0);
     setError(null);
     connectWebSocket();
-  }, [connectWebSocket]);
+  }, [clearReconnectTimer, connectWebSocket]);
 
   return {
     state,
@@ -195,6 +277,7 @@ export function useAgentState(): UseAgentStateReturn {
     streamingText,
     runStatus,
     activeRunId,
+    reconnectAttempt,
     optimisticMessages,
     sendMessage,
     sendUserMessage,

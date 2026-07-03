@@ -21,6 +21,7 @@
     "check": "ultracite check",
     "fix": "ultracite fix",
     "test": "turbo test",
+    "test:e2e": "playwright test",
     "analyze": "turbo analyze",
     "translate": "turbo translate",
     "boundaries": "turbo boundaries",

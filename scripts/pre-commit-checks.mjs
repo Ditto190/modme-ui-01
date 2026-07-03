@@ -129,6 +129,7 @@ function spawnForgeBun(args, cwd = FORGE_ROOT) {
   const result = spawnSync("bun", args, {
     cwd,
     stdio: "inherit",
+    shell: isWindows,
   });
   if (result.status !== 0) {
     process.exit(result.status ?? 1);
@@ -218,6 +219,9 @@ function main() {
     runNode("scripts/validate-launch-json.mjs");
     runNode("scripts/validate-launch-json.mjs", ["--require-manifest-sync"]);
     runNode("scripts/validate-cursor-skills.mjs", ["--project-only"]);
+    runNode("scripts/lint-ecl.mjs");
+    runNode("scripts/lint-encoding.mjs");
+    runNode("scripts/lib/validate-stack-paths-ci-sync.mjs");
 
     const ciFiles = stagedFiles();
     runForgeCiSuite(ciFiles);
@@ -256,6 +260,17 @@ function main() {
     runNode("scripts/validate-cursor-skills.mjs", ["--project-only"]);
   }
 
+  const harnessPaths = ["harness/", "docs/ECL.md", "docs/STATUS.md", "docs/ARCHITECTURE.md", "C4-Documentation/"];
+  if (files.some((f) => matchesAny(f, harnessPaths))) {
+    runNode("scripts/lint-ecl.mjs");
+    runNode("scripts/lint-encoding.mjs");
+  }
+
+  const stackManifestPaths = ["scripts/lib/stack-paths.json", ".github/workflows/ci.yml"];
+  if (files.some((f) => stackManifestPaths.includes(f))) {
+    runNode("scripts/lib/validate-stack-paths-ci-sync.mjs");
+  }
+
   runForgeCheckIfNeeded(files);
 
   if (isFull) {
@@ -266,6 +281,11 @@ function main() {
   const inboxPaths = ["GenerativeUI_monorepo/docs/inbox/"];
   if (files.some((f) => matchesAny(f, inboxPaths))) {
     runNode("scripts/inbox-audit.mjs", ["--lens", "funnel"]);
+  }
+
+  const leanCtxPaths = [".cursor/hooks/", "state/lean-ctx-session-markers.jsonl"];
+  if (files.some((f) => matchesAny(f, leanCtxPaths))) {
+    runNode("scripts/run-lean-ctx-intake.mjs", []);
   }
 
   ok("staged changes passed pre-commit checks");

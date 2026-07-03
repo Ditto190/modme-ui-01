@@ -1,0 +1,29 @@
+# lean-ctx global baseline (copy to ~/.config/lean-ctx/config.toml)
+# ModMe project overrides live in Monorepo_ModMe/.lean-ctx.toml — run `yarn lean-ctx:trust` once per clone.
+# Priority: env vars > <repo>/.lean-ctx.toml > this file
+
+compression_level = "standard"
+memory_profile = "balanced"
+tool_profile = "power"
+proxy_enabled = true
+shell_activation = "agents-only"
+shadow_mode = false
+minimal_overhead = true
+journal_enabled = true
+auto_capture = true
+buddy_enabled = true
+enable_wakeup_ctx = true
+allow_auto_reroot = true
+update_check_disabled = false
+
+shell_allowlist_extra = [
+    "Set-Location",
+    "Get-Command",
+    "Test-Path",
+    "Select-Object",
+    "node",
+    "yarn",
+    "git",
+    "bun",
+    "npx",
+]

@@ -1,0 +1,88 @@
+# ModMe lean-ctx task profiles (orchestration metadata)
+# Not lean-ctx 3.8.15 schema keys — loaded by skills and orchestration scripts.
+# Activate: $env:LEAN_CTX_PROFILE = "observability-work"
+
+[task_profiles.observability-work]
+compression_level = "standard"
+tee_mode = "always"
+debug_log = true
+focus_paths = [
+  "scripts/telemetry/",
+  "scripts/telemetry-cli.mjs",
+  "scripts/telemetry-audit.mjs",
+  "scripts/lib/telemetry-bridge.mjs",
+  "scripts/dsp-cli.py",
+  "scripts/agent-session-start.ps1",
+  "scripts/agent-session-finish.ps1",
+  "next-forge/packages/observability/",
+  "next-forge/packages/schemas/observability.ts",
+  "next-forge/packages/schemas/fixtures/observability-contract.golden.json",
+  "docs/evaluation/",
+  "docs/observability/",
+  "docs/inbox-pipeline/contracts/observability-contract.v1.json",
+  "docs/inbox-pipeline/contracts/expectations/observability.v1.json",
+  "src/lib/observability/",
+  "agent/observability/",
+  ".dsp/",
+]
+lean_ctx_profile = "observability-work"
+
+[task_profiles.session-audit]
+focus_paths = [
+  "logs/",
+  "docs/evaluation/",
+  "scripts/agent-audit.mjs",
+  "scripts/agent-eval-collect.mjs",
+  "scripts/agent-eval-report.mjs",
+  "scripts/telemetry/telemetry-cli.mjs",
+  "scripts/telemetry-audit.mjs",
+]
+lean_ctx_profile = "session-audit"
+tee_mode = "always"
+include_paths = ["logs/**", "logs/copilot/**", "logs/eval/**", "logs/agent-orchestrator/**"]
+
+[task_profiles.url-capture-intake]
+compression_level = "standard"
+tee_mode = "always"
+focus_paths = [
+  "GenerativeUI_monorepo/docs/inbox/shopping-list.md",
+  "GenerativeUI_monorepo/scrape-pipeline/",
+  "docs/inbox-pipeline/",
+  "scripts/scrape-orchestrator.mjs",
+  "scripts/scrape-classify.mjs",
+  "scripts/scrape-promote.mjs",
+  "scripts/intake-orchestrator.mjs",
+  "packages/intake-contracts/",
+  ".firecrawl/",
+]
+lean_ctx_profile = "url-capture-intake"
+
+[task_profiles.thermo-nuclear-review]
+compression_level = "standard"
+tee_mode = "always"
+focus_paths = [
+  "next-forge/",
+  "GenerativeUI_monorepo/apps/agent-server/",
+  "GenerativeUI_monorepo/apps/web-dashboard/",
+  "docs/codebase/",
+  "C4-Documentation/",
+  "harness/",
+  "scripts/lib/stack-paths.json",
+  "docs/workflows/",
+  "scripts/collections/modme-migration-review.collection.json",
+]
+lean_ctx_profile = "thermo-nuclear-review"
+
+[task_profiles.molecule-index]
+compression_level = "max"
+tee_mode = "always"
+focus_paths = [
+  "GenerativeUI_monorepo/UniversalWorkbench/generate_schemas.py",
+  "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/",
+  "scripts/code-index-orchestrator.mjs",
+  "scripts/molecule-index-orchestrator.mjs",
+  "packages/intake-contracts/",
+  "data/molecule-index/",
+  "next-forge/packages/schemas/",
+]
+lean_ctx_profile = "molecule-index"

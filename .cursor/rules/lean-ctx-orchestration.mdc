@@ -1,0 +1,55 @@
+---
+description: "Multi-agent lean-ctx orchestration — CEP+CCP+A2A, ctx_agent register, async telemetry"
+alwaysApply: false
+globs: "scripts/agent-session-*.ps1,scripts/beads-bfs-dispatch.mjs,scripts/lean-ctx-*.mjs,scripts/lean-ctx-*.ps1"
+---
+
+# lean-ctx Multi-Agent Orchestration (ModMe)
+
+Complements [lean-ctx.mdc](./lean-ctx.mdc) for parallel worktrees and terminal orchestration.
+
+## Protocol stack
+
+Per [Which Protocol When](https://leanctx.com/docs/concepts/protocols/#which-protocol-when):
+
+| Scenario | Protocols |
+| Multi-agent parallel work | **CEP + CCP + A2A** |
+| Single task with clear goal | **CLP** (ctx_preload when task is set) |
+
+## Session start
+
+1. `yarn agent:session:start` (or `.\scripts\agent-session-start.ps1`) — loads lean-ctx env + beads
+2. `node scripts/lean-ctx-agent-catalog.mjs register --role dev` — A2A catalog snapshot
+3. MCP: `ctx_agent` `register` (agent_type, role) + `ctx_preload` when task is clear
+4. MCP: `ctx_session` `load` + `ctx_knowledge` `wakeup`
+5. Optional: `-BootstrapIntelligence` → `.\scripts\lean-ctx-session-bootstrap.ps1` (graph + index + wakeup)
+
+## Parallel dispatch
+
+```powershell
+yarn beads:bfs:dry          # inspect BFS layers before dispatch
+yarn agent:session:start -TaskTitle "..." -ClaimPaths @("next-forge/apps/app/")
+```
+
+Use collection `role` fields from `scripts/collections/*.collection.json` and catalog `resolve --intent "..."`.
+
+## Scent field (local A2A)
+
+Buddy mode + scent CLAIM/DONE for path coordination — **no Remote Agent Bus** in Phase 1.
+
+- Claim paths via `-ClaimPaths` on session start (agent-task-registry)
+- Diary: `ctx_agent` `diary` category `progress` | `blocker` | `decision`
+
+## Session end
+
+1. MCP: `ctx_session` `save` + `ctx_knowledge` `consolidate`
+2. `yarn agent:session:finish` — async telemetry (non-blocking `Start-Job`)
+3. Optional: `.\scripts\lean-ctx-prove-it.ps1` for savings + scorecard
+
+## Intelligence routing
+
+See [docs/lean-ctx/intelligence-routing.md](../../docs/lean-ctx/intelligence-routing.md) and [mcp-tool-catalog.md](../../docs/lean-ctx/mcp-tool-catalog.md).
+
+## Task profiles
+
+Activate via `$env:LEAN_CTX_PROFILE` (see `data/lean-ctx-task-profiles.toml.example`).

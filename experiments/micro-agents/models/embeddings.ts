@@ -11,7 +11,7 @@
  * - Existing EmbeddingService (scripts/knowledge-management/embeddings/)
  */
 
-import { FeatureExtractionPipeline, pipeline } from "@huggingface/transformers";
+import { FeatureExtractionPipeline, pipeline } from "@xenova/transformers";
 import * as fs from "fs/promises";
 import { greptimeClient, GreptimeEmbeddingRecord } from "./greptimedb_client";
 
@@ -127,7 +127,10 @@ export class UnifiedEmbeddingService {
       console.error(
         `Loading embedding model: ${config.name} (${config.modelId})...`
       );
-      const extractor = await pipeline(config.task, config.modelId);
+      const extractor = (await pipeline(
+        config.task as 'feature-extraction',
+        config.modelId
+      )) as import('@xenova/transformers').FeatureExtractionPipeline;
       this.extractors.set(modelKey, extractor);
       console.error(
         `Model loaded successfully (${config.dimension}-dim, ~${config.memoryMB}MB)`
@@ -166,7 +169,7 @@ export class UnifiedEmbeddingService {
         pooling: "mean",
         normalize: true,
       });
-      const embedding = Array.from(result.data);
+      const embedding = Array.from(result.data as ArrayLike<number>);
 
       // Cache the result
       this.cache.set(cacheKey, embedding);

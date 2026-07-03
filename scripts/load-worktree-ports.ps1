@@ -20,7 +20,7 @@ Options:
   -RepoRoot <path>   Worktree root (default: parent of scripts/)
 
 Examples:
-  cd ..\Monorepo_ModMe-dev\dev-agent-cursor-my-task
+  cd .worktrees\dev-agent-cursor-my-task
   . .\scripts\load-worktree-ports.ps1
   yarn dev:forge:core
 "@

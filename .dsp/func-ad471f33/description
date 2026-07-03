@@ -1,0 +1,3 @@
+source: scripts/telemetry/telemetry-cli.mjs#report
+kind: function
+purpose: Render observability HTML report and catalogue artefact.

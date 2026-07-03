@@ -17,22 +17,22 @@ Worktrees give each agent its own folder, branch, `node_modules`, poetry venv, a
 
 Two complementary layers share naming, branches, and port logic:
 
-| Layer | Mechanism | Who uses it |
-|-------|-----------|-------------|
-| **Cursor auto-bootstrap** | [`.cursor/worktrees.json`](../.cursor/worktrees.json) + setup scripts | Cursor Agents Window, Editor `/worktree`, `/best-of-n`, CLI worktrees |
-| **Explicit Git worktrees** | `scripts/init-worktrees.ps1`, `new-agent-worktree.ps1` | Copilot, Claude Code, Antigravity, humans opening folders manually |
+| Layer                      | Mechanism                                                             | Who uses it                                                           |
+| -------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| **Cursor auto-bootstrap**  | [`.cursor/worktrees.json`](../.cursor/worktrees.json) + setup scripts | Cursor Agents Window, Editor `/worktree`, `/best-of-n`, CLI worktrees |
+| **Explicit Git worktrees** | `scripts/init-worktrees.ps1`, `new-agent-worktree.ps1`                | Copilot, Claude Code, Antigravity, humans opening folders manually    |
 
 ### Directory layout
 
 ```
 Monorepo_ModMe/                    ← main (review/merge only)
-Monorepo_ModMe-dev/
-  dev/                             ← persistent `dev` branch checkout
-  dev-agent-cursor-<task>/
-  dev-agent-copilot-<task>/
-  dev-agent-claude-<task>/
-  dev-agent-antigravity-<task>/
-  dev-agent-human-<task>/
+  .worktrees/
+    dev/                           ← persistent `dev` branch checkout
+    dev-agent-cursor-<task>/
+    dev-agent-copilot-<task>/
+    dev-agent-claude-<task>/
+    dev-agent-antigravity-<task>/
+    dev-agent-human-<task>/
 ```
 
 Branch naming: `feature/<owner>/<task>` (e.g. `feature/cursor/auth-fix`).
@@ -62,7 +62,7 @@ From the **main** checkout:
 .\scripts\init-worktrees.ps1
 ```
 
-Creates `../Monorepo_ModMe-dev/dev` on the `dev` branch. Optionally add staging:
+Creates `.worktrees/dev` on the `dev` branch. Optionally add staging:
 
 ```powershell
 .\scripts\init-worktrees.ps1 -IncludeStaging
@@ -97,24 +97,27 @@ When finishing a prototype session:
 
 ```powershell
 yarn worktree:doctor              # optional pre-flight in worktree
+yarn agent:session:start          # optional if not auto-started by Cursor setup
+yarn agent:status                 # worktree + ports + doctor summary
 yarn check:forge                  # fast next-forge lint during iteration
 yarn verify:forge                 # full CI parity before opening PR
+.\scripts\agent-session-finish.ps1 -VerifyStack  # envelope + agenttrace + vibe finish
 .\scripts\vibe-session-finish.ps1 # prefer direct script in worktrees
 # Agents (non-interactive):
-.\scripts\vibe-session-finish.ps1 -Yes -CommitMessage "feat(scope): summary" -Push -CreatePr
+.\scripts\agent-session-finish.ps1 -Yes -CommitMessage "feat(scope): summary" -Push -CreatePr -VerifyStack
 # Preview: .\scripts\vibe-session-finish.ps1 -DryRun -SkipPull
 ```
 
-See [`.agents/skills/smart-git-automation/SKILL.md`](../.agents/skills/smart-git-automation/SKILL.md). Branch creation stays on `new-agent-worktree.ps1` / `/worktree` — smart-git is for commit/PR only.
+See [`docs/agent-terminal-orchestration.md`](agent-terminal-orchestration.md). Branch creation stays on `new-agent-worktree.ps1` / `/worktree` — smart-git is for commit/PR only.
 
 ### Cursor Editor commands
 
-| Command | Purpose |
-|---------|---------|
-| `/worktree <task>` | Create worktree for a task |
-| `/best-of-n` | Parallel attempts in isolated worktrees |
-| `/apply-worktree` | Apply worktree changes to main |
-| `/delete-worktree` | Remove a Cursor-managed worktree |
+| Command            | Purpose                                 |
+| ------------------ | --------------------------------------- |
+| `/worktree <task>` | Create worktree for a task              |
+| `/best-of-n`       | Parallel attempts in isolated worktrees |
+| `/apply-worktree`  | Apply worktree changes to main          |
+| `/delete-worktree` | Remove a Cursor-managed worktree        |
 
 ### VS Code Copilot
 
@@ -122,7 +125,7 @@ See [`.agents/skills/smart-git-automation/SKILL.md`](../.agents/skills/smart-git
 .\scripts\new-agent-worktree.ps1 -Name "auth-fix" -Owner copilot
 ```
 
-Open `../Monorepo_ModMe-dev/dev-agent-copilot-auth-fix` in VS Code.
+Open `.worktrees/dev-agent-copilot-auth-fix` in VS Code.
 
 ### Claude Code
 
@@ -152,13 +155,13 @@ Open the generated folder in Claude Code.
 
 [`scripts/worktree-allocate-ports.ps1`](../scripts/worktree-allocate-ports.ps1) derives a stable **slot** (0–9) from the worktree folder name hash and writes [`.worktree-ports.env`](../.worktree-ports.env):
 
-| Variable | Base (main) | Offset |
-|----------|-------------|--------|
-| `VIBE_WEB_PORT` | 3000 | + slot × 10 |
-| `WEB_DASHBOARD_PORT` | 3001 | + slot × 10 |
-| `AGENT_SERVER_PORT` | 8000 | + slot × 10 |
-| `EXAMPLE_NEXT_PORT` | 3002 | + slot × 10 |
-| `EXAMPLE_REACT_PORT` | 3003 | + slot × 10 |
+| Variable             | Base (main) | Offset      |
+| -------------------- | ----------- | ----------- |
+| `VIBE_WEB_PORT`      | 3000        | + slot × 10 |
+| `WEB_DASHBOARD_PORT` | 3001        | + slot × 10 |
+| `AGENT_SERVER_PORT`  | 8000        | + slot × 10 |
+| `EXAMPLE_NEXT_PORT`  | 3002        | + slot × 10 |
+| `EXAMPLE_REACT_PORT` | 3003        | + slot × 10 |
 
 Example (slot 3): dashboard `3031`, agent server `8030`.
 
@@ -193,20 +196,20 @@ Main checkout debugging uses [`.vscode/launch.json`](../.vscode/launch.json) bas
 
 ## Management scripts
 
-| Script | Purpose |
-|--------|---------|
-| [`init-worktrees.ps1`](../scripts/init-worktrees.ps1) | One-time dev worktree root |
-| [`new-agent-worktree.ps1`](../scripts/new-agent-worktree.ps1) | Create agent worktree + branch + ports + env |
-| [`list-worktrees.ps1`](../scripts/list-worktrees.ps1) | List worktrees with assigned ports |
-| [`remove-agent-worktree.ps1`](../scripts/remove-agent-worktree.ps1) | Safe removal; optional `-DeleteBranch` |
-| [`worktree-allocate-ports.ps1`](../scripts/worktree-allocate-ports.ps1) | Regenerate `.worktree-ports.env` |
-| [`worktree-copy-env.ps1`](../scripts/worktree-copy-env.ps1) | Copy `.env` by name from main checkout |
-| [`ensure-worktree.ps1`](../scripts/ensure-worktree.ps1) | Fail (or warn with `-WarnOnly`) if cwd is main checkout |
-| [`migrate-main-to-worktree.ps1`](../scripts/migrate-main-to-worktree.ps1) | Stash main-checkout changes → new worktree → stash pop |
-| [`worktree-doctor.ps1`](../scripts/worktree-doctor.ps1) | Pre-flight: checkout, yarn.lock, ports, gh, Supabase env (`-Fix`, `-Json`) |
-| [`load-worktree-ports.ps1`](../scripts/load-worktree-ports.ps1) | Dot-source `.worktree-ports.env` into current pwsh session |
-| [`agent-workspace-tmux.sh`](../scripts/agent-workspace-tmux.sh) | WSL/Linux tmux dashboard: `status`, `layout`, `attach` |
-| [`vibe-session-finish.ps1`](../scripts/vibe-session-finish.ps1) | Session end: sync, group, pre-commit, commit, push, PR to `dev` |
+| Script                                                                    | Purpose                                                                    |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [`init-worktrees.ps1`](../scripts/init-worktrees.ps1)                     | One-time dev worktree root                                                 |
+| [`new-agent-worktree.ps1`](../scripts/new-agent-worktree.ps1)             | Create agent worktree + branch + ports + env                               |
+| [`list-worktrees.ps1`](../scripts/list-worktrees.ps1)                     | List worktrees with assigned ports                                         |
+| [`remove-agent-worktree.ps1`](../scripts/remove-agent-worktree.ps1)       | Safe removal; optional `-DeleteBranch`                                     |
+| [`worktree-allocate-ports.ps1`](../scripts/worktree-allocate-ports.ps1)   | Regenerate `.worktree-ports.env`                                           |
+| [`worktree-copy-env.ps1`](../scripts/worktree-copy-env.ps1)               | Copy `.env` by name from main checkout                                     |
+| [`ensure-worktree.ps1`](../scripts/ensure-worktree.ps1)                   | Fail (or warn with `-WarnOnly`) if cwd is main checkout                    |
+| [`migrate-main-to-worktree.ps1`](../scripts/migrate-main-to-worktree.ps1) | Stash main-checkout changes → new worktree → stash pop                     |
+| [`worktree-doctor.ps1`](../scripts/worktree-doctor.ps1)                   | Pre-flight: checkout, yarn.lock, ports, gh, Supabase env (`-Fix`, `-Json`) |
+| [`load-worktree-ports.ps1`](../scripts/load-worktree-ports.ps1)           | Dot-source `.worktree-ports.env` into current pwsh session                 |
+| [`agent-workspace-tmux.sh`](../scripts/agent-workspace-tmux.sh)           | WSL/Linux tmux dashboard: `status`, `layout`, `attach`                     |
+| [`vibe-session-finish.ps1`](../scripts/vibe-session-finish.ps1)           | Session end: sync, group, pre-commit, commit, push, PR to `dev`            |
 
 List all worktrees:
 
@@ -217,7 +220,7 @@ List all worktrees:
 Remove when merged:
 
 ```powershell
-.\scripts\remove-agent-worktree.ps1 -Path "C:\Users\...\Monorepo_ModMe-dev\dev-agent-cursor-auth-fix"
+.\scripts\remove-agent-worktree.ps1 -Path "C:\Users\...\Monorepo_ModMe\.worktrees\dev-agent-cursor-auth-fix"
 # Optional: -DeleteBranch after merge
 ```
 
@@ -260,7 +263,7 @@ Open [`workspace.code-workspace`](../workspace.code-workspace) so IDE roots matc
 
 ### Main checkout policy
 
-Agents and humans should **not** implement features in `Monorepo_ModMe/` (the main checkout). Use a worktree under `../Monorepo_ModMe-dev/` instead.
+Agents and humans should **not** implement features in `Monorepo_ModMe/` (the main checkout). Use a worktree under `.worktrees/` instead.
 
 Verify before starting feature work:
 
@@ -284,7 +287,7 @@ If main is not on `dev`, prefer `-FromCurrentBranch` to attach the worktree to t
 ```powershell
 .\scripts\migrate-main-to-worktree.ps1 -Name "my-task" -Owner cursor -FromCurrentBranch
 
-cd ..\Monorepo_ModMe-dev\dev-agent-cursor-my-task
+cd .worktrees\dev-agent-cursor-my-task
 yarn vibe:finish
 ```
 
@@ -298,18 +301,18 @@ Use `-DryRun` to preview steps without mutating Git.
 
 Run commands from the **correct checkout and folder**. Wrong cwd is the most common terminal failure in shared codespaces.
 
-| Goal | Checkout | Directory | Command |
-|------|----------|-----------|---------|
-| Feature implementation | worktree under `Monorepo_ModMe-dev/` | worktree root | `yarn worktree:ensure` then edit |
-| Pre-flight / fix yarn in worktree | worktree | worktree root | `yarn worktree:doctor` / `yarn worktree:doctor:fix` |
-| Load dev ports | worktree | worktree root | `. .\scripts\load-worktree-ports.ps1` |
-| next-forge dev / verify | worktree | **repo root** | `yarn dev:forge:core`, `yarn verify:forge` |
-| next-forge package scripts | worktree | `next-forge/` | `npx bun run …` (Bun, not root yarn) |
-| Prisma / database package | worktree | `next-forge/packages/database/` | `npx bun run db:push` (needs `.env` there) |
-| Root intake / catalogue | worktree | **repo root** | `yarn intake` (needs root `.env` Supabase vars) |
-| Supabase CLI status | worktree | `next-forge/` | `npx bunx supabase status -o env` |
-| Session finish (commit/PR) | worktree | worktree root | `.\scripts\vibe-session-finish.ps1` (prefer over `yarn vibe:finish` if yarn.lock missing) |
-| Review / merge only | main `Monorepo_ModMe/` | main root | no feature edits |
+| Goal                              | Checkout                     | Directory                       | Command                                                                                   |
+| --------------------------------- | ---------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------- |
+| Feature implementation            | worktree under `.worktrees/` | worktree root                   | `yarn worktree:ensure` then edit                                                          |
+| Pre-flight / fix yarn in worktree | worktree                     | worktree root                   | `yarn worktree:doctor` / `yarn worktree:doctor:fix`                                       |
+| Load dev ports                    | worktree                     | worktree root                   | `. .\scripts\load-worktree-ports.ps1`                                                     |
+| next-forge dev / verify           | worktree                     | **repo root**                   | `yarn dev:forge:core`, `yarn verify:forge`                                                |
+| next-forge package scripts        | worktree                     | `next-forge/`                   | `npx bun run …` (Bun, not root yarn)                                                      |
+| Prisma / database package         | worktree                     | `next-forge/packages/database/` | `npx bun run db:push` (needs `.env` there)                                                |
+| Root intake / catalogue           | worktree                     | **repo root**                   | `yarn intake` (needs root `.env` Supabase vars)                                           |
+| Supabase CLI status               | worktree                     | `next-forge/`                   | `npx bunx supabase status -o env`                                                         |
+| Session finish (commit/PR)        | worktree                     | worktree root                   | `.\scripts\vibe-session-finish.ps1` (prefer over `yarn vibe:finish` if yarn.lock missing) |
+| Review / merge only               | main `Monorepo_ModMe/`       | main root                       | no feature edits                                                                          |
 
 **Package managers:** root = Yarn 3; `next-forge/` = Bun. Never run `yarn install` inside `next-forge/` or `bun install` at repo root.
 
@@ -319,13 +322,13 @@ Run commands from the **correct checkout and folder**. Wrong cwd is the most com
 
 Scripts follow [cli-for-agents](https://github.com/cursor/plugins/tree/main/cli-for-agents) patterns: flags first, layered `--help`, dry-run, machine output where useful.
 
-| Script | Non-interactive flags | Help |
-|--------|----------------------|------|
-| `ensure-worktree.ps1` | `-WarnOnly` | `-Help` |
-| `migrate-main-to-worktree.ps1` | `-DryRun` | `-Help` |
-| `worktree-doctor.ps1` | `-Fix`, `-Json`, `-Quiet` | `-Help` |
-| `vibe-session-finish.ps1` | `-DryRun`, `-Yes`, `-CommitMessage`, `-Push`, `-CreatePr` | `-Help` |
-| `remove-agent-worktree.ps1` | `-Yes`, `-Force` | `-Help` |
+| Script                         | Non-interactive flags                                     | Help    |
+| ------------------------------ | --------------------------------------------------------- | ------- |
+| `ensure-worktree.ps1`          | `-WarnOnly`                                               | `-Help` |
+| `migrate-main-to-worktree.ps1` | `-DryRun`                                                 | `-Help` |
+| `worktree-doctor.ps1`          | `-Fix`, `-Json`, `-Quiet`                                 | `-Help` |
+| `vibe-session-finish.ps1`      | `-DryRun`, `-Yes`, `-CommitMessage`, `-Push`, `-CreatePr` | `-Help` |
+| `remove-agent-worktree.ps1`    | `-Yes`, `-Force`                                          | `-Help` |
 
 **Agent session finish (headless):**
 
@@ -375,11 +378,11 @@ Agent terminals should respect `.worktree-ports.env` when starting dev servers.
 
 ## Cleanup
 
-| Action | When |
-|--------|------|
-| `remove-agent-worktree.ps1` | Task merged or abandoned |
-| `git worktree prune` | Orphaned worktree metadata |
-| Cursor auto-cleanup | Every 6 hours; max 25 Cursor-managed worktrees |
+| Action                      | When                                           |
+| --------------------------- | ---------------------------------------------- |
+| `remove-agent-worktree.ps1` | Task merged or abandoned                       |
+| `git worktree prune`        | Orphaned worktree metadata                     |
+| Cursor auto-cleanup         | Every 6 hours; max 25 Cursor-managed worktrees |
 
 **Disk note:** Each worktree has its own `node_modules` and poetry venv (~GB each). Prune stale folders regularly.
 

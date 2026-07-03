@@ -15,19 +15,27 @@ function Get-WorktreeContext {
     $gitCommonDir = Join-Path $RepoRoot $gitCommonDir
   }
 
-  $mainRepoRoot = Split-Path -Parent (Resolve-Path $gitCommonDir)
-  $devRootName = "$(Split-Path -Leaf $mainRepoRoot)-dev"
-  $devRootPath = Join-Path (Split-Path -Parent $mainRepoRoot) $devRootName
-  $parentName = Split-Path -Leaf (Split-Path -Parent $RepoRoot)
+  $mainRepoRoot = (Resolve-Path (Split-Path -Parent $gitCommonDir)).Path
+  $worktreesRoot = Join-Path $mainRepoRoot ".worktrees"
+  $repoRootResolved = (Resolve-Path $RepoRoot).Path
   $branch = (git -C $RepoRoot branch --show-current 2>$null).Trim()
 
+  $isWorktree = $false
+  if (Test-Path $worktreesRoot) {
+    $worktreesRootResolved = (Resolve-Path $worktreesRoot).Path
+    $isWorktree = $repoRootResolved.StartsWith($worktreesRootResolved, [StringComparison]::OrdinalIgnoreCase)
+  }
+
   [PSCustomObject]@{
-    RepoRoot     = (Resolve-Path $RepoRoot).Path
-    MainRepoRoot = $mainRepoRoot
-    DevRootName  = $devRootName
-    DevRootPath  = $devRootPath
-    IsWorktree   = ($parentName -eq $devRootName)
-    IsMainCheckout = ($parentName -ne $devRootName)
-    Branch       = $branch
+    RepoRoot       = $repoRootResolved
+    MainRepoRoot   = $mainRepoRoot
+    WorktreesRoot  = $worktreesRoot
+    DevCheckout    = Join-Path $worktreesRoot "dev"
+    IsWorktree     = $isWorktree
+    IsMainCheckout = ($repoRootResolved -eq $mainRepoRoot)
+    Branch         = $branch
+    # Legacy alias for scripts that still reference DevRootPath
+    DevRootPath    = $worktreesRoot
+    DevRootName    = ".worktrees"
   }
 }

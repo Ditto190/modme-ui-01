@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "archiveThreshold": 5,
+  "lastEvolveCheck": null,
+  "pendingEvolution": false,
+  "notes": "Auto-evolve creates harness/evolution/pending.md when archive threshold is reached."
+}

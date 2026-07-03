@@ -1,6 +1,6 @@
 
 # Monorepo_ModMe - Worktree Initialization Script
-# Creates ../Monorepo_ModMe-dev/dev persistent checkout from main repo root.
+# Creates .worktrees/dev persistent checkout from main repo root.
 
 param(
   [switch]$IncludeStaging
@@ -65,13 +65,13 @@ try {
     Ensure-Branch "staging"
   }
 
-  $DevWorktreePath = Join-Path $MonorepoRoot "$ProjectName-dev"
-  if (!(Test-Path $DevWorktreePath)) {
-    Write-Host "   Creating dev worktree root at $DevWorktreePath..." -ForegroundColor Yellow
-    New-Item -ItemType Directory -Force -Path $DevWorktreePath | Out-Null
+  $WorktreesRoot = Join-Path $ProjectMainDir ".worktrees"
+  if (!(Test-Path $WorktreesRoot)) {
+    Write-Host "   Creating worktrees root at $WorktreesRoot..." -ForegroundColor Yellow
+    New-Item -ItemType Directory -Force -Path $WorktreesRoot | Out-Null
   }
 
-  $DevCheckout = Join-Path $DevWorktreePath "dev"
+  $DevCheckout = Join-Path $WorktreesRoot "dev"
   if (!(Test-Path $DevCheckout)) {
     Write-Host "   Creating persistent dev checkout at $DevCheckout..." -ForegroundColor Yellow
     git -C $ProjectMainDir worktree add $DevCheckout dev

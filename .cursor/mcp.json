@@ -2,26 +2,25 @@
   "mcpServers": {
     "skills-sh": {
       "command": "node",
-      "args": [
-        "C:/Users/dylan/Monorepo_ModMe/.tools/skillsh-mcp/dist/index.js"
-      ]
+      "args": ["C:/Users/dylan/Monorepo_ModMe/.tools/skillsh-mcp/dist/index.js"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "env": {
+        "CONTEXT7_API_KEY": "${env:CONTEXT7_API_KEY}"
+      }
     },
     "buildkite": {
       "url": "https://mcp.buildkite.com/mcp"
     },
     "mantine": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@mantine/mcp-server"
-      ]
+      "args": ["-y", "@mantine/mcp-server"]
     },
     "next-devtools": {
       "command": "npx",
-      "args": [
-        "-y",
-        "next-devtools-mcp@latest"
-      ]
+      "args": ["-y", "next-devtools-mcp@latest"]
     }
   }
 }

@@ -117,7 +117,7 @@
       "enabled": true
     },
     "claude-code-plugins/learning-output-style": {
-      "enabled": true
+      "enabled": false
     },
     "claude-plugins-official/feature-dev": {
       "enabled": true

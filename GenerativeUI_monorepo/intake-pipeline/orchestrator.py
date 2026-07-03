@@ -197,7 +197,7 @@ def write_staging_jsonl(sessions, tool_calls, metrics, out_path: Path):
 
 # ── Main run ─────────────────────────────────────────────────────────────────
 
-def run(input_path: str | None, dry_run: bool = True) -> dict:
+def run(input_path: str | None, dry_run: bool = True, tenant_id: str | None = None) -> dict:
     root = Path(input_path) if input_path else DEFAULT_LOG_ROOT
 
     if root.is_file():
@@ -247,6 +247,9 @@ def run(input_path: str | None, dry_run: bool = True) -> dict:
         "tool_calls": len(all_tool_calls),
         "tool_metrics": len(metrics),
         "staging_file": str(out_path),
+        "tenant_id": tenant_id,
+        "pipeline": "copilot-intake",
+        "dry_run": dry_run,
     }
     print(f"\nDone: {summary}")
     return summary
@@ -255,12 +258,23 @@ def run(input_path: str | None, dry_run: bool = True) -> dict:
 def cli():
     ap = argparse.ArgumentParser(description="Intake pipeline: parse Copilot session events → Supabase")
     ap.add_argument("--input", "-i", help="Path to events.jsonl file or session-state dir (default: ~/.copilot/session-state)")
-    ap.add_argument("--dry-run", action="store_true", default=True, help="Skip Supabase write (default: True)")
+    ap.add_argument("--dry-run", action="store_true", help="Skip Supabase write")
     ap.add_argument("--live", action="store_true", help="Actually write to Supabase (requires SUPABASE_URL + SUPABASE_KEY)")
+    ap.add_argument(
+        "--tenant-id",
+        default=os.environ.get("DEV_TENANT_ID", "00000000-0000-4000-8000-000000000001"),
+        help="Tenant UUID for unified pipeline_runs metadata",
+    )
+    ap.add_argument("--json", action="store_true", help="Emit machine-readable JSON on stdout")
     args = ap.parse_args()
 
-    dry_run = not args.live
-    run(args.input, dry_run=dry_run)
+    dry_run = not args.live if args.live else (args.dry_run or True)
+    summary = run(args.input, dry_run=dry_run, tenant_id=args.tenant_id)
+    payload = {"result": summary, "stats": summary, "pipeline_run_id": None}
+    if args.json or not sys.stdout.isatty():
+        print(json.dumps(payload))
+    else:
+        print(json.dumps(payload))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,180 @@
+name: Observability Pipeline Quality Check
+
+on:
+  pull_request:
+    branches: [main, dev, master, develop]
+    paths:
+      - 'scripts/telemetry/**'
+      - 'scripts/__tests__/observability-integration.test.mjs'
+      - 'scripts/telemetry-cli.mjs'
+      - 'scripts/lib/telemetry-bridge.mjs'
+      - 'scripts/agent-eval-collect.mjs'
+      - 'scripts/agent-eval-report.mjs'
+      - 'scripts/agent-session-start.ps1'
+      - 'scripts/agent-session-finish.ps1'
+      - 'scripts/load-lean-ctx-env.ps1'
+      - 'scripts/intake-orchestrator.mjs'
+      - 'packages/intake-contracts/**'
+      - 'next-forge/packages/schemas/observability.ts'
+      - 'next-forge/packages/schemas/fixtures/observability-contract.golden.json'
+      - 'next-forge/packages/observability/**'
+      - 'next-forge/apps/api/app/telemetry/**'
+      - 'next-forge/supabase/migrations/**'
+      - 'docs/evaluation/**'
+      - 'docs/inbox-pipeline/contracts/observability-contract.v1.json'
+      - 'docs/inbox-pipeline/contracts/expectations/observability.v1.json'
+      - 'docs/observability/**'
+      - 'src/lib/observability/**'
+      - 'agent/observability/**'
+      - '.lean-ctx.toml'
+      - 'scripts/telemetry-audit.mjs'
+      - 'scripts/lib/telemetry-diagnostics.mjs'
+      - 'scripts/lib/telemetry-report.mjs'
+      - 'scripts/validate-collections.mjs'
+      - 'scripts/collections/modme-observability.collection.json'
+      - 'scripts/schema/collection.schema.json'
+      - 'scripts/dsp-cli.py'
+      - 'docs/evaluation/OBSERVABILITY-AGENTS.md'
+      - 'data/lean-ctx-task-profiles.toml'
+      - '.github/workflows/observability-pipeline-check.yml'
+  push:
+    branches: [main, dev]
+    paths:
+      - 'scripts/telemetry/**'
+      - 'scripts/__tests__/observability-integration.test.mjs'
+      - 'scripts/telemetry-cli.mjs'
+      - 'scripts/lib/telemetry-bridge.mjs'
+      - 'scripts/load-lean-ctx-env.ps1'
+      - 'packages/intake-contracts/**'
+      - 'next-forge/packages/schemas/**'
+      - 'next-forge/packages/observability/**'
+      - 'next-forge/supabase/migrations/**'
+      - 'docs/evaluation/**'
+      - '.lean-ctx.toml'
+  workflow_dispatch:
+
+concurrency:
+  group: observability-pipeline-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contract-test:
+    name: Contract test + CLI dry-run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install root dependencies
+        run: yarn install --immutable
+
+      - name: Install next-forge schemas deps
+        working-directory: next-forge/packages/schemas
+        run: npx bun install
+
+      - name: Observability golden contract tests
+        run: yarn telemetry:test:contracts
+
+      - name: Telemetry sync dry-run
+        run: node scripts/telemetry/telemetry-cli.mjs sync --dry-run
+
+      - name: Observability data-quality audit (contracts lens)
+        run: yarn telemetry:audit --lens contracts
+
+      - name: Collection manifest validate
+        run: yarn collection:validate
+
+      - name: Upload observability report placeholder
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: observability-cli-dry-run
+          path: reports/observability/
+          if-no-files-found: ignore
+
+  retrieval-eval:
+    name: Hybrid retrieval eval (non-blocking)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install micro-agents deps
+        working-directory: experiments/micro-agents
+        run: npm install
+
+      - name: Hybrid retrieval Recall@5
+        working-directory: experiments/micro-agents
+        run: npm run evaluate:retrieval
+        env:
+          USE_LOCAL_EMBEDDINGS: 'true'
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+  lean-ctx-config-validate:
+    name: lean-ctx config + integration tests
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Install root dependencies
+        run: yarn install --immutable
+
+      - name: Observability integration tests (Zod + dry-run, no Supabase)
+        run: yarn vitest run scripts/__tests__/observability-integration.test.mjs 2>/dev/null || node --test scripts/__tests__/observability-integration.test.mjs
+        env:
+          AGENT_SESSION_ID: ci-test-session
+
+      - name: Check .lean-ctx.toml for duplicate keys
+        run: node -e "
+          const fs = require('fs');
+          const toml = fs.readFileSync('.lean-ctx.toml', 'utf8');
+          const keys = toml.match(/^\s*[a-z_]+\s*=/gm) || [];
+          const seen = {};
+          for (const k of keys) {
+            const key = k.trim().split('=')[0].trim();
+            if (seen[key]) { console.error('Duplicate key: ' + key); process.exit(1); }
+            seen[key] = true;
+          }
+          console.log('No duplicate top-level keys found.');
+        "
+
+  agenttrace-smoke:
+    name: Agenttrace smoke (advisory)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Agenttrace overview
+        run: yarn agenttrace --overview --fail-on-critical

@@ -320,6 +320,206 @@ export const MoleculeLibrary = {
   }),
   
   // WEB/API
+  webScraper: (): Molecule => ({
+    id: 'web_scraper',
+    name: 'Web Scraper',
+    description:
+      'Crawl URLs via Scrapy manifests, classify with Ollama, and promote to inbox pipeline',
+    underlyingTools: [
+      'scrape.crawl_url',
+      'scrape.classify_page',
+      'scrape.promote_batch',
+    ],
+    parameters: z.object({
+      action: z
+        .enum(['crawl', 'classify', 'promote', 'pipeline'])
+        .describe('Scrape pipeline stage to run'),
+      manifest_slug: z
+        .string()
+        .optional()
+        .describe('scrape_manifests.slug — required for crawl/pipeline'),
+      job_id: z
+        .string()
+        .optional()
+        .describe('scrape_jobs.id — for classify/promote/pipeline'),
+      page_id: z
+        .string()
+        .optional()
+        .describe('Single scrape_pages.id for targeted classify'),
+      limit: z
+        .number()
+        .optional()
+        .describe('Batch size for classify (default 50)'),
+      dry_run: z.boolean().optional().describe('Preview without DB writes'),
+      export_md: z
+        .boolean()
+        .optional()
+        .describe('Write review .md to docs/inbox on promote'),
+    }),
+    parameterSchema: {
+      type: 'object',
+      properties: {
+        action: { enum: ['crawl', 'classify', 'promote', 'pipeline'] },
+        manifest_slug: { type: 'string' },
+        job_id: { type: 'string' },
+        page_id: { type: 'string' },
+        limit: { type: 'number' },
+        dry_run: { type: 'boolean' },
+        export_md: { type: 'boolean' },
+      },
+      required: ['action'],
+    },
+    semantics:
+      'Run the scrape → classify → promote intake pipeline against Supabase staging tables',
+    suggestedUseCases: [
+      'Ingesting documentation sites into the knowledge pipeline',
+      'Batch-classifying crawled pages with Ollama',
+      'Promoting classified pages to inbox_entries for embed/MDA',
+      'Running the full crawl → classify → promote chain',
+    ],
+    constraints: [
+      'Respect robots.txt and manifest rate limits',
+      'Require manifest_slug for crawl actions',
+      'Require job_id or page_id for classify actions',
+      'Use dry_run before first live promote in a new manifest',
+      'Never expose service-role keys to client-side agents',
+    ],
+    examples: [
+      {
+        description: 'Crawl a documentation manifest',
+        input: { action: 'crawl', manifest_slug: 'docs-sitemap', dry_run: false },
+        expectedOutcome: 'scrape_job created with scrape_pages status=raw',
+      },
+      {
+        description: 'Classify raw pages for a job',
+        input: { action: 'classify', job_id: 'job_abc123', limit: 50 },
+        expectedOutcome: 'scrape_classifications written; pages status=classified',
+      },
+      {
+        description: 'Promote classified pages to inbox',
+        input: { action: 'promote', job_id: 'job_abc123', export_md: true },
+        expectedOutcome: 'inbox_entries upserted; scrape_pages.inbox_entry_id set',
+      },
+    ],
+    tags: ['web', 'scrape', 'intake', 'ollama', 'pipeline'],
+    genUItier: 'declarative',
+    complexity: 'complex',
+  }),
+
+  codePatternScanner: (): Molecule => ({
+    id: 'code_pattern_scanner',
+    name: 'Code Pattern Scanner',
+    description:
+      'Index local TS/TSX AST patterns into GreptimeDB and search by semantic similarity',
+    underlyingTools: ['code.index_ast', 'code.search_patterns'],
+    parameters: z.object({
+      action: z.enum(['index', 'search', 'promote']).describe('AST indexer action'),
+      root_path: z
+        .string()
+        .optional()
+        .describe('Repo path to index (default: mcp-registry)'),
+      query: z.string().optional().describe('Natural language query for search'),
+      ast_kind: z
+        .enum(['export', 'function', 'class', 'interface', 'type', 'zod_schema', 'prisma_model', 'mcp_tool'])
+        .optional()
+        .describe('Metadata pre-filter for Greptime search'),
+      top_k: z.number().int().min(1).max(20).optional().describe('Search result count'),
+      dry_run: z.boolean().optional(),
+    }),
+    parameterSchema: {
+      type: 'object',
+      properties: {
+        action: { enum: ['index', 'search', 'promote'] },
+        root_path: { type: 'string' },
+        query: { type: 'string' },
+        ast_kind: { type: 'string' },
+        top_k: { type: 'number' },
+        dry_run: { type: 'boolean' },
+      },
+      required: ['action'],
+    },
+    semantics: 'Extract AST chunks (exports, Zod, Prisma, MCP tools) and index in GreptimeDB',
+    suggestedUseCases: [
+      'Finding JSON Schema to Zod conversion patterns in the repo',
+      'Detecting schema drift across Prisma models',
+      'Linking code patterns to inbox knowledge entries at promote',
+    ],
+    constraints: [
+      'GreptimeDB must be reachable via GREPTIME_PSQL_URL',
+      'Index only trusted workspace paths',
+      'Promote writes summary to Supabase; full AST stays in Greptime',
+    ],
+    examples: [
+      {
+        description: 'Index mcp-registry for Zod/MCP patterns',
+        input: { action: 'index', root_path: 'GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry' },
+        expectedOutcome: 'code_index rows with ast_kind metadata in GreptimeDB',
+      },
+      {
+        description: 'Search for JSON Schema to Zod helpers',
+        input: { action: 'search', query: 'JSON Schema to Zod', top_k: 5 },
+        expectedOutcome: 'Top-K Greptime matches including schema-crawler.ts',
+      },
+    ],
+    tags: ['code', 'ast', 'greptime', 'intake', 'patterns'],
+    genUItier: 'declarative',
+    complexity: 'complex',
+  }),
+
+  knowledgeIntake: (): Molecule => ({
+    id: 'knowledge_intake',
+    name: 'Knowledge Intake',
+    description:
+      'Unified intake: web scrape pipeline + code pattern scanner + batch promote to inbox',
+    underlyingTools: [
+      'scrape.crawl_url',
+      'scrape.classify_page',
+      'scrape.promote_batch',
+      'code.index_ast',
+      'code.search_patterns',
+    ],
+    parameters: z.object({
+      mode: z
+        .enum(['scrape', 'code-index', 'full'])
+        .describe('Intake mode: scrape only, code-index only, or both'),
+      manifest_slug: z.string().optional().describe('Scrape manifest slug'),
+      root_path: z.string().optional().describe('Code index root path'),
+      dry_run: z.boolean().optional(),
+      export_md: z.boolean().optional(),
+    }),
+    parameterSchema: {
+      type: 'object',
+      properties: {
+        mode: { enum: ['scrape', 'code-index', 'full'] },
+        manifest_slug: { type: 'string' },
+        root_path: { type: 'string' },
+        dry_run: { type: 'boolean' },
+        export_md: { type: 'boolean' },
+      },
+      required: ['mode'],
+    },
+    semantics: 'Orchestrate dual-store intake (Greptime code + Supabase knowledge)',
+    suggestedUseCases: [
+      'Full knowledge intake after a documentation crawl',
+      'Indexing repo patterns before promoting architecture notes',
+    ],
+    constraints: [
+      'Requires Supabase service role for promote stages',
+      'Use dry_run on first manifest run',
+      'Dual store sync only at promote boundary',
+    ],
+    examples: [
+      {
+        description: 'Full intake: scrape + code index',
+        input: { mode: 'full', manifest_slug: 'docs-sitemap', dry_run: true },
+        expectedOutcome: 'Staging scrape rows + Greptime code_index without writes',
+      },
+    ],
+    tags: ['intake', 'pipeline', 'scrape', 'code', 'knowledge'],
+    genUItier: 'declarative',
+    complexity: 'complex',
+  }),
+
   webFetcher: (): Molecule => ({
     id: 'web_fetcher',
     name: 'Web Fetcher',
@@ -362,38 +562,31 @@ export const MoleculeLibrary = {
  */
 export function generateMoleculesFromTools(tools: MCPTool[]): Molecule[] {
   const molecules: Molecule[] = [];
-  
-  // Start with predefined molecules
-  molecules.push(...Object.values(MoleculeLibrary).map(fn => fn()));
-  
-  // Generate molecules from MCP tools dynamically
-  tools.forEach(tool => {
-    // Check if this tool is already used by an existing molecule
-    // (A tool is "used" if its name appears in underlyingTools of any existing molecule)
-    const isHandled = molecules.some(m => m.underlyingTools.includes(tool.name));
-    
+
+  molecules.push(...Object.values(MoleculeLibrary).map((fn) => fn()));
+
+  tools.forEach((tool) => {
+    const isHandled = molecules.some((m) => m.underlyingTools.includes(tool.name));
+
     if (!isHandled) {
-      // Create a generic molecule for this tool
       molecules.push({
-        id: tool.name, // Use tool name as ID
-        name: tool.name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), // Title Case
+        id: tool.name,
+        name: tool.name.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
         description: tool.description,
         underlyingTools: [tool.name],
-        // TODO: Implement proper runtime Zod schema generation from JSON Schema
-        // For now, we use z.any() but preserve the parameterSchema for the agent to see
         parameters: z.any(),
         parameterSchema: tool.inputSchema || {},
-        semantics: tool.description, // Fallback to tool description
+        semantics: tool.description,
         suggestedUseCases: ['General purpose usage'],
         constraints: ['Standard tool safety applies'],
-        examples: [], // No examples for dynamic tools yet
+        examples: [],
         tags: ['dynamic', 'auto-generated'],
         genUItier: 'static',
-        complexity: 'simple'
+        complexity: 'simple',
       });
     }
   });
-  
+
   return molecules;
 }
 

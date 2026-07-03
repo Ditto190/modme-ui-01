@@ -97,7 +97,7 @@ jobs:
       - name: Test
         run: yarn test
       - name: Build
-        run: yarn build:product
+        run: yarn build
 
   next-forge:
     needs: [secret-guard, changes]
@@ -111,7 +111,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version-file: next-forge/package.json
+          bun-version-file: next-forge/pkg.json
       - name: Install deps
         run: bun install --frozen-lockfile
       - name: Check (Ultracite/Biome)
@@ -120,3 +120,25 @@ jobs:
         run: bun run test
       - name: Build
         run: bun run build
+
+  worktree-smoke:
+    needs: [secret-guard]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: orch_filter
+        with:
+          filters: |
+            orchestration:
+              - 'scripts/**'
+              - 'e2e/worktree-smoke/**'
+              - '.githooks/**'
+              - 'docs/agent-terminal-orchestration.md'
+      - name: Worktree orchestration smoke
+        if: steps.orch_filter.outputs.orchestration == 'true' || github.event_name == 'workflow_dispatch'
+        run: node e2e/worktree-smoke/run.mjs
+      - name: Skip (no orchestration paths)
+        if: steps.orch_filter.outputs.orchestration != 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "worktree-smoke skipped — no orchestration path changes"

@@ -1,0 +1,48 @@
+openapi: 3.1.0
+info:
+  title: ModMe agent-server API
+  version: 1.0.0
+  description: |
+    FastAPI agent-server satellite. Primary real-time channel is WebSocket `/ws/agent`.
+    HTTP routes are health/metadata only.
+servers:
+  - url: http://localhost:8000
+    description: Local agent-server
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Service healthy
+  /ws/agent:
+    get:
+      summary: Agent WebSocket (upgrade)
+      description: |
+        Bidirectional stream. Message envelope matches `@repo/schemas` WebSocketMessageSchema.
+        Types: state_update, action, error, ping, pong, token, tool_start, tool_result, done.
+      responses:
+        "101":
+          description: Switching Protocols
+components:
+  schemas:
+    WebSocketMessage:
+      type: object
+      required: [type]
+      properties:
+        type:
+          type: string
+          enum:
+            - state_update
+            - action
+            - error
+            - ping
+            - pong
+            - token
+            - tool_start
+            - tool_result
+            - done
+        payload: {}
+        timestamp:
+          type: integer
+          format: int64

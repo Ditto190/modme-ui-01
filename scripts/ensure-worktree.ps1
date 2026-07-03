@@ -1,4 +1,4 @@
-# Fail fast when feature work runs from the main checkout instead of Monorepo_ModMe-dev.
+# Fail fast when feature work runs from the main checkout instead of .worktrees/.
 param(
   [switch]$WarnOnly
 )
@@ -22,28 +22,24 @@ Examples:
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $RepoRoot = Split-Path -Parent $ScriptDir
 
-$gitCommonDir = (git -C $RepoRoot rev-parse --git-common-dir).Trim()
-if (-not [System.IO.Path]::IsPathRooted($gitCommonDir)) {
-  $gitCommonDir = Join-Path $RepoRoot $gitCommonDir
-}
-$MainRepoRoot = Split-Path -Parent (Resolve-Path $gitCommonDir)
-$DevRootName = "$(Split-Path -Leaf $MainRepoRoot)-dev"
-$ParentName = Split-Path -Leaf (Split-Path -Parent $RepoRoot)
+. (Join-Path $ScriptDir "lib/worktree-context.ps1")
+$ctx = Get-WorktreeContext -RepoRoot $RepoRoot
 
 function Write-WorktreeHint {
   Write-Host ""
-  Write-Host "Feature work belongs in an agent worktree under ../$DevRootName/" -ForegroundColor Yellow
+  Write-Host "Feature work belongs in a worktree under .worktrees/" -ForegroundColor Yellow
+  Write-Host "  .\scripts\init-worktrees.ps1                    # persistent dev checkout" -ForegroundColor Gray
   Write-Host "  .\scripts\new-agent-worktree.ps1 -Name `"<task>`" -Owner cursor" -ForegroundColor Gray
-  Write-Host "  .\scripts\migrate-main-to-worktree.ps1 -Name `"<task>`" -Owner cursor  # if main has uncommitted changes" -ForegroundColor Gray
+  Write-Host "  .\scripts\migrate-main-to-worktree.ps1 -Name `"<task>`" -Owner cursor" -ForegroundColor Gray
   Write-Host "See docs/multi-agent-worktrees.md" -ForegroundColor Gray
 }
 
-if ($ParentName -eq $DevRootName) {
-  Write-Host "OK: worktree checkout ($RepoRoot)" -ForegroundColor Green
+if ($ctx.IsWorktree) {
+  Write-Host "OK: worktree checkout ($($ctx.RepoRoot))" -ForegroundColor Green
   exit 0
 }
 
-$message = "Main checkout detected ($RepoRoot). Use a worktree under ../$DevRootName/ for feature work."
+$message = "Main checkout detected ($($ctx.RepoRoot)). Use a worktree under .worktrees/ for feature work."
 
 if ($WarnOnly) {
   Write-Warning $message

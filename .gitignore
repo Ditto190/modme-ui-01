@@ -2,6 +2,9 @@
 .env
 .env.*
 !.env.example
+.orca/
+.orca.json
+orca.json
 
 # Dependencies and package managers
 node_modules/
@@ -23,13 +26,16 @@ coverage/
 target/
 *.tsbuildinfo
 
-# Tooling caches (lean-ctx, local installs)
-.tools/
+# Worktree local artifacts (git manages worktree dirs themselves)
+.worktrees/**/.worktree-ports.env
+.worktrees/**/logs/
 .lean-ctx/
 .node/
+.firecrawl/
 
 # Vendored mirrors (re-fetch via scripts)
 .vendor/
+# Firecrawl self-host clone: yarn firecrawl:setup → .vendor/firecrawl/
 
 # Logs and diagnostics
 *.log
@@ -38,6 +44,18 @@ yarn-debug.log*
 yarn-error.log*
 # Session logger logs (local-only)
 logs/copilot/
+logs/agent-orchestrator/
+logs/lean-ctx/
+
+# Agent task registry (local JSON)
+data/
+!data/lean-ctx-task-profiles.toml.example
+
+# Copilot/session exports (local only)
+session.md
+
+# Generated mprocs config (per-worktree ports)
+mprocs.yaml
 
 # OS and IDE
 .DS_Store
@@ -75,9 +93,8 @@ temp/
 
 # Local agent runtime (SQLite)
 **/.voltagent/*.db
-# lean-ctx machine-local
+# lean-ctx machine-local id (project config .lean-ctx.toml is tracked)
 .lean-ctx-id
-.lean-ctx.toml
 
 # agenttrace
 .agenttrace/

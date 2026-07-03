@@ -1,0 +1,3 @@
+source: next-forge/apps/api/app/telemetry/ingest/route.ts
+kind: object
+purpose: HTTP ingest route feeding Session Ops telemetry feed.

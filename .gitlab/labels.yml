@@ -1,0 +1,67 @@
+# GitLab labels (mirror GitHub SoR taxonomy)
+# Import: glab label create -f .gitlab/labels.yml (when GitLab project configured)
+# Set GITLAB_PROJECT_ID in env for automation scripts
+
+- name: stack:forge
+  color: "#1D76DB"
+  description: next-forge/ changes
+
+- name: stack:generative
+  color: "#5319E7"
+  description: GenerativeUI_monorepo/ changes
+
+- name: stack:orchestration
+  color: "#FBCA04"
+  description: scripts, docs, beads, hooks
+
+- name: stack:root
+  color: "#0E8A16"
+  description: other root files
+
+- name: ci-cd
+  color: "#1D76DB"
+  description: pipelines and hooks
+
+- name: needs-triage
+  color: "#EDEDED"
+  description: awaiting classification
+
+- name: agent-routed
+  color: "#C5DEF5"
+  description: assigned to agent citizen
+
+- name: devops-autofix
+  color: "#B60205"
+  description: autonomous CI fix eligible
+
+- name: bugbot-reviewed
+  color: "#0E8A16"
+  description: Bugbot review complete
+
+- name: beads-linked
+  color: "#D4C5F9"
+  description: linked modme-* beads issue
+
+- name: status:triage
+  color: "#FEF2C0"
+  description: in triage
+
+- name: status:in-progress
+  color: "#1D76DB"
+  description: active agent session
+
+- name: status:agent-escalated
+  color: "#B60205"
+  description: agent escalated after max rounds
+
+- name: agent:devops
+  color: "#5319E7"
+  description: devops-ci-champion
+
+- name: agent:review
+  color: "#C2E0C6"
+  description: forge/generative reviewer
+
+- name: agent:beads
+  color: "#D4C5F9"
+  description: beads orchestrator

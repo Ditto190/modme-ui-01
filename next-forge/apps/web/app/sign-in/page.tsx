@@ -38,7 +38,9 @@ export default function SignInPage() {
         // Redirect after successful sign-in
         const location = response.headers.get("location");
         if (location) {
-          router.push(location.includes("callbackUrl") ? location : callbackUrl);
+          router.push(
+            location.includes("callbackUrl") ? location : callbackUrl
+          );
         }
       } else if (response.status === 401) {
         setError("Invalid email or password");

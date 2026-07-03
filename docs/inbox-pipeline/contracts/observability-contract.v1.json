@@ -1,0 +1,94 @@
+{
+  "version": "1.1",
+  "generatedAt": "2026-06-28T12:00:00.000Z",
+  "adr": "ADR-0009",
+  "description": "Observability pipeline contract — mirrors inbox-contract.v1 enum reuse; lean-ctx collect sources added in v1.1",
+  "embeddingDimensions": 384,
+  "enums": {
+    "telemetryLevel": ["debug", "info", "warn", "error"],
+    "pipelineStatus": ["running", "completed", "failed", "skipped"],
+    "evalImpact": ["low", "medium", "high"],
+    "severity": ["low", "medium", "high", "critical"],
+    "agentRole": [
+      "frontend",
+      "backend",
+      "devops",
+      "architect",
+      "reviewer",
+      "researcher"
+    ],
+    "agentPlatform": ["cursor", "copilot", "claude", "voltagent", "cloud", "lean-ctx", "human"],
+    "spanName": [
+      "agent.session",
+      "agent.tool_call",
+      "agent.handoff",
+      "telemetry.sync",
+      "lean_ctx.read"
+    ],
+    "testFramework": ["playwright", "junit", "vitest", "other"],
+    "telemetrySource": [
+      "session-logger",
+      "session-logger-prompt",
+      "agent-orchestrator",
+      "test-results",
+      "telemetry-bridge",
+      "lean-ctx-journal",
+      "lean-ctx-tee",
+      "lean-ctx-debug",
+      "lean-ctx-marker",
+      "lean-ctx-archive",
+      "lean-ctx-collect"
+    ]
+  },
+  "telemetryEvent": {
+    "required": ["tenant_id", "message", "source"],
+    "optional": [
+      "session_id",
+      "level",
+      "severity",
+      "agent_role",
+      "agent_platform",
+      "metadata",
+      "content_hash"
+    ]
+  },
+  "pipelineRun": {
+    "required": ["tenant_id", "status", "started_at"],
+    "statusEnum": "pipelineStatus"
+  },
+  "evalSignal": {
+    "required": ["tenant_id", "source", "title"],
+    "impactEnum": "evalImpact",
+    "severityReuses": "inbox-contract.v1.severity"
+  },
+  "testResult": {
+    "required": ["tenant_id", "contract_name", "rule_id", "passed", "severity"]
+  },
+  "traceRef": {
+    "required": ["tenant_id", "trace_id", "greptime_span_id"],
+    "optional": [
+      "session_id",
+      "agent_platform",
+      "service_name",
+      "branch",
+      "worktree",
+      "parent_session_id"
+    ],
+    "description": "Correlation row linking Supabase metadata to a Greptime span"
+  },
+  "otelSpan": {
+    "required": ["span_id", "trace_id", "tenant_id", "span_name"],
+    "optional": ["session_id", "parent_span_id", "duration_ms", "attributes", "timestamp"],
+    "spanNameEnum": "spanName"
+  },
+  "correlationKeys": {
+    "required": ["trace_id", "span_id", "session_id", "tenant_id"],
+    "optional": ["agent_platform", "parent_session_id", "worktree", "branch"]
+  },
+  "dualStore": {
+    "supabase": ["pipeline_runs", "telemetry_events", "eval_signals", "trace_refs"],
+    "greptime": ["agent_spans", "agent_metrics"]
+  },
+  "defaultTenantId": "00000000-0000-4000-8000-000000000001",
+  "defaultTenantSlug": "modme-local"
+}

@@ -1,0 +1,3 @@
+source: scripts/telemetry/telemetry-cli.mjs#sync
+kind: function
+purpose: Collect local logs and dry-run or promote via telemetry-bridge.

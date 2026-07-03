@@ -5,12 +5,16 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: "jsdom",
+    environment: "node",
   },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./"),
       "@repo": path.resolve(import.meta.dirname, "../../packages"),
+      "server-only": path.resolve(
+        import.meta.dirname,
+        "./vitest-mocks/server-only.ts"
+      ),
     },
   },
 });

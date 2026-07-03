@@ -132,9 +132,21 @@ poetry run mypy src/
 
 ### Testing
 
+Golden contract parity tests validate Pydantic models against
+`tests/fixtures/genui-agent-contract.golden.json` (copied from
+`next-forge/packages/schemas/fixtures/` — no cross-monorepo imports).
+
 Run tests:
+
 ```bash
 poetry run pytest
+```
+
+Without Poetry:
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest
 ```
 
 ## Environment Variables

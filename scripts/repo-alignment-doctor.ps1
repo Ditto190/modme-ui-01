@@ -165,7 +165,7 @@ $driftCount = 0
 foreach ($doc in $keyDocs) {
   if (Test-Path $doc) {
     $content = Get-Content $doc -Raw
-    if ($content -match 'modme-ui-01.*Monorepo_ModMe-dev') { $driftCount++ }
+    if ($content -match 'Monorepo_ModMe-dev') { $driftCount++ }
   }
 }
 if ($driftCount -eq 0) {

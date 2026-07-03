@@ -12,6 +12,7 @@ To automate verify reminders and session-end markers **without blocking agents**
 1. Copy [`.cursor/hooks.json.example`](../hooks.json.example) → `.cursor/hooks.json` (merge, do not overwrite unrelated entries).
 2. Ensure `failClosed` is **false** and timeouts ≤ 5s.
 3. Scripts (always exit 0):
+   - `ensure-lean-ctx-config.ps1` (via `scripts/`) — **sessionStart** advisory check (`-CheckOnly`); optional `yarn lean-ctx:ensure` for auto-apply
    - `lean-ctx-post-edit.ps1` — hints `yarn check:forge` after `next-forge/**/*.ts(x)` edits
    - `lean-ctx-stop-marker.ps1` — appends to `state/lean-ctx-session-markers.jsonl` for memory pipelines
 

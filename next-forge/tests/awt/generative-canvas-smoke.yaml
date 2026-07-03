@@ -1,0 +1,64 @@
+id: "SC-901"
+name: "GenerativeCanvas visual smoke"
+description: >
+  Visual smoke for the next-forge GenerativeCanvas island at /en/generative-ui.
+  Asserts static chrome via OCR; connection/agent output is optional when the
+  legacy agent-server (port 8000) is up. Requires an authenticated session.
+tags: ["generative-ui", "smoke", "next-forge", "websocket"]
+variables:
+  base_url: "http://localhost:3100"
+
+steps:
+  - step: 1
+    action: navigate
+    value: "{{base_url}}/en/generative-ui"
+    description: "Open Generative UI page"
+
+  - step: 2
+    action: wait
+    value: "3000"
+    description: "Allow layout, auth shell, and WebSocket handshake"
+
+  - step: 3
+    action: assert
+    assert_type: text_visible
+    expected:
+      - type: text_visible
+        value: "Generative UI"
+    description: "Verify page heading"
+
+  - step: 4
+    action: assert
+    assert_type: text_visible
+    expected:
+      - type: text_visible
+        value: "Send"
+    description: "Verify chat Send control"
+
+  - step: 5
+    action: assert
+    assert_type: text_visible
+    expected:
+      - type: text_visible
+        value: "Describe the UI you want"
+        case_insensitive: true
+    description: "Verify prompt input region"
+
+  - step: 6
+    action: assert
+    assert_type: text_visible
+    expected:
+      - type: text_visible
+        value: "Connected"
+        case_insensitive: true
+    optional: true
+    description: "Agent-server connected (passes when yarn dev:generative is running)"
+
+  - step: 7
+    action: screenshot
+    description: "Capture canvas shell for visual regression baselines"
+    screenshot_after: true
+
+expected_result:
+  - type: url_contains
+    value: "/generative-ui"

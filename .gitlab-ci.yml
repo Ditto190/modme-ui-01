@@ -1,0 +1,15 @@
+# GitLab CI adjunct (ModMe)
+# Primary CI: .github/workflows/ci.yml on GitHub
+# Include devops autofix lane when GitLab mirror is active
+
+include:
+  - local: .gitlab/ci/devops-autofix.yml
+
+stages:
+  - devops
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_COMMIT_BRANCH == "dev"
+    - when: never

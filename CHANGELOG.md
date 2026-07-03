@@ -61,9 +61,16 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
-- (repo) Repo alignment doctor (`yarn repo:doctor`), GitLab mirror workflow, and `docs/repo-alignment.md`
-- (repo) `yarn verify:generative` CI parity script and GenerativeUI pre-commit/CI suite
-- (repo) Pre-push hook (repo alignment + `--full` verify gate)
+- (repo) Distributed observability pipeline — `yarn telemetry:sync`, telemetry CLI/bridge, DSP bootstrap (`.dsp/`), observability runbooks, and `observability-pipeline-check` CI workflow
+- (next-forge) `@repo/observability` ingest/categorize package, API telemetry routes, knowledge session-ops panel, and observability schema contract tests
+- (repo) lean-ctx project config (`.lean-ctx.toml`), universal intake script, and agent terminal session finish/start enhancements
+- (GenerativeUI) Hexagonal refactor of `apps/agent-server` — domain/ports/adapters/app layout with DI in `create_app()`
+- (GenerativeUI) Pytest golden contract parity for agent-server Pydantic models (`tests/test_schemas_contract.py`)
+- (next-forge) Vitest contract tests for `@repo/schemas` and reconnect delay helpers for generative UI WebSocket hook
+- (repo) Agent terminal orchestration layer — mprocs TUI (`yarn agent:tui`), session envelopes (`agent-session-start/finish`), task registry, extended git hooks, `yarn e2e:worktree-smoke`
+- (repo) Cursor commands `/beads` and `/architecture-decision-records`; session handover at `docs/handover/latest.md`
+- (next-forge) ADR-0011 terminal orchestration without Nx; ADR-0010 dual-store knowledge intake
+- (repo) Unified intake/scrape pipeline — `packages/intake-contracts`, scrape-pipeline, GreptimeDB code index workers, Supabase staging migrations 007–008
 - (repo) Inbox pipeline v1 — contracts (`docs/inbox-pipeline/contracts/`), audit/fix scripts, Supabase migrations, and `@repo/schemas` inbox types
 - (repo) GitHub Agentic Workflows assets (`.github/aw/`, agent definitions, workflow-health and inbox-pipeline-check CI)
 - (repo) GenerativeUI devops-voltagent app, intake-pipeline Python orchestrator, and Playwright test scaffolding
@@ -75,8 +82,10 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
-- (repo) Resolved `AGENTS.md` and `package.json` merge conflicts; dual-monorepo `workspace.code-workspace` layout
-- (ci) GitLab CI aligned with GitHub generative-ui job; pre-commit workflow installs Bun
+- (GenerativeUI) Agent-server WebSocket timestamps aligned to Unix milliseconds to match `@repo/schemas` golden contract
+- (docs) `ARCHITECTURE.md` documents hexagonal ports/adapters layout for agent-server
+- (repo) Pre-push generative lint is advisory on push (full `yarn verify:generative` before PR merge)
+- (docs) `yarn agent:mprocs:generate` canonical name (replaces stale `mprocs:generate` references in orchestration docs)
 - (repo) **Reconcile `main` with Monorepo_ModMe** — GenUI Workbench (`modme-ui-01` legacy layout) superseded by dual-monorepo stack (`next-forge/` + `GenerativeUI_monorepo/`); unrelated GenUI history retired on default branch
 - (gitignore) Ignore Playwright artifacts, beads embedded Dolt state, local hook state (`.cursor/hooks/state/`), IDE-local dirs (`.claude/`, `.copilot/`), and install manifests; remove erroneous `.cursor/hooks.json` ignore
 
@@ -85,6 +94,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - (ci) Pre-commit runs `ultracite check` when staged paths include `next-forge/`; changelog monitoring extended to next-forge apps/packages
 - (agents) ModMe overlay `.agents/skills/smart-git-automation/SKILL.md` and `scripts/vibe-session-finish.ps1` for worktree session end (commit/PR to `dev`)
 - (cursor) Cursor hook configuration simplified to prevent failClosed blocking issues
+- (repo) Merge `dev` into the agent orchestration PR branch and resolve hook/CI/workflow conflicts while preserving the orchestration feature changes
 - (next-forge) Root scripts `yarn dev:forge:core`, `dev:forge:workshop`, `dev:forge:supabase`
 - (cursor-cookbook) `dag-task-runner` skill at `.cursor/skills/dag-task-runner/` with Cursor SDK runner scripts
 - (cursor-cookbook) SDK examples vendored at `.vendor/cursor-cookbook/sdk/` (quickstart, app-builder, agent-kanban, coding-agent-cli, dag-task-runner)
@@ -115,10 +125,6 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
-- (GenerativeUI) CI parity: Turbo 2 `tasks`, `yarn build:product`, postcss isolation from root Tailwind 4, CopilotKit App Router endpoint, devops-voltagent and shared-schemas lint fixes
-
-- (ci) `ci.yml` Bun version file path (`next-forge/package.json` instead of missing `pkg.json`)
-- (api) Catalogue route query param validation; public reads restricted to `published` status
 - (dev) `init-worktrees.ps1` — use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
 - (dev) `new-agent-worktree.ps1` — usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`
 - (vscode) Set `git.path` in `.vscode/settings.json` so Cursor Agent Review finds Git on Windows when it is not on PATH

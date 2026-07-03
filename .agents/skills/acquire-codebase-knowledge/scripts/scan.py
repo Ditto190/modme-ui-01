@@ -34,7 +34,8 @@ EXCLUDE_DIRS = {
     "node_modules", ".git", "dist", "build", "out", ".next", ".nuxt",
     "__pycache__", ".venv", "venv", ".tox", "target", "vendor",
     "coverage", ".nyc_output", "generated", ".cache", ".turbo",
-    ".yarn", ".pnp", "bin", "obj"
+    ".yarn", ".pnp", "bin", "obj",
+    ".conda", ".vendor", "external", ".tools", "menv",
 }
 
 MANIFESTS = [

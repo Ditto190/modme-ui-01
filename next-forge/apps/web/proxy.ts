@@ -1,5 +1,4 @@
 import { authMiddleware } from "@repo/auth/proxy";
-import { internationalizationMiddleware } from "@repo/internationalization/proxy";
 import { parseError } from "@repo/observability/error";
 import { secure } from "@repo/security";
 import {
@@ -7,7 +6,6 @@ import {
   noseconeOptionsWithToolbar,
   securityMiddleware,
 } from "@repo/security/proxy";
-import { createNEMO } from "@rescale/nemo";
 import { type NextProxy, type NextRequest, NextResponse } from "next/server";
 import { env } from "@/env";
 
@@ -51,17 +49,20 @@ export default authMiddleware(async (auth, request, _event) => {
     // Authentication enforcement: redirect unauthenticated users to sign-in on protected routes
     const pathname = request.nextUrl.pathname;
     const isSignInPage = pathname.startsWith("/sign-in");
-    const isPublicRoute = isSignInPage || pathname.startsWith("/api") || pathname.startsWith("/_next");
-    
-    if (!auth?.user && !isPublicRoute) {
+    const isPublicRoute =
+      isSignInPage ||
+      pathname.startsWith("/api") ||
+      pathname.startsWith("/_next");
+
+    if (!(auth?.user || isPublicRoute)) {
       const signInUrl = new URL("/sign-in", request.nextUrl.origin);
       signInUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(signInUrl);
     }
-    
+
     // Run security headers (primary security layer)
     const headersResponse = securityHeaders();
-    
+
     // Apply Arcjet if configured
     if (env.ARCJET_KEY) {
       try {
@@ -70,7 +71,7 @@ export default authMiddleware(async (auth, request, _event) => {
         console.warn("Arcjet validation failed (continuing):", arcjetError);
       }
     }
-    
+
     // Return secure response
     return headersResponse;
   } catch (error) {

@@ -1,0 +1,4 @@
+{
+  "_note": "Moved to docs/lean-ctx/config-schema.json. Sync with: yarn lean-ctx:schema:sync",
+  "relocated": "docs/lean-ctx/config-schema.json"
+}

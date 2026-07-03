@@ -1,5 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 /**
  * Supabase Auth session refresh for Next.js middleware.
@@ -9,8 +9,8 @@ export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY as string,
     {
       cookies: {
         getAll() {
@@ -26,7 +26,7 @@ export async function updateSession(request: NextRequest) {
           }
         },
       },
-    },
+    }
   );
 
   await supabase.auth.getClaims();

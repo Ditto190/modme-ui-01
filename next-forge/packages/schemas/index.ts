@@ -94,6 +94,12 @@ export const WebSocketMessageSchema = z.object({
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessageSchema>;
 
+export type {
+  InboxEntryRecord,
+  InboxFrontmatter,
+  InboxFunnelFile,
+  InboxIndexManifest,
+} from "./inbox";
 export {
   INBOX_CONTRACT_VERSION,
   INBOX_EMBEDDING_DIMENSIONS,
@@ -108,11 +114,38 @@ export {
   InboxPipelineStageSchema,
   InboxSeveritySchema,
   InboxSourceFormatSchema,
-} from "./inbox.js";
-
+} from "./inbox";
 export type {
-  InboxEntryRecord,
-  InboxFrontmatter,
-  InboxFunnelFile,
-  InboxIndexManifest,
-} from "./inbox.js";
+  EvalContractResult,
+  EvalEvent,
+  EvalSession,
+  EvalSignal,
+  EvalSignalRecord,
+  PipelineRun,
+  PipelineRunRecord,
+  TelemetryEvent,
+  TelemetryEventRecord,
+  Tenant,
+  TestResultRecord,
+  TraceRef,
+} from "./observability";
+export {
+  DEV_TENANT_ID,
+  DEV_TENANT_SLUG,
+  EvalContractResultSchema,
+  EvalEventSchema,
+  EvalImpactLevelSchema,
+  EvalSessionSchema,
+  EvalSignalSchema,
+  OBSERVABILITY_CONTRACT_VERSION,
+  PipelineModeSchema,
+  PipelineRunSchema,
+  PipelineStatusSchema,
+  PipelineTriggerSourceSchema,
+  TelemetryEventSchema,
+  TelemetryLevelSchema,
+  TelemetrySourceSchema,
+  TenantSchema,
+  TestResultSchema,
+  TraceRefSchema,
+} from "./observability";
