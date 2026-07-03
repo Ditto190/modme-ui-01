@@ -94,6 +94,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - (ci) Pre-commit runs `ultracite check` when staged paths include `next-forge/`; changelog monitoring extended to next-forge apps/packages
 - (agents) ModMe overlay `.agents/skills/smart-git-automation/SKILL.md` and `scripts/vibe-session-finish.ps1` for worktree session end (commit/PR to `dev`)
 - (cursor) Cursor hook configuration simplified to prevent failClosed blocking issues
+- (repo) Merge `dev` into the agent orchestration PR branch and resolve hook/CI/workflow conflicts while preserving the orchestration feature changes
 - (next-forge) Root scripts `yarn dev:forge:core`, `dev:forge:workshop`, `dev:forge:supabase`
 - (cursor-cookbook) `dag-task-runner` skill at `.cursor/skills/dag-task-runner/` with Cursor SDK runner scripts
 - (cursor-cookbook) SDK examples vendored at `.vendor/cursor-cookbook/sdk/` (quickstart, app-builder, agent-kanban, coding-agent-cli, dag-task-runner)

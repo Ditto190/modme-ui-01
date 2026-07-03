@@ -9,6 +9,10 @@ $ErrorActionPreference = 'Stop'
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $HooksDir = Join-Path $RepoRoot '.githooks'
 $DestDir = Join-Path $RepoRoot '.git\hooks'
+$SourcePreCommit = Join-Path $RepoRoot '.githooks\pre-commit'
+$SourcePrePush = Join-Path $RepoRoot '.githooks\pre-push'
+$DestPreCommit = Join-Path $RepoRoot '.git\hooks\pre-commit'
+$DestPrePush = Join-Path $RepoRoot '.git\hooks\pre-push'
 
 if (-not (Test-Path $HooksDir)) {
     throw "Missing hooks directory: $HooksDir"
@@ -16,6 +20,10 @@ if (-not (Test-Path $HooksDir)) {
 
 if (-not (Test-Path (Join-Path $RepoRoot '.git'))) {
     throw "Not a git repository: $RepoRoot"
+}
+
+if (-not (Test-Path $DestDir)) {
+    New-Item -ItemType Directory -Path $DestDir -Force | Out-Null
 }
 
 $hookNames = @('pre-commit', 'commit-msg', 'pre-push')

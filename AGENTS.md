@@ -67,8 +67,8 @@ Feature work **must not** happen in the main checkout. Use isolated Git worktree
 | Claude Code          | `-Owner claude`                                                  |
 | Antigravity          | `-Owner antigravity`                                             |
 
-**Once:** `.\scripts\init-worktrees.ps1`  
-**Per task:** `.\scripts\new-agent-worktree.ps1 -Name "<task>" -Owner <owner>`  
+**Once:** `.\scripts\init-worktrees.ps1` (creates `.worktrees/dev` inside the repo)  
+**Per task:** `.\scripts\new-agent-worktree.ps1 -Name "<task>" -Owner <owner>` (creates `.worktrees/dev-agent-<owner>-<task>`)  
 **Guard:** `yarn worktree:ensure` (fail on main checkout) or `.\scripts\ensure-worktree.ps1 -WarnOnly`  
 **Doctor:** `yarn worktree:doctor` / `yarn worktree:doctor:fix` (yarn.lock, ports, gh, Supabase env)  
 **Migrate main:** `.\scripts\migrate-main-to-worktree.ps1 -Name "<task>" -Owner cursor` when main has uncommitted work  
@@ -201,7 +201,7 @@ The pipeline runs on every push to `docs/inbox/` and ingests new entries into Su
 
 - Prefer cloud-first hosted Supabase over local Docker as the default database path; local Supabase is optional offline-only. Do not run `yarn supabase:local:env` after cloud setup — it overwrites root `.env` with localhost; use `node scripts/fix-cloud-supabase-url.mjs` if that happens.
 - When working with Supabase: use Cursor Supabase plugin MCP for project management; verify credentials from dashboard or `npx supabase status -o env` — not generic demo defaults; Rube/supabase-automation needs a separate Composio connection.
-- Run `yarn vibe:finish` / session finish only from a worktree under `Monorepo_ModMe-dev/`, not the main checkout.
+- Run `yarn vibe:finish` / session finish only from a worktree under `.worktrees/`, not the main checkout.
 - When asked to push or open a GitHub PR, complete with `gh` immediately — do not defer without attempting; use `--repo Ditto190/modme-ui-01` outside a git checkout; prefer `feature/cursor/<task>` branch names over auto-generated Cursor branches.
 - Use `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (not legacy anon-only naming) for next-forge browser/SSR Supabase clients via `@repo/supabase`.
 - Do not wire Supabase Auth middleware into `apps/app` by default — ModMe uses Auth.js for sign-in.

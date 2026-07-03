@@ -1,28 +1,17 @@
 #!/usr/bin/env node
 /**
- * Path filters mirroring .github/workflows/ci.yml (dorny/paths-filter).
+ * Path filters mirroring the CI workflow and the canonical stack manifest.
  */
 import { execSync } from "node:child_process";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { getPathFilterPrefixes } from "./load-stack-paths.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
 
 /** @type {Record<string, string[]>} */
-export const PATH_FILTERS = {
-  forge: ["next-forge/"],
-  generative: ["GenerativeUI_monorepo/"],
-  orchestration: [
-    "scripts/",
-    "docs/",
-    ".cursor/",
-    ".agents/",
-    ".github/",
-    "package.json",
-    "CHANGELOG.md",
-  ],
-};
+export const PATH_FILTERS = getPathFilterPrefixes();
 
 /**
  * @param {string} file
@@ -50,6 +39,8 @@ export function classifyChangedStacks(files) {
     forge: filterMatches(files, "forge"),
     generative: filterMatches(files, "generative"),
     orchestration: filterMatches(files, "orchestration"),
+    harness: filterMatches(files, "harness"),
+    e2e: filterMatches(files, "e2e"),
   };
 }
 

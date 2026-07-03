@@ -496,9 +496,9 @@ if ($CheckOnly) {
   Write-Note 'CheckOnly mode - no writes performed.'
 }
 
-$worktreeDev = Join-Path (Split-Path -Parent $RepoRoot) 'Monorepo_ModMe-dev/dev'
+$worktreeDev = Join-Path $RepoRoot '.worktrees/dev'
 if (-not (Test-Path -LiteralPath $worktreeDev)) {
-  Write-Note "extra_roots worktree not present ($worktreeDev) - auto-reroot still indexes primary monorepo"
+  Write-Note "extra_roots worktree not present ($worktreeDev) - run .\scripts\init-worktrees.ps1 or rely on auto-reroot"
 }
 
 exit 0

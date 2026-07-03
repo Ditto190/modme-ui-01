@@ -33,9 +33,16 @@ if (-not $env:LEAN_CTX_TRUST_WORKSPACE) {
   $env:LEAN_CTX_TRUST_WORKSPACE = '1'
 }
 $trustedRoots = @($RepoRoot)
-$worktreeDev = Join-Path (Split-Path -Parent $RepoRoot) 'Monorepo_ModMe-dev/dev'
-if (Test-Path -LiteralPath $worktreeDev) {
-  $trustedRoots += (Resolve-Path -LiteralPath $worktreeDev).Path
+$gitCommonDir = (git -C $RepoRoot rev-parse --git-common-dir 2>$null).Trim()
+if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($gitCommonDir)) {
+  if (-not [System.IO.Path]::IsPathRooted($gitCommonDir)) {
+    $gitCommonDir = Join-Path $RepoRoot $gitCommonDir
+  }
+  $mainRepoRoot = (Resolve-Path (Split-Path -Parent $gitCommonDir)).Path
+  $worktreeDev = Join-Path $mainRepoRoot '.worktrees/dev'
+  if (Test-Path -LiteralPath $worktreeDev) {
+    $trustedRoots += (Resolve-Path -LiteralPath $worktreeDev).Path
+  }
 }
 $env:LEAN_CTX_TRUSTED_ROOTS = ($trustedRoots -join ';')
 

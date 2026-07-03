@@ -31,7 +31,7 @@ Monorepo_ModMe/
 └── .github/workflows/ci.yml ← equivalent GitHub Actions workflow
 ```
 
-The pipeline targets **`GenerativeUI_monorepo/`** because that is the Turborepo application root — same as the `monorepo` job in GitHub Actions.
+The pipeline targets **`GenerativeUI_monorepo/`** for legacy stack jobs. **Canonical CI** is root [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) (GenerativeUI: `yarn lint`, `test`, `build`; next-forge: `bun check`, `test`, `build`). GitLab mirror uses the same GenerativeUI commands — see [`docs/repo-alignment.md`](./repo-alignment.md).
 
 ## Pipeline flow
 

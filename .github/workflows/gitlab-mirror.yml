@@ -1,0 +1,29 @@
+name: GitLab mirror sync
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.GITLAB_TOKEN != '' && secrets.GITLAB_MIRROR_URL != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to GitLab mirror
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_MIRROR_URL: ${{ secrets.GITLAB_MIRROR_URL }}
+        run: |
+          set -euo pipefail
+          BRANCH="${GITHUB_REF_NAME}"
+          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@${GITLAB_MIRROR_URL#https://}"
+          git push gitlab "HEAD:refs/heads/${BRANCH}" --force-with-lease

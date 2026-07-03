@@ -24,7 +24,7 @@ Feature work **must not** happen in the main `Monorepo_ModMe` checkout. Use an i
 .\scripts\init-worktrees.ps1
 ```
 
-Creates `../Monorepo_ModMe-dev/dev` (persistent `dev` branch checkout).
+Creates `.worktrees/dev` (persistent `dev` branch checkout).
 
 ## Per-task workflow
 
@@ -32,7 +32,7 @@ Creates `../Monorepo_ModMe-dev/dev` (persistent `dev` branch checkout).
 .\scripts\ensure-worktree.ps1   # fail fast if on main checkout
 .\scripts\new-agent-worktree.ps1 -Name "auth-fix" -Owner cursor
 # → branch feature/cursor/auth-fix
-# → path ../Monorepo_ModMe-dev/dev-agent-cursor-auth-fix
+# → path .worktrees/dev-agent-cursor-auth-fix
 ```
 
 Uncommitted work on main: `.\scripts\migrate-main-to-worktree.ps1 -Name "auth-fix" -Owner cursor`

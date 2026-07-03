@@ -26,8 +26,9 @@ coverage/
 target/
 *.tsbuildinfo
 
-# Tooling caches (lean-ctx, local installs)
-.tools/
+# Worktree local artifacts (git manages worktree dirs themselves)
+.worktrees/**/.worktree-ports.env
+.worktrees/**/logs/
 .lean-ctx/
 .node/
 .firecrawl/

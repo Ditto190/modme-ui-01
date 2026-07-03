@@ -94,7 +94,7 @@ no_degrade = false
 # ── PathJail & workspace ────────────────────────────────────────────────
 allow_paths = []
 # Optional worktree sibling — skipped by ensure-lean-ctx-config.ps1 if path missing
-extra_roots = ["../Monorepo_ModMe-dev/dev"]
+extra_roots = [".worktrees/dev"]
 allow_auto_reroot = true           # monorepo + worktrees
 
 # ── Shell hook & security ───────────────────────────────────────────────

@@ -1,29 +1,32 @@
 import "dotenv/config";
 import {
-  Memory,
-  VoltAgent,
-  VoltAgentObservability,
-  VoltOpsClient,
+	Memory,
+	VoltAgent,
+	VoltAgentObservability,
+	VoltOpsClient,
 } from "@voltagent/core";
-import { LibSQLMemoryAdapter, LibSQLObservabilityAdapter } from "@voltagent/libsql";
+import {
+	LibSQLMemoryAdapter,
+	LibSQLObservabilityAdapter,
+} from "@voltagent/libsql";
 import { createPinoLogger } from "@voltagent/logger";
 import { honoServer } from "@voltagent/server-hono";
-import { codebaseOrchestratorWorkflow, selfHealingTddWorkflow } from "./workflows";
 import { devopsExpert } from "./agents";
+import { codebaseOrchestratorWorkflow, selfHealingTddWorkflow } from "./workflows";
 
 const logger = createPinoLogger({ name: "devops-voltagent", level: "info" });
 
 const memory = new Memory({
-  storage: new LibSQLMemoryAdapter({
-    url: "file:./.voltagent/memory.db",
-    logger: logger.child({ component: "libsql" }),
-  }),
+	storage: new LibSQLMemoryAdapter({
+		url: "file:./.voltagent/memory.db",
+		logger: logger.child({ component: "libsql" }),
+	}),
 });
 
 const observability = new VoltAgentObservability({
-  storage: new LibSQLObservabilityAdapter({
-    url: "file:./.voltagent/observability.db",
-  }),
+	storage: new LibSQLObservabilityAdapter({
+		url: "file:./.voltagent/observability.db",
+	}),
 });
 
 new VoltAgent({

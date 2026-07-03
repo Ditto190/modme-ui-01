@@ -69,7 +69,7 @@ Run in parallel and group by **stack**:
 
 ### 2. Branch validation (skip branch creation)
 
-- Abort if cwd is main `Monorepo_ModMe/` (not under `Monorepo_ModMe-dev/`)
+- Abort if cwd is main `Monorepo_ModMe/` (not under `.worktrees/`)
 - Expect branch `feature/<owner>/<task>`
 - Do **not** create new branches with smart-git naming
 

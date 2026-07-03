@@ -1,0 +1,105 @@
+{
+  "id": "modme-migration-review",
+  "name": "ModMe Thermo-Nuclear Migration Review Collection",
+  "description": "Bounded-parallel agent skill bundle for dual-monorepo thermo-nuclear reviews and PORTING_GUIDE migration slices. Global skills: npx skills add <owner/repo@skill> --agent cursor -y. Project skills: .cursor/skills/thermo-nuclear-monorepo-review/, .agents/skills/modme-molecule-index/.",
+  "tags": ["thermo-nuclear", "migration", "dual-monorepo", "molecule-index", "ecl"],
+  "display": { "ordering": "manual", "featured": true },
+  "items": [
+    {
+      "path": "skills/workflow-from-chats/SKILL.md",
+      "kind": "skill",
+      "role": "orchestrator",
+      "usage": "Extract preference atoms from audit conversations into durable artifacts"
+    },
+    {
+      "path": "skills/acquire-codebase-knowledge/SKILL.md",
+      "kind": "skill",
+      "role": "explorer-forge",
+      "usage": "Evidence-only map of next-forge apps and packages before thermo review"
+    },
+    {
+      "path": "skills/acquire-codebase-knowledge/SKILL.md",
+      "kind": "skill",
+      "role": "explorer-legacy",
+      "usage": "Map GenerativeUI_monorepo apps, root src/agent, inbox_pipeline.py"
+    },
+    {
+      "path": "skills/principle-type-system-discipline/SKILL.md",
+      "kind": "skill",
+      "role": "contract-auditor",
+      "usage": "Golden JSON, WS contracts, branded IDs, pytest parity"
+    },
+    {
+      "path": "skills/thermo-nuclear-code-quality-review/SKILL.md",
+      "kind": "skill",
+      "role": "thermo-reviewer-forge",
+      "usage": "P0/P1 structural findings on next-forge diff"
+    },
+    {
+      "path": "skills/thermo-nuclear-code-quality-review/SKILL.md",
+      "kind": "skill",
+      "role": "thermo-reviewer-legacy",
+      "usage": "PORTING_GUIDE portable component regression scan"
+    },
+    {
+      "path": "skills/quality-playbook/SKILL.md",
+      "kind": "skill",
+      "role": "test-engineer",
+      "usage": "yarn molecule-index:verify, telemetry:audit, Playwright gates"
+    },
+    {
+      "path": "skills/doublecheck/SKILL.md",
+      "kind": "skill",
+      "role": "test-engineer",
+      "usage": "Three-layer review of synthesis and contract snapshots"
+    },
+    {
+      "path": "skills/next-forge/SKILL.md",
+      "kind": "skill",
+      "role": "explorer-forge",
+      "usage": "next-forge Turborepo conventions and ports"
+    },
+    {
+      "path": "skills/modme-generative-ui-migrate/SKILL.md",
+      "kind": "skill",
+      "role": "explorer-legacy",
+      "usage": "Legacy → next-forge migration playbook"
+    },
+    {
+      "path": "skills/modme-molecule-index/SKILL.md",
+      "kind": "skill",
+      "role": "contract-auditor",
+      "usage": "Molecule index orchestrator and manifest acceptance"
+    },
+    {
+      "path": "skills/c4-architecture/SKILL.md",
+      "kind": "skill",
+      "role": "doc-writer",
+      "usage": "C4 product slice updates in C4-Documentation/"
+    },
+    {
+      "path": "skills/create-agentsmd/SKILL.md",
+      "kind": "skill",
+      "role": "doc-writer",
+      "usage": "Regenerate AGENTS.md after audit P0 changes"
+    },
+    {
+      "path": "agents/gem-devops.agent.md",
+      "kind": "agent",
+      "role": "orchestrator",
+      "usage": "Harness lint, CI path-filter, worktree doctor coordination"
+    },
+    {
+      "path": "skills/memory-merger/SKILL.md",
+      "kind": "skill",
+      "role": "orchestrator",
+      "usage": "Merge wave findings into synthesis doc and ECL STATUS"
+    }
+  ],
+  "globalSkillsInstall": [
+    "obra/superpowers@parallel-agents",
+    "muratcankoylan/agent-skills@multi-agent-patterns",
+    "garrytan/plan-eng-review",
+    "testdino-hq/playwright-skill"
+  ]
+}

@@ -32,7 +32,7 @@ Exit codes:
   1 = one or more errors
 
 Examples:
-  cd ..\Monorepo_ModMe-dev\dev-agent-cursor-my-task
+  cd .worktrees\dev-agent-cursor-my-task
   .\scripts\worktree-doctor.ps1
   .\scripts\worktree-doctor.ps1 -Fix -Json
   yarn worktree:doctor
@@ -102,7 +102,8 @@ if (Test-Path $yarnLock) {
 else {
   $hint = if ($ctx.IsWorktree) {
     ".\scripts\worktree-doctor.ps1 -Fix  # or copy from main via worktree-copy-env.ps1"
-  } else {
+  }
+  else {
     'Run yarn install at repo root on main checkout'
   }
   Add-Check 'yarn_lock' 'error' 'Missing yarn.lock - yarn scripts will fail' $hint

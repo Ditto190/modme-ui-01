@@ -1,0 +1,24 @@
+{
+  "wave": 1,
+  "generated_at": "2026-06-28T12:00:00.000Z",
+  "branch": "feature/cursor/thermo-nuclear-workflow-index",
+  "explorers": {
+    "explorer-forge": {
+      "status": "complete",
+      "focus_paths": ["next-forge/apps", "next-forge/packages"],
+      "acquire_docs": ["docs/codebase/ARCHITECTURE.md", "docs/codebase/STRUCTURE.md", "docs/codebase/STACK.md"]
+    },
+    "explorer-legacy": {
+      "status": "complete",
+      "focus_paths": ["GenerativeUI_monorepo/apps", "src", "agent"],
+      "acquire_docs": ["docs/codebase/INTEGRATIONS.md", "docs/migration/phase4-cutover.md"]
+    },
+    "contract-auditor": {
+      "status": "complete",
+      "focus_paths": ["next-forge/packages/schemas", "packages/intake-contracts"],
+      "contracts": ["genui-agent-contract.golden.json", "ws-contract.test.ts"]
+    }
+  },
+  "blocked_wave_2_until": "this manifest published",
+  "molecule_manifest": "data/molecule-index/manifest.json"
+}
