@@ -48,7 +48,6 @@ export function writeInboxReport({
       markdown: 'docs/inbox-pipeline/reports/latest.md',
       jsonl: '.cursor/hooks/state/inbox-errors.jsonl',
     },
-    root: REPO_ROOT,
   };
 
   mkdirSync(join(REPO_ROOT, 'docs/inbox-pipeline/reports'), { recursive: true });

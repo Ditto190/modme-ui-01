@@ -1,10 +1,6 @@
 {
   "version": "1.0",
-<<<<<<< Updated upstream
-  "generatedAt": "2026-06-21T00:09:35.845Z",
-=======
   "generatedAt": "2026-06-26T13:49:09.173Z",
->>>>>>> Stashed changes
   "source": "test",
   "lens": "funnel",
   "strict": false,
@@ -30,6 +26,5 @@
     "json": "docs/inbox-pipeline/reports/latest.json",
     "markdown": "docs/inbox-pipeline/reports/latest.md",
     "jsonl": ".cursor/hooks/state/inbox-errors.jsonl"
-  },
-  "root": "C:\\Users\\dylan\\Monorepo_ModMe-dev\\dev"
+  }
 }
