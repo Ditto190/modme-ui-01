@@ -52,18 +52,26 @@ else {
   Add-Check 'checkout_context' 'warn' "Main checkout - feature work belongs under $($ctx.DevRootPath)" '.\scripts\migrate-main-to-worktree.ps1 -Name my-task -Owner cursor'
 }
 
-# Canonical remote
+# Canonical remote (GitHub is canonical; origin may be GitLab mirror)
+$remoteList = @(git -C $ctx.RepoRoot remote 2>$null)
 $originUrl = (git -C $ctx.RepoRoot remote get-url origin 2>$null).Trim()
-if ($originUrl -match 'modme-ui-01') {
-  Add-Check 'remote_canonical' 'ok' "origin matches GitHub canonical ($originUrl)" ''
+$githubUrl = ''
+if ($remoteList -contains 'github') {
+  $githubUrl = (git -C $ctx.RepoRoot remote get-url github 2>$null).Trim()
+}
+$canonicalUrl = if ($githubUrl -match 'modme-ui-01') { $githubUrl } elseif ($originUrl -match 'modme-ui-01') { $originUrl } else { '' }
+if ($canonicalUrl) {
+  Add-Check 'remote_canonical' 'ok' "GitHub canonical remote configured ($canonicalUrl)" ''
+}
+elseif ($originUrl) {
+  Add-Check 'remote_canonical' 'warn' "origin is not GitHub canonical ($originUrl); use remote github for PRs" "git remote add github $CanonicalOrigin"
 }
 else {
-  Add-Check 'remote_canonical' 'error' "origin unexpected: $originUrl" "git remote set-url origin $CanonicalOrigin"
+  Add-Check 'remote_canonical' 'error' 'No origin remote' "git remote add origin $CanonicalOrigin"
 }
 
 # GitLab mirror remote (optional)
 $gitlabUrl = ''
-$remoteList = @(git -C $ctx.RepoRoot remote 2>$null)
 if ($remoteList -contains 'gitlab') {
   $gitlabUrl = (git -C $ctx.RepoRoot remote get-url gitlab).Trim()
 }

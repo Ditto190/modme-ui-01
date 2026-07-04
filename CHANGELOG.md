@@ -84,6 +84,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 ### Changed
 
 - (repo) Git hooks install/doctor use `git rev-parse --git-path hooks` for linked worktrees; `agent-session-finish -PatternGate` runs pattern coverage verify
+- (scripts) repo-alignment doctor accepts `github` remote when `origin` is the GitLab mirror
 - (GenerativeUI) Agent-server WebSocket timestamps aligned to Unix milliseconds to match `@repo/schemas` golden contract
 - (docs) `ARCHITECTURE.md` documents hexagonal ports/adapters layout for agent-server
 - (repo) Pre-push generative lint is advisory on push (full `yarn verify:generative` before PR merge)
