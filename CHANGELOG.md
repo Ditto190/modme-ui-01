@@ -61,7 +61,8 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
-- (repo) Distributed observability pipeline — `yarn telemetry:sync`, telemetry CLI/bridge, DSP bootstrap (`.dsp/`), observability runbooks, and `observability-pipeline-check` CI workflow
+- (repo) Workflow speckit gates — `specs/013-agent-workflow-gates/`, pattern registry/coverage-map, `modme-workflow-speckit-bridge` skill, `/speckit-pattern-checklist`, and `run-pattern-gate.mjs`
+- (repo) Distributed observability pipeline — `yarn telemetry:sync`, telemetry CLI/bridge, DSP bootstrap (`.dsp/`), observability runbooks, and `observability-pipeline-check` CI workflow — `yarn telemetry:sync`, telemetry CLI/bridge, DSP bootstrap (`.dsp/`), observability runbooks, and `observability-pipeline-check` CI workflow
 - (next-forge) `@repo/observability` ingest/categorize package, API telemetry routes, knowledge session-ops panel, and observability schema contract tests
 - (repo) lean-ctx project config (`.lean-ctx.toml`), universal intake script, and agent terminal session finish/start enhancements
 - (GenerativeUI) Hexagonal refactor of `apps/agent-server` — domain/ports/adapters/app layout with DI in `create_app()`
@@ -82,6 +83,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
+- (repo) Git hooks install/doctor use `git rev-parse --git-path hooks` for linked worktrees; `agent-session-finish -PatternGate` runs pattern coverage verify
 - (GenerativeUI) Agent-server WebSocket timestamps aligned to Unix milliseconds to match `@repo/schemas` golden contract
 - (docs) `ARCHITECTURE.md` documents hexagonal ports/adapters layout for agent-server
 - (repo) Pre-push generative lint is advisory on push (full `yarn verify:generative` before PR merge)

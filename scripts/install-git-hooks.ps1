@@ -8,18 +8,21 @@ $ErrorActionPreference = 'Stop'
 
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $HooksDir = Join-Path $RepoRoot '.githooks'
-$DestDir = Join-Path $RepoRoot '.git\hooks'
-$SourcePreCommit = Join-Path $RepoRoot '.githooks\pre-commit'
-$SourcePrePush = Join-Path $RepoRoot '.githooks\pre-push'
-$DestPreCommit = Join-Path $RepoRoot '.git\hooks\pre-commit'
-$DestPrePush = Join-Path $RepoRoot '.git\hooks\pre-push'
+
+$inside = (git -C $RepoRoot rev-parse --is-inside-work-tree 2>$null).Trim()
+if ($LASTEXITCODE -ne 0 -or $inside -ne 'true') {
+    throw "Not a git repository: $RepoRoot"
+}
+
+# Canonical hooks dir (shared across linked worktrees)
+$hooksRel = (git -C $RepoRoot rev-parse --git-path hooks 2>$null).Trim()
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($hooksRel)) {
+    throw "Could not resolve git hooks path for: $RepoRoot"
+}
+$DestDir = if ([System.IO.Path]::IsPathRooted($hooksRel)) { $hooksRel } else { Join-Path $RepoRoot $hooksRel }
 
 if (-not (Test-Path $HooksDir)) {
     throw "Missing hooks directory: $HooksDir"
-}
-
-if (-not (Test-Path (Join-Path $RepoRoot '.git'))) {
-    throw "Not a git repository: $RepoRoot"
 }
 
 if (-not (Test-Path $DestDir)) {

@@ -130,8 +130,15 @@ else {
   Add-Check 'ports' 'ok' 'Main checkout uses launch-manifest defaults (no .worktree-ports.env required)' ''
 }
 
-# Git hooks
-$hookPath = Join-Path $repo '.git/hooks/pre-commit'
+# Git hooks (linked worktrees: .git is a file; use git-path hooks)
+$hooksRel = (git -C $repo rev-parse --git-path hooks 2>$null).Trim()
+if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($hooksRel)) {
+  $hooksDir = if ([System.IO.Path]::IsPathRooted($hooksRel)) { $hooksRel } else { Join-Path $repo $hooksRel }
+  $hookPath = Join-Path $hooksDir 'pre-commit'
+}
+else {
+  $hookPath = Join-Path $repo '.git/hooks/pre-commit'
+}
 if (Test-Path $hookPath) {
   Add-Check 'hooks' 'ok' 'pre-commit hook installed' ''
 }

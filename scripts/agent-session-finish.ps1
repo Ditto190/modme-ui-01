@@ -9,6 +9,7 @@ param(
   [string]$CloseReason = 'completed',
   [switch]$SkipFinish,
   [switch]$VerifyStack,
+  [string]$PatternGate,
   [switch]$Help,
   [parameter(ValueFromRemainingArguments = $true)]
   [string[]]$FinishArgs
@@ -23,6 +24,7 @@ agent-session-finish — end orchestrated session and optional smart-git finish
 Passes remaining args to vibe-session-finish.ps1 (e.g. -DryRun -Yes -CommitMessage -Push -CreatePr).
   -VerifyStack   Run yarn verify:forge/generative based on changed paths before finish
   -SkipFinish     Skip vibe-session-finish (trace + beads only)
+  -PatternGate   Run pattern coverage verify (e.g. federated-dual-stack) before finish
 "@
   exit 0
 }
@@ -77,6 +79,16 @@ if (Test-Path $telemetryCli) {
     node $Cli collect --since=1d 2>&1 | Out-Null
   } -ArgumentList $telemetryCli, $RepoRoot | Out-Null
   Write-Host '[telemetry] async collect job started (1d window)' -ForegroundColor DarkGray
+}
+
+# Optional pattern gate (coverage-map verify)
+if ($PatternGate) {
+  Write-Host "Running pattern gate: $PatternGate" -ForegroundColor Cyan
+  node (Join-Path $ScriptDir 'lib/run-pattern-gate.mjs') --pattern $PatternGate
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host '[agent-orchestrator] level=error event=pattern_gate_failed' -ForegroundColor Red
+    exit $LASTEXITCODE
+  }
 }
 
 # Optional stack verify

@@ -1,0 +1,52 @@
+{
+  "$schema": "./coverage-map.schema.json",
+  "version": 1,
+  "description": "Pattern → repo paths → verify commands → speckit checklist domain",
+  "patterns": {
+    "federated-dual-stack": {
+      "specSections": ["Boundaries", "Constraints"],
+      "paths": [
+        "scripts/lib/stack-paths.json",
+        ".cursor/rules/monorepo-boundaries.mdc"
+      ],
+      "verify": ["yarn lint:harness"],
+      "checklistDomain": "monorepo-boundaries"
+    },
+    "path-filtered-ci": {
+      "specSections": ["Commands", "Testing Strategy"],
+      "paths": [
+        "scripts/lib/run-verify-stack.mjs",
+        ".githooks/pre-push"
+      ],
+      "verify": ["yarn pre-commit:check"],
+      "checklistDomain": "ci-architecture"
+    },
+    "contract-first-integration": {
+      "specSections": ["Integration", "Success Criteria"],
+      "paths": [
+        "next-forge/packages/schemas",
+        "packages/intake-contracts"
+      ],
+      "verify": ["yarn molecule-index:verify"],
+      "checklistDomain": "contracts"
+    },
+    "bounded-parallel-agents": {
+      "specSections": ["Workflow Preferences", "Success Criteria"],
+      "paths": [
+        "docs/workflows/thermo-nuclear-dual-monorepo-review.md",
+        "next-forge/docs/adr/0012-bounded-parallel-agent-lifecycle.md"
+      ],
+      "verify": ["yarn lint:harness"],
+      "checklistDomain": "ci-architecture"
+    },
+    "ecl-structured-change": {
+      "specSections": ["Boundaries", "Commands"],
+      "paths": [
+        "harness",
+        "docs/ECL.md"
+      ],
+      "verify": ["yarn lint:harness"],
+      "checklistDomain": "monorepo-boundaries"
+    }
+  }
+}

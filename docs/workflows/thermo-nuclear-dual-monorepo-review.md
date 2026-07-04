@@ -4,20 +4,20 @@ Repeatable federated audit for ModMe's dual monorepo (next-forge + GenerativeUI)
 
 ## Agent team roster
 
-| Wave | Agent lane | Scope | Skills |
-|------|------------|-------|--------|
-| 0 (serial) | orchestrator | ECL change, baseline, synthesis | `workflow-from-chats`, ECL harness |
-| 1 (parallel) | explorer-forge | `next-forge/apps/*`, `packages/*` | `acquire-codebase-knowledge`, `lean-ctx`, `next-forge` |
-| 1 | explorer-legacy | `GenerativeUI_monorepo/apps/*`, root `src/`/`agent/` | `reverse-engineer`, `modme-generative-ui-migrate` |
-| 1 | contract-auditor | `@repo/schemas`, WS, intake-contracts | `principle-type-system-discipline` |
-| 2 (blocked on wave 1) | thermo-reviewer-forge | P0/P1 forge findings | `thermo-nuclear-code-quality-review` |
-| 2 | thermo-reviewer-legacy | PORTING_GUIDE portable components | `thermo-nuclear-code-quality-review` |
-| 2 | test-engineer | Vitest + Playwright + telemetry audit | `distributed-debugging-debug-trace`, playwright-skill |
-| 3 (serial) | doc-writer | C4 slice + `docs/codebase/*` + ADR | `c4-architecture`, `context7-auto-research` |
+| Wave                  | Agent lane             | Scope                                                          | Skills                                                              |
+| --------------------- | ---------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------- |
+| 0 (serial)            | orchestrator           | ECL change, baseline, synthesis, **speckit pattern checklist** | `workflow-from-chats`, `modme-workflow-speckit-bridge`, ECL harness |
+| 1 (parallel)          | explorer-forge         | `next-forge/apps/*`, `packages/*`                              | `acquire-codebase-knowledge`, `lean-ctx`, `next-forge`              |
+| 1                     | explorer-legacy        | `GenerativeUI_monorepo/apps/*`, root `src/`/`agent/`           | `reverse-engineer`, `modme-generative-ui-migrate`                   |
+| 1                     | contract-auditor       | `@repo/schemas`, WS, intake-contracts                          | `principle-type-system-discipline`                                  |
+| 2 (blocked on wave 1) | thermo-reviewer-forge  | P0/P1 forge findings                                           | `thermo-nuclear-code-quality-review`                                |
+| 2                     | thermo-reviewer-legacy | PORTING_GUIDE portable components                              | `thermo-nuclear-code-quality-review`                                |
+| 2                     | test-engineer          | Vitest + Playwright + telemetry audit                          | `distributed-debugging-debug-trace`, playwright-skill               |
+| 3 (serial)            | doc-writer             | C4 slice + `docs/codebase/*` + ADR                             | `c4-architecture`, `context7-auto-research`                         |
 
 ## Dependency rule (Gas City lifecycle)
 
-1. **Plan serially** — ECL spec/plan gate, molecule manifest, acquire docs before parallel reviewers
+1. **Plan serially** — ECL spec/plan gate, **speckit pattern checklist** (`/speckit-pattern-checklist` on active pattern), molecule manifest, acquire docs before parallel reviewers
 2. **Execute in waves** — wave 2 blocked until wave 1 publishes `docs/workflows/reports/manifest.json`
 3. **Commit serially** — merge findings, golden fixtures, INDEX.json, STATUS.md in stable order
 
@@ -34,7 +34,9 @@ npx skills add muratcankoylan/agent-skills@multi-agent-patterns --agent cursor -
 ## Session start
 
 ```powershell
+$env:SPECIFY_FEATURE = "013-agent-workflow-gates"
 yarn worktree:doctor
+# /speckit-pattern-checklist federated-dual-stack
 yarn lint:harness
 # lean-ctx
 # /context-focus thermo-nuclear-review
@@ -43,15 +45,15 @@ yarn lint:harness
 
 ## Verification gates
 
-| Layer | Command |
-|-------|---------|
-| Harness | `yarn lint:harness` |
-| Forge | `yarn verify:forge` |
-| Generative | `yarn verify:generative` |
-| Contracts | `cd next-forge && bun test packages/schemas/*.test.ts` |
-| Molecule | `yarn molecule-index:verify` |
-| Telemetry | `yarn telemetry:audit --lens all` |
-| E2E | `cd next-forge && bun run test:e2e` (full stack) |
+| Layer      | Command                                                |
+| ---------- | ------------------------------------------------------ |
+| Harness    | `yarn lint:harness`                                    |
+| Forge      | `yarn verify:forge`                                    |
+| Generative | `yarn verify:generative`                               |
+| Contracts  | `cd next-forge && bun test packages/schemas/*.test.ts` |
+| Molecule   | `yarn molecule-index:verify`                           |
+| Telemetry  | `yarn telemetry:audit --lens all`                      |
+| E2E        | `cd next-forge && bun run test:e2e` (full stack)       |
 
 ## Synthesis output
 
@@ -62,3 +64,5 @@ After each run, emit report to `docs/workflows/reports/thermo-nuclear-<scope>-<d
 - Skill: [`.cursor/skills/thermo-nuclear-monorepo-review/SKILL.md`](../../.cursor/skills/thermo-nuclear-monorepo-review/SKILL.md)
 - Collection: [`scripts/collections/modme-migration-review.collection.json`](../../scripts/collections/modme-migration-review.collection.json)
 - ECL: [`docs/ECL.md`](../ECL.md)
+- Workflow gates spec: [`specs/013-agent-workflow-gates/spec.md`](../../specs/013-agent-workflow-gates/spec.md)
+- Bridge skill: [`.cursor/skills/modme-workflow-speckit-bridge/SKILL.md`](../../.cursor/skills/modme-workflow-speckit-bridge/SKILL.md)
