@@ -1,0 +1,40 @@
+# Copilot workspace configuration
+
+Generated: {{updated}}
+
+## Repository files
+
+| File | Role |
+|------|------|
+| `.github/github-app.yml` | Copilot App trust config — scripts, branch prefix, system-prompt |
+| `.worktreeinclude` | Auto-copy gitignored env + lockfiles into worktrees |
+| `scripts/copilot-workspace/` | Lifecycle bootstrap for `session.create` / `session.archive` |
+
+## Branch prefix
+
+`{{branchPrefix}}`
+
+## Lifecycle scripts
+
+{{#each lifecycleScripts}}
+- **{{event}}** → `{{command}}`
+{{/each}}
+
+## COPILOT_* environment variables
+
+| Variable | ModMe mapping |
+|----------|---------------|
+| `COPILOT_SCRIPT_TRIGGER` | `session.create` / `session.archive` lifecycle branch |
+| `COPILOT_WORKSPACE_NAME` | Agent session `-TaskTitle` |
+| `COPILOT_WORKSPACE_PATH` | Worktree root |
+| `COPILOT_ROOT_PATH` | Main checkout for env/lockfile copy |
+| `COPILOT_DEFAULT_BRANCH` | PR base hint (defaults to `dev`) |
+| `COPILOT_PORT` | Primary dev server port seed |
+
+## Run menu scripts
+
+{{#each runScripts}}
+- `{{name}}`: {{command}}
+{{/each}}
+
+See [docs/copilot-workspace-orchestration.md](../../docs/copilot-workspace-orchestration.md).

@@ -59,6 +59,8 @@ Per-package scripts vary (Vite/Biome/Vitest vs Next.js). Check the nearest `pack
 
 Feature work **must not** happen in the main checkout. Use isolated Git worktrees so parallel agents avoid file/Git/port conflicts.
 
+**GitHub Copilot App:** trust [`.github/github-app.yml`](.github/github-app.yml), `.worktreeinclude`, `scripts/copilot-workspace/`. Guide: [`docs/copilot-workspace-orchestration.md`](docs/copilot-workspace-orchestration.md). Verify: `yarn preflight:copilot`.
+
 | IDE                  | Start                                                            |
 | -------------------- | ---------------------------------------------------------------- |
 | Cursor Agents Window | Start agent (auto worktree via `.cursor/worktrees.json`)         |

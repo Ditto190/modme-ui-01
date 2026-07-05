@@ -9,9 +9,9 @@ A single checkout shared by Cursor Agents, Copilot, Claude Code, and Antigravity
 - File watcher and index churn (IDE slowdown)
 - Git state conflicts and accidental cross-agent edits
 - Port collisions (`3000`, `3001`, `8000` from [`scripts/launch-manifest.json`](../scripts/launch-manifest.json))
-- Inconsistent bootstrap (`yarn install`, poetry venv)
+- **Duplicate dependency trees** — each worktree running full `yarn`/`bun`/`poetry` installs (multi-GB `node_modules` + `.venv` per agent)
 
-Worktrees give each agent its own folder, branch, `node_modules`, poetry venv, and port slot.
+Worktrees give each agent its own folder, branch, and port slot. **Heavy dependencies are shared** via Windows junctions from `.worktrees/dev` (golden image); only source edits differ per worktree.
 
 ## Architecture
 
@@ -78,18 +78,30 @@ Creates `.worktrees/dev` on the `dev` branch. Optionally add staging:
 2. Cursor creates a worktree and runs [`.cursor/setup-worktree-windows.ps1`](../.cursor/setup-worktree-windows.ps1) (or Unix equivalent).
 3. Review changes in the worktree diff UI; commit/PR from the worktree.
 
-Setup steps (automatic):
+Setup steps (automatic, **shared-deps** default):
 
 1. Port allocation → `.worktree-ports.env`
-2. `corepack enable`
-3. `yarn install` in `GenerativeUI_monorepo/`
-4. `npx bun install` in `next-forge/`
-5. Copy `.env` files from `ROOT_WORKTREE_PATH` (main checkout)
-6. `poetry install` in `apps/agent-server/`
-7. Optional `lean-ctx doctor` (non-fatal)
-8. Git pre-commit hook install (`scripts/install-git-hooks.ps1`)
+2. Copy `.env` + lockfiles from `ROOT_WORKTREE_PATH` (main checkout)
+3. Junction-link `node_modules` / `.venv` from `.worktrees/dev` (no per-agent installs)
+4. Git pre-commit hook install (`scripts/install-git-hooks.ps1`)
+5. Optional agent session envelope
+
+Manual bootstrap modes (`yarn workspace:bootstrap`, `:shared`, `:lite`) — see [Shared dependencies](#shared-dependencies).
 
 Debug setup failures: **Output → Worktrees Setup**.
+
+### GitHub Copilot App
+
+Copilot App workspaces use [`.github/github-app.yml`](../.github/github-app.yml) and [`.worktreeinclude`](../.worktreeinclude) instead of Cursor setup scripts.
+
+1. Trust the repository config in Copilot App **Project Settings** when prompted.
+2. On `session.create`, the app runs [`scripts/copilot-workspace/lifecycle.ps1`](../scripts/copilot-workspace/lifecycle.ps1) (bootstrap + agent session envelope).
+3. On `session.archive`, preflight fast + session envelope close.
+4. Use **Run** scripts from the workspace menu (`dev:forge:core`, `workbench`, `preflight:copilot`, etc.).
+
+`COPILOT_WORKSPACE_PATH` maps to the worktree; `COPILOT_ROOT_PATH` is the main checkout for env copy. Generated env: `.copilot/workspace.generated.env`.
+
+Full guide: [`docs/copilot-workspace-orchestration.md`](copilot-workspace-orchestration.md).
 
 ### End of session
 
@@ -209,6 +221,8 @@ Main checkout debugging uses [`.vscode/launch.json`](../.vscode/launch.json) bas
 | [`worktree-doctor.ps1`](../scripts/worktree-doctor.ps1)                   | Pre-flight: checkout, yarn.lock, ports, gh, Supabase env (`-Fix`, `-Json`) |
 | [`load-worktree-ports.ps1`](../scripts/load-worktree-ports.ps1)           | Dot-source `.worktree-ports.env` into current pwsh session                 |
 | [`agent-workspace-tmux.sh`](../scripts/agent-workspace-tmux.sh)           | WSL/Linux tmux dashboard: `status`, `layout`, `attach`                     |
+| [`worktree-relink-deps.ps1`](../scripts/worktree-relink-deps.ps1)           | Remove local deps + junction-link agent worktrees to `.worktrees/dev`      |
+| [`worktree-session-end.ps1`](../scripts/worktree-session-end.ps1)         | Session end wrapper (verify, commit, PR, optional worktree removal)        |
 | [`vibe-session-finish.ps1`](../scripts/vibe-session-finish.ps1)           | Session end: sync, group, pre-commit, commit, push, PR to `dev`            |
 
 List all worktrees:
@@ -236,9 +250,42 @@ Copied **by name only** from the main checkout (never committed):
 
 Use `.env.example` for required variable **names**.
 
+Lockfiles copied for junction matching: `yarn.lock`, `.yarnrc.yml`, `next-forge/bun.lock`, `GenerativeUI_monorepo/apps/agent-server/poetry.lock`.
+
 ---
 
-## Git workflow
+## Shared dependencies
+
+Agent worktrees **do not** run full installs by default. One golden checkout holds deps:
+
+| Checkout | Bootstrap | Role |
+| -------- | --------- | ---- |
+| `.worktrees/dev` | `yarn workspace:bootstrap` (full) | Dependency source (junction target) |
+| `dev-agent-*` | `yarn workspace:bootstrap:shared` | Junction-link heavy dirs from dev |
+| Any worktree | `yarn workspace:bootstrap:lite` | Ports + env only |
+
+```powershell
+# One-time golden image (from .worktrees/dev)
+yarn workspace:bootstrap
+
+# New agent worktree (shared-deps is default)
+.\scripts\new-agent-worktree.ps1 -Name "my-task" -Owner cursor
+
+# Migrate bloated worktrees after upgrading bootstrap
+yarn worktree:relink-deps
+
+# Verify junction health
+yarn worktree:doctor
+yarn worktree:doctor:fix
+```
+
+Heavy dirs junction-linked: `node_modules`, `GenerativeUI_monorepo/node_modules`, `next-forge/node_modules`, `GenerativeUI_monorepo/apps/agent-server/.venv`.
+
+Implementation: [`scripts/lib/worktree-link-deps.ps1`](../scripts/lib/worktree-link-deps.ps1) (Windows `mklink /J`) + Yarn `nmMode: hardlinks-global` in [`.yarnrc.yml`](../.yarnrc.yml).
+
+Preflight: `yarn preflight:worktree` (contract tests + orchestration smoke).
+
+---
 
 Mirror [UniversalWorkbench GIT_WORKFLOW](../GenerativeUI_monorepo/UniversalWorkbench/docs/GIT_WORKFLOW.md):
 
