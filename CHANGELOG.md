@@ -45,7 +45,6 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 
 ### Fixed
 
-- (docs) Inbox audit report `latest.json` uses relative `root` (no machine-local path) (PR #89)
 - (scope) Short description (#issue)
 ```
 
@@ -149,7 +148,6 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
-- (docs) Inbox audit report `latest.json` uses relative `root` (no machine-local path) (PR #89)
 - (dev) `init-worktrees.ps1` — use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
 - (dev) `new-agent-worktree.ps1` — usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`
 - (vscode) Set `git.path` in `.vscode/settings.json` so Cursor Agent Review finds Git on Windows when it is not on PATH
