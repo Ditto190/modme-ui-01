@@ -8,7 +8,7 @@ GitHub is the **canonical** source for ModMe. GitLab is an **active mirror** for
 |-------|--------|
 | Local folder | `Monorepo_ModMe` (main checkout) |
 | GitHub repo | `Ditto190/modme-ui-01` |
-| Worktrees | `../Monorepo_ModMe-dev/dev`, `dev-agent-*` |
+| Worktrees | `.worktrees/dev`, `.worktrees/dev-agent-*` |
 
 IDE/GitLens may show `modme-ui-01` while paths say `Monorepo_ModMe` — that is expected.
 

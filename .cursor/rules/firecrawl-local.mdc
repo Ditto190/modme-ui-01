@@ -1,0 +1,33 @@
+---
+description: Use ModMe self-hosted Firecrawl (Docker, port 3022) for scrape tasks — no cloud login.
+globs: scripts/firecrawl/**,scripts/firecrawl-scrape-stage.mjs,scripts/lib/firecrawl-local-client.mjs
+alwaysApply: false
+---
+
+# Firecrawl local-only
+
+For ModMe scrape/inbox tasks, use the **self-hosted** Firecrawl stack — not cloud `firecrawl login`.
+
+## Commands
+
+```powershell
+yarn firecrawl:setup && yarn firecrawl:up
+yarn firecrawl:status
+yarn scrape:shopping-list --dry-run
+```
+
+## Defaults
+
+- API: `http://127.0.0.1:3022` (`FIRECRAWL_API_URL`)
+- Auth: `USE_DB_AUTHENTICATION=false` (no API key required)
+- Client: `scripts/lib/firecrawl-local-client.mjs` → `POST /v1/scrape`
+- Cache: `.firecrawl/` (gitignored)
+
+## Agent rules
+
+1. **Do not** run `firecrawl login` or require `FIRECRAWL_API_KEY` for local scrape.
+2. Preflight with `yarn firecrawl:status` before non-dry-run scrapes.
+3. Exit code 2 = API unreachable (start Docker + `yarn firecrawl:up`).
+4. Optional CLI: `FIRECRAWL_USE_CLI=1` with `--api-url=http://127.0.0.1:3022`.
+
+Skill: `.cursor/skills/firecrawl-local/SKILL.md`

@@ -432,6 +432,94 @@ async function bootstrapCanonicalServers(): Promise<ServerSpec[]> {
       },
       status: 'stable',
     },
+    {
+      id: 'scrape',
+      name: 'Scrape Pipeline',
+      description:
+        'Firecrawl-style crawl, Ollama classification, and inbox promotion via staging tables',
+      category: 'research',
+      tools: [
+        {
+          name: 'scrape.crawl_url',
+          description:
+            'Start a Scrapy crawl for a manifest slug; upserts scrape_jobs and scrape_pages',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              manifest_slug: {
+                type: 'string',
+                description: 'Unique slug from scrape_manifests.slug',
+              },
+              seed_urls: {
+                type: 'array',
+                items: { type: 'string' },
+              },
+              max_depth: { type: 'integer', minimum: 0, maximum: 10 },
+              dry_run: { type: 'boolean' },
+            },
+            required: ['manifest_slug'],
+          },
+          returns: {
+            type: 'object',
+            properties: {
+              job_id: { type: 'string' },
+              manifest_id: { type: 'string' },
+              status: { type: 'string', enum: ['pending', 'running', 'done', 'failed'] },
+              pages_crawled: { type: 'integer' },
+              pages: { type: 'array' },
+            },
+          },
+        },
+        {
+          name: 'scrape.classify_page',
+          description:
+            'Classify raw scrape_pages via Ollama; writes scrape_classifications',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              page_id: { type: 'string' },
+              job_id: { type: 'string' },
+              limit: { type: 'integer', minimum: 1, maximum: 100 },
+              model: { type: 'string' },
+            },
+          },
+          returns: {
+            type: 'object',
+            properties: {
+              classified_count: { type: 'integer' },
+              classifications: { type: 'array' },
+            },
+          },
+        },
+        {
+          name: 'scrape.promote_batch',
+          description:
+            'Promote classified scrape_pages to inbox_entries with optional .md export',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              job_id: { type: 'string' },
+              page_ids: { type: 'array', items: { type: 'string' } },
+              dry_run: { type: 'boolean' },
+              export_md: { type: 'boolean' },
+            },
+          },
+          returns: {
+            type: 'object',
+            properties: {
+              promoted_count: { type: 'integer' },
+              skipped_count: { type: 'integer' },
+              promotions: { type: 'array' },
+            },
+          },
+        },
+      ],
+      transport: 'stdio',
+      installation: {
+        python: 'scrape-pipeline',
+      },
+      status: 'beta',
+    },
   ];
 }
 

@@ -1,8 +1,13 @@
 import { defineConfig, devices } from "@playwright/test";
 
+/** ModMe next-forge dev ports — see docs/codebase/STACK.md */
+const APP_BASE_URL = process.env.PLAYWRIGHT_APP_URL ?? "http://localhost:3100";
+const WEB_BASE_URL = process.env.PLAYWRIGHT_WEB_URL ?? "http://localhost:3101";
+const API_BASE_URL = process.env.PLAYWRIGHT_API_URL ?? "http://localhost:3102";
+
 /**
- * Playwright configuration for next-forge E2E tests
- * Targets Supabase catalog E2E: semantic agent search, tool metadata, eval framework
+ * Playwright configuration for next-forge E2E tests.
+ * Dev servers must be started separately: `bun run dev:core` (ports 3100–3102).
  */
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -18,21 +23,33 @@ export default defineConfig({
     ["list"],
   ],
   use: {
-    baseURL: "http://localhost:3101",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
-  // webServer disabled — dev servers must be started separately via 'yarn dev:forge:core'
-  // webServer: {
-  //   command: 'yarn dev:forge:core',
-  //   url: 'http://localhost:3101',
-  //   reuseExistingServer: !process.env.CI,
-  //   timeout: 120000,
-  // },
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "web",
+      testMatch: "catalog.spec.ts",
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: WEB_BASE_URL,
+      },
+    },
+    {
+      name: "app",
+      testMatch: "generative-ui.spec.ts",
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: APP_BASE_URL,
+      },
+    },
+    {
+      name: "api",
+      testMatch: "inbox-api.spec.ts",
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: API_BASE_URL,
+      },
     },
   ],
   timeout: 30_000,

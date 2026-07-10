@@ -10,6 +10,12 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadRootEnv } from "./lib/load-root-env.mjs";
+import {
+  bridgeCollectPayload,
+  closePipelineRun,
+  openPipelineRun,
+} from "./lib/telemetry-bridge.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
@@ -26,9 +32,7 @@ const DRY_RUN = args.includes("--dry-run");
 const SINCE = args.find((a) => a.startsWith("--since="))?.split("=")[1] ?? "7d";
 
 function fail(code, message, suggestion) {
-  process.stderr.write(
-    `${JSON.stringify({ error: true, code, message, suggestion })}\n`
-  );
+  process.stderr.write(`${JSON.stringify({ error: true, code, message, suggestion })}\n`);
   process.exit(code === "USAGE" ? 2 : 1);
 }
 
@@ -128,8 +132,7 @@ function computeThemeGroups(signals, themeDefs) {
     .map((theme) => {
       const themed = signals.filter((s) => s.themes?.includes(theme.id));
       const maxImpact = themed.reduce(
-        (max, s) =>
-          impactOrder[s.impact] > impactOrder[max] ? s.impact : max,
+        (max, s) => (impactOrder[s.impact] > impactOrder[max] ? s.impact : max),
         "low"
       );
       const sources = [...new Set(themed.map((s) => s.source))];
@@ -153,8 +156,7 @@ function computeThemeGroups(signals, themeDefs) {
 function buildResumePacket(sessions, prompts) {
   const orphanStarts = sessions.filter(
     (e) =>
-      e.event === "sessionStart" &&
-      !sessions.some((x) => x.event === "sessionEnd" && x.id === e.id)
+      e.event === "sessionStart" && !sessions.some((x) => x.event === "sessionEnd" && x.id === e.id)
   );
   if (orphanStarts.length === 0) return null;
 
@@ -184,7 +186,8 @@ function stubContractResults() {
   ];
 }
 
-function main() {
+async function main() {
+  loadRootEnv({ fileWins: true });
   const sinceDays = parseSinceDays(SINCE);
   const sessions = filterSince(readJsonLines(SESSION_LOG), sinceDays);
   const prompts = filterSince(readJsonLines(PROMPTS_LOG), sinceDays);
@@ -221,12 +224,76 @@ function main() {
     }
   }
 
+  const mappedSignals = signals.map((s) => ({
+    source: s.source,
+    title: s.title,
+    description: s.description,
+    impact: s.impact,
+    theme_id: s.themes?.[0] ?? null,
+    session_id: s.sessionId ?? null,
+    evidence: { themes: s.themes ?? [], createdAt: s.createdAt ?? null },
+  }));
+
+  let pipelineRunId = null;
+  let bridgeStats = null;
+
+  if (process.env.TELEMETRY_BRIDGE_SYNC !== "false") {
+    try {
+      const run = await openPipelineRun({
+        pipeline: "agent-eval",
+        mode: "collect",
+        triggerSource: "agent-eval-collect",
+        dryRun: DRY_RUN,
+      });
+      pipelineRunId = run.id;
+      const bridge = await bridgeCollectPayload({
+        themes: themeGroups.map((t) => ({
+          id: t.id,
+          label: t.label,
+          description: t.description ?? null,
+          taxonomy_code: t.taxonomy_code ?? null,
+          aliases: t.aliases ?? [],
+        })),
+        signals: mappedSignals,
+        events: signals.map((s) => ({
+          message: s.title,
+          source: s.source,
+          level: s.impact === "high" ? "warn" : "info",
+          session_id: s.sessionId ?? null,
+          severity: s.impact === "high" ? "high" : "medium",
+          metadata: { themes: s.themes ?? [] },
+        })),
+        tenantId: process.env.DEV_TENANT_ID,
+        pipelineRunId: run.id,
+        dryRun: DRY_RUN,
+      });
+      bridgeStats = bridge.stats;
+      await closePipelineRun({
+        pipelineRunId: run.id,
+        status: "completed",
+        stats: { ...bridge.stats, totalSignals: signals.length },
+        dryRun: DRY_RUN,
+      });
+    } catch (bridgeErr) {
+      process.stderr.write(
+        `${JSON.stringify({
+          error: true,
+          code: "BRIDGE_SYNC_ADVISORY",
+          message: bridgeErr instanceof Error ? bridgeErr.message : String(bridgeErr),
+          suggestion: "Set TELEMETRY_BRIDGE_SYNC=false to skip Supabase sync",
+        })}\n`
+      );
+    }
+  }
+
   process.stdout.write(
     `${JSON.stringify({
       result: {
         dryRun: DRY_RUN,
         output: DRY_RUN ? null : OUT_JSONL,
         resume: DRY_RUN ? null : resume ? RESUME_PATH : null,
+        pipeline_run_id: pipelineRunId,
+        bridge: bridgeStats,
         ...payload,
       },
     })}\n`
@@ -234,7 +301,13 @@ function main() {
 }
 
 try {
-  main();
+  main().catch((err) => {
+    fail(
+      "COLLECT_FAILED",
+      err instanceof Error ? err.message : String(err),
+      "Run session-logger start/prompt or widen --since="
+    );
+  });
 } catch (err) {
   fail(
     "COLLECT_FAILED",

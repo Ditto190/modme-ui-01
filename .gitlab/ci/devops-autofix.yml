@@ -1,0 +1,20 @@
+# DevOps autofix — GitLab Duo adjunct
+# Requires Premium/Ultimate + GITLAB_PROJECT_ID
+# GitHub remains system-of-record; mirror issues with github_sor field
+#
+# Duo: Fix CI/CD Pipeline Flow
+# https://docs.gitlab.com/user/duo_agent_platform/flows/foundational_flows/fix_pipeline/
+#
+# Trigger: manual workflow_dispatch or pipeline failure on dev branch
+# when issue/MR has label devops-autofix
+
+devops_autofix_manual:
+  stage: devops
+  image: alpine:latest
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+  script:
+    - echo "Invoke GitLab Duo Fix CI/CD Pipeline Flow from UI or Duo Agent Platform"
+    - echo "See .cursor/bugbot/DEVOPS-AUTOFIX.md and github_sor on mirrored issue"
+  allow_failure: true

@@ -421,6 +421,7 @@ Collections:
   scripts/collections/modme-frontend.collection.json   — React/Next.js/a11y
   scripts/collections/modme-devops.collection.json     — CI/CD/security
   scripts/collections/modme-inbox-mda.collection.json  — Inbox/MDA pipeline
+  scripts/collections/modme-observability.collection.json — Observability Round 2 parallel agents
 
 Vendor-first: checks .vendor/awesome-copilot-main/ before cloning from GitHub.
 Report:       .agents/install-report.json tracks all installs with hashes.

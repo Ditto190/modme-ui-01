@@ -1,0 +1,85 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-06-27T00:00:00.000Z",
+  "description": "Staging scrape_pages + scrape_classifications → inbox_entries promotion contract",
+  "sourceTables": [
+    "scrape_pages",
+    "scrape_classifications"
+  ],
+  "targetTable": "inbox_entries",
+  "requiredJoin": {
+    "pageId": "scrape_classifications.page_id = scrape_pages.id",
+    "status": "scrape_pages.status = 'classified'",
+    "notPromoted": "scrape_pages.inbox_entry_id IS NULL"
+  },
+  "fieldMapping": {
+    "content_hash": "scrape_pages.content_hash",
+    "source_file": "scrape_pages.url",
+    "source_format": "url",
+    "raw_content": "scrape_pages.text",
+    "extracted_text": "scrape_pages.text",
+    "title": "scrape_classifications.title",
+    "summary": "scrape_classifications.summary",
+    "agent_role": "scrape_classifications.agent_role",
+    "tags": "scrape_classifications.tags",
+    "severity": "scrape_classifications.severity",
+    "entry_type": "scrape_classifications.entry_type",
+    "status": "indexed"
+  },
+  "dedup": {
+    "key": "content_hash",
+    "algorithm": "sha256",
+    "length": 64
+  },
+  "enums": {
+    "entryType": [
+      "architecture",
+      "design",
+      "code-review",
+      "solution",
+      "research",
+      "snippet",
+      "link",
+      "component"
+    ],
+    "severity": [
+      "low",
+      "medium",
+      "high",
+      "critical"
+    ],
+    "agentRole": [
+      "frontend",
+      "backend",
+      "devops",
+      "architect",
+      "reviewer",
+      "researcher"
+    ],
+    "pageStatus": [
+      "raw",
+      "classified",
+      "promoted",
+      "failed"
+    ],
+    "jobStatus": [
+      "pending",
+      "running",
+      "done",
+      "failed"
+    ]
+  },
+  "optionalFunnelExport": {
+    "directory": "GenerativeUI_monorepo/docs/inbox",
+    "frontmatter": [
+      "timestamp",
+      "agent",
+      "type",
+      "agent_role",
+      "severity",
+      "tags",
+      "title",
+      "summary"
+    ]
+  }
+}

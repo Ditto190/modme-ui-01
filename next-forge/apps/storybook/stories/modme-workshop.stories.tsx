@@ -35,13 +35,74 @@ export const ConnectionStatusBar: Story = {
   render: () => (
     <div className="flex flex-wrap items-center gap-4 rounded-xl border p-4">
       <div className="flex items-center gap-2">
-        <div className="size-3 rounded-full bg-emerald-400" />
-        <span className="text-sm">Connected</span>
+        <div className="size-3 rounded-full bg-emerald-500" />
+        <span className="text-muted-foreground text-sm">Connected</span>
       </div>
       <span className="text-muted-foreground text-sm">
         Agent: <span className="font-medium text-foreground">ready</span>
       </span>
       <Badge variant="outline">Running tool…</Badge>
+    </div>
+  ),
+};
+
+export const ReconnectingStatusBar: Story = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-4 rounded-xl border p-4">
+      <div className="flex items-center gap-2">
+        <div className="size-3 animate-pulse rounded-full bg-amber-500" />
+        <span className="text-muted-foreground text-sm">Reconnecting (2)…</span>
+      </div>
+      <output className="text-amber-600 text-sm dark:text-amber-400">
+        Connection lost. Reconnecting…
+      </output>
+    </div>
+  ),
+};
+
+export const StreamingTextPreview: Story = {
+  render: () => (
+    <div className="w-96 rounded-xl border bg-card p-6">
+      <p className="text-sm leading-relaxed">
+        Generating a card component with KPI metrics
+        <span className="ml-1 inline-block animate-pulse">▍</span>
+      </p>
+    </div>
+  ),
+};
+
+export const RenderComponentText: Story = {
+  render: () => (
+    <div className="w-96 rounded-xl border bg-card p-6">
+      <h3 className="mb-2 font-semibold text-lg">Summary</h3>
+      <p className="text-muted-foreground">
+        Agent-generated text block for the canvas.
+      </p>
+    </div>
+  ),
+};
+
+export const RenderComponentCard: Story = {
+  render: () => (
+    <div className="w-96 rounded-xl border bg-card p-6">
+      <h3 className="mb-2 font-semibold text-lg">Revenue KPI</h3>
+      <p className="mb-4 text-muted-foreground">Quarterly performance</p>
+      <pre className="overflow-x-auto rounded-md bg-muted p-4 text-xs">
+        {JSON.stringify({ value: 128_400, delta: "+12%" }, null, 2)}
+      </pre>
+    </div>
+  ),
+};
+
+export const RenderComponentList: Story = {
+  render: () => (
+    <div className="w-96 rounded-xl border bg-card p-6">
+      <h3 className="mb-2 font-semibold text-lg">Action items</h3>
+      <ul className="list-inside list-disc space-y-1 text-muted-foreground">
+        <li>Connect agent-server on port 8000</li>
+        <li>Send a prompt to render UI</li>
+        <li>Verify streaming tokens</li>
+      </ul>
     </div>
   ),
 };
@@ -130,10 +191,13 @@ export const PromptComposer: Story = {
 export const WorkshopNote: Story = {
   render: () => (
     <p className="max-w-md text-center text-muted-foreground text-sm">
-      Port patterns from GenerativeUI{" "}
-      <code className="rounded bg-muted px-1">GenerativeCanvas</code> into
-      client islands under{" "}
-      <code className="rounded bg-muted px-1">apps/app</code>. See{" "}
+      Parity target:{" "}
+      <code className="rounded bg-muted px-1">generative-canvas.tsx</code> in{" "}
+      <code className="rounded bg-muted px-1">
+        apps/app/(authenticated)/generative-ui
+      </code>
+      . Gated by <code className="rounded bg-muted px-1">showGenerativeUi</code>{" "}
+      feature flag. See{" "}
       <code className="rounded bg-muted px-1">modme-generative-ui-migrate</code>{" "}
       skill.
     </p>
@@ -180,12 +244,14 @@ function CanvasShellPreview() {
     <div className="flex w-[28rem] flex-col gap-4 rounded-xl border p-4">
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
-          <div className="size-3 rounded-full bg-emerald-400" />
-          <span className="text-sm">Connected</span>
+          <div className="size-3 rounded-full bg-emerald-500" />
+          <span className="text-muted-foreground text-sm">Connected</span>
         </div>
-        <Badge variant="outline">Agent ready</Badge>
+        <span className="text-muted-foreground text-sm">
+          Agent: <span className="font-medium text-foreground">ready</span>
+        </span>
       </div>
-      <div className="space-y-3 rounded-lg bg-muted/40 p-4">
+      <div className="space-y-3 rounded-xl border bg-muted/40 p-4">
         <p className="text-muted-foreground text-sm">Synthesizing interface…</p>
         <Skeleton className="h-8 w-3/4" />
         <Skeleton className="h-24 w-full" />
@@ -199,21 +265,16 @@ function CanvasShellPreview() {
       >
         <Input
           onChange={(event) => setDraft(event.target.value)}
-          placeholder="Ask the agent…"
+          placeholder="Describe the UI you want…"
           value={draft}
         />
         <Button disabled={!draft.trim()} type="submit">
           Send
         </Button>
-      </form>
-      <div className="flex gap-2">
-        <Button type="button" variant="default">
-          Run agent
-        </Button>
         <Button type="button" variant="outline">
-          Reset canvas
+          Cancel
         </Button>
-      </div>
+      </form>
     </div>
   );
 }

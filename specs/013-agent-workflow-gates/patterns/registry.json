@@ -1,0 +1,32 @@
+{
+  "$schema": "./registry.schema.json",
+  "version": 1,
+  "description": "Monorepo-architect patterns for ModMe federated dual-stack workflow gates",
+  "patterns": {
+    "federated-dual-stack": {
+      "title": "Federated dual-stack",
+      "principle": "Independent monorepos; HTTP/WebSocket integration only; no workspace:* cross-imports",
+      "source": ".cursor/rules/monorepo-boundaries.mdc"
+    },
+    "path-filtered-ci": {
+      "title": "Path-filtered CI",
+      "principle": "Single stack-paths manifest drives CI, pre-push hooks, and agent verify",
+      "source": "scripts/lib/stack-paths.json"
+    },
+    "contract-first-integration": {
+      "title": "Contract-first integration",
+      "principle": "Golden Zod schemas and WS contracts before UI migration cutover",
+      "source": "next-forge/packages/schemas/"
+    },
+    "bounded-parallel-agents": {
+      "title": "Bounded parallel agents",
+      "principle": "Serial plan, parallel exploration waves, serial commit",
+      "source": "next-forge/docs/adr/0012-bounded-parallel-agent-lifecycle.md"
+    },
+    "ecl-structured-change": {
+      "title": "ECL structured change",
+      "principle": "Harness lint gates structural and cross-stack changes",
+      "source": "docs/ECL.md"
+    }
+  }
+}

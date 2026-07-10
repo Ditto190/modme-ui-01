@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { InboxSearch } from "./components/inbox-search";
+import { KnowledgeTabs } from "./components/knowledge-tabs";
 
 export const metadata: Metadata = {
   title: "Knowledge Base",
   description:
-    "Search and explore all ingested knowledge, decisions, and assets",
+    "Search ingested knowledge and monitor session observability signals",
 };
 
 export default function KnowledgePage() {
@@ -16,14 +16,10 @@ export default function KnowledgePage() {
         </h1>
         <p className="text-muted-foreground text-sm">
           Search all captured decisions, research, components, and assets from
-          the inbox pipeline. New entries are auto-ingested from{" "}
-          <code className="rounded bg-muted px-1">
-            GenerativeUI_monorepo/docs/inbox/
-          </code>
-          .
+          the inbox pipeline — plus Session Ops observability signals.
         </p>
       </div>
-      <InboxSearch />
+      <KnowledgeTabs />
     </div>
   );
 }

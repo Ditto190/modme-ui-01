@@ -1,35 +1,18 @@
 #!/usr/bin/env node
 /**
- * Run inbox ingest from repo root or next-forge/. Syncs local Supabase .env if needed.
+ * Run inbox ingest from repo root or next-forge/. Syncs local Supabase .env only when root .env lacks keys.
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadRootEnv, parseEnvFile } from './lib/load-root-env.mjs';
 
 const scriptsDir = dirname(fileURLToPath(import.meta.url));
 const repoRoot = dirname(scriptsDir);
 const dryRun = process.argv.includes('--dry-run');
 const full = process.argv.includes('--full');
-
-function loadEnvFile(path) {
-  if (!existsSync(path)) return;
-  for (const line of readFileSync(path, 'utf8').split('\n')) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
-    const eq = trimmed.indexOf('=');
-    if (eq === -1) continue;
-    const key = trimmed.slice(0, eq);
-    let value = trimmed.slice(eq + 1).trim();
-    if (
-      (value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1);
-    }
-    if (!process.env[key]) process.env[key] = value;
-  }
-}
+const useLocal = process.argv.includes('--local');
 
 function syncLocalEnv() {
   const syncScript = join(repoRoot, 'scripts', 'sync-supabase-local-env.ps1');
@@ -40,15 +23,38 @@ function syncLocalEnv() {
   );
 }
 
-loadEnvFile(join(repoRoot, '.env'));
+function rootEnvHasCloudPair() {
+  const vars = parseEnvFile(join(repoRoot, '.env'));
+  const url = vars.NEXT_PUBLIC_SUPABASE_URL || '';
+  const key = vars.SUPABASE_SERVICE_ROLE_KEY || '';
+  return url.includes('aevemmmmouxqlfyxthzf.supabase.co') && key.length > 20;
+}
+
+loadRootEnv({ fileWins: true });
 
 if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-  syncLocalEnv();
-  loadEnvFile(join(repoRoot, '.env'));
+  if (useLocal) {
+    syncLocalEnv();
+    loadRootEnv({ fileWins: true });
+  } else if (rootEnvHasCloudPair()) {
+    console.error(
+      'Root .env has cloud Supabase keys but they were not loaded — check .env format (BOM/quotes).'
+    );
+    console.error('Run: node scripts/diagnose-supabase-env.mjs');
+    process.exit(1);
+  } else if (!existsSync(join(repoRoot, '.env'))) {
+    console.warn('No root .env — syncing local Supabase env (use --local to force).');
+    syncLocalEnv();
+    loadRootEnv({ fileWins: true });
+  } else {
+    console.error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in root .env');
+    console.error('Run: node scripts/diagnose-supabase-env.mjs');
+    process.exit(1);
+  }
 }
 
 if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-  console.error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY after env sync');
+  console.error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY after env load');
   process.exit(1);
 }
 

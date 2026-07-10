@@ -1,0 +1,53 @@
+# Example Agent Gateway routes — ModMe (not deployed)
+# Copy to agentgateway-modme and adapt before any runtime use.
+# See docs/architecture/decisions/0012-agent-gateway-mcp-routing.md
+
+version: 1
+
+listeners:
+  - name: modme-mcp-ingress
+    port: 8080
+    protocol: http
+
+routes:
+  - name: lean-ctx-repo
+    match:
+      path_prefix: /mcp/lean-ctx
+    upstream:
+      type: local_mcp
+      note: "Agents use lean-ctx MCP directly for repo I/O — not proxied in Phase 1"
+
+  - name: context7-docs
+    match:
+      header: x-modme-gateway-namespace
+      value: context7
+    upstream:
+      mcp_server: plugin-context7-plugin-context7
+      tools: [resolve-library-id, query-docs]
+
+  - name: supabase-ops
+    match:
+      header: x-modme-gateway-namespace
+      value: supabase
+    upstream:
+      mcp_server: plugin-supabase-supabase
+      tools: [list_tables, get_logs, apply_migration]
+
+  - name: gitlab-ci
+    match:
+      header: x-modme-gateway-namespace
+      value: gitlab
+    upstream:
+      mcp_server: plugin-gitlab-GitLab
+
+  - name: agentgateway-modme-fork
+    match:
+      path_prefix: /a2a
+    upstream:
+      repository: https://github.com/Ditto190/agentgateway-modme.git
+      branch: main
+
+policies:
+  require_lean_ctx_session: true
+  max_parallel_agents: 4
+  token_budget_hint: route_repo_reads_through_lean_ctx_only

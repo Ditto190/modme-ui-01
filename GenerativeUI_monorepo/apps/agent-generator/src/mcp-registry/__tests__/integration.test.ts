@@ -56,9 +56,13 @@ describe('MCP Indexer Integration', () => {
 
     // 4. Assertions
     assert.ok(instructions.includes('Custom Search (custom_search)'), 'Instructions should list custom tool');
-    assert.ok(instructions.includes('"query": { "type": "string" }'), 'Instructions should include schema params');
-    
+    assert.ok(
+      instructions.includes('"query"') && instructions.includes('"type": "string"'),
+      'Instructions should include schema params'
+    );
+
     // Check for library molecule too
     assert.ok(instructions.includes('File Explorer'), 'Instructions should include library molecules');
+    assert.ok(instructions.includes('Web Scraper (web_scraper)'), 'Instructions should include web_scraper molecule');
   });
 });

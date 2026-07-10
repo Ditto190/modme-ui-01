@@ -25,7 +25,7 @@ Options:
   -DeleteBranch           Also delete the feature branch (prompts unless -Yes)
 
 Examples:
-  .\scripts\remove-agent-worktree.ps1 -Path ..\Monorepo_ModMe-dev\dev-agent-cursor-auth-fix -Yes
+  .\scripts\remove-agent-worktree.ps1 -Path .worktrees\dev-agent-cursor-auth-fix -Yes
   .\scripts\remove-agent-worktree.ps1 -Path <path> -DeleteBranch -Yes
 "@
   exit 0

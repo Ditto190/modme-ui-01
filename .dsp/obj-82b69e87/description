@@ -1,0 +1,3 @@
+source: scripts/telemetry/lib/telemetry-bridge.mjs
+kind: object
+purpose: Zod normalize and dual-write bridge to Supabase pipeline_runs, telemetry_events, eval_signals, and Greptime spans.

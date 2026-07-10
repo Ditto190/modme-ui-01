@@ -1,0 +1,19 @@
+slug: lean-ctx-shopping-list
+name: Lean-ctx shopping list (Firecrawl intake)
+description: Shopping-list harvest (lean-ctx-shopping-list) - ADR-0009 extract stage; annotations in sidecar
+seeds:
+  - https://leanctx.com/docs/configuration
+  - https://leanctx.com/docs/journeys/multi-repo-workspace
+  - https://leanctx.com/docs/observatory
+  - https://leanctx.com/docs/performance-tuning
+  - https://leanctx.com/docs/tools/intelligence
+  - https://raw.githubusercontent.com/gastownhall/gascity/main/docs/getting-started/coming-from-gastown.md
+  - https://raw.githubusercontent.com/gastownhall/gascity/main/docs/getting-started/how-gas-city-works.md
+  - https://raw.githubusercontent.com/gastownhall/gascity/main/deps.env
+  - https://raw.githubusercontent.com/gastownhall/gascity/b0c532c53194c3de71d5601fd68425861d7a2b4e/docs/index.mdx
+  - https://leanctx.com/docs/journeys/mcp-tool-catalog-gateway
+depth: 0
+allowlist: []
+rate_limit_seconds: 1.5
+use_playwright: false
+obey_robots: true

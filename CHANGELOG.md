@@ -1,4 +1,4 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to **Monorepo_ModMe** are documented in this file.
 
@@ -16,7 +16,7 @@ External agents (CI, cloud agents, GitHub Copilot coding agent, scheduled automa
 Update `CHANGELOG.md` when a change is **user-visible**, **agent-relevant**, or **operationally significant**:
 
 - New or removed apps, packages, skills, MCP servers, or workflows
-- Breaking changes to setup, env vars (names only Ã¢â‚¬â€ never values), or agent paths
+- Breaking changes to setup, env vars (names only â€” never values), or agent paths
 - Security fixes, dependency upgrades with behavior impact
 - Documentation that changes how agents should work in this repo
 
@@ -36,12 +36,15 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 
 ```markdown
 ### Added
+
 - (scope) Short description (#PR)
 
 ### Changed
+
 - (scope) Short description
 
 ### Fixed
+
 - (scope) Short description (#issue)
 ```
 
@@ -51,53 +54,82 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Related skills
 
-- `changelog-automation` Ã¢â‚¬â€ Keep a Changelog + Conventional Commits patterns
-- `changelog-generator` Ã¢â‚¬â€ Turn git history into user-facing notes
-- `documentation-writer` Ã¢â‚¬â€ Technical docs for humans and agents
+- `changelog-automation` â€” Keep a Changelog + Conventional Commits patterns
+- `changelog-generator` â€” Turn git history into user-facing notes
+- `documentation-writer` â€” Technical docs for humans and agents
 
 ---
 
 ## [Unreleased]
 
-### Added
+### Changed
 
-- (repo) Advisory lean-ctx session config workflow — `yarn lean-ctx:ensure`, `scripts/ensure-lean-ctx-config.ps1`, smart-git Step 0 (ADR-0012)
-- (docs) Master operator guide `docs/monorepo-build-ci-setup.md` â€” dual-stack CI, Turbo GHA vs S3 remote cache, local `next-forge/.env` vs GitHub `vars`/`secrets` split
-- (adr) ADR-0011 Turbo self-hosted remote cache (`next-forge/docs/adr/0011-turbo-self-hosted-remote-cache.md`)
-- (ci) `yarn setup:turbo-cache` â€” `scripts/setup-turbo-remote-cache.ps1` (compose validation, optional server health check, `gh` command hints)
-- (ci) Self-hosted Turbo remote cache guide `docs/turbo-remote-cache-s3.md` and Docker lever `scripts/turbo-remote-cache/`
-- (ci) Optional Nix dev shell `flake.nix` and `docs/nix-devshell.md` for Node 22 / Bun / Yarn 3.3 pins
-- (repo) Rush evaluation artifacts â€” `docs/research/rush-evaluation-decision-log.md`, `scripts/research/monorepo-tool-audit.mjs`
-- (repo) Root setup scripts `yarn setup:env`, `setup:gh-aw`, `setup:modme` and `.env.example` template
-- (repo) Inbox pipeline v1 â€” contracts (`docs/inbox-pipeline/contracts/`), audit/fix scripts, Supabase migrations, and `@repo/schemas` inbox types
-- (repo) GitHub Agentic Workflows assets (`.github/aw/`, agent definitions, workflow-health and inbox-pipeline-check CI)
-- (repo) GenerativeUI devops-voltagent app, intake-pipeline Python orchestrator, and Playwright test scaffolding
-- (repo) Evaluation pipeline docs (`docs/evaluation/`), agent eval collect/report scripts, and catalog e2e tests in next-forge
-- (repo) Root inbox tooling â€” `yarn inbox:audit`, `inbox:fix`, `inbox:test`, `intake:orchestrate`, and beads starter scripts
-- (cursor) Cursor marketplace plugin skills under `.cursor/skills/` â€” thermos, fix-ci, orchestrate, principle-*, voltagent, and related agent workflows
-- (copilot) Expanded root `.github/copilot-instructions.md` for dual-monorepo (next-forge + GenerativeUI) commands and verification workflow
-- (cursor) Additional Claude plugin enables in `.cursor/settings.json` (commit-commands, supabase, typescript-lsp, rust-analyzer-lsp, agent-sdk-dev)
+- (repo) Merge `github/main` into promotion branch `feature/cursor/promote-dev-to-main` to resolve dual-branch drift before promoting `dev` to `main`
 
 ### Fixed
 
-- (next-forge) Turbo 2.8.14 Windows crash — removed `../.env` from `turbo.json` `globalDependencies`; keep `TURBO_*` only in `next-forge/.env` (not root `.env`)
-- (ci) Local dev turbo cache without S3 — `-LocalDev` flag, compose defaults to `STORAGE_PROVIDER=local`
+- (next-forge) Apply Ultracite/Biome format fixes required for promote-dev-to-main pre-push verify
+
+### Added
+
+- (repo) Builder orchestration layer — `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
+- (repo) Copilot workspace + builder incident runbook — `docs/runbooks/copilot-workspace-builder-incident.md`
+- (repo) GitHub Copilot App workspace orchestration — `.github/github-app.yml` lifecycle scripts, `.worktreeinclude`, `scripts/copilot-workspace/`, portable `.github/hooks/hooks.json`, and `docs/copilot-workspace-orchestration.md`
+- (repo) Obsidian Web Clipper templates (`templates/obsidian-clipper/`) and `yarn docs:clipper:export`
+- (repo) ADR-0012 Agent Gateway MCP routing stub (`config/agentgateway/routes.example.yaml`, catalog gateway entry)
+- (repo) Inbox research notes for agentgateway and Expo/json-render tracks
+- (repo) Preflight profiles `copilot-workspace`, `fast`, `env` and `yarn preflight:copilot`
+- (repo) PR triage pipeline — `scripts/pr-triage/`, `yarn pr:triage|pr:queue|pr:comments|pr:classify`, `pr-triage-orchestrator` CI workflow, and `docs/pr-resolution/`
+- (repo) `scripts/update-changelog.mjs` — append conventional commits to `[Unreleased]` (replaces missing `update-changelog.js`)
+- (repo) `.agents/skills/gh-review-requests` — ModMe personal-repo review queue skill
+- (repo) `.agents/templates/pr-escalation.yaml` — beads handoff template for blocked merges
+- (repo) Workflow speckit gates — `specs/013-agent-workflow-gates/`, pattern registry/coverage-map, `modme-workflow-speckit-bridge` skill, `/speckit-pattern-checklist`, and `run-pattern-gate.mjs`
+- (repo) Distributed observability pipeline — `yarn telemetry:sync`, telemetry CLI/bridge, DSP bootstrap (`.dsp/`), observability runbooks, and `observability-pipeline-check` CI workflow
+- (next-forge) `@repo/observability` ingest/categorize package, API telemetry routes, knowledge session-ops panel, and observability schema contract tests
+- (repo) lean-ctx project config (`.lean-ctx.toml`), universal intake script, and agent terminal session finish/start enhancements
+- (GenerativeUI) Hexagonal refactor of `apps/agent-server` — domain/ports/adapters/app layout with DI in `create_app()`
+- (GenerativeUI) Pytest golden contract parity for agent-server Pydantic models (`tests/test_schemas_contract.py`)
+- (next-forge) Vitest contract tests for `@repo/schemas` and reconnect delay helpers for generative UI WebSocket hook
+- (repo) Agent terminal orchestration layer — mprocs TUI (`yarn agent:tui`), session envelopes (`agent-session-start/finish`), task registry, extended git hooks, `yarn e2e:worktree-smoke`
+- (repo) Cursor commands `/beads` and `/architecture-decision-records`; session handover at `docs/handover/latest.md`
+- (next-forge) ADR-0011 terminal orchestration without Nx; ADR-0010 dual-store knowledge intake
+- (repo) Unified intake/scrape pipeline — `packages/intake-contracts`, scrape-pipeline, GreptimeDB code index workers, Supabase staging migrations 007–008
+- (repo) Inbox pipeline v1 — contracts (`docs/inbox-pipeline/contracts/`), audit/fix scripts, Supabase migrations, and `@repo/schemas` inbox types
+- (repo) GitHub Agentic Workflows assets (`.github/aw/`, agent definitions, workflow-health and inbox-pipeline-check CI)
+- (repo) GenerativeUI devops-voltagent app, intake-pipeline Python orchestrator, and Playwright test scaffolding
+- (repo) Evaluation pipeline docs (`docs/evaluation/`), agent eval collect/report scripts, and catalog e2e tests in next-forge
+- (repo) Root inbox tooling — `yarn inbox:audit`, `inbox:fix`, `inbox:test`, `intake:orchestrate`, and beads starter scripts
+- (cursor) Cursor marketplace plugin skills under `.cursor/skills/` — thermos, fix-ci, orchestrate, principle-\*, voltagent, and related agent workflows
+- (copilot) Expanded root `.github/copilot-instructions.md` for dual-monorepo (next-forge + GenerativeUI) commands and verification workflow
+- (cursor) Additional Claude plugin enables in `.cursor/settings.json` (commit-commands, supabase, typescript-lsp, rust-analyzer-lsp, agent-sdk-dev)
+- (repo) Dual monorepo audit — ECL harness (`harness/`, `yarn lint:harness`), `stack-paths.json`, C4 product docs, refreshed `docs/codebase/*`, schema contract tests, migration phase4 notes
+- (repo) Thermo-nuclear workflow — `thermo-nuclear-monorepo-review` skill, `modme-migration-review` collection, molecule-index orchestrator, ADR-0012 bounded-parallel lifecycle
+- (repo) `yarn molecule-index:verify` + `molecule-contract` CI job; PORTING_GUIDE ECL slices in `docs/migration/porting-guide-slices.md`
+- (repo) Thermo-nuclear Round 2 redundancy review — `CONTEXT.md`, synthesis report, wave-2 manifest, archived ECL change `thermo-round2-redundancy`
+
+### Fixed
+
+- (docs) Inbox audit report `latest.json` uses relative `root` (no machine-local path) (PR #89)
+- (scripts) `Get-CopilotRepoRoot` ascends 3 levels from `scripts/copilot-workspace/lib/paths.ps1`; null-safe `.Trim()` on git outputs in hooks/doctor scripts; schema-valid agent-gateway collection (PR #91)
+- (repo) Builder/preflight/hook spawns — Windows cmd shim via shell string (not `shell:true`+args); lean-ctx probe requires successful `--version`; `session-archive.ps1` checks `preflight:fast` exit code
 
 ### Changed
 
-- (ci) `yarn setup:turbo-cache` — `-ApplyLocalEnv`, `-ApplyGh`, `-StartDocker`, `-LocalDev`, `-CheckServer`; strips `TURBO_*` from root `.env` (Windows turbo fix)
-- (ci) `ci.yml` â€” GHA `actions/cache` for `.turbo` on next-forge and GenerativeUI; optional `TURBO_*` secrets for self-hosted S3 remote cache; fix `bun-version-file` path
-- (ci) `catalog-ci.yml` â€” path filters, `secret-guard`, `working-directory: next-forge`, database-focused turbo filters (aligned with `ci.yml`)
-- (next-forge) `turbo.json` â€” `remoteCache` timeouts + signature for self-hosted cache
-- (ci) Turbo remote cache â€” `TURBO_REMOTE_CACHE_ENABLED` gate, vars vs secrets split, ducktors S3 compose env
-- (agents) Resolved `AGENTS.md` merge conflict; added **Environment & secrets** section (ADR-0010) â€” GenUI Workbench (`modme-ui-01` legacy layout) superseded by dual-monorepo stack (`next-forge/` + `GenerativeUI_monorepo/`); unrelated GenUI history retired on default branch
+- (scripts) Null-safe git output handling in `install-git-hooks.ps1` and `repo-alignment-doctor.ps1` (PR #91 review)
+- (scripts) repo-alignment doctor accepts `github` remote when `origin` is the GitLab mirror
+- (GenerativeUI) Agent-server WebSocket timestamps aligned to Unix milliseconds to match `@repo/schemas` golden contract
+- (docs) `ARCHITECTURE.md` documents hexagonal ports/adapters layout for agent-server
+- (repo) Pre-push generative lint is advisory on push (full `yarn verify:generative` before PR merge)
+- (docs) `yarn agent:mprocs:generate` canonical name (replaces stale `mprocs:generate` references in orchestration docs)
+- (repo) **Reconcile `main` with Monorepo_ModMe** — GenUI Workbench (`modme-ui-01` legacy layout) superseded by dual-monorepo stack (`next-forge/` + `GenerativeUI_monorepo/`); unrelated GenUI history retired on default branch
 - (gitignore) Ignore Playwright artifacts, beads embedded Dolt state, local hook state (`.cursor/hooks/state/`), IDE-local dirs (`.claude/`, `.copilot/`), and install manifests; remove erroneous `.cursor/hooks.json` ignore
 
-- (ci) next-forge CI job in `.github/workflows/ci.yml` â€” path-filtered `check`, `test`, `build` on Bun; `dev` branch added to workflow triggers
+- (ci) next-forge CI job in `.github/workflows/ci.yml` — path-filtered `check`, `test`, `build` on Bun; `dev` branch added to workflow triggers
 - (ci) Root scripts `yarn check:forge`, `fix:forge`, `verify:forge`, `pre-commit:check`, `hooks:install`; `scripts/verify-forge-ci.ps1`
 - (ci) Pre-commit runs `ultracite check` when staged paths include `next-forge/`; changelog monitoring extended to next-forge apps/packages
 - (agents) ModMe overlay `.agents/skills/smart-git-automation/SKILL.md` and `scripts/vibe-session-finish.ps1` for worktree session end (commit/PR to `dev`)
 - (cursor) Cursor hook configuration simplified to prevent failClosed blocking issues
+- (repo) Merge `dev` into the agent orchestration PR branch and resolve hook/CI/workflow conflicts while preserving the orchestration feature changes
 - (next-forge) Root scripts `yarn dev:forge:core`, `dev:forge:workshop`, `dev:forge:supabase`
 - (cursor-cookbook) `dag-task-runner` skill at `.cursor/skills/dag-task-runner/` with Cursor SDK runner scripts
 - (cursor-cookbook) SDK examples vendored at `.vendor/cursor-cookbook/sdk/` (quickstart, app-builder, agent-kanban, coding-agent-cli, dag-task-runner)
@@ -105,17 +137,17 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Removed
 
-- (cursor) Problematic hooks removed from project â€” `audit-log.sh`, `block-models-by-repo-origin.sh`, `sensitive-prompt-guard.sh` were causing `ERROR_HOOKS_BLOCKED` in Cursor due to `failClosed: true` configuration and missing dependencies
-- (cursor) Hook patching logic from `install-cursor-cookbook.ps1` â€” hooks no longer available upstream
-- (cursor-ai) `agent-workbench-orchestration` skill â€” multi-agent workflow for agent panel work (schemas â†’ hook â†’ UI â†’ WebSocket â†’ verify) with goal contract template
-- (contextarch) [contextarch-cli](https://github.com/ksoventures/contextarch-cli) â€” install/bootstrap scripts, `yarn contextarch` / `yarn contextarch:bootstrap`; generated `next-forge` AI context files (AGENTS.md, CLAUDE.md, `.cursorrules`, `.github/copilot-instructions.md`)
+- (cursor) Problematic hooks removed from project — `audit-log.sh`, `block-models-by-repo-origin.sh`, `sensitive-prompt-guard.sh` were causing `ERROR_HOOKS_BLOCKED` in Cursor due to `failClosed: true` configuration and missing dependencies
+- (cursor) Hook patching logic from `install-cursor-cookbook.ps1` — hooks no longer available upstream
+- (cursor-ai) `agent-workbench-orchestration` skill — multi-agent workflow for agent panel work (schemas → hook → UI → WebSocket → verify) with goal contract template
+- (contextarch) [contextarch-cli](https://github.com/ksoventures/contextarch-cli) — install/bootstrap scripts, `yarn contextarch` / `yarn contextarch:bootstrap`; generated `next-forge` AI context files (AGENTS.md, CLAUDE.md, `.cursorrules`, `.github/copilot-instructions.md`)
 - (shared-schemas) WebSocket stream event payloads: `token`, `tool_start`, `tool_result`, `done`, plus `OptimisticMessage` schema
 - (web-dashboard) `AgentPanelSkeleton`, `StreamingText`, optimistic send/cancel/retry in `useAgentState`, glass agent panel in `GenerativeCanvas`
 - (agent-server) Token/tool streaming over `/ws/agent` with cancel support
 
-- (ci) Pre-commit checks â€” `scripts/pre-commit-checks.mjs`, `.githooks/pre-commit`, `scripts/install-git-hooks.ps1`; wired into GitHub Actions (`pre-commit-check.yml`) and Buildkite
+- (ci) Pre-commit checks — `scripts/pre-commit-checks.mjs`, `.githooks/pre-commit`, `scripts/install-git-hooks.ps1`; wired into GitHub Actions (`pre-commit-check.yml`) and Buildkite
 - (ci) `scripts/validate-cursor-skills.mjs` for awesome-cursor-skills install integrity (`--project-only` for hooks, full check for setup audits)
-- (ci) Buildkite pipeline for `GenerativeUI_monorepo` â€” `.buildkite/`, `docs/buildkite-guide.md`, `scripts/buildkite-demo.ps1`
+- (ci) Buildkite pipeline for `GenerativeUI_monorepo` — `.buildkite/`, `docs/buildkite-guide.md`, `scripts/buildkite-demo.ps1`
 - (web-dashboard) Interactive Buildkite explainer at `/dev/buildkite`
 - Agent documentation stack: `docs/agent-tech-guide.md`, root `CHANGELOG.md`, and `changelog-check` CI workflow
 - Globally installed Cursor skills: `changelog-automation`, `documentation-writer`, `doc-coauthoring`, `agents-md`, `changelog-generator`
@@ -123,13 +155,14 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - (mcp) Mantine MCP server (`@mantine/mcp-server`) in `.cursor/mcp.json`, `.vscode/mcp.json`, `.github/mcp.json`, `GenerativeUI_monorepo/mcp.json`, and `.gitlab/duo/mcp.json`
 - (cursor-ai) Expanded [awesome-cursor-skills](https://github.com/spencerpauly/awesome-cursor-skills) global install set and project pointer at `.cursor/skills/awesome-cursor-skills/`
 - (dev) `scripts/install-direnv-hook.ps1`, root `.envrc`, and PowerShell 7 direnv hook for auto-loading `.env`
-- (agents) Multi-agent Git worktrees â€” `.cursor/worktrees.json`, `scripts/init-worktrees.ps1`, `scripts/new-agent-worktree.ps1`, per-worktree port allocation, `docs/multi-agent-worktrees.md`
-- (dev) `scripts/install-pwsh-terminal-hooks.ps1` â€” safe Cursor/VS Code shell integration + direnv hook; fixes pwsh startup errors
+- (agents) Multi-agent Git worktrees — `.cursor/worktrees.json`, `scripts/init-worktrees.ps1`, `scripts/new-agent-worktree.ps1`, per-worktree port allocation, `docs/multi-agent-worktrees.md`
+- (dev) `scripts/install-pwsh-terminal-hooks.ps1` — safe Cursor/VS Code shell integration + direnv hook; fixes pwsh startup errors
 
 ### Fixed
 
-- (dev) `init-worktrees.ps1` â€” use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
-- (dev) `new-agent-worktree.ps1` â€” usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`
+- (docs) Thermo Round 2 archive STATUS/links/manifest count alignment (PR #90)
+- (dev) `init-worktrees.ps1` — use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
+- (dev) `new-agent-worktree.ps1` — usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`
 - (vscode) Set `git.path` in `.vscode/settings.json` so Cursor Agent Review finds Git on Windows when it is not on PATH
 - Add `install-direnv.ps1` helper script to install direnv on Windows to resolve "direnv: command not found" terminal errors.
 - (agent-server) WebSocket message handling uses `asyncio.create_task` + lock so cancel does not block the receive loop
@@ -138,7 +171,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 - (ci) Worktree bootstrap (`setup-worktree-windows.ps1`, `setup-worktree-unix.sh`, `new-agent-worktree.ps1`) auto-installs git pre-commit hooks
 - (next-forge) Replace Clerk with Auth.js credentials in `@repo/auth`; replace Neon adapter with Supabase local Postgres + Prisma
-- (docs/ci) Post-restart agent tooling validation: lean-ctx 3.7.5, skills-sh MCP, global skills, changelog-check CI Ã¢â‚¬â€ all verified; installed `internal-comms` globally
+- (docs/ci) Post-restart agent tooling validation: lean-ctx 3.7.5, skills-sh MCP, global skills, changelog-check CI â€” all verified; installed `internal-comms` globally
 
 ### Deprecated
 

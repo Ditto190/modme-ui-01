@@ -19,7 +19,7 @@ $ExpectedWorkspaceFolders = @(
 )
 
 if ([string]::IsNullOrWhiteSpace($RepoRoot)) {
-  $RepoRoot = (git rev-parse --show-toplevel 2>$null).Trim()
+  $RepoRoot = ([string](git rev-parse --show-toplevel 2>$null)).Trim()
   if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($RepoRoot)) {
     $RepoRoot = Split-Path -Parent $PSScriptRoot
   }
@@ -52,20 +52,28 @@ else {
   Add-Check 'checkout_context' 'warn' "Main checkout - feature work belongs under $($ctx.DevRootPath)" '.\scripts\migrate-main-to-worktree.ps1 -Name my-task -Owner cursor'
 }
 
-# Canonical remote
-$originUrl = (git -C $ctx.RepoRoot remote get-url origin 2>$null).Trim()
-if ($originUrl -match 'modme-ui-01') {
-  Add-Check 'remote_canonical' 'ok' "origin matches GitHub canonical ($originUrl)" ''
+# Canonical remote (GitHub is canonical; origin may be GitLab mirror)
+$remoteList = @(git -C $ctx.RepoRoot remote 2>$null)
+$originUrl = ([string](git -C $ctx.RepoRoot remote get-url origin 2>$null)).Trim()
+$githubUrl = ''
+if ($remoteList -contains 'github') {
+  $githubUrl = ([string](git -C $ctx.RepoRoot remote get-url github 2>$null)).Trim()
+}
+$canonicalUrl = if ($githubUrl -match 'modme-ui-01') { $githubUrl } elseif ($originUrl -match 'modme-ui-01') { $originUrl } else { '' }
+if ($canonicalUrl) {
+  Add-Check 'remote_canonical' 'ok' "GitHub canonical remote configured ($canonicalUrl)" ''
+}
+elseif ($originUrl) {
+  Add-Check 'remote_canonical' 'warn' "origin is not GitHub canonical ($originUrl); use remote github for PRs" "git remote add github $CanonicalOrigin"
 }
 else {
-  Add-Check 'remote_canonical' 'error' "origin unexpected: $originUrl" "git remote set-url origin $CanonicalOrigin"
+  Add-Check 'remote_canonical' 'error' 'No origin remote' "git remote add origin $CanonicalOrigin"
 }
 
 # GitLab mirror remote (optional)
 $gitlabUrl = ''
-$remoteList = @(git -C $ctx.RepoRoot remote 2>$null)
 if ($remoteList -contains 'gitlab') {
-  $gitlabUrl = (git -C $ctx.RepoRoot remote get-url gitlab).Trim()
+  $gitlabUrl = ([string](git -C $ctx.RepoRoot remote get-url gitlab 2>$null)).Trim()
 }
 if ($gitlabUrl) {
   Add-Check 'gitlab_mirror' 'ok' "gitlab remote configured ($gitlabUrl)" ''
@@ -165,7 +173,7 @@ $driftCount = 0
 foreach ($doc in $keyDocs) {
   if (Test-Path $doc) {
     $content = Get-Content $doc -Raw
-    if ($content -match 'modme-ui-01.*Monorepo_ModMe-dev') { $driftCount++ }
+    if ($content -match 'Monorepo_ModMe-dev') { $driftCount++ }
   }
 }
 if ($driftCount -eq 0) {

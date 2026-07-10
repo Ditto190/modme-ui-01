@@ -1,0 +1,3 @@
+source: next-forge/supabase/migrations/009_observability_tenant.sql
+kind: external
+purpose: Tenant-scoped observability tables: pipeline_runs, trace_refs, RLS policies.

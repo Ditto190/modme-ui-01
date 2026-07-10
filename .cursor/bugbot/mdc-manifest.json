@@ -1,0 +1,35 @@
+[
+  {
+    "name": "bugbot-forge-review",
+    "description": "Bugbot PR review rules for next-forge: Supabase RLS, Auth.js, Bun/Turbo, feature flags",
+    "libraries": [
+      "next.js",
+      "supabase",
+      "prisma"
+    ],
+    "applyTo": "next-forge/**"
+  },
+  {
+    "name": "bugbot-generative-review",
+    "description": "Bugbot PR review rules for GenerativeUI_monorepo: Yarn 3, monorepo boundaries",
+    "libraries": [
+      "react",
+      "vite"
+    ],
+    "applyTo": "GenerativeUI_monorepo/**"
+  },
+  {
+    "name": "bugbot-ci-cd",
+    "description": "Bugbot review for CI/CD, GitHub Actions, GitLab CI, git hooks",
+    "libraries": [
+      "github-actions"
+    ],
+    "applyTo": ".github/**,.gitlab/**,.githooks/**"
+  },
+  {
+    "name": "bugbot-orchestration",
+    "description": "Bugbot review for beads, worktrees, agent orchestration scripts",
+    "libraries": [],
+    "applyTo": "scripts/**,.cursor/**,data/agent-citizens/**"
+  }
+]

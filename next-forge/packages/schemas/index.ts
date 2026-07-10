@@ -99,7 +99,7 @@ export type {
   InboxFrontmatter,
   InboxFunnelFile,
   InboxIndexManifest,
-} from "./inbox.js";
+} from "./inbox";
 export {
   INBOX_CONTRACT_VERSION,
   INBOX_EMBEDDING_DIMENSIONS,
@@ -114,4 +114,38 @@ export {
   InboxPipelineStageSchema,
   InboxSeveritySchema,
   InboxSourceFormatSchema,
-} from "./inbox.js";
+} from "./inbox";
+export type {
+  EvalContractResult,
+  EvalEvent,
+  EvalSession,
+  EvalSignal,
+  EvalSignalRecord,
+  PipelineRun,
+  PipelineRunRecord,
+  TelemetryEvent,
+  TelemetryEventRecord,
+  Tenant,
+  TestResultRecord,
+  TraceRef,
+} from "./observability";
+export {
+  DEV_TENANT_ID,
+  DEV_TENANT_SLUG,
+  EvalContractResultSchema,
+  EvalEventSchema,
+  EvalImpactLevelSchema,
+  EvalSessionSchema,
+  EvalSignalSchema,
+  OBSERVABILITY_CONTRACT_VERSION,
+  PipelineModeSchema,
+  PipelineRunSchema,
+  PipelineStatusSchema,
+  PipelineTriggerSourceSchema,
+  TelemetryEventSchema,
+  TelemetryLevelSchema,
+  TelemetrySourceSchema,
+  TenantSchema,
+  TestResultSchema,
+  TraceRefSchema,
+} from "./observability";

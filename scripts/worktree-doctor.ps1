@@ -32,7 +32,7 @@ Exit codes:
   1 = one or more errors
 
 Examples:
-  cd ..\Monorepo_ModMe-dev\dev-agent-cursor-my-task
+  cd .worktrees\dev-agent-cursor-my-task
   .\scripts\worktree-doctor.ps1
   .\scripts\worktree-doctor.ps1 -Fix -Json
   yarn worktree:doctor
@@ -46,7 +46,7 @@ if ($args -contains '-Help' -or $args -contains '--help' -or $args -contains '-h
 }
 
 if ([string]::IsNullOrWhiteSpace($RepoRoot)) {
-  $RepoRoot = (git rev-parse --show-toplevel 2>$null).Trim()
+  $RepoRoot = ([string](git rev-parse --show-toplevel 2>$null)).Trim()
   if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($RepoRoot)) {
     $RepoRoot = Split-Path -Parent $PSScriptRoot
   }
@@ -102,7 +102,8 @@ if (Test-Path $yarnLock) {
 else {
   $hint = if ($ctx.IsWorktree) {
     ".\scripts\worktree-doctor.ps1 -Fix  # or copy from main via worktree-copy-env.ps1"
-  } else {
+  }
+  else {
     'Run yarn install at repo root on main checkout'
   }
   Add-Check 'yarn_lock' 'error' 'Missing yarn.lock - yarn scripts will fail' $hint
@@ -129,8 +130,15 @@ else {
   Add-Check 'ports' 'ok' 'Main checkout uses launch-manifest defaults (no .worktree-ports.env required)' ''
 }
 
-# Git hooks
-$hookPath = Join-Path $repo '.git/hooks/pre-commit'
+# Git hooks (linked worktrees: .git is a file; use git-path hooks)
+$hooksRel = ([string](git -C $repo rev-parse --git-path hooks 2>$null)).Trim()
+if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($hooksRel)) {
+  $hooksDir = if ([System.IO.Path]::IsPathRooted($hooksRel)) { $hooksRel } else { Join-Path $repo $hooksRel }
+  $hookPath = Join-Path $hooksDir 'pre-commit'
+}
+else {
+  $hookPath = Join-Path $repo '.git/hooks/pre-commit'
+}
 if (Test-Path $hookPath) {
   Add-Check 'hooks' 'ok' 'pre-commit hook installed' ''
 }

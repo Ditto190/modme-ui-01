@@ -1,0 +1,46 @@
+{
+  "wave": 2,
+  "generated_at": "2026-07-04T10:10:00.000Z",
+  "branch": "feature/cursor/thermo-round2-redundancy",
+  "baseline": "dev",
+  "scope": "thermo-round2-redundancy",
+  "lanes": {
+    "explorer-root": {
+      "status": "complete",
+      "focus_paths": ["src/", "agent/", "harness/", "docs/codebase/"],
+      "findings": "Critical legacy root duplication vs next-forge + agent-server; archive after Phase 4"
+    },
+    "explorer-forge": {
+      "status": "complete",
+      "focus_paths": ["next-forge/apps", "next-forge/packages"],
+      "findings": "Phase 2-3 pass; Phase 4 fail (no feature-flag gating); Phase 1 partial"
+    },
+    "explorer-legacy": {
+      "status": "complete",
+      "focus_paths": ["GenerativeUI_monorepo/apps", "packages/shared-schemas"],
+      "findings": "Dual schema packages (zod v3 vs v4); GenerativeCanvas/useAgentState duplicated"
+    },
+    "explorer-universalworkbench": {
+      "status": "complete",
+      "focus_paths": ["GenerativeUI_monorepo/UniversalWorkbench/"],
+      "findings": "MCP registry overlap conceptual only; no UI component registry collision with design-system"
+    },
+    "explorer-scripts": {
+      "status": "complete",
+      "focus_paths": ["scripts/", ".github/workflows/", "harness/"],
+      "findings": "Inbox orchestrator vs workflow fan-out drift; dual intake pipelines (inbox vs copilot-telemetry)"
+    },
+    "explorer-skills": {
+      "status": "complete",
+      "focus_paths": [".agents/skills/", ".cursor/skills/", ".vendor/awesome-copilot-main/"],
+      "findings": "4 local skill key collisions; 522 vendor skills; 6 vendor/local key overlaps"
+    },
+    "thermo-security": { "status": "complete", "critical": 2, "high": 1 },
+    "thermo-performance": { "status": "complete", "high": 2, "medium": 1 },
+    "thermo-correctness": { "status": "complete", "critical": 1, "high": 2 },
+    "thermo-readability": { "status": "complete", "code_judo_moves": 8 }
+  },
+  "blocked_wave_2_until": "satisfied â€” wave 1 published",
+  "molecule_manifest": "data/molecule-index/manifest.json",
+  "synthesis": "docs/workflows/reports/thermo-nuclear-redundancy-2026-07-04.md"
+}

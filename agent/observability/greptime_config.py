@@ -175,7 +175,7 @@ def instrument_fastapi(app, config: GreptimeDBConfig):
         app: FastAPI application instance
         config: GreptimeDB configuration
     """
-    from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+    from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor  # pyright: ignore[reportMissingImports]
 
     FastAPIInstrumentor.instrument_app(app)
 
@@ -189,6 +189,9 @@ def initialize_observability(
     """
     Initialize complete observability stack with GreptimeDB.
 
+    Only activates when GREPTIME_OTEL_ENABLED=1 environment variable is set.
+    Safe to call unconditionally — returns (None, None, None) when flag is absent.
+
     Args:
         host: GreptimeDB host
         database: Database name
@@ -196,18 +199,11 @@ def initialize_observability(
         password: Auth password
 
     Returns:
-        Tuple of (meter, tracer, config)
-
-    Example:
-        >>> meter, tracer, config = initialize_observability()
-        >>> # Create metrics
-        >>> counter = meter.create_counter("requests_total")
-        >>> counter.add(1, {"endpoint": "/api/chat"})
-        >>> # Create traces
-        >>> with tracer.start_as_current_span("agent_execution"):
-        ...     # Your code here
-        ...     pass
+        Tuple of (meter, tracer, config) or (None, None, None) when disabled.
     """
+    if os.getenv("GREPTIME_OTEL_ENABLED") != "1":
+        return None, None, None
+
     config = GreptimeDBConfig(
         host=host, database=database, username=username, password=password
     )
@@ -215,7 +211,7 @@ def initialize_observability(
     meter = setup_metrics(config)
     tracer = setup_tracing(config)
 
-    print("[GreptimeDB] Observability initialized")
+    print("[GreptimeDB] Observability initialized (GREPTIME_OTEL_ENABLED=1)")
     print(f"[GreptimeDB] Metrics endpoint: {config.metrics_endpoint}")
     print(f"[GreptimeDB] Traces endpoint: {config.traces_endpoint}")
     print(f"[GreptimeDB] Database: {config.database}")

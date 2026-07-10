@@ -50,17 +50,39 @@
           "path": {
             "type": "string",
             "description": "Relative path from repository root to the item file",
-            "pattern": "^(prompts|instructions|agents)/[^/]+\\.(prompt|instructions|agent)\\.md$",
+            "pattern": "^(?:\\.agents/skills/[^/]+/SKILL\\.md|skills/[^/]+/SKILL\\.md|(prompts|instructions|agents)/[^/]+\\.(prompt|instructions|agent)\\.md)$",
             "minLength": 1
           },
           "kind": {
             "type": "string",
             "description": "Type of the item",
-            "enum": ["prompt", "instruction", "agent"]
+            "enum": ["prompt", "instruction", "agent", "skill"]
           },
           "usage": {
             "type": "string",
             "description": "Optional usage context for the item"
+          },
+          "role": {
+            "type": "string",
+            "description": "Optional parallel-agent role label for orchestration"
+          },
+          "lean_ctx": {
+            "type": "object",
+            "description": "Optional lean-ctx A2A / intelligence metadata",
+            "additionalProperties": false,
+            "properties": {
+              "agent_type": { "type": "string" },
+              "a2a_role": { "type": "string" },
+              "protocols": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "intelligence_tools": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "preload_profile": { "type": "string" }
+            }
           }
         }
       },

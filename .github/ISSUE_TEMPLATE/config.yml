@@ -1,5 +1,11 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Contribution guide (worktrees + verify)
+    url: https://github.com/Ditto190/modme-ui-01/blob/dev/.cursor/bugbot/CONTRIBUTION.md
+    about: Dual-monorepo contribution and PR conventions
+  - name: Triage checklist
+    url: https://github.com/Ditto190/modme-ui-01/blob/dev/.cursor/bugbot/TRIAGE.md
+    about: Maintainer and agent triage workflow
   - name: 💬 GitHub Discussions
     url: https://github.com/Ditto190/modme-ui-01/discussions
     about: Ask questions and discuss ideas with the community

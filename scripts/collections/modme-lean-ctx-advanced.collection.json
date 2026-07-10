@@ -1,0 +1,100 @@
+{
+  "id": "modme-lean-ctx-advanced",
+  "name": "ModMe Lean-CTX Advanced Orchestration",
+  "description": "Multi-agent orchestration collection — lean-ctx intelligence tools, A2A roles, beads BFS dispatch. Global-only skills (parallel-agents, context-driven-development, context7-auto-research): npx skills add <owner/repo@skill> --agent cursor -y. Project skill: .agents/skills/lean-ctx/SKILL.md.",
+  "tags": ["lean-ctx", "orchestration", "multi-agent", "a2a", "intelligence"],
+  "display": { "ordering": "manual", "featured": true },
+  "items": [
+    {
+      "path": ".agents/skills/lean-ctx/SKILL.md",
+      "kind": "skill",
+      "role": "orchestrator",
+      "usage": "lean-ctx MCP/CLI workflow, read modes, session memory",
+      "lean_ctx": {
+        "agent_type": "cursor",
+        "a2a_role": "orchestrator",
+        "protocols": ["CEP", "CCP", "A2A"],
+        "intelligence_tools": ["ctx_compose", "ctx_graph", "ctx_agent"],
+        "preload_profile": "orchestration"
+      }
+    },
+    {
+      "path": "skills/ai-team-orchestration/SKILL.md",
+      "kind": "skill",
+      "role": "orchestrator",
+      "usage": "Parallel agent coordination and task decomposition",
+      "lean_ctx": {
+        "agent_type": "cursor",
+        "a2a_role": "orchestrator",
+        "protocols": ["CEP", "CCP", "A2A"],
+        "intelligence_tools": ["ctx_compose", "ctx_graph"],
+        "preload_profile": "orchestration"
+      }
+    },
+    {
+      "path": "skills/acquire-codebase-knowledge/SKILL.md",
+      "kind": "skill",
+      "role": "plan",
+      "usage": "Evidence-only codebase discovery before multi-agent dispatch",
+      "lean_ctx": {
+        "agent_type": "cursor",
+        "a2a_role": "plan",
+        "protocols": ["CEP", "CLP"],
+        "intelligence_tools": ["ctx_compose", "ctx_architecture"],
+        "preload_profile": "orchestration"
+      }
+    },
+    {
+      "path": "skills/memory-merger/SKILL.md",
+      "kind": "skill",
+      "role": "orchestrator",
+      "usage": "Merge orchestration discoveries into agent instructions",
+      "lean_ctx": {
+        "agent_type": "cursor",
+        "a2a_role": "orchestrator",
+        "protocols": ["A2A"],
+        "intelligence_tools": ["ctx_knowledge", "ctx_agent"],
+        "preload_profile": "orchestration"
+      }
+    },
+    {
+      "path": "agents/gem-reviewer.agent.md",
+      "kind": "agent",
+      "role": "review",
+      "usage": "Code review subagent — bugs and security",
+      "lean_ctx": {
+        "agent_type": "cursor",
+        "a2a_role": "review",
+        "protocols": ["CEP", "A2A"],
+        "intelligence_tools": ["ctx_delta", "ctx_callgraph"],
+        "preload_profile": "orchestration"
+      }
+    },
+    {
+      "path": "skills/quality-playbook/SKILL.md",
+      "kind": "skill",
+      "role": "test",
+      "usage": "Spec-traced verification for prove-it and session finish gates",
+      "lean_ctx": {
+        "agent_type": "cursor",
+        "a2a_role": "test",
+        "protocols": ["CEP"],
+        "intelligence_tools": ["ctx_compose", "ctx_search"],
+        "preload_profile": "forge-dev"
+      }
+    },
+    {
+      "path": "agents/gem-devops.agent.md",
+      "kind": "agent",
+      "role": "dev",
+      "usage": "Pipeline and session script hardening",
+      "lean_ctx": {
+        "agent_type": "cursor",
+        "a2a_role": "dev",
+        "protocols": ["CEP", "CCP"],
+        "intelligence_tools": ["ctx_impact", "ctx_compose"],
+        "preload_profile": "forge-dev"
+      }
+    }
+  ]
+}

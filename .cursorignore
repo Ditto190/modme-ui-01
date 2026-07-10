@@ -4,6 +4,9 @@
 **/.env
 **/.env.local
 **/.env.*.local
+.orca/
+.orca.json
+orca.json
 
 # Credential files
 *.pem

@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "description": "Dual-monorepo environment contract for ECL harness and agent orchestration",
+  "stacks": {
+    "root": {
+      "packageManager": "yarn@3.3.0",
+      "role": "meta-orchestration, harness, intake, CI glue"
+    },
+    "forge": {
+      "path": "next-forge",
+      "packageManager": "bun",
+      "turbo": true,
+      "ports": {
+        "app": 3100,
+        "web": 3101,
+        "api": 3102,
+        "docs": 3104,
+        "storybook": 6106,
+        "agent": 3105
+      },
+      "verify": "yarn verify:forge"
+    },
+    "generative": {
+      "path": "GenerativeUI_monorepo",
+      "packageManager": "yarn@3.3.0",
+      "turbo": true,
+      "ports": {
+        "vibe-web-app": 3000,
+        "web-dashboard": 3001,
+        "example-next": 3002,
+        "example-react": 3003,
+        "agent-server": 8000
+      },
+      "verify": "yarn verify:generative"
+    },
+    "legacy": {
+      "paths": ["src/", "agent/"],
+      "status": "deprecated",
+      "note": "Root GenUI R&D stub — sunset after Phase 4 cutover; see docs/migration/phase4-cutover.md"
+    }
+  },
+  "launchManifest": "scripts/launch-manifest.json",
+  "worktreePorts": ".worktree-ports.env",
+  "integration": {
+    "boundary": "HTTP/WebSocket only — no cross-monorepo workspace imports",
+    "wsUrl": "ws://localhost:8000/ws/agent",
+    "schemaPackage": "@repo/schemas"
+  }
+}

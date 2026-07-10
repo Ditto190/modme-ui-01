@@ -1,0 +1,144 @@
+{
+  "https://leanctx.com/docs/configuration": {
+    "url": "https://leanctx.com/docs/configuration",
+    "fragments": [
+      "autonomy-configuration",
+      "multi-root-workspaces"
+    ],
+    "annotations": [
+      "AUTONOMATIC LEANCTX CONFIG",
+      "IMPORTANT"
+    ],
+    "tags": [
+      "lean-ctx",
+      "shopping-list"
+    ],
+    "priority": "high"
+  },
+  "https://leanctx.com/docs/journeys/multi-repo-workspace": {
+    "url": "https://leanctx.com/docs/journeys/multi-repo-workspace",
+    "fragments": [],
+    "annotations": [],
+    "tags": [
+      "lean-ctx",
+      "shopping-list"
+    ],
+    "priority": "normal"
+  },
+  "https://leanctx.com/docs/observatory": {
+    "url": "https://leanctx.com/docs/observatory",
+    "fragments": [],
+    "annotations": [],
+    "tags": [
+      "lean-ctx",
+      "shopping-list"
+    ],
+    "priority": "normal"
+  },
+  "https://leanctx.com/docs/performance-tuning": {
+    "url": "https://leanctx.com/docs/performance-tuning",
+    "fragments": [
+      "graph",
+      "slow-log",
+      "checklist"
+    ],
+    "annotations": [
+      "USE THIS",
+      "Create smart git automation and hooks with this"
+    ],
+    "tags": [
+      "lean-ctx",
+      "shopping-list"
+    ],
+    "priority": "high"
+  },
+  "https://leanctx.com/docs/tools/intelligence": {
+    "url": "https://leanctx.com/docs/tools/intelligence",
+    "fragments": [
+      "action-build",
+      "ctx_impact",
+      "ctx_architecture",
+      "ctx_delta",
+      "ctx_fill",
+      "ctx_intent",
+      "ctx_graph",
+      "ctx_compose",
+      "ctx_callgraph",
+      "adaptive-compression-wave-5",
+      "task-aware-kg-compression",
+      "ctx_index",
+      "format-extractors-universal-intake"
+    ],
+    "annotations": [
+      "SNAKE SEARCH",
+      "REVERSE DEPs",
+      "TOOLS",
+      "CODEMAP",
+      "DELTA",
+      "RELEVANCE ON KEYWORDS - USE WITH CATALOGUE",
+      "INTENT ClASSIFIER",
+      "PROJECT INTELLIJENCE GRAPH",
+      "COMPOSE FROM MULTIPLE SOURCES",
+      "AUTOBUILD GRAPH",
+      "BFS CALLGRAPH",
+      "REVERSE DEP ANALYSIS",
+      "ADAPTIVE COMPRESSION",
+      "TASK AWARE COMPRESSION",
+      "PROJECT INDEXING",
+      "FEATURES WE CAN USE"
+    ],
+    "tags": [
+      "lean-ctx",
+      "shopping-list"
+    ],
+    "priority": "normal"
+  },
+  "https://raw.githubusercontent.com/gastownhall/gascity/main/docs/getting-started/coming-from-gastown.md": {
+    "url": "https://raw.githubusercontent.com/gastownhall/gascity/main/docs/getting-started/coming-from-gastown.md",
+    "fragments": [],
+    "annotations": [],
+    "tags": [
+      "gascity-fleet"
+    ],
+    "priority": "normal"
+  },
+  "https://raw.githubusercontent.com/gastownhall/gascity/main/docs/getting-started/how-gas-city-works.md": {
+    "url": "https://raw.githubusercontent.com/gastownhall/gascity/main/docs/getting-started/how-gas-city-works.md",
+    "fragments": [],
+    "annotations": [],
+    "tags": [
+      "gascity-fleet"
+    ],
+    "priority": "normal"
+  },
+  "https://raw.githubusercontent.com/gastownhall/gascity/main/deps.env": {
+    "url": "https://raw.githubusercontent.com/gastownhall/gascity/main/deps.env",
+    "fragments": [],
+    "annotations": [],
+    "tags": [
+      "gascity-fleet"
+    ],
+    "priority": "normal"
+  },
+  "https://raw.githubusercontent.com/gastownhall/gascity/b0c532c53194c3de71d5601fd68425861d7a2b4e/docs/index.mdx": {
+    "url": "https://raw.githubusercontent.com/gastownhall/gascity/b0c532c53194c3de71d5601fd68425861d7a2b4e/docs/index.mdx",
+    "fragments": [],
+    "annotations": [],
+    "tags": [
+      "gascity-fleet"
+    ],
+    "priority": "normal"
+  },
+  "https://leanctx.com/docs/journeys/mcp-tool-catalog-gateway": {
+    "url": "https://leanctx.com/docs/journeys/mcp-tool-catalog-gateway",
+    "fragments": [],
+    "annotations": [
+      "TOOLSET"
+    ],
+    "tags": [
+      "lean-ctx",
+      "shopping-list"
+    ],
+    "priority": "normal"
+  }
+}

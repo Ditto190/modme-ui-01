@@ -1,23 +1,46 @@
 import type { Page } from "@playwright/test";
 
+const DEV_EMAIL = "dev@modme.local";
+const DEV_PASSWORD = "devpassword";
+const LEADING_SLASH_RE = /^\//;
+
 /**
- * Sign in test user via credentials form
- * User: dev@modme.local / devpassword
- * Auth.js middleware redirects unauthenticated requests to /sign-in
+ * Sign in on apps/web (port 3101) via data-testid form.
+ * Redirects to /en/catalog on success.
  */
 export async function signIn(page: Page) {
-  // Navigate to app; Auth.js middleware will redirect to /sign-in if needed
-  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await signInWeb(page);
+}
 
-  // Wait for sign-in page
+/** Sign in on apps/web (port 3101) — catalog E2E. */
+export async function signInWeb(page: Page) {
+  await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.waitForURL("/sign-in", { timeout: 5000 });
 
-  // Fill credentials using data-testid selectors
-  // Form inputs are in next-forge/apps/web/app/sign-in/page.tsx
-  await page.fill('[data-testid="email-input"]', "dev@modme.local");
-  await page.fill('[data-testid="password-input"]', "devpassword");
+  await page.fill('[data-testid="email-input"]', DEV_EMAIL);
+  await page.fill('[data-testid="password-input"]', DEV_PASSWORD);
   await page.click('[data-testid="signin-button"]');
 
-  // Wait for redirect to catalog page (success indicator)
   await page.waitForURL("/en/catalog", { timeout: 5000 });
+}
+
+/**
+ * Sign in on apps/app (port 3100) via @repo/auth SignIn form.
+ * Navigates to redirectPath after auth (default "/").
+ */
+export async function signInApp(page: Page, redirectPath = "/") {
+  await page.goto(redirectPath, { waitUntil: "domcontentloaded" });
+
+  if (page.url().includes("/sign-in")) {
+    await page.fill("#email", DEV_EMAIL);
+    await page.fill("#password", DEV_PASSWORD);
+    await page.click('button[type="submit"]');
+    await page.waitForURL((url) => !url.pathname.includes("/sign-in"), {
+      timeout: 10_000,
+    });
+  }
+
+  if (!page.url().includes(redirectPath.replace(LEADING_SLASH_RE, ""))) {
+    await page.goto(redirectPath, { waitUntil: "domcontentloaded" });
+  }
 }

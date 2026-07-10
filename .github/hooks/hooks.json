@@ -1,12 +1,45 @@
 {
+  "version": 1,
   "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": "COPILOT_SCRIPT_TRIGGER=session.create pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/copilot-workspace/lifecycle.ps1",
+        "powershell": "$env:COPILOT_SCRIPT_TRIGGER='session.create'; pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/copilot-workspace/lifecycle.ps1",
+        "cwd": ".",
+        "timeoutSec": 300
+      }
+    ],
+    "sessionEnd": [
+      {
+        "type": "command",
+        "bash": "COPILOT_SCRIPT_TRIGGER=session.archive pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/copilot-workspace/lifecycle.ps1",
+        "powershell": "$env:COPILOT_SCRIPT_TRIGGER='session.archive'; pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/copilot-workspace/lifecycle.ps1",
+        "cwd": ".",
+        "timeoutSec": 120
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "node scripts/resolve-lean-ctx-hook.mjs rewrite",
+        "powershell": "node scripts/resolve-lean-ctx-hook.mjs rewrite",
+        "timeoutSec": 15
+      },
+      {
+        "type": "command",
+        "bash": "node scripts/resolve-lean-ctx-hook.mjs redirect",
+        "powershell": "node scripts/resolve-lean-ctx-hook.mjs redirect",
+        "timeoutSec": 5
+      }
+    ],
     "postToolUse": [
       {
-        "bash": "C:/Users/dylan/.gemini/antigravity/bin/lean-ctx.exe hook observe",
-        "timeoutSec": 5,
-        "type": "command"
+        "type": "command",
+        "bash": "node scripts/resolve-lean-ctx-hook.mjs observe",
+        "powershell": "node scripts/resolve-lean-ctx-hook.mjs observe",
+        "timeoutSec": 5
       }
     ]
-  },
-  "version": 1
+  }
 }

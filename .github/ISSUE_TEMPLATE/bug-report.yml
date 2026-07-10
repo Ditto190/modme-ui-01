@@ -8,9 +8,9 @@ body:
     attributes:
       value: |
         ## 🐛 Bug Report
-        
+
         Thanks for reporting a bug! Please provide detailed information to help us fix it quickly.
-        
+
         **Note**: This is for ModMe GenUI Workbench (Python ADK Agent + React UI). 
         For toolset-specific issues, use the "Toolset Management Issue" template.
 
@@ -20,16 +20,12 @@ body:
       label: Component Affected
       description: Which part of the system has the bug?
       options:
-        - "🐍 Python Agent (agent/main.py)"
-        - "⚛️ React Frontend (src/app/page.tsx)"
-        - "🔗 State Sync (tool_context.state)"
-        - "📦 Component Registry (StatCard, DataTable, ChartCard)"
-        - "🎨 Theme System (setThemeColor)"
-        - "🛠️ Toolset Management"
-        - "🔌 API Endpoint (CopilotKit runtime)"
-        - "📝 Documentation"
-        - "🏗️ Build System (npm/uv/Docker)"
-        - "❓ Not Sure"
+        - "next-forge (apps, packages, Supabase)"
+        - "GenerativeUI_monorepo (legacy agent stack)"
+        - "Root orchestration (scripts, beads, hooks, docs)"
+        - "Intake / scrape pipeline"
+        - "Toolset management (legacy)"
+        - "Not sure"
     validations:
       required: true
 
@@ -39,11 +35,12 @@ body:
       label: Runtime Environment
       description: Where does the bug occur?
       options:
-        - "Python Agent (localhost:8000)"
-        - "React UI (localhost:3000)"
-        - "Both (Agent + UI)"
-        - "CI/CD Pipeline"
-        - "Documentation/Tooling"
+        - "next-forge app (localhost:3100)"
+        - "next-forge api (localhost:3102)"
+        - "GenerativeUI web (localhost:3000)"
+        - "Agent server (localhost:8000)"
+        - "CI/CD pipeline"
+        - "Documentation / tooling"
     validations:
       required: true
 
@@ -71,7 +68,7 @@ body:
       value: |
         1. 
         2. 
-        3. 
+        3.
     validations:
       required: true
 
@@ -99,7 +96,7 @@ body:
       label: Error Logs/Screenshots
       description: |
         Paste relevant logs, error messages, or screenshots.
-        
+
         **Python logs**: Check terminal running `npm run dev:agent`
         **React logs**: Check browser console
         **State inspection**: Use React DevTools or `curl http://localhost:8000/ready`
@@ -120,7 +117,7 @@ body:
         - **Python Version**: 
         - **Browser** (if UI bug): 
         - **npm Version**: 
-        - **uv/pip Version**: 
+        - **uv/pip Version**:
       render: markdown
     validations:
       required: true

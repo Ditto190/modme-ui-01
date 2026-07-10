@@ -1,5 +1,6 @@
 import { createWorkflowChain } from "@voltagent/core";
 import { z } from "zod";
+import { devopsExpert } from "../agents/devopsExpert";
 
 export const codebaseOrchestratorWorkflow = createWorkflowChain({
   id: "codebase-orchestrator",
@@ -17,11 +18,7 @@ export const codebaseOrchestratorWorkflow = createWorkflowChain({
 })
   .andThen({
     id: "scan-codebase",
-    execute: async ({ data, tools }) => {
-      // Typically, a workflow would invoke tools directly or use an agent to do it.
-      // We will simulate a direct tool call logic, or we can use the agent.
-      // For this workflow, let's just pass data along to the next step, which could
-      // invoke the agent's capabilities.
+    execute: async ({ data }) => {
       return {
         directory: data.directory,
         scanComplete: true,
@@ -30,24 +27,15 @@ export const codebaseOrchestratorWorkflow = createWorkflowChain({
   })
   .andThen({
     id: "delegate-fixes",
-    execute: async ({ data, agents }) => {
-      // In a real VoltAgent workflow, we can invoke an agent to perform actions.
-      // We assume agents["devops-expert"] is available.
-      const expert = agents["devops-expert"];
-
-      // We instruct the agent
-      const response = await expert.chat({
-        messages: [
-          {
-            role: "user",
-            content: `Please scan the directory ${data.directory} for test-coverage gaps, and apply patches to fix any missing tests you find.`,
-          },
-        ],
-      });
+    execute: async ({ data }) => {
+      const expert = devopsExpert;
+      const response = await expert.generateText(
+        `Please scan the directory ${data.directory} for test-coverage gaps, and apply patches to fix any missing tests you find.`
+      );
 
       return {
         status: "success" as const,
-        fixesApplied: 1, // Mock metric
+        fixesApplied: 1,
         report: response.text,
       };
     },

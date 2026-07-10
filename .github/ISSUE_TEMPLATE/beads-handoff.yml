@@ -1,0 +1,59 @@
+name: "Beads Handoff"
+description: "Promote a beads task (modme-*) to a tracked GitHub issue"
+title: "[Beads]: "
+labels: ["beads-linked", "agent:beads", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Link persistent beads memory to GitHub (system-of-record). Template: [.cursor/bugbot/ISSUE.md](../blob/dev/.cursor/bugbot/ISSUE.md).
+  - type: input
+    id: beads_issue_id
+    attributes:
+      label: Beads issue ID
+      placeholder: "modme-aqu"
+    validations:
+      required: true
+  - type: dropdown
+    id: stack
+    attributes:
+      label: Stack
+      options:
+        - "stack:forge"
+        - "stack:generative"
+        - "stack:orchestration"
+        - "stack:root"
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One sentence goal from beads title/notes
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      value: |
+        - [ ] 
+        - [ ] Verify: `yarn verify:forge` or `yarn verify:generative`
+    validations:
+      required: true
+  - type: textarea
+    id: verify_commands
+    attributes:
+      label: Verify commands
+      value: |
+        yarn verify:forge
+  - type: dropdown
+    id: citizen
+    attributes:
+      label: Agent citizen (optional)
+      options:
+        - "beads-orchestrator"
+        - "devops-ci-champion"
+        - "forge-reviewer"
+        - "generative-reviewer"
+        - "none"

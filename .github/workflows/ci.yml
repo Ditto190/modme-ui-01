@@ -1,7 +1,5 @@
 name: CI
 
-# Stack jobs below mirror preflight manifest steps; unified manifest gate: preflight-ci.yml
-
 on:
   push:
     branches:
@@ -59,6 +57,40 @@ jobs:
               - 'next-forge/**'
             generative:
               - 'GenerativeUI_monorepo/**'
+            rootLegacy:
+              - 'src/**'
+              - 'agent/**'
+            orchestration:
+              - 'scripts/**'
+              - 'docs/**'
+              - '.cursor/**'
+              - '.agents/**'
+              - '.github/**'
+              - 'harness/**'
+              - 'package.json'
+              - 'CHANGELOG.md'
+              - 'e2e/worktree-smoke/**'
+              - '.githooks/**'
+            harness:
+              - 'harness/**'
+              - 'docs/ECL.md'
+              - 'docs/STATUS.md'
+              - 'docs/ARCHITECTURE.md'
+              - 'C4-Documentation/**'
+            e2e:
+              - 'next-forge/tests/e2e/**'
+              - 'next-forge/playwright.config.ts'
+              - 'next-forge/packages/schemas/ws-contract.test.ts'
+              - 'next-forge/packages/schemas/molecule-index.test.ts'
+              - 'scripts/molecule-index-orchestrator.mjs'
+              - 'scripts/__tests__/molecule-index.test.mjs'
+              - 'data/molecule-index/**'
+            moleculeContract:
+              - 'next-forge/packages/schemas/**'
+              - 'packages/intake-contracts/**'
+              - 'scripts/molecule-index*.mjs'
+              - 'scripts/__tests__/molecule-index.test.mjs'
+              - 'data/molecule-index/**'
 
   changelog:
     if: github.event_name == 'pull_request'
@@ -92,14 +124,6 @@ jobs:
           cache-dependency-path: GenerativeUI_monorepo/yarn.lock
       - name: Enable Corepack (Yarn 3)
         run: corepack enable
-      - name: Restore Turbo local cache
-        uses: actions/cache@v4
-        with:
-          path: GenerativeUI_monorepo/.turbo
-          key: turbo-generative-${{ runner.os }}-${{ hashFiles('GenerativeUI_monorepo/yarn.lock') }}-${{ github.sha }}
-          restore-keys: |
-            turbo-generative-${{ runner.os }}-${{ hashFiles('GenerativeUI_monorepo/yarn.lock') }}-
-            turbo-generative-${{ runner.os }}-
       - name: Install deps
         run: yarn install --immutable 2>/dev/null || yarn install
       - name: Lint
@@ -107,7 +131,7 @@ jobs:
       - name: Test
         run: yarn test
       - name: Build
-        run: yarn build:product
+        run: yarn build
 
   next-forge:
     needs: [secret-guard, changes]
@@ -116,28 +140,12 @@ jobs:
     defaults:
       run:
         working-directory: next-forge
-    env:
-      # Remote cache: gate on repo variable TURBO_REMOTE_CACHE_ENABLED=true (not next-forge/.env).
-      # See docs/monorepo-build-ci-setup.md and docs/turbo-remote-cache-s3.md
-      TURBO_API: ${{ vars.TURBO_API }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - name: Restore Turbo local cache
-        if: vars.TURBO_REMOTE_CACHE_ENABLED != 'true'
-        uses: actions/cache@v4
-        with:
-          path: next-forge/.turbo
-          key: turbo-forge-${{ runner.os }}-${{ hashFiles('next-forge/turbo.json', 'next-forge/bun.lock') }}-${{ github.sha }}
-          restore-keys: |
-            turbo-forge-${{ runner.os }}-${{ hashFiles('next-forge/turbo.json', 'next-forge/bun.lock') }}-
-            turbo-forge-${{ runner.os }}-
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version-file: next-forge/package.json
+          bun-version-file: next-forge/pkg.json
       - name: Install deps
         run: bun install --frozen-lockfile
       - name: Check (Ultracite/Biome)
@@ -146,3 +154,31 @@ jobs:
         run: bun run test
       - name: Build
         run: bun run build
+
+  worktree-smoke:
+    needs: [secret-guard]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: orch_filter
+        with:
+          filters: |
+            orchestration:
+              - 'scripts/**'
+              - 'docs/**'
+              - '.cursor/**'
+              - '.agents/**'
+              - '.github/**'
+              - 'harness/**'
+              - 'package.json'
+              - 'CHANGELOG.md'
+              - 'e2e/worktree-smoke/**'
+              - '.githooks/**'
+      - name: Worktree orchestration smoke
+        if: steps.orch_filter.outputs.orchestration == 'true' || github.event_name == 'workflow_dispatch'
+        run: node e2e/worktree-smoke/run.mjs
+      - name: Skip (no orchestration paths)
+        if: steps.orch_filter.outputs.orchestration != 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "worktree-smoke skipped — no orchestration path changes"

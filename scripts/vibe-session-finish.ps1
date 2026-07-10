@@ -7,6 +7,7 @@ param(
   [switch]$Push,
   [switch]$CreatePr,
   [switch]$ApplyLeanCtx,
+  [switch]$VerifyStack,
   [string]$CommitMessage = ''
 )
 
@@ -24,6 +25,7 @@ Options:
   -Push            Push after commit (-Yes skips confirmation)
   -CreatePr        gh pr create --base dev after push (-Yes skips confirmation; needs gh auth or GH_TOKEN)
   -ApplyLeanCtx     Run lean-ctx ensure with auto-apply (default pre-flight is -CheckOnly only)
+  -VerifyStack      Run yarn verify:forge and/or verify:generative based on changed paths (ci.yml filters)
 
 Examples:
   .\scripts\vibe-session-finish.ps1 -DryRun -SkipPull
@@ -235,6 +237,17 @@ if ($inboxChanged.Count -gt 0) {
         }
       }
     }
+  }
+}
+
+if ($VerifyStack) {
+  if ($DryRun) {
+    Write-Host "[dry-run] would run path-filtered stack verify (pre-push-checks.mjs)" -ForegroundColor DarkYellow
+  }
+  else {
+    Write-Host "Running path-filtered stack verify..." -ForegroundColor Cyan
+    & node (Join-Path $ScriptDir "pre-push-checks.mjs")
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
   }
 }
 

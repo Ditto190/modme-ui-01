@@ -1,0 +1,3 @@
+source: next-forge/packages/schemas/observability.ts
+kind: object
+purpose: Zod schemas and golden snapshot source for observability contracts.

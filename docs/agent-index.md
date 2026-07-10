@@ -4,10 +4,14 @@ Single onboarding map for Cursor agents, cloud agents, and Copilot. Run `/init` 
 
 ## Read order
 
-1. [`AGENTS.md`](../AGENTS.md) — commands, layout, session end
-2. This file — stack map, ports, skills, drift register
-3. [`docs/agent-tech-guide.md`](agent-tech-guide.md) — lean-ctx, CI, changelog
-4. [`docs/codebase/STACK.md`](codebase/STACK.md) — dependency scorecard
+1. [`AGENTS.md`](../AGENTS.md) — commands, layout (slim map)
+2. [`docs/ECL.md`](ECL.md) — change classification + verify
+3. Active harness change under `harness/changes/active/` (if any)
+4. [`docs/STATUS.md`](STATUS.md) — session handoff
+5. This file — stack map, ports, skills, drift register
+6. [`docs/agent-tech-guide.md`](agent-tech-guide.md) — lean-ctx, CI, learned preferences
+7. [`docs/codebase/STACK.md`](codebase/STACK.md) — dependency scorecard
+8. [`C4-Documentation/c4-container.md`](../C4-Documentation/c4-container.md) — product architecture
 
 ---
 
@@ -18,7 +22,8 @@ Single onboarding map for Cursor agents, cloud agents, and Copilot. Run `/init` 
 | `next-forge/` | **Primary** product stack (apps, docs, workshop) | Bun |
 | `GenerativeUI_monorepo/` | **Legacy** agent stack (CopilotKit + agent-server) | Yarn 3.3 |
 | `GenerativeUI_monorepo/UniversalWorkbench*/` | Separate product — **read-only** unless tasked | Yarn 4.10 |
-| Root | Orchestration scripts only | Yarn 3.3 |
+| Root | Orchestration, harness, intake, CI glue | Yarn 3.3 |
+| `src/` / `agent/` | **Legacy/deprecated** GenUI R&D stub | — (do not extend) |
 
 ### Root commands (`package.json`)
 
@@ -28,10 +33,11 @@ Single onboarding map for Cursor agents, cloud agents, and Copilot. Run `/init` 
 | `yarn dev:generative` | GenerativeUI |
 | `yarn check:forge` / `yarn verify:forge` | next-forge CI parity |
 | `yarn verify:generative` | GenerativeUI CI parity |
+| `yarn verify:all` | Full forge + generative CI parity |
+| `yarn lint:harness` | ECL harness structure validation |
 | `yarn pre-commit:check` | Staged-aware hook checks |
-| `yarn worktree:doctor` / `yarn worktree:doctor:fix` | Worktree pre-flight |
-| `yarn setup:modme` / `setup:env` / `setup:gh-aw` | Root `.env` sync + gh-aw Copilot secret (ADR-0010) |
-| `yarn setup:turbo-cache` | Turbo remote cache compose check + GitHub `vars`/`secrets` hints (ADR-0011) |
+| `yarn agent:tui` / `yarn agent:status` / `yarn agent:audit` | Agent terminal orchestration |
+| `yarn agent:session:start` / `yarn agent:session:finish` | Session envelope + beads |
 | `.\scripts\new-agent-worktree.ps1` | Isolated feature worktrees |
 
 ### Codebase deep docs (`docs/codebase/`)
@@ -50,7 +56,7 @@ Single onboarding map for Cursor agents, cloud agents, and Copilot. Run `/init` 
 
 ## next-forge (primary)
 
-Setup: [`next-forge/SETUP.md`](../next-forge/SETUP.md). Skill: [`.agents/skills/next-forge/SKILL.md`](../.agents/skills/next-forge/SKILL.md). **Env + gh-aw secrets**: [ADR-0010](../next-forge/docs/adr/0010-gh-aw-copilot-secrets-and-root-env-sync.md), [`modme-dev-setup` skill](../.agents/skills/modme-dev-setup/SKILL.md), `yarn setup:modme`.
+Setup: [`next-forge/SETUP.md`](../next-forge/SETUP.md). Skill: [`.agents/skills/next-forge/SKILL.md`](../.agents/skills/next-forge/SKILL.md).
 
 | App | Port | Path | Purpose |
 |-----|------|------|---------|
@@ -111,7 +117,8 @@ yarn dev:generative   # from repo root
 | 1 Workshop | In progress | `next-forge/apps/storybook/stories/modme-workshop.stories.tsx` |
 | 2 Schemas | Done | `next-forge/packages/schemas` (`@repo/schemas`) |
 | 3 Client island | Done | `next-forge/apps/app/app/(authenticated)/generative-ui/` |
-| 4 Cutover | Pending | Feature flags, deprecate web-dashboard |
+| 4 Cutover | Pending | Feature flags, deprecate web-dashboard — [`docs/migration/phase4-cutover.md`](migration/phase4-cutover.md) |
+| Legacy root archive | Pending | `src/` + `agent/` → `archive/legacy-genui-root/` after cutover |
 
 Rollback: `yarn dev:generative` restores legacy stack; disable feature flags in next-forge.
 
@@ -122,6 +129,9 @@ Rollback: `yarn dev:generative` restores legacy stack; disable feature flags in 
 | Layer | Location |
 |-------|----------|
 | Onboarding command | `.cursor/commands/init.md` |
+| Beads command | `.cursor/commands/beads.md` — `/beads` (ready, create, close, session) |
+| ADR command | `.cursor/commands/architecture-decision-records.md` — `/architecture-decision-records` |
+| Session handover | [`docs/handover/latest.md`](handover/latest.md) |
 | Rules | `.cursor/rules/` — lean-ctx, monorepo-boundaries, multi-agent-worktrees, package-manager-scope |
 | Repo skills | `.agents/skills/` (17 skills — see table below) |
 | Cursor skills | `.cursor/skills/` (80+ vendor/project skills) |
@@ -129,6 +139,7 @@ Rollback: `yarn dev:generative` restores legacy stack; disable feature flags in 
 | Forge CI parity | `scripts/verify-forge-ci.ps1` |
 | Generative CI parity | `scripts/verify-generative-ci.ps1` |
 | Worktrees | `docs/multi-agent-worktrees.md` — **mandatory for feature work** |
+| Agent orchestration | `docs/agent-terminal-orchestration.md` — mprocs TUI, session envelopes, `yarn agent:*` |
 | Beads | `docs/beads-workflow.md` — issue tracking (`modme` prefix) |
 | Debug | `docs/debug-launch-guide.md`, `.vscode/launch.json`, `scripts/launch-manifest.json` |
 | Buildkite | `docs/buildkite-guide.md`, `.buildkite/pipeline.yml` (GenerativeUI) |
@@ -167,8 +178,6 @@ Rollback: `yarn dev:generative` restores legacy stack; disable feature flags in 
 
 Local parity: `yarn verify:forge`, `yarn verify:generative`, `yarn pre-commit:check`
 
-**Build & CI:** [`docs/monorepo-build-ci-setup.md`](monorepo-build-ci-setup.md) · [ADR-0011](../next-forge/docs/adr/0011-turbo-self-hosted-remote-cache.md) (Turbo remote cache) · [`docs/turbo-remote-cache-s3.md`](turbo-remote-cache-s3.md) (S3 server detail)
-
 ---
 
 ## Known drift register
@@ -181,7 +190,8 @@ Track and resolve these during onboarding maintenance:
 | `monorepo-modme.mdc` primary stack wording | Updated → next-forge primary |
 | `apps/studio` wrong `packages/db/` path | Open |
 | CHANGELOG `[Unreleased]` bucket hygiene | Updated |
-| Beads issue tracking | Docs in `docs/beads-workflow.md`; run `bd init --prefix modme` locally (CLI not bundled) |
+| Path filters single manifest | Done — `scripts/lib/stack-paths.json` |
+| Root `src/`/`agent/` legacy status | Documented in AGENTS.md + CONCERNS.md |
 
 ---
 

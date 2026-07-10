@@ -111,9 +111,21 @@ Ask questions about using or contributing to the project.
 
 ## Automatic Labeling
 
-Issues are automatically labeled based on your template selections. Here's what labels mean:
+Issues and PRs are labeled from template fields and changed paths. Full taxonomy: [`.cursor/bugbot/LABELS.md`](.cursor/bugbot/LABELS.md).
 
-### Component Labels
+### Stack labels (dual-monorepo)
+
+- `stack:forge` — `next-forge/` (Bun/Turbo)
+- `stack:generative` — `GenerativeUI_monorepo/` (Yarn 3.3)
+- `stack:orchestration` — root scripts, docs, `.cursor/`, beads, hooks
+- `stack:root` — other root files
+
+### Workflow labels
+
+- `ci-cd`, `devops-autofix`, `beads-linked`, `agent-routed`, `bugbot-reviewed`
+- `status:triage`, `status:in-progress`, `status:agent-escalated`
+
+### Legacy component labels (GenUI)
 
 - `agent` - Python agent backend (agent/main.py)
 - `frontend` - React UI (src/app/page.tsx)

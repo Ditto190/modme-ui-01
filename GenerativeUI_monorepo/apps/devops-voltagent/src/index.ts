@@ -12,7 +12,7 @@ import {
 import { createPinoLogger } from "@voltagent/logger";
 import { honoServer } from "@voltagent/server-hono";
 import { devopsExpert } from "./agents";
-import { codebaseOrchestratorWorkflow } from "./workflows";
+import { codebaseOrchestratorWorkflow, selfHealingTddWorkflow } from "./workflows";
 
 const logger = createPinoLogger({ name: "devops-voltagent", level: "info" });
 
@@ -30,13 +30,16 @@ const observability = new VoltAgentObservability({
 });
 
 new VoltAgent({
-	agents: { "devops-expert": devopsExpert },
-	workflows: { "codebase-orchestrator": codebaseOrchestratorWorkflow },
-	server: honoServer(),
-	logger,
-	observability,
-	voltOpsClient: new VoltOpsClient({
-		publicKey: process.env.VOLTAGENT_PUBLIC_KEY || "",
-		secretKey: process.env.VOLTAGENT_SECRET_KEY || "",
-	}),
+  agents: { "devops-expert": devopsExpert },
+  workflows: {
+    "codebase-orchestrator": codebaseOrchestratorWorkflow,
+    "self-healing-tdd": selfHealingTddWorkflow,
+  },
+  server: honoServer(),
+  logger,
+  observability,
+  voltOpsClient: new VoltOpsClient({
+    publicKey: process.env.VOLTAGENT_PUBLIC_KEY || "",
+    secretKey: process.env.VOLTAGENT_SECRET_KEY || "",
+  }),
 });
