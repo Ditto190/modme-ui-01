@@ -1,23 +1,54 @@
-name: modme-copilot-app
-url: https://github.com/Ditto190/modme-ui-01
-description: "Conservative GitHub App for CI/webhook integrations and Copilot-related automation. Review permissions before installation."
-public: false
-hook_attributes:
-  url: https://ci.example.com/github-app/webhook
-redirect_url: https://ci.example.com/github-app/callback
-permissions:
-  metadata: read
-  contents: read
-  pull_requests: write
-  checks: write
-  statuses: write
-  actions: read
-  issues: read
-  deployments: read
-events:
-  - push
-  - pull_request
-  - pull_request_review
-  - check_run
-  - workflow_run
-  - issue_comment
+automation:
+  auto_issue_session: true
+  remote_control: true
+
+branch:
+  prefix: feature/copilot/
+
+system-prompt:
+  include:
+    - AGENTS.md
+    - .github/copilot-instructions.md
+    - docs/multi-agent-worktrees.md
+    - docs/copilot-workspace-orchestration.md
+
+scripts:
+  session.create:
+    command: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/copilot-workspace/lifecycle.ps1
+  session.archive:
+    command: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/copilot-workspace/lifecycle.ps1
+  run:
+    bootstrap:
+      command: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/copilot-workspace/bootstrap.ps1
+    preflight:fast:
+      command: node scripts/preflight.mjs --profile fast
+    preflight:env:
+      command: node scripts/preflight.mjs --profile env
+    preflight:copilot:
+      command: node scripts/preflight.mjs --profile copilot-workspace
+    dev:forge:core:
+      command: yarn dev:forge:core
+    dev:forge:docs:
+      command: yarn dev:forge:docs
+    dev:forge:storybook:
+      command: yarn dev:forge:storybook
+    agent:status:
+      command: yarn agent:status
+    workbench:
+      command: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/copilot-workspace/run-workbench.ps1
+    builders:ensure:
+      command: node scripts/builders-orchestrator.mjs ensure
+    builders:verify:
+      command: node scripts/builders-orchestrator.mjs verify
+    builders:build:
+      command: node scripts/builders-orchestrator.mjs build
+    builders:swc:
+      command: node scripts/builders-orchestrator.mjs build --builder swc
+    builders:vite:build:
+      command: node scripts/builders-orchestrator.mjs build --builder vite
+    builders:vite:dev:
+      command: node scripts/builders-orchestrator.mjs dev vibe-web-app
+    builders:dolt:status:
+      command: node scripts/builders-orchestrator.mjs dolt-status
+    builders:pipeline:
+      command: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/copilot-workspace/run-builders.ps1

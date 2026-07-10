@@ -1,0 +1,119 @@
+{
+  "profiles": {
+    "worktree-shared-deps": {
+      "description": "Worktree junction contract + orchestration smoke",
+      "steps": [
+        {
+          "id": "worktree-link-deps-tests",
+          "cmd": "npx",
+          "args": [
+            "vitest",
+            "run",
+            "--config",
+            "vitest.config.mjs",
+            "--project",
+            "orchestration",
+            "scripts/__tests__/worktree-link-deps.test.mjs"
+          ]
+        },
+        {
+          "id": "worktree-smoke",
+          "cmd": "node",
+          "args": ["e2e/worktree-smoke/run.mjs"]
+        }
+      ]
+    },
+    "copilot-workspace": {
+      "description": "GitHub Copilot App workspace config + script contract",
+      "steps": [
+        {
+          "id": "copilot-workspace-config-tests",
+          "cmd": "npx",
+          "args": [
+            "vitest",
+            "run",
+            "--config",
+            "vitest.config.mjs",
+            "--project",
+            "orchestration",
+            "scripts/__tests__/copilot-workspace-config.test.mjs"
+          ]
+        },
+        {
+          "id": "generate-env-mjs",
+          "cmd": "node",
+          "args": ["scripts/copilot-workspace/generate-env.mjs"]
+        }
+      ]
+    },
+    "env": {
+      "description": "Session + forge env verify (Copilot workspace smoke)",
+      "steps": [
+        {
+          "id": "copilot-config-smoke",
+          "cmd": "npx",
+          "args": [
+            "vitest",
+            "run",
+            "--config",
+            "vitest.config.mjs",
+            "--project",
+            "orchestration",
+            "scripts/__tests__/copilot-workspace-config.test.mjs"
+          ]
+        },
+        {
+          "id": "generate-env-smoke",
+          "cmd": "node",
+          "args": ["scripts/copilot-workspace/generate-env.mjs"]
+        }
+      ]
+    },
+    "fast": {
+      "description": "Quick smoke before dev (config + harness)",
+      "steps": [
+        {
+          "id": "copilot-config",
+          "cmd": "npx",
+          "args": [
+            "vitest",
+            "run",
+            "--config",
+            "vitest.config.mjs",
+            "--project",
+            "orchestration",
+            "scripts/__tests__/copilot-workspace-config.test.mjs"
+          ]
+        },
+        {
+          "id": "lint-harness",
+          "cmd": "node",
+          "args": ["scripts/lint-ecl.mjs"]
+        }
+      ]
+    },
+    "builders": {
+      "description": "SWC + Vite builder orchestration smoke",
+      "steps": [
+        {
+          "id": "builders-manifest-test",
+          "cmd": "npx",
+          "args": [
+            "vitest",
+            "run",
+            "--config",
+            "vitest.config.mjs",
+            "--project",
+            "orchestration",
+            "scripts/__tests__/builders-orchestrator.test.mjs"
+          ]
+        },
+        {
+          "id": "builders-preflight-pipeline",
+          "cmd": "node",
+          "args": ["scripts/builders-orchestrator.mjs", "pipeline", "preflight-builders"]
+        }
+      ]
+    }
+  }
+}

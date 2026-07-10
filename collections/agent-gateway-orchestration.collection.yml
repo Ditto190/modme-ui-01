@@ -1,0 +1,13 @@
+id: agent-gateway-orchestration
+name: Agent Gateway Orchestration
+description: A2A/MCP/LLM routing research, ADR-0012, and Copilot workspace gateway stubs
+items:
+  - path: instructions/agent-gateway-orchestration.instructions.md
+    kind: instruction
+    usage: Pointers to ADR-0012, gateway routes, and Copilot workspace orchestration docs
+tags:
+  - agentgateway
+  - a2a
+  - mcp
+  - copilot
+  - routing

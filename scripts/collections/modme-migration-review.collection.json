@@ -12,6 +12,12 @@
       "usage": "Extract preference atoms from audit conversations into durable artifacts"
     },
     {
+      "path": "skills/modme-workflow-speckit-bridge/SKILL.md",
+      "kind": "skill",
+      "role": "orchestrator",
+      "usage": "Bridge chat preferences → pattern registry → speckit checklist → coverage verify before parallel waves"
+    },
+    {
       "path": "skills/acquire-codebase-knowledge/SKILL.md",
       "kind": "skill",
       "role": "explorer-forge",

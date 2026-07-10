@@ -36,12 +36,15 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 
 ```markdown
 ### Added
+
 - (scope) Short description (#PR)
 
 ### Changed
+
 - (scope) Short description
 
 ### Fixed
+
 - (scope) Short description (#issue)
 ```
 
@@ -61,6 +64,18 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (repo) Builder orchestration layer — `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
+- (repo) Copilot workspace + builder incident runbook — `docs/runbooks/copilot-workspace-builder-incident.md`
+- (repo) GitHub Copilot App workspace orchestration — `.github/github-app.yml` lifecycle scripts, `.worktreeinclude`, `scripts/copilot-workspace/`, portable `.github/hooks/hooks.json`, and `docs/copilot-workspace-orchestration.md`
+- (repo) Obsidian Web Clipper templates (`templates/obsidian-clipper/`) and `yarn docs:clipper:export`
+- (repo) ADR-0012 Agent Gateway MCP routing stub (`config/agentgateway/routes.example.yaml`, catalog gateway entry)
+- (repo) Inbox research notes for agentgateway and Expo/json-render tracks
+- (repo) Preflight profiles `copilot-workspace`, `fast`, `env` and `yarn preflight:copilot`
+- (repo) PR triage pipeline — `scripts/pr-triage/`, `yarn pr:triage|pr:queue|pr:comments|pr:classify`, `pr-triage-orchestrator` CI workflow, and `docs/pr-resolution/`
+- (repo) `scripts/update-changelog.mjs` — append conventional commits to `[Unreleased]` (replaces missing `update-changelog.js`)
+- (repo) `.agents/skills/gh-review-requests` — ModMe personal-repo review queue skill
+- (repo) `.agents/templates/pr-escalation.yaml` — beads handoff template for blocked merges
+- (repo) Workflow speckit gates — `specs/013-agent-workflow-gates/`, pattern registry/coverage-map, `modme-workflow-speckit-bridge` skill, `/speckit-pattern-checklist`, and `run-pattern-gate.mjs`
 - (repo) Distributed observability pipeline — `yarn telemetry:sync`, telemetry CLI/bridge, DSP bootstrap (`.dsp/`), observability runbooks, and `observability-pipeline-check` CI workflow
 - (next-forge) `@repo/observability` ingest/categorize package, API telemetry routes, knowledge session-ops panel, and observability schema contract tests
 - (repo) lean-ctx project config (`.lean-ctx.toml`), universal intake script, and agent terminal session finish/start enhancements
@@ -76,12 +91,19 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - (repo) GenerativeUI devops-voltagent app, intake-pipeline Python orchestrator, and Playwright test scaffolding
 - (repo) Evaluation pipeline docs (`docs/evaluation/`), agent eval collect/report scripts, and catalog e2e tests in next-forge
 - (repo) Root inbox tooling — `yarn inbox:audit`, `inbox:fix`, `inbox:test`, `intake:orchestrate`, and beads starter scripts
-- (cursor) Cursor marketplace plugin skills under `.cursor/skills/` — thermos, fix-ci, orchestrate, principle-*, voltagent, and related agent workflows
+- (cursor) Cursor marketplace plugin skills under `.cursor/skills/` — thermos, fix-ci, orchestrate, principle-\*, voltagent, and related agent workflows
 - (copilot) Expanded root `.github/copilot-instructions.md` for dual-monorepo (next-forge + GenerativeUI) commands and verification workflow
 - (cursor) Additional Claude plugin enables in `.cursor/settings.json` (commit-commands, supabase, typescript-lsp, rust-analyzer-lsp, agent-sdk-dev)
 
+### Fixed
+
+- (scripts) `Get-CopilotRepoRoot` ascends 3 levels from `scripts/copilot-workspace/lib/paths.ps1`; null-safe `.Trim()` on git outputs in hooks/doctor scripts; schema-valid agent-gateway collection (PR #91)
+- (repo) Builder/preflight/hook spawns — Windows cmd shim via shell string (not `shell:true`+args); lean-ctx probe requires successful `--version`; `session-archive.ps1` checks `preflight:fast` exit code
+
 ### Changed
 
+- (scripts) Null-safe git output handling in `install-git-hooks.ps1` and `repo-alignment-doctor.ps1` (PR #91 review)
+- (scripts) repo-alignment doctor accepts `github` remote when `origin` is the GitLab mirror
 - (GenerativeUI) Agent-server WebSocket timestamps aligned to Unix milliseconds to match `@repo/schemas` golden contract
 - (docs) `ARCHITECTURE.md` documents hexagonal ports/adapters layout for agent-server
 - (repo) Pre-push generative lint is advisory on push (full `yarn verify:generative` before PR merge)

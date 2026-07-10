@@ -73,6 +73,22 @@ focus_paths = [
 ]
 lean_ctx_profile = "thermo-nuclear-review"
 
+[task_profiles.agent-workflow-gates]
+compression_level = "standard"
+tee_mode = "always"
+focus_paths = [
+  "specs/013-agent-workflow-gates/",
+  "harness/",
+  "scripts/lib/stack-paths.json",
+  "scripts/lib/run-pattern-gate.mjs",
+  "scripts/lib/run-verify-stack.mjs",
+  "scripts/__tests__/pattern-coverage.test.mjs",
+  ".githooks/",
+  "docs/workflows/thermo-nuclear-dual-monorepo-review.md",
+  ".cursor/skills/modme-workflow-speckit-bridge/",
+]
+lean_ctx_profile = "agent-workflow-gates"
+
 [task_profiles.molecule-index]
 compression_level = "max"
 tee_mode = "always"
