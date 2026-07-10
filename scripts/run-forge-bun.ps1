@@ -37,18 +37,10 @@ if ($env:NODE_OPTIONS -match '\.pnp\.cjs') {
   Remove-Item Env:NODE_OPTIONS -ErrorAction SilentlyContinue
 }
 
-$DatabaseEnv = Join-Path $ForgeRoot "packages\database\.env"
-if (Test-Path $DatabaseEnv) {
-  Get-Content $DatabaseEnv | ForEach-Object {
-    if ($_ -match '^\s*#') { return }
-    if ($_ -match '^([A-Z_][A-Z0-9_]*)=(.*)$') {
-      $key = $Matches[1]
-      $value = $Matches[2].Trim('"').Trim("'")
-      if (-not (Get-Item -Path "env:$key" -ErrorAction SilentlyContinue)) {
-        Set-Item -Path "env:$key" -Value $value
-      }
-    }
-  }
+$bootstrap = Join-Path $ScriptDir 'lib\modme-env-bootstrap.ps1'
+if (Test-Path $bootstrap) {
+  . $bootstrap
+  Import-ModMeEnv -RepoRoot $RepoRoot -Quiet | Out-Null
 }
 
 $exitCode = 1

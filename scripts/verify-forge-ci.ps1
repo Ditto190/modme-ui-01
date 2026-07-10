@@ -10,6 +10,12 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Split-Path -Parent $ScriptDir
 $RunForge = Join-Path $ScriptDir "run-forge-bun.ps1"
 
+$bootstrap = Join-Path $ScriptDir 'lib\modme-env-bootstrap.ps1'
+if (Test-Path $bootstrap) {
+  . $bootstrap
+  Import-ModMeEnv -RepoRoot $RepoRoot -Quiet | Out-Null
+}
+
 Write-Host "== next-forge CI parity verify ==" -ForegroundColor Cyan
 
 if (-not (Test-Path $RunForge)) {

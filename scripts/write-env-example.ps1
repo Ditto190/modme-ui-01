@@ -1,0 +1,31 @@
+$path = Join-Path (Split-Path $PSScriptRoot -Parent) '.env.example'
+$content = @'
+# ModMe root environment (gitignored - copy to .env)
+# Sync into next-forge: .\scripts\sync-env-from-root.ps1
+
+# --- gh-aw Copilot engine (GitHub Actions) ---
+COPILOT_GITHUB_TOKEN=
+GITHUB_PAT=
+GITHUB_PERSONAL_ACCESS_TOKEN=
+
+# --- Supabase (modme-next-forge) ---
+NEXT_PUBLIC_SUPABASE_URL=https://aevemmmmouxqlfyxthzf.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_ACCESS_TOKEN=
+
+# --- Database (Prisma) ---
+DATABASE_URL=
+DIRECT_URL=
+
+# --- Auth.js (next-forge apps) ---
+AUTH_SECRET=
+
+# --- Optional AI providers ---
+ANTHROPIC_API_KEY=
+OPENAI_API_KEY=
+GEMINI_API_KEY=
+GOOGLE_API_KEY=
+'@
+Set-Content -Path $path -Value $content -Encoding utf8
+Write-Host "Wrote $path"

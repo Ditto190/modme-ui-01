@@ -2,11 +2,55 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "modme: env bootstrap",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/modme-session.ps1",
+        "-Phase",
+        "pre-launch"
+      ],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared",
+        "close": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "modme: session verify",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/modme-session.ps1",
+        "-Phase",
+        "verify"
+      ],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "vibe-web-app: dev",
+      "dependsOn": [
+        "modme: env bootstrap"
+      ],
       "type": "shell",
       "command": "yarn dev",
       "options": {
-        "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/vibe-web-app"
+        "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/vibe-web-app",
+        "envFile": "${workspaceFolder}/.vscode/.env.runtime"
       },
       "isBackground": true,
       "problemMatcher": {
@@ -27,21 +71,60 @@
     },
     {
       "label": "agent-generator: build",
+      "dependsOn": [
+        "modme: env bootstrap"
+      ],
       "type": "shell",
       "command": "yarn build",
       "options": {
-        "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-generator"
+        "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-generator",
+        "envFile": "${workspaceFolder}/.vscode/.env.runtime"
       },
-      "problemMatcher": ["$tsc"],
+      "problemMatcher": [
+        "$tsc"
+      ],
       "presentation": {
         "reveal": "silent",
         "panel": "shared"
       }
     },
     {
+      "label": "next-forge: dev core",
+      "dependsOn": [
+        "modme: env bootstrap"
+      ],
+      "type": "shell",
+      "command": "yarn dev:forge:core",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "envFile": "${workspaceFolder}/.vscode/.env.runtime"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "(Ready|started server|Local:)"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
       "label": "agenttrace: overview",
+      "dependsOn": [
+        "modme: env bootstrap"
+      ],
       "type": "shell",
       "command": "yarn agenttrace --overview",
+      "options": {
+        "envFile": "${workspaceFolder}/.vscode/.env.runtime"
+      },
       "presentation": {
         "reveal": "always",
         "panel": "shared"

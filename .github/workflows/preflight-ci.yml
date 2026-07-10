@@ -1,0 +1,97 @@
+name: Preflight CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+      - dev
+    paths-ignore:
+      - "LICENSE"
+  push:
+    branches:
+      - main
+      - master
+      - develop
+      - dev
+    paths-ignore:
+      - "LICENSE"
+
+concurrency:
+  group: preflight-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      forge: ${{ steps.filter.outputs.forge }}
+      generative: ${{ steps.filter.outputs.generative }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            forge:
+              - 'next-forge/**'
+            generative:
+              - 'GenerativeUI_monorepo/**'
+
+  preflight:
+    needs: changes
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+      GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      TURBO_API: ${{ vars.TURBO_API }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup Bun
+        if: needs.changes.outputs.forge == 'true'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: next-forge/package.json
+
+      - name: Install next-forge deps
+        if: needs.changes.outputs.forge == 'true'
+        working-directory: next-forge
+        run: bun install --frozen-lockfile
+
+      - name: Enable Corepack (Yarn 3)
+        if: needs.changes.outputs.generative == 'true'
+        run: corepack enable
+
+      - name: Install GenerativeUI deps
+        if: needs.changes.outputs.generative == 'true'
+        working-directory: GenerativeUI_monorepo
+        run: yarn install --immutable 2>/dev/null || yarn install
+
+      - name: Run preflight (ci profile)
+        run: node scripts/preflight.mjs --profile ci --report --json > preflight-report.stdout.json
+
+      - name: Upload preflight report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preflight-report
+          path: |
+            docs/devops/reports/preflight-latest.json
+            preflight-report.stdout.json
+          retention-days: 14
+          if-no-files-found: warn

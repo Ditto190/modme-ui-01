@@ -57,6 +57,40 @@ jobs:
               - 'next-forge/**'
             generative:
               - 'GenerativeUI_monorepo/**'
+            rootLegacy:
+              - 'src/**'
+              - 'agent/**'
+            orchestration:
+              - 'scripts/**'
+              - 'docs/**'
+              - '.cursor/**'
+              - '.agents/**'
+              - '.github/**'
+              - 'harness/**'
+              - 'package.json'
+              - 'CHANGELOG.md'
+              - 'e2e/worktree-smoke/**'
+              - '.githooks/**'
+            harness:
+              - 'harness/**'
+              - 'docs/ECL.md'
+              - 'docs/STATUS.md'
+              - 'docs/ARCHITECTURE.md'
+              - 'C4-Documentation/**'
+            e2e:
+              - 'next-forge/tests/e2e/**'
+              - 'next-forge/playwright.config.ts'
+              - 'next-forge/packages/schemas/ws-contract.test.ts'
+              - 'next-forge/packages/schemas/molecule-index.test.ts'
+              - 'scripts/molecule-index-orchestrator.mjs'
+              - 'scripts/__tests__/molecule-index.test.mjs'
+              - 'data/molecule-index/**'
+            moleculeContract:
+              - 'next-forge/packages/schemas/**'
+              - 'packages/intake-contracts/**'
+              - 'scripts/molecule-index*.mjs'
+              - 'scripts/__tests__/molecule-index.test.mjs'
+              - 'data/molecule-index/**'
 
   changelog:
     if: github.event_name == 'pull_request'
@@ -133,9 +167,15 @@ jobs:
           filters: |
             orchestration:
               - 'scripts/**'
+              - 'docs/**'
+              - '.cursor/**'
+              - '.agents/**'
+              - '.github/**'
+              - 'harness/**'
+              - 'package.json'
+              - 'CHANGELOG.md'
               - 'e2e/worktree-smoke/**'
               - '.githooks/**'
-              - 'docs/agent-terminal-orchestration.md'
       - name: Worktree orchestration smoke
         if: steps.orch_filter.outputs.orchestration == 'true' || github.event_name == 'workflow_dispatch'
         run: node e2e/worktree-smoke/run.mjs

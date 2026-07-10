@@ -214,6 +214,7 @@ gh aw compile --validate
 ## Important Notes
 
 - Always reference the instructions file at `.github/aw/github-agentic-workflows.md` for complete documentation
+- **Copilot engine secret (ModMe)**: Workflows with `engine: copilot` require repository secret **`COPILOT_GITHUB_TOKEN`**. See [ADR-0010](../../next-forge/docs/adr/0010-gh-aw-copilot-secrets-and-root-env-sync.md). Setup: root `.env` → `yarn setup:gh-aw` (reads `COPILOT_GITHUB_TOKEN`, `GITHUB_PAT`, or `GITHUB_PERSONAL_ACCESS_TOKEN`). Never commit or log token values.
 - Use the MCP tool `agentic-workflows` when running in GitHub Copilot Cloud
 - Workflows must be compiled to `.lock.yml` files before running in GitHub Actions
 - **Bash tools are enabled by default** - Don't restrict bash commands unnecessarily since workflows are sandboxed by the AWF
