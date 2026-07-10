@@ -19,6 +19,7 @@ import sys
 import argparse
 import subprocess
 import json
+from collections import Counter
 from pathlib import Path
 from typing import List, Set
 import re
@@ -349,7 +350,6 @@ def get_git_churn() -> List[str]:
         if result.returncode == 0:
             files = [f.strip() for f in result.stdout.split('\n') if f.strip()]
             # Count occurrences
-            from collections import Counter
             counts = Counter(files)
             churn = sorted(counts.items(), key=lambda x: x[1], reverse=True)
             return [f"{count:4d} {filename}" for filename, count in churn[:CHURN_LIMIT]]

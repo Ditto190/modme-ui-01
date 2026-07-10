@@ -62,6 +62,14 @@ function sha256(fp) {
   try { return createHash('sha256').update(readFileSync(fp)).digest('hex'); } catch { return null; }
 }
 
+function toRepoRelativePath(absPath) {
+  const normalized = resolve(absPath);
+  const rel = normalized.startsWith(REPO_ROOT)
+    ? normalized.slice(REPO_ROOT.length + 1)
+    : normalized;
+  return rel.replace(/\\/g, '/');
+}
+
 function loadReport(p) {
   try { return JSON.parse(readFileSync(p, 'utf8')); }
   catch { return { version: 1, installed: [], lastRun: null }; }
@@ -132,7 +140,7 @@ function installSkillDir(srcDir, destDir, slug, item, opts, report) {
   mkdirSync(destDir, { recursive: true });
   cpSync(srcDir, destDir, { recursive: true, force: true });
   log.ok(`Installed skill: ${slug}`);
-  updateReport(report, { slug, kind: 'skill', path: item.path, dest: destDir, hash: srcHash, source: item._source || 'vendor', installedAt: new Date().toISOString() });
+  updateReport(report, { slug, kind: 'skill', path: item.path, dest: toRepoRelativePath(destDir), hash: srcHash, source: item._source || 'vendor', installedAt: new Date().toISOString() });
   return 'installed';
 }
 
@@ -163,7 +171,7 @@ function installItem(item, srcPath, opts, report) {
   mkdirSync(destDir, { recursive: true });
   copyFileSync(srcPath, destFile);
   log.ok(`Installed ${kind}: ${slug}`);
-  updateReport(report, { slug, kind, path: item.path, dest: destFile, hash: srcHash, source: item._source || 'vendor', installedAt: new Date().toISOString() });
+  updateReport(report, { slug, kind, path: item.path, dest: toRepoRelativePath(destFile), hash: srcHash, source: item._source || 'vendor', installedAt: new Date().toISOString() });
   return 'installed';
 }
 

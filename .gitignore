@@ -122,6 +122,7 @@ quality/
 -w
 *.backup
 .agents/skills/.antigravity-install-manifest.json
+.agents/install-report.json
 .agents/
 
 # Beads / Dolt files (added by bd init)
