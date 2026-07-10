@@ -15,6 +15,10 @@ const COPILOT_SCRIPTS = [
   "scripts/copilot-workspace/session-archive.ps1",
   "scripts/copilot-workspace/run-workbench.ps1",
   "scripts/copilot-workspace/lib/paths.ps1",
+  "scripts/lib/worktree-bootstrap.ps1",
+  "scripts/worktree-session-end.ps1",
+  "scripts/setup-workspace-windows.ps1",
+  "scripts/worktree-relink-deps.ps1",
   "scripts/resolve-lean-ctx-hook.mjs",
 ];
 
@@ -42,6 +46,20 @@ describe("copilot-workspace config", () => {
     for (const rel of COPILOT_SCRIPTS) {
       expect(existsSync(join(ROOT, rel)), rel).toBe(true);
     }
+  });
+
+  it("bootstrap.ps1 references implemented worktree-bootstrap module", () => {
+    const bootstrap = readFileSync(
+      join(ROOT, "scripts/copilot-workspace/bootstrap.ps1"),
+      "utf8"
+    );
+    expect(bootstrap).toMatch(/worktree-bootstrap\.ps1/);
+    expect(bootstrap).toMatch(/Invoke-WorktreeBootstrap/);
+    const moduleText = readFileSync(
+      join(ROOT, "scripts/lib/worktree-bootstrap.ps1"),
+      "utf8"
+    );
+    expect(moduleText).toMatch(/function Invoke-WorktreeBootstrap/);
   });
 
   it("hooks.json uses portable lean-ctx resolver", () => {
