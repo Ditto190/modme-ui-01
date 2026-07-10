@@ -58,4 +58,7 @@ const result = shouldUseShellString(bin)
       shell: false,
     });
 
+if (result.signal) {
+  process.exit(1);
+}
 process.exit(result.status ?? 0);
