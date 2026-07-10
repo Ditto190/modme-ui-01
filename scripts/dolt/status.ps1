@@ -35,11 +35,11 @@ if (Test-Path $PidFile) {
 if (-not $running) {
   # Probe TCP even if pid file missing (manual start)
   try {
-    $tcp = Test-NetConnection -ComputerName 127.0.0.1 -Port $Port -WarningAction SilentlyContinue
-    if ($tcp.TcpTestSucceeded) {
-      Write-Host "sql-server: port $Port open (pid file missing)" -ForegroundColor Yellow
-      $running = $true
-    }
+    $tcpClient = New-Object System.Net.Sockets.TcpClient
+    $tcpClient.Connect('127.0.0.1', $Port)
+    $tcpClient.Close()
+    Write-Host "sql-server: port $Port open (pid file missing)" -ForegroundColor Yellow
+    $running = $true
   }
   catch { }
 }

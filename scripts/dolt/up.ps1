@@ -29,7 +29,6 @@ $RepoRoot = (Resolve-Path (Join-Path $ScriptDir "..\..")).Path
 $DataRoot = Join-Path $RepoRoot '.dolt-data'
 $ServerDir = Join-Path $DataRoot 'server'
 $PidFile = Join-Path $DataRoot 'sql-server.pid'
-$LogFile = Join-Path $DataRoot 'sql-server.log'
 
 $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' +
   [System.Environment]::GetEnvironmentVariable('Path', 'User')
@@ -60,17 +59,17 @@ try {
   dolt sql -q "CREATE DATABASE IF NOT EXISTS modme;" 2>&1 | Out-Null
   dolt sql -q "CREATE DATABASE IF NOT EXISTS ``modme-catalog``;" 2>&1 | Out-Null
 
-  $args = @('sql-server', '--host', $HostAddr, '--port', "$Port")
+  $doltArgs = @('sql-server', '--host', $HostAddr, '--port', "$Port")
 
   if ($Foreground) {
     Write-Host "Starting Dolt sql-server (foreground) on ${HostAddr}:${Port}..." -ForegroundColor Cyan
-    & dolt @args
+    & dolt @doltArgs
   }
   else {
     Write-Host "Starting Dolt sql-server (background) on ${HostAddr}:${Port}..." -ForegroundColor Cyan
     $outLog = Join-Path $DataRoot 'sql-server.out.log'
     $errLog = Join-Path $DataRoot 'sql-server.err.log'
-    $proc = Start-Process -FilePath 'dolt' -ArgumentList $args -WorkingDirectory $ServerDir `
+    $proc = Start-Process -FilePath 'dolt' -ArgumentList $doltArgs -WorkingDirectory $ServerDir `
       -RedirectStandardOutput $outLog -RedirectStandardError $errLog `
       -WindowStyle Hidden -PassThru
     Set-Content -Path $PidFile -Value $proc.Id -Encoding ascii

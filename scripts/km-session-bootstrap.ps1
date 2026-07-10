@@ -70,7 +70,7 @@ $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine') + ';
   [System.Environment]::GetEnvironmentVariable('Path', 'User')
 
 # 2. Optional Beads ↔ sql-server env hints
-$beadsServerEnv = Join-Path $RepoRoot '.dolt-data\beads-server.env'
+$beadsServerEnv = Join-Path (Join-Path $RepoRoot '.dolt-data') 'beads-server.env'
 if (Test-Path $beadsServerEnv) {
   Write-KmInfo "Loading $beadsServerEnv"
   Get-Content $beadsServerEnv | ForEach-Object {
@@ -86,7 +86,7 @@ if (Test-Path $beadsServerEnv) {
 
 # 3. Dolt sql-server (idempotent)
 if (-not $SkipDolt) {
-  $doltUp = Join-Path $ScriptDir 'dolt\up.ps1'
+  $doltUp = Join-Path (Join-Path $ScriptDir 'dolt') 'up.ps1'
   if (Test-Path $doltUp) {
     Write-KmInfo 'Ensuring Dolt sql-server (yarn dolt:up)...'
     & $doltUp
@@ -104,7 +104,7 @@ if (-not $SkipDolt) {
 
 # 4. Entire status
 if (-not $SkipEntire) {
-  $entireStatus = Join-Path $ScriptDir 'entire\status.ps1'
+  $entireStatus = Join-Path (Join-Path $ScriptDir 'entire') 'status.ps1'
   if (Test-Path $entireStatus) {
     Write-KmInfo 'Checking Entire...'
     & $entireStatus 2>&1 | Out-Host

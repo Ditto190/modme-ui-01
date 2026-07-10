@@ -8,6 +8,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const powershell = process.platform === "win32" ? "powershell" : "pwsh";
 
 function run(label, cmd, args, opts = {}) {
   const r = spawnSync(cmd, args, {
@@ -31,7 +32,7 @@ let ok = true;
 ok =
   run(
     "Entire",
-    "powershell",
+    powershell,
     [
       "-NoProfile",
       "-ExecutionPolicy",
@@ -44,7 +45,7 @@ ok =
 ok =
   run(
     "Dolt",
-    "powershell",
+    powershell,
     [
       "-NoProfile",
       "-ExecutionPolicy",
