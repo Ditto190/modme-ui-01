@@ -9,6 +9,9 @@ const ENV_KEY_VALUE_RE = /^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/;
 const DOUBLE_QUOTED_VALUE_RE = /^"(.*)"$/;
 const SINGLE_QUOTED_VALUE_RE = /^'(.*)'$/;
 
+/** Prisma URLs in packages/database/.env must win over root .env and stale shell exports. */
+const FORGE_DB_AUTHORITY_KEYS = new Set(["DATABASE_URL", "DIRECT_URL"]);
+
 function parseEnvFile(filePath) {
   const map = new Map();
   if (!fs.existsSync(filePath)) {
@@ -109,6 +112,7 @@ export function loadModMeEnv(repoRoot, options = {}) {
         forceKeys.has(key) ||
         forceFileIds.has(file.id) ||
         file.overwrite ||
+        (file.id === "forge-db" && FORGE_DB_AUTHORITY_KEYS.has(key)) ||
         overwrite.has(file.id) ||
         overwrite.has(path.basename(file.path));
       if (shouldOverwrite || !process.env[key]) {

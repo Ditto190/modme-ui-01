@@ -71,4 +71,24 @@ describe("loadModMeEnv", () => {
     loadModMeEnv(tmpDir, { forceKeys: ["DATABASE_URL"] });
     expect(process.env.DATABASE_URL).toBe("postgres://local");
   });
+
+  it("forge-db DATABASE_URL wins over root .env and stale shell exports", () => {
+    process.env.DATABASE_URL = "postgres://stale-shell-cloud";
+
+    fs.writeFileSync(
+      path.join(tmpDir, ".env"),
+      "DATABASE_URL=postgres://root-cloud\n",
+    );
+    fs.mkdirSync(path.join(tmpDir, "next-forge/packages/database"), {
+      recursive: true,
+    });
+    fs.writeFileSync(
+      path.join(tmpDir, "next-forge/packages/database/.env"),
+      "DATABASE_URL=postgres://local-forge-db\nDIRECT_URL=postgres://local-direct\n",
+    );
+
+    loadModMeEnv(tmpDir);
+    expect(process.env.DATABASE_URL).toBe("postgres://local-forge-db");
+    expect(process.env.DIRECT_URL).toBe("postgres://local-direct");
+  });
 });
