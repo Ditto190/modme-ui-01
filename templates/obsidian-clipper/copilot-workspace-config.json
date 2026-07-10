@@ -1,0 +1,59 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "ModMe — Copilot github-app.yml",
+	"behavior": "create",
+	"description": "Clip GitHub Copilot App repository configuration pages into inbox research notes.",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_architect_{{title|safe_name}}",
+	"path": "GenerativeUI_monorepo/docs/inbox",
+	"triggers": [
+		"/^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/blob\\/[^/]+\\/\\.github\\/github-app\\.yml/"
+	],
+	"properties": [
+		{
+			"name": "timestamp",
+			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
+			"type": "datetime"
+		},
+		{
+			"name": "agent",
+			"value": "cursor",
+			"type": "text"
+		},
+		{
+			"name": "agent_role",
+			"value": "architect",
+			"type": "text"
+		},
+		{
+			"name": "type",
+			"value": "research",
+			"type": "text"
+		},
+		{
+			"name": "severity",
+			"value": "medium",
+			"type": "text"
+		},
+		{
+			"name": "tags",
+			"value": "clipper, copilot, github-app, worktree, orchestration",
+			"type": "multitext"
+		},
+		{
+			"name": "title",
+			"value": "{{title}}",
+			"type": "text"
+		},
+		{
+			"name": "summary",
+			"value": "{{description}}",
+			"type": "text"
+		},
+		{
+			"name": "source",
+			"value": "{{url}}",
+			"type": "text"
+		}
+	],
+	"noteContentFormat": "# {{title}}\n\n**Source:** {{url}}\n\n{% if selection %}## Selection\n\n{{selection}}\n\n{% endif %}## Full page\n\n{{content}}\n"
+}

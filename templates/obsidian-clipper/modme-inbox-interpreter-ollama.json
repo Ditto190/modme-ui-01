@@ -1,0 +1,63 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "ModMe Inbox — Interpreter Ollama Probe",
+	"behavior": "create",
+	"description": "Clip-time tagging via Interpreter + Ollama llama3.2. Set context to Defuddle MD slice. Click Interpret before Add to Obsidian. Manual select only.",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
+	"path": "GenerativeUI_monorepo/docs/inbox",
+	"triggers": [],
+	"context": "{{content|slice:0,1500}}",
+	"properties": [
+		{
+			"name": "timestamp",
+			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
+			"type": "datetime"
+		},
+		{
+			"name": "agent",
+			"value": "human",
+			"type": "text"
+		},
+		{
+			"name": "agent_role",
+			"value": "researcher",
+			"type": "text"
+		},
+		{
+			"name": "type",
+			"value": "research",
+			"type": "text"
+		},
+		{
+			"name": "severity",
+			"value": "{{\"Reply with exactly one word: low, medium, high, or critical.\"}}",
+			"type": "text"
+		},
+		{
+			"name": "tags",
+			"value": "{{\"Return 1-3 tags from this exact list only, comma-separated: architecture, design, research, snippet, link, supabase, clipper. No other words.\"}}",
+			"type": "multitext"
+		},
+		{
+			"name": "title",
+			"value": "{{title}}",
+			"type": "text"
+		},
+		{
+			"name": "summary",
+			"value": "{{\"One sentence summary of the main article. Max 25 words.\"}}",
+			"type": "text"
+		},
+		{
+			"name": "source",
+			"value": "{{url}}",
+			"type": "text"
+		},
+		{
+			"name": "site",
+			"value": "{{site ?? domain}}",
+			"type": "text"
+		}
+	],
+	"noteContentFormat": "# {{title}}\n\n**URL:** {{url}}\n**Site:** {{site ?? domain}}\n\n## Interpreter summary\n\n{{\"One sentence summary of the main article. Max 25 words.\"}}\n\n## Page content (Defuddle)\n\n{{content}}\n\n> Probe: Enable Interpreter → Ollama → Model ID `llama3.2` → click **Interpret** before Add to Obsidian. Context is Defuddle MD sliced to 1500 chars. Summary/tags/severity also land in frontmatter properties.\n"
+}
