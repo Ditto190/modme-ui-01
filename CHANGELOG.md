@@ -45,6 +45,7 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 
 ### Fixed
 
+- (docs) Inbox audit report `latest.json` uses relative `root` (no machine-local path) (PR #89)
 - (scope) Short description (#issue)
 ```
 
@@ -97,6 +98,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
+- (docs) Inbox audit report `latest.json` uses relative `root` (no machine-local path) (PR #89)
 - (scripts) `Get-CopilotRepoRoot` ascends 3 levels from `scripts/copilot-workspace/lib/paths.ps1`; null-safe `.Trim()` on git outputs in hooks/doctor scripts; schema-valid agent-gateway collection (PR #91)
 - (repo) Builder/preflight/hook spawns — Windows cmd shim via shell string (not `shell:true`+args); lean-ctx probe requires successful `--version`; `session-archive.ps1` checks `preflight:fast` exit code
 
@@ -147,6 +149,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
+- (docs) Inbox audit report `latest.json` uses relative `root` (no machine-local path) (PR #89)
 - (dev) `init-worktrees.ps1` — use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
 - (dev) `new-agent-worktree.ps1` — usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`
 - (vscode) Set `git.path` in `.vscode/settings.json` so Cursor Agent Review finds Git on Windows when it is not on PATH

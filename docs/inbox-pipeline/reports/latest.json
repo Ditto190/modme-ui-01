@@ -756,5 +756,5 @@
     "markdown": "docs/inbox-pipeline/reports/latest.md",
     "jsonl": ".cursor/hooks/state/inbox-errors.jsonl"
   },
-  "root": "C:\\Users\\dylan\\Monorepo_ModMe"
+  "root": "."
 }
