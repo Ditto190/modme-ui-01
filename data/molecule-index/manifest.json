@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated_at": "2026-06-28T07:44:48.601Z",
+  "generated_at": "2026-07-04T10:06:38.981Z",
   "stack": "forge",
   "schema_version": "1.0.0",
   "record_kinds": [
@@ -102,7 +102,7 @@
       "semver": "1.0.0",
       "zod_export": null,
       "greptime_id": null,
-      "route_hint": "audit"
+      "route_hint": "dashboard"
     },
     {
       "kind": "zod_module",
@@ -111,7 +111,7 @@
       "semver": "1.0.0",
       "zod_export": null,
       "greptime_id": null,
-      "route_hint": "audit"
+      "route_hint": "dashboard"
     },
     {
       "kind": "zod_module",
@@ -120,7 +120,7 @@
       "semver": "1.0.0",
       "zod_export": null,
       "greptime_id": null,
-      "route_hint": "audit"
+      "route_hint": "dashboard"
     },
     {
       "kind": "zod_module",
@@ -129,7 +129,7 @@
       "semver": "1.0.0",
       "zod_export": null,
       "greptime_id": null,
-      "route_hint": "audit"
+      "route_hint": "dashboard"
     },
     {
       "kind": "zod_module",
@@ -138,7 +138,7 @@
       "semver": "1.0.0",
       "zod_export": null,
       "greptime_id": null,
-      "route_hint": "audit"
+      "route_hint": "dashboard"
     }
   ],
   "source_only": true,
