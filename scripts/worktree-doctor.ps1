@@ -46,7 +46,7 @@ if ($args -contains '-Help' -or $args -contains '--help' -or $args -contains '-h
 }
 
 if ([string]::IsNullOrWhiteSpace($RepoRoot)) {
-  $RepoRoot = (git rev-parse --show-toplevel 2>$null).Trim()
+  $RepoRoot = ([string](git rev-parse --show-toplevel 2>$null)).Trim()
   if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($RepoRoot)) {
     $RepoRoot = Split-Path -Parent $PSScriptRoot
   }
@@ -131,7 +131,7 @@ else {
 }
 
 # Git hooks (linked worktrees: .git is a file; use git-path hooks)
-$hooksRel = (git -C $repo rev-parse --git-path hooks 2>$null).Trim()
+$hooksRel = ([string](git -C $repo rev-parse --git-path hooks 2>$null)).Trim()
 if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($hooksRel)) {
   $hooksDir = if ([System.IO.Path]::IsPathRooted($hooksRel)) { $hooksRel } else { Join-Path $repo $hooksRel }
   $hookPath = Join-Path $hooksDir 'pre-commit'

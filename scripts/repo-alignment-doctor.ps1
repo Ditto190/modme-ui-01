@@ -19,7 +19,7 @@ $ExpectedWorkspaceFolders = @(
 )
 
 if ([string]::IsNullOrWhiteSpace($RepoRoot)) {
-  $RepoRoot = (git rev-parse --show-toplevel 2>$null).Trim()
+  $RepoRoot = ([string](git rev-parse --show-toplevel 2>$null)).Trim()
   if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($RepoRoot)) {
     $RepoRoot = Split-Path -Parent $PSScriptRoot
   }
@@ -54,10 +54,10 @@ else {
 
 # Canonical remote (GitHub is canonical; origin may be GitLab mirror)
 $remoteList = @(git -C $ctx.RepoRoot remote 2>$null)
-$originUrl = (git -C $ctx.RepoRoot remote get-url origin 2>$null).Trim()
+$originUrl = ([string](git -C $ctx.RepoRoot remote get-url origin 2>$null)).Trim()
 $githubUrl = ''
 if ($remoteList -contains 'github') {
-  $githubUrl = (git -C $ctx.RepoRoot remote get-url github 2>$null).Trim()
+  $githubUrl = ([string](git -C $ctx.RepoRoot remote get-url github 2>$null)).Trim()
 }
 $canonicalUrl = if ($githubUrl -match 'modme-ui-01') { $githubUrl } elseif ($originUrl -match 'modme-ui-01') { $originUrl } else { '' }
 if ($canonicalUrl) {
@@ -73,7 +73,7 @@ else {
 # GitLab mirror remote (optional)
 $gitlabUrl = ''
 if ($remoteList -contains 'gitlab') {
-  $gitlabUrl = (git -C $ctx.RepoRoot remote get-url gitlab).Trim()
+  $gitlabUrl = ([string](git -C $ctx.RepoRoot remote get-url gitlab 2>$null)).Trim()
 }
 if ($gitlabUrl) {
   Add-Check 'gitlab_mirror' 'ok' "gitlab remote configured ($gitlabUrl)" ''
