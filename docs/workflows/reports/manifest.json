@@ -35,12 +35,12 @@
       "focus_paths": [".agents/skills/", ".cursor/skills/", ".vendor/awesome-copilot-main/"],
       "findings": "4 local skill key collisions; 522 vendor skills; 6 vendor/local key overlaps"
     },
-    "thermo-security": { "status": "complete", "critical": 2, "high": 2 },
-    "thermo-performance": { "status": "complete", "high": 4, "medium": 3 },
+    "thermo-security": { "status": "complete", "critical": 2, "high": 1 },
+    "thermo-performance": { "status": "complete", "high": 2, "medium": 1 },
     "thermo-correctness": { "status": "complete", "critical": 1, "high": 2 },
     "thermo-readability": { "status": "complete", "code_judo_moves": 8 }
   },
-  "blocked_wave_2_until": "satisfied — wave 1 published",
+  "blocked_wave_2_until": "satisfied â€” wave 1 published",
   "molecule_manifest": "data/molecule-index/manifest.json",
   "synthesis": "docs/workflows/reports/thermo-nuclear-redundancy-2026-07-04.md"
 }

@@ -1,6 +1,6 @@
 # thermo-round2-redundancy
 
-> Structured change — see [docs/ECL.md](../../../docs/ECL.md)
+> Structured change â€” see [docs/ECL.md](../../../../docs/ECL.md)
 
 ## Goal
 
@@ -26,9 +26,9 @@ cd next-forge && bun test packages/schemas/*.test.ts
 
 ## Evidence
 
-- [`docs/workflows/reports/manifest.json`](../../../docs/workflows/reports/manifest.json)
-- [`docs/workflows/reports/thermo-nuclear-redundancy-2026-07-04.md`](../../../docs/workflows/reports/thermo-nuclear-redundancy-2026-07-04.md)
-- [`CONTEXT.md`](../../../CONTEXT.md)
+- [`docs/workflows/reports/manifest.json`](../../../../docs/workflows/reports/manifest.json)
+- [`docs/workflows/reports/thermo-nuclear-redundancy-2026-07-04.md`](../../../../docs/workflows/reports/thermo-nuclear-redundancy-2026-07-04.md)
+- [`CONTEXT.md`](../../../../CONTEXT.md)
 - Architecture HTML: `%TEMP%\architecture-review-2026-07-04.html`
 
 ## Status

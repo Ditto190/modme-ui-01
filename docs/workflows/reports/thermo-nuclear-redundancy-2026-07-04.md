@@ -1,25 +1,25 @@
-# Thermo-Nuclear Redundancy Review — Synthesis (Round 2)
+# Thermo-Nuclear Redundancy Review â€” Synthesis (Round 2)
 
 **Date:** 2026-07-04  
 **Branch:** `feature/cursor/thermo-round2-redundancy`  
 **Baseline:** `dev`  
 **Worktree:** `.worktrees/dev-agent-cursor-thermo-round2-redundancy`  
-**Lifecycle:** ADR-0012 bounded-parallel (wave 0–2)
+**Lifecycle:** ADR-0012 bounded-parallel (wave 0â€“2)
 
 ## Executive summary
 
-- **Five redundant surfaces** compete for GenUI ownership: root `src/`/`agent/`, GenerativeUI `web-dashboard`, next-forge `generative-ui` island, and (deprecated) CopilotKit root proxy — only **next-forge + agent-server** should remain after Phase 4.
+- **Five redundant surfaces** compete for GenUI ownership: root `src/`/`agent/`, GenerativeUI `web-dashboard`, next-forge `generative-ui` island, and (deprecated) CopilotKit root proxy â€” only **next-forge + agent-server** should remain after Phase 4.
 - **Migration is 75% done:** Phase 2 schemas and Phase 3 client island pass; Phase 4 cutover blocked by missing feature-flag gating and no web-dashboard deprecation path.
 - **Two schema packages** (`@generative-ui/shared-schemas` zod v3 vs `@repo/schemas` zod v4) create drift risk despite golden JSON parity tests on the forge side.
 - **Orchestration duplication** in inbox pipelines (orchestrator vs workflow fan-out) and dual intake systems (Supabase inbox vs Copilot telemetry) need CLI rename + single entrypoint.
-- **Skill registry sprawl:** 4 local key collisions, 522 vendor skills — establish precedence and CI hash dedup before adding more.
+- **Skill registry sprawl:** 4 local key collisions, 522 vendor skills â€” establish precedence and CI hash dedup before adding more.
 
 ## Redundancy matrix
 
 | Zone                                                | Canonical owner                           | Severity | Archive readiness             |
 | --------------------------------------------------- | ----------------------------------------- | -------- | ----------------------------- |
-| Root `src/` (CopilotKit, bootstrap, panel registry) | `next-forge/apps/app`                     | Critical | Not ready — Phase 4           |
-| Root `agent/` (ADK, toolsets, genai-toolbox vendor) | `GenerativeUI_monorepo/apps/agent-server` | Critical | Not ready — Phase 4           |
+| Root `src/` (CopilotKit, bootstrap, panel registry) | `next-forge/apps/app`                     | Critical | Not ready â€” Phase 4           |
+| Root `agent/` (ADK, toolsets, genai-toolbox vendor) | `GenerativeUI_monorepo/apps/agent-server` | Critical | Not ready â€” Phase 4           |
 | `web-dashboard` GenerativeCanvas + useAgentState    | `next-forge/.../generative-ui/`           | High     | Blocked on schema unification |
 | `packages/shared-schemas`                           | `@repo/schemas`                           | High     | Retire after web-dashboard    |
 | CopilotKit in root `layout.tsx`                     | Remove with root archive                  | Medium   | Phase 4                       |
@@ -52,12 +52,12 @@
 | Critical | Correctness | Stale UI after reconnect (streaming/optimistic not cleared) | `use-agent-state.ts`, `websocket-message-handler.ts` | Reset on open + idle state_update      |
 | High     | Security    | Fixed `demo_user` identity                                  | `agent/main.py`                                      | Per-session user_id                    |
 | High     | Correctness | Cancel leaves optimistic messages pending                   | `use-agent-state.ts`                                 | Clear on cancel/idle                   |
-| High     | Correctness | Python `payload: Any` — no runtime validation               | `schemas.py`                                         | Discriminated union payloads           |
+| High     | Correctness | Python `payload: Any` â€” no runtime validation               | `schemas.py`                                         | Discriminated union payloads           |
 | High     | Performance | N+1 Supabase in scrape-promote                              | `scripts/scrape-promote.mjs`                         | Batch insert/lookup                    |
 | High     | Performance | Per-token render churn                                      | `websocket-message-handler.ts`                       | Throttle via rAF                       |
 | High     | Readability | Monolithic useAgentState in legacy                          | `web-dashboard/.../useAgentState.ts`                 | Extract shared handler package         |
 | Medium   | Performance | Greptime fetchAll + client cosine                           | `greptimedb_client.ts`                               | Server-side ANN                        |
-| Medium   | Scripts     | intake-orchestrator mode spaghetti                          | `intake-orchestrator.mjs`                            | Declarative MODE→stages table          |
+| Medium   | Scripts     | intake-orchestrator mode spaghetti                          | `intake-orchestrator.mjs`                            | Declarative MODEâ†’stages table          |
 | Medium   | Skills      | 4 duplicate local skill keys                                | `.agents` + `.cursor`                                | CI hash gate                           |
 
 ## Architecture deepening candidates
@@ -66,14 +66,14 @@ HTML report: `%TEMP%\architecture-review-2026-07-04.html` (open with `start` on 
 
 | #   | Candidate                          | Strength            | Code-judo move                                        |
 | --- | ---------------------------------- | ------------------- | ----------------------------------------------------- |
-| 1   | Legacy root stub deletion seam     | **Strong**          | Archive `src/`+`agent/` → delete 2 entire stacks      |
+| 1   | Legacy root stub deletion seam     | **Strong**          | Archive `src/`+`agent/` â†’ delete 2 entire stacks      |
 | 2   | Single `@repo/genui-client` module | **Strong**          | Collapse 3 GenerativeCanvas copies into one package   |
 | 3   | Schema single source + codegen     | **Strong**          | Retire shared-schemas; generate Pydantic from Zod     |
 | 4   | Skill catalog consolidation        | **Worth exploring** | `.agents` canonical + vendor hash CI                  |
-| 5   | Intake orchestration interface     | **Worth exploring** | One `yarn intake:*` → orchestrator; workflows call it |
+| 5   | Intake orchestration interface     | **Worth exploring** | One `yarn intake:*` â†’ orchestrator; workflows call it |
 | 6   | UniversalWorkbench HTTP boundary   | **Speculative**     | Document-only; no cross-import                        |
 
-**Top recommendation:** Candidate #2 + #3 together — extract `@repo/genui-client` (hooks + canvas) and bind it to `@repo/schemas` only; then Phase 4 becomes flipping a feature flag and deleting web-dashboard + root stub.
+**Top recommendation:** Candidate #2 + #3 together â€” extract `@repo/genui-client` (hooks + canvas) and bind it to `@repo/schemas` only; then Phase 4 becomes flipping a feature flag and deleting web-dashboard + root stub.
 
 ## Skills recommendations
 
@@ -111,7 +111,7 @@ Local catalog cloned: `.tools/awesome-agent-skills/`
 | Harness lint   | `yarn lint:harness`                                    | **PASS**                              |
 | Molecule index | `yarn molecule-index:verify`                           | **PASS**                              |
 | WS golden      | `cd next-forge && bun test packages/schemas/*.test.ts` | **PASS** (11 tests)                   |
-| Forge CI       | `yarn verify:forge`                                    | Advisory — lint debt documented       |
+| Forge CI       | `yarn verify:forge`                                    | Advisory â€” lint debt documented       |
 | Generative CI  | `yarn verify:generative`                               | Not required (no legacy code changes) |
 | Telemetry      | `yarn telemetry:audit --lens all`                      | Advisory                              |
 
@@ -124,12 +124,12 @@ Local catalog cloned: `.tools/awesome-agent-skills/`
 5. [ ] Add WS auth to agent-server before production cutover
 6. [ ] Refactor inbox workflows to call `intake-orchestrator.mjs` only
 7. [ ] CI skill-key dedup gate (`.agents` vs `.cursor`)
-8. [ ] Execute Phase 4 archive: `src/` + `agent/` → `archive/legacy-genui-root/`
-9. [ ] Archive ECL change: `node scripts/harness-change.mjs archive thermo-round2-redundancy`
+8. [ ] Execute Phase 4 archive: `src/` + `agent/` â†’ `archive/legacy-genui-root/`
+9. [x] Archive ECL change: `node scripts/harness-change.mjs archive thermo-round2-redundancy`
 
 ## Related
 
 - Wave manifest: [`manifest.json`](manifest.json)
 - Prior run: [`thermo-nuclear-forge-2026-06-28.md`](thermo-nuclear-forge-2026-06-28.md)
 - Runbook: [`../thermo-nuclear-dual-monorepo-review.md`](../thermo-nuclear-dual-monorepo-review.md)
-- Domain glossary: [`CONTEXT.md`](../../CONTEXT.md)
+- Domain glossary: [`CONTEXT.md`](../../../CONTEXT.md)
