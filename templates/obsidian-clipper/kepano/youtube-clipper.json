@@ -3,9 +3,14 @@
 	"name": "YouTube",
 	"behavior": "create",
 	"noteNameFormat": "{{schema:author}} – {{schema:name}}",
-	"path": "GenerativeUI_monorepo/docs/inbox",
+	"path": "inbox",
 	"noteContentFormat": "![{{schema:name}}]({{url}})",
 	"properties": [
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
 		{
 			"name": "title",
 			"value": "{{schema:name}}",

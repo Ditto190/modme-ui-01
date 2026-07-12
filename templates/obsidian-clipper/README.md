@@ -1,8 +1,8 @@
 # Obsidian Web Clipper → ModMe Inbox
 
-Importable JSON templates for the [Obsidian Web Clipper](https://obsidian.md/clipper) Chrome extension. Clips land in `GenerativeUI_monorepo/docs/inbox/` with frontmatter that matches [`docs/inbox-pipeline/contracts/inbox-contract.v1.json`](../../docs/inbox-pipeline/contracts/inbox-contract.v1.json).
+Importable JSON templates for the [Obsidian Web Clipper](https://obsidian.md/clipper) Chrome extension. Prefer vault **ModMe-Vault** (sidecar): template `"path": "inbox"` writes through the junction to `GenerativeUI_monorepo/docs/inbox/` with frontmatter matching [`docs/inbox-pipeline/contracts/inbox-contract.v1.json`](../../docs/inbox-pipeline/contracts/inbox-contract.v1.json). Every ModMe template also sets `uid: YYYYMMDDHHmm` (Zettel UID) without changing the inbox filename contract.
 
-Official docs: [Templates](https://help.obsidian.md/web-clipper/templates) · [Variables](https://help.obsidian.md/web-clipper/variables) · [Filters](https://help.obsidian.md/web-clipper/filters) · [Logic](https://help.obsidian.md/web-clipper/logic)
+Official docs: [Templates](https://help.obsidian.md/web-clipper/templates) · [Variables](https://help.obsidian.md/web-clipper/variables) · [Filters](https://help.obsidian.md/web-clipper/filters) · [Logic](https://help.obsidian.md/web-clipper/logic) · ModMe pack: [`docs/obsidian/`](../../docs/obsidian/)
 
 ## Why nothing appeared in Inbox
 
@@ -20,15 +20,15 @@ To commit a clip for the ingest pipeline: `git add -f GenerativeUI_monorepo/docs
 ## One-time setup
 
 ```powershell
-.\scripts\setup-obsidian-vault.ps1
-# Optional: .\scripts\setup-obsidian-vault.ps1 -OpenVault
+yarn obsidian:sidecar:setup -OpenVault
+# Deprecated monorepo-root vault: .\scripts\setup-obsidian-vault.ps1
 ```
 
 1. Install [Obsidian](https://obsidian.md/download) and [Web Clipper](https://obsidian.md/clipper).
-2. Obsidian → **Open folder as vault** → `Monorepo_ModMe` (repo root, not a subfolder).
-3. Clipper extension → Settings → select vault **Monorepo_ModMe**.
-4. Import templates (below).
-5. Clip a test page → confirm a new `.md` under `GenerativeUI_monorepo/docs/inbox/`.
+2. Obsidian → **Open folder as vault** → `C:\Users\dylan\ModMe-Vault` (sidecar).
+3. Clipper extension → Settings → select vault **ModMe-Vault** · default folder `inbox`.
+4. Import templates from vault `clipper/` (below). Re-import after template updates.
+5. Clip a test page → confirm a new `.md` under `ModMe-Vault/inbox/` (same files as `GenerativeUI_monorepo/docs/inbox/`).
 
 ## Import templates
 
@@ -40,11 +40,12 @@ To commit a clip for the ingest pipeline: `git add -f GenerativeUI_monorepo/docs
 | File                                                                   | When it auto-selects                                       | `type`     |
 | ---------------------------------------------------------------------- | ---------------------------------------------------------- | ---------- |
 | [`modme-inbox-github-issue-pr.json`](modme-inbox-github-issue-pr.json) | `github.com/.../(issues\|pull)/N`                          | `research` |
+| [`modme-inbox-code-snippet.json`](modme-inbox-code-snippet.json)       | GitHub `blob`/`raw`/gist, Cubic PR file views              | `snippet`  |
+| [`modme-inbox-obsidian-help.json`](modme-inbox-obsidian-help.json)     | `obsidian.md/help`, `help.obsidian.md`, `publish.obsidian.md` (TechArticle HTML) | `research` |
 | [`modme-inbox-github-repo.json`](modme-inbox-github-repo.json)         | GitHub repo home URL                                       | `research` |
 | [`modme-inbox-docs-site.json`](modme-inbox-docs-site.json)             | `docs.*`, Expo, TechArticle, etc.                          | `research` |
 | [`modme-inbox-article-landing.json`](modme-inbox-article-landing.json) | `schema:@Article` / NewsArticle / BlogPosting              | `research` |
 | [`chatgpt-clipper.json`](chatgpt-clipper.json)                         | ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot, Cursor | `research` |
-| [`modme-inbox-code-snippet.json`](modme-inbox-code-snippet.json)       | GitHub `blob`/`raw`/gist, Cubic PR file views              | `snippet`  |
 | [`modme-inbox-defuddle-probe.json`](modme-inbox-defuddle-probe.json)   | Manual — Defuddle `{{content}}` vs `fullHtml` diagnostic   | `research` |
 | [`modme-inbox-interpreter-ollama.json`](modme-inbox-interpreter-ollama.json) | Manual — Ollama llama3.2 summary/tags/severity          | `research` |
 | [`modme-inbox-generic-link.json`](modme-inbox-generic-link.json)       | Manual / fallback (no triggers)                            | `link`     |
@@ -53,7 +54,7 @@ Topic templates (optional): `agent-gateway-research.json`, `expo-cng-research.js
 
 ### Kepano pack ([kepano/clipper-templates](https://github.com/kepano/clipper-templates))
 
-All upstream templates live in [`kepano/`](kepano/) with `path` rewritten to `GenerativeUI_monorepo/docs/inbox`:
+All upstream templates live in [`kepano/`](kepano/) with `path` set to vault-relative `inbox` (ModMe-Vault):
 
 `arxiv`, `chatgpt` (upstream), `goodreads`, `google-maps`, `imdb`, `imdb-reference`, `letterboxd`, `product`, `recipes`, `redfin`, `wikipedia`, `youtube`.
 
@@ -65,14 +66,17 @@ Clipper uses the **first matching** template. Drag to this order:
 
 1. GitHub Issue / PR
 2. **Code Snippet** (blob / raw / gist / Cubic — before bare repo home)
-3. GitHub Repo
-4. Docs Site
-5. Article / Landing
-6. AI Chat (multi-agent)
-7. Topic templates (if imported)
-8. Kepano site-specific (Wikipedia, YouTube, …)
-9. **Defuddle Probe** / **Interpreter Ollama Probe** (manual; above Generic Link)
-10. **Generic Link** last
+3. **Obsidian Help** (HTML help / Advanced URI Publish — never SoftwareSourceCode)
+4. GitHub Repo
+5. Docs Site
+6. Article / Landing
+7. AI Chat (multi-agent)
+8. Topic templates (if imported)
+9. Kepano site-specific (Wikipedia, YouTube, …)
+10. **Defuddle Probe** / **Interpreter Ollama Probe** (manual; above Generic Link)
+11. **Generic Link** last
+
+See also [`docs/obsidian/clipper-source-matching.md`](../../docs/obsidian/clipper-source-matching.md).
 
 ### Defuddle vs Copy-as-MD vs Interpreter
 
@@ -144,7 +148,8 @@ git add -f GenerativeUI_monorepo/docs/inbox/<your-clip>.md
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | GitHub Repo     | `meta:octolytics-dimension-user_login`, `#repo-stars-counter-star`, `og:*`, `<article>` README                                    |
 | GitHub Issue/PR | `.js-comment-body`, `.markdown-body`, `og:title` / description                                                                    |
-| Docs            | `schema:@TechArticle` (Expo), `meta:description`, `og:*`                                                                          |
+| Obsidian Help   | URL triggers on `obsidian.md/help`, `help.obsidian.md`, `publish.obsidian.md`; body Defuddle `{{content}}`; `schema_type` TechArticle (2026-07-12) |
+| Docs            | `schema:@TechArticle` (Expo), `meta:description`, `og:*` (Obsidian Help hosts deferred to Obsidian Help template)                 |
 | Article         | `schema:@Article` (Wikipedia), `og:*`, `{{content}}`                                                                              |
 | AI Chat         | ChatGPT: `article[data-testid*="conversation-turn"]`; others: `{{content}}`                                                       |
 | Code Snippet    | GitHub blob (verified 2026-07-11): `#read-only-cursor-text-area`, `textarea[aria-label="file content"]`, `a[data-testid="raw-button"]`; not Defuddle `content`; Cubic: selection + file-header testids |
@@ -152,9 +157,10 @@ git add -f GenerativeUI_monorepo/docs/inbox/<your-clip>.md
 
 ## Vault + IDE
 
-- Vault home: [`ModMe Vault.md`](../../ModMe%20Vault.md)
-- Setup script: [`scripts/setup-obsidian-vault.ps1`](../../scripts/setup-obsidian-vault.ps1)
-- In-app note template: [`templates/obsidian-note-templates/`](../obsidian-note-templates/)
+- Prefer sidecar: [`OBSIDIAN_SIDECAR_QUICK_START.md`](../../OBSIDIAN_SIDECAR_QUICK_START.md) · [`docs/obsidian/`](../../docs/obsidian/)
+- Vault home (legacy monorepo): [`ModMe Vault.md`](../../ModMe%20Vault.md)
+- Sidecar setup: [`scripts/setup-modme-obsidian-sidecar.ps1`](../../scripts/setup-modme-obsidian-sidecar.ps1)
+- In-app note templates: [`templates/obsidian-note-templates/`](../obsidian-note-templates/) (`tpl-unique-note`, `tpl-code-sandbox`)
 - Inspired by [kepano/kepano-obsidian](https://github.com/kepano/kepano-obsidian) core plugins (daily notes, templates, bases, properties) without importing that vault’s personal notes into the monorepo.
 
 ## References

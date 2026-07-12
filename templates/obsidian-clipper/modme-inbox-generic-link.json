@@ -4,13 +4,18 @@
 	"behavior": "create",
 	"description": "Fallback catch-all for arbitrary URLs and landing pages. Place last in Clipper template order. type=link.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_link_researcher_{{title|safe_name}}",
-	"path": "GenerativeUI_monorepo/docs/inbox",
+	"path": "inbox",
 	"triggers": [],
 	"properties": [
 		{
 			"name": "timestamp",
 			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
 			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
 		},
 		{
 			"name": "agent",

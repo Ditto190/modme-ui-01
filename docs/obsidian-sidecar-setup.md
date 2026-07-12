@@ -5,6 +5,7 @@ Lean Obsidian vault for knowledge management, separate from the massive monorepo
 ## Problem Solved
 
 Obsidian with vault root at `Monorepo_ModMe/` becomes slow (10–30s startup, sluggish search) because it indexes:
+
 - `node_modules/` (~500MB+)
 - `.yarn/` cache
 - `.git/` history
@@ -24,6 +25,7 @@ C:\Users\dylan\ModMe-Vault\          ← Open THIS in Obsidian (fast, ~1-2s)
   inbox/              → junction → Monorepo_ModMe\GenerativeUI_monorepo\docs\inbox
   docs/               → junction → Monorepo_ModMe\docs
   clipper/            → junction → Monorepo_ModMe\templates\obsidian-clipper
+  Templates/          → junction → Monorepo_ModMe\templates\obsidian-note-templates
   ModMe Vault (Sidecar).md
 ```
 
@@ -37,9 +39,10 @@ C:\Users\dylan\ModMe-Vault\          ← Open THIS in Obsidian (fast, ~1-2s)
 ```
 
 This script:
+
 1. Creates `C:\Users\dylan\ModMe-Vault/` directory
 2. Initializes lean `.obsidian/` config (no heavy community plugins by default)
-3. Creates directory junctions for `inbox/`, `docs/`, `clipper/`
+3. Creates directory junctions for `inbox/`, `docs/`, `clipper/`, `Templates/`
 4. Optionally opens the vault in Obsidian
 
 ### Manual
@@ -60,6 +63,7 @@ $monorepoRoot = "C:\Users\dylan\Monorepo_ModMe"
 cmd /c mklink /J "inbox" "$monorepoRoot\GenerativeUI_monorepo\docs\inbox"
 cmd /c mklink /J "docs" "$monorepoRoot\docs"
 cmd /c mklink /J "clipper" "$monorepoRoot\templates\obsidian-clipper"
+cmd /c mklink /J "Templates" "$monorepoRoot\templates\obsidian-note-templates"
 
 # 4. Open in Obsidian
 obsidian://open?path=C:\Users\dylan\ModMe-Vault
@@ -87,25 +91,72 @@ Obsidian clip → inbox/notes.md (vault)
 3. Clipper Settings:
    - **Vault name**: ModMe-Vault (if not auto-detected)
    - **Default folder**: `inbox` (vault-relative, already set in app.json)
-4. Import JSON templates from `vault/clipper/` subfolder
+4. Import JSON templates from `vault/clipper/` subfolder (include **Obsidian Help**; trigger order in clipper README)
 5. Clip a page → note lands in `inbox/` (which is the real monorepo folder)
 6. Run `yarn intake:orchestrate` from monorepo root to ingest and process the note
+
+Pack docs: [`docs/obsidian/`](obsidian/README.md).
 
 ## Using Obsidian
 
 ### Core Plugins to Enable
 
-- Templates
-- Properties
-- Daily notes
+- **Templates** — folder: `Templates` (junction → `templates/obsidian-note-templates/`)
+- **Unique note creator** — template: `Templates/tpl-unique-note` (see [`docs/obsidian/unique-notes.md`](obsidian/unique-notes.md))
+- **Properties** — frontmatter for Bases filters
+- **Daily notes** — session capture
+- **Bases** — open `docs/adam/ADAM Command Center.base`
+- **Canvas** — open `docs/adam/ADAM Command Center.canvas`
+- **Format converter** — optional Zettelkasten link fixer after imports
 - Command palette (on by default)
 - File explorer
 
+### Community plugins
+
+See [[Vault Plugin Policy]]. Recommended additions: **Advanced URI**, **Code Emitter** (local py/ts/js only), **Smart Connections**, **Copilot for Obsidian**.
+
+### Obsidian tooling pack
+
+| Doc | Topic |
+| --- | ----- |
+| [`docs/obsidian/README.md`](obsidian/README.md) | Pack index |
+| [`docs/obsidian/unique-notes.md`](obsidian/unique-notes.md) | UID + Unique note creator |
+| [`docs/obsidian/advanced-uri-cookbook.md`](obsidian/advanced-uri-cookbook.md) | ModMe-Vault URIs |
+| [`docs/obsidian/code-emitter.md`](obsidian/code-emitter.md) | Local sandbox |
+| [`docs/obsidian/clipper-source-matching.md`](obsidian/clipper-source-matching.md) | HTML vs code Clipper |
+
+### KM stack (Project A.D.A.M)
+
+| Entry            | Path in vault                                |
+| ---------------- | -------------------------------------------- |
+| Home MOC         | `docs/adam/ADAM Index.md`                    |
+| Semantic linking | `docs/adam/ADAM Semantic Map.md`             |
+| Dashboards       | `docs/adam/ADAM Command Center.md` + `.base` |
+| Visual map       | `docs/adam/ADAM Command Center.canvas`       |
+| Plugin policy    | `docs/adam/Vault Plugin Policy.md`           |
+| Query tools      | `docs/adam/Query Tool Guide.md`              |
+
+Recommended community: **Smart Connections**, **Copilot for Obsidian**. Defer Dataview until Bases is insufficient. See [`docs/KNOWLEDGE_MANAGEMENT.md`](KNOWLEDGE_MANAGEMENT.md).
+
+### Project A.D.A.M (Obsidian Copilot)
+
+1. Open vault note `docs/adam/ADAM Index.md`
+2. Paste the body of `docs/adam/copilot-project-system-prompt.md` into Copilot → Projects → **Project A.D.A.M**
+3. Placeholders: `{[[Note Title]]}`, `{activeNote}`, `{#tag1, #tag2}`, `{docs/adam}` — do **not** include whole `{inbox}`
+4. Insert note templates from `Templates/tpl-*.md` (ADR, bead, inbox, handoff, agent-brief)
+
+See also: [`docs/adam/Template Catalog.md`](adam/Template%20Catalog.md)
+
 ### Optional Community Plugins
 
-- **Obsidian Git** — for tracking vault `.obsidian/` plugin state (not monorepo files; use `git` CLI for that)
-- **Periodic Notes** — for daily/weekly note templates
-- **Dataview** — for querying notes by frontmatter
+See [[Vault Plugin Policy]] in `docs/adam/` for the allowlist. Recommended:
+
+- **Smart Connections** — semantic related-note suggestions
+- **Copilot for Obsidian** — Project A.D.A.M chat
+- **Periodic Notes** — weekly review (optional)
+- **Obsidian Git** — vault `.obsidian/` state only (not monorepo files)
+
+Defer **Dataview** until Bases cannot express the query. See [[Query Tool Guide]].
 
 ### First Time
 
@@ -113,12 +164,12 @@ Obsidian clip → inbox/notes.md (vault)
 
 ## Performance
 
-| Metric | Main Monorepo | Sidecar Vault |
-| --- | --- | --- |
-| Startup | 10–30s | 1–2s |
-| Search | 2–5s | <100ms |
-| Graph view | Sluggish | Instant |
-| File count | 5000+ | 50–200 |
+| Metric     | Main Monorepo | Sidecar Vault |
+| ---------- | ------------- | ------------- |
+| Startup    | 10–30s        | 1–2s          |
+| Search     | 2–5s          | <100ms        |
+| Graph view | Sluggish      | Instant       |
+| File count | 5000+         | 50–200        |
 
 ## Limitations
 

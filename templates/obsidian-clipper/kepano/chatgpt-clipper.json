@@ -5,6 +5,11 @@
 	"noteContentFormat": "{{selectorHtml:article[data-testid*=\"conversation-turn\"]|replace:\"/<svg.*?svg>/g\":\"### ChatGPT\\:\"|join:\"\\n\\n\"|markdown|replace:(\"\\\\###\":\"###\", \"##### You said\": \"### You:\")}}\n",
 	"properties": [
 		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
+		{
 			"name": "title",
 			"value": "{{title}}",
 			"type": "text"
@@ -45,5 +50,5 @@
 		"https://chatgpt.com/c"
 	],
 	"noteNameFormat": "{{title}}",
-	"path": "GenerativeUI_monorepo/docs/inbox"
+	"path": "inbox"
 }

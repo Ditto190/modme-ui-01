@@ -3,9 +3,14 @@
 	"name": "Redfin",
 	"behavior": "create",
 	"noteNameFormat": "{{meta:name:twitter:text:street_address}}, {{meta:name:twitter:text:city}}",
-	"path": "GenerativeUI_monorepo/docs/inbox",
+	"path": "inbox",
 	"noteContentFormat": "",
 	"properties": [
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
 		{
 			"name": "categories",
 			"value": "[[Places]], [[Houses]]",

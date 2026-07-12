@@ -3,9 +3,14 @@
 	"name": "Letterboxd",
 	"behavior": "create",
 	"noteNameFormat": "{{schema:@Movie:name}}",
-	"path": "GenerativeUI_monorepo/docs/inbox",
+	"path": "inbox",
 	"noteContentFormat": "",
 	"properties": [
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
 		{
 			"name": "categories",
 			"value": "[[Movies]]",

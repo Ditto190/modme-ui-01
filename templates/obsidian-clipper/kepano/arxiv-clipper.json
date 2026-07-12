@@ -3,9 +3,14 @@
 	"name": "arXiv",
 	"behavior": "create",
 	"noteNameFormat": "{{title}}",
-	"path": "GenerativeUI_monorepo/docs/inbox",
+	"path": "inbox",
 	"noteContentFormat": "{{content}}",
 	"properties": [
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
 		{
 			"name": "title",
 			"value": "{{title}}",

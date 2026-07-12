@@ -3,9 +3,14 @@
 	"name": "Google Maps",
 	"behavior": "create",
 	"noteNameFormat": "{{selector:div[role=\"main\"]:aria-label}}",
-	"path": "GenerativeUI_monorepo/docs/inbox",
+	"path": "inbox",
 	"noteContentFormat": "",
 	"properties": [
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
 		{
 			"name": "categories",
 			"value": "[[Places]]",

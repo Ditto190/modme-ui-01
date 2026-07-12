@@ -3,9 +3,14 @@
 	"name": "Product",
 	"behavior": "create",
 	"noteNameFormat": "{{title}}",
-	"path": "GenerativeUI_monorepo/docs/inbox",
+	"path": "inbox",
 	"noteContentFormat": "{{description}}",
 	"properties": [
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
 		{
 			"name": "categories",
 			"value": "[[Products]]",

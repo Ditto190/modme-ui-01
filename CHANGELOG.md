@@ -62,6 +62,10 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ## [Unreleased]
 
+### Added
+
+- (docs/obsidian) Unique note + Advanced URI + Code Emitter pack — `docs/obsidian/`, `tpl-unique-note.md`, `tpl-code-sandbox.md`, Clipper `modme-inbox-obsidian-help.json`, `uid` on Clipper templates, vault path `inbox` for ModMe-Vault
+
 ### Changed
 
 - (repo) Merge `github/main` into promotion branch `feature/cursor/promote-dev-to-main` to resolve dual-branch drift before promoting `dev` to `main`

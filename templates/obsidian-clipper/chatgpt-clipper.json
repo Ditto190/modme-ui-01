@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "Clip shared/chat threads from ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot, and Cursor into inbox notes. Based on kepano/chatgpt-clipper; agent field inferred from domain.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
-	"path": "GenerativeUI_monorepo/docs/inbox",
+	"path": "inbox",
 	"triggers": [
 		"https://chatgpt.com/share",
 		"https://chatgpt.com/c",
@@ -30,6 +30,11 @@
 			"name": "timestamp",
 			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
 			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
 		},
 		{
 			"name": "agent",

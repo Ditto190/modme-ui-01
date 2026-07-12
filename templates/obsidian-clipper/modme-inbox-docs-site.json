@@ -4,21 +4,25 @@
 	"behavior": "create",
 	"description": "Clip documentation pages (Expo, Mintlify, ReadTheDocs, GitBook, etc.) into inbox research notes.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
-	"path": "GenerativeUI_monorepo/docs/inbox",
+	"path": "inbox",
 	"triggers": [
 		"schema:@TechArticle",
 		"/^https:\\/\\/docs\\./",
 		"/^https:\\/\\/[^\\/]+\\.readthedocs\\.io\\//",
 		"/^https:\\/\\/[^\\/]+\\.gitbook\\.io\\//",
 		"/mintlify/",
-		"https://docs.expo.dev/",
-		"https://help.obsidian.md/"
+		"https://docs.expo.dev/"
 	],
 	"properties": [
 		{
 			"name": "timestamp",
 			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
 			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
 		},
 		{
 			"name": "agent",

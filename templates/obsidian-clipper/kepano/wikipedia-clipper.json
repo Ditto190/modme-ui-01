@@ -5,6 +5,11 @@
 	"noteContentFormat": "{{selectorHtml:#mw-content-text|remove_html:(\".navbox,.printfooter,.side-box\")|markdown}}",
 	"properties": [
 		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
+		{
 			"name": "categories",
 			"value": "[[Clippings]]",
 			"type": "multitext"
@@ -44,5 +49,5 @@
 		"/^https:\\/\\/[a-z-.]+\\.wikipedia\\.org\\/wiki\\/.*$/"
 	],
 	"noteNameFormat": "{{title}}",
-	"path": "GenerativeUI_monorepo/docs/inbox"
+	"path": "inbox"
 }

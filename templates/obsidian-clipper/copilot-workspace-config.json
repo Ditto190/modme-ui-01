@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "Clip GitHub Copilot App repository configuration pages into inbox research notes.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_architect_{{title|safe_name}}",
-	"path": "GenerativeUI_monorepo/docs/inbox",
+	"path": "inbox",
 	"triggers": [
 		"/^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/blob\\/[^/]+\\/\\.github\\/github-app\\.yml/"
 	],
@@ -13,6 +13,11 @@
 			"name": "timestamp",
 			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
 			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
 		},
 		{
 			"name": "agent",

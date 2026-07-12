@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "AST-ready SoftwareSourceCode envelope for GitHub blobs/raw/gists and Cubic PR file views. Captures source from GitHub textarea (#read-only-cursor-text-area), not Defuddle {{content}}. True AST indexing stays in code-chunk.v1 / code-index.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_snippet_researcher_{{title|safe_name}}",
-	"path": "GenerativeUI_monorepo/docs/inbox",
+	"path": "inbox",
 	"triggers": [
 		"/^https:\\/\\/github\\.com\\/.+\\/blob\\//",
 		"/^https:\\/\\/raw\\.githubusercontent\\.com\\//",
@@ -17,6 +17,11 @@
 			"name": "timestamp",
 			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
 			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
 		},
 		{
 			"name": "agent",

@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "Clip architecture decision records and orchestration docs into inbox.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_architecture_architect_{{title|safe_name}}",
-	"path": "GenerativeUI_monorepo/docs/inbox",
+	"path": "inbox",
 	"triggers": [
 		"/^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/blob\\/[^/]+\\/docs\\/architecture\\//",
 		"/copilot-workspace-orchestration/"
@@ -14,6 +14,11 @@
 			"name": "timestamp",
 			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
 			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
 		},
 		{
 			"name": "agent",
