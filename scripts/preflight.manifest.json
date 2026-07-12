@@ -13,7 +13,8 @@
             "vitest.config.mjs",
             "--project",
             "orchestration",
-            "scripts/__tests__/worktree-link-deps.test.mjs"
+            "scripts/__tests__/agent-status.test.mjs",
+            "scripts/__tests__/copilot-workspace-config.test.mjs"
           ]
         },
         {
@@ -93,7 +94,7 @@
       ]
     },
     "builders": {
-      "description": "SWC + Vite builder orchestration smoke",
+      "description": "SWC + Rolldown + Vite builder orchestration smoke",
       "steps": [
         {
           "id": "builders-manifest-test",
@@ -105,7 +106,8 @@
             "vitest.config.mjs",
             "--project",
             "orchestration",
-            "scripts/__tests__/builders-orchestrator.test.mjs"
+            "scripts/__tests__/builders-orchestrator.test.mjs",
+            "scripts/__tests__/rolldown-builder.test.mjs"
           ]
         },
         {

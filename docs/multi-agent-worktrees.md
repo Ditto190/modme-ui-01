@@ -206,6 +206,27 @@ Main checkout debugging uses [`.vscode/launch.json`](../.vscode/launch.json) bas
 
 ---
 
+## Worktree bootstrap mirror
+
+| File                                      | Role                                                                       |
+| ----------------------------------------- | -------------------------------------------------------------------------- |
+| [`.worktreeinclude`](../.worktreeinclude) | Gitignored runtime files copied from main (`.env`, lockfiles, ports)       |
+| [`.worktreeexclude`](../.worktreeexclude) | Git-tracked config that stays on `dev` (`.editorconfig`, rules, AGENTS.md) |
+
+`worktree-copy-env.ps1` reads `.worktreeinclude`, skips `.worktreeexclude`, and supports `-ChangedOnly` for idempotent session starts.
+
+## Ephemeral agent sessions
+
+For short-lived agent tasks, remove the worktree after a successful push:
+
+```powershell
+.\scripts\agent-session-finish.ps1 -VerifyStack -Yes -CommitMessage "feat(repo): ..." -Push -CreatePr -RemoveWorktree -DeleteBranch
+```
+
+`-RemoveWorktree` requires `-Push` in finish args. Cleanup calls `remove-agent-worktree.ps1`.
+
+---
+
 ## Management scripts
 
 | Script                                                                    | Purpose                                                                    |
@@ -215,13 +236,13 @@ Main checkout debugging uses [`.vscode/launch.json`](../.vscode/launch.json) bas
 | [`list-worktrees.ps1`](../scripts/list-worktrees.ps1)                     | List worktrees with assigned ports                                         |
 | [`remove-agent-worktree.ps1`](../scripts/remove-agent-worktree.ps1)       | Safe removal; optional `-DeleteBranch`                                     |
 | [`worktree-allocate-ports.ps1`](../scripts/worktree-allocate-ports.ps1)   | Regenerate `.worktree-ports.env`                                           |
-| [`worktree-copy-env.ps1`](../scripts/worktree-copy-env.ps1)               | Copy `.env` by name from main checkout                                     |
+| [`worktree-copy-env.ps1`](../scripts/worktree-copy-env.ps1)               | Copy bootstrap files from main (`.worktreeinclude` / `.worktreeexclude`)   |
 | [`ensure-worktree.ps1`](../scripts/ensure-worktree.ps1)                   | Fail (or warn with `-WarnOnly`) if cwd is main checkout                    |
 | [`migrate-main-to-worktree.ps1`](../scripts/migrate-main-to-worktree.ps1) | Stash main-checkout changes → new worktree → stash pop                     |
 | [`worktree-doctor.ps1`](../scripts/worktree-doctor.ps1)                   | Pre-flight: checkout, yarn.lock, ports, gh, Supabase env (`-Fix`, `-Json`) |
 | [`load-worktree-ports.ps1`](../scripts/load-worktree-ports.ps1)           | Dot-source `.worktree-ports.env` into current pwsh session                 |
 | [`agent-workspace-tmux.sh`](../scripts/agent-workspace-tmux.sh)           | WSL/Linux tmux dashboard: `status`, `layout`, `attach`                     |
-| [`worktree-relink-deps.ps1`](../scripts/worktree-relink-deps.ps1)           | Remove local deps + junction-link agent worktrees to `.worktrees/dev`      |
+| [`worktree-relink-deps.ps1`](../scripts/worktree-relink-deps.ps1)         | Remove local deps + junction-link agent worktrees to `.worktrees/dev`      |
 | [`worktree-session-end.ps1`](../scripts/worktree-session-end.ps1)         | Session end wrapper (verify, commit, PR, optional worktree removal)        |
 | [`vibe-session-finish.ps1`](../scripts/vibe-session-finish.ps1)           | Session end: sync, group, pre-commit, commit, push, PR to `dev`            |
 
@@ -258,11 +279,11 @@ Lockfiles copied for junction matching: `yarn.lock`, `.yarnrc.yml`, `next-forge/
 
 Agent worktrees **do not** run full installs by default. One golden checkout holds deps:
 
-| Checkout | Bootstrap | Role |
-| -------- | --------- | ---- |
+| Checkout         | Bootstrap                         | Role                                |
+| ---------------- | --------------------------------- | ----------------------------------- |
 | `.worktrees/dev` | `yarn workspace:bootstrap` (full) | Dependency source (junction target) |
-| `dev-agent-*` | `yarn workspace:bootstrap:shared` | Junction-link heavy dirs from dev |
-| Any worktree | `yarn workspace:bootstrap:lite` | Ports + env only |
+| `dev-agent-*`    | `yarn workspace:bootstrap:shared` | Junction-link heavy dirs from dev   |
+| Any worktree     | `yarn workspace:bootstrap:lite`   | Ports + env only                    |
 
 ```powershell
 # One-time golden image (from .worktrees/dev)

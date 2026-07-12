@@ -4,14 +4,15 @@ Canonical guide for **session envelopes**, **mprocs TUI**, **task registry**, **
 
 ## Overview
 
-| Layer | Scripts | Purpose |
-|-------|---------|---------|
-| **TUI** | `yarn agent:tui`, `yarn agent:mprocs:generate` | Multi-process dev stack via [mprocs](https://github.com/pvolok/mprocs) |
-| **Status** | `yarn agent:status` | JSON/text worktree + ports + doctor summary |
-| **Session** | `agent-session-start.ps1`, `agent-session-finish.ps1` | Beads link, `AGENT_SESSION_ID`, envelope JSON |
-| **Audit** | `yarn agent:audit` | agenttrace doctor/overview → `docs/inbox-pipeline/reports/agent-sessions-latest.md` |
-| **Registry** | `scripts/lib/agent-task-registry.mjs` | Duplicate task + path claim detection (`data/agent-registry.json`) |
-| **Hooks** | `.githooks/pre-commit`, `pre-push`, `commit-msg` | main/master guard, path-filtered verify, conventional commit warn |
+| Layer        | Scripts                                               | Purpose                                                                             |
+| ------------ | ----------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **TUI**      | `yarn agent:tui`, `yarn agent:mprocs:generate`        | Multi-process dev stack via [mprocs](https://github.com/pvolok/mprocs)              |
+| **Status**   | `yarn agent:status`                                   | JSON-default worktree + ports + doctor (`--human` for text)                         |
+| **Harness**  | `yarn harness:control-cli`                            | Deterministic orchestration probes (control-cli skill)                              |
+| **Session**  | `agent-session-start.ps1`, `agent-session-finish.ps1` | Beads link, `AGENT_SESSION_ID`, envelope JSON                                       |
+| **Audit**    | `yarn agent:audit`                                    | agenttrace doctor/overview → `docs/inbox-pipeline/reports/agent-sessions-latest.md` |
+| **Registry** | `scripts/lib/agent-task-registry.mjs`                 | Duplicate task + path claim detection (`data/agent-registry.json`)                  |
+| **Hooks**    | `.githooks/pre-commit`, `pre-push`, `commit-msg`      | main/master guard, path-filtered verify, conventional commit warn                   |
 
 See also: [`docs/multi-agent-worktrees.md`](multi-agent-worktrees.md), [`.cursor/skills/agent-terminal-orchestration/SKILL.md`](../.cursor/skills/agent-terminal-orchestration/SKILL.md).
 
@@ -23,12 +24,13 @@ See also: [`docs/multi-agent-worktrees.md`](multi-agent-worktrees.md), [`.cursor
 # After new-agent-worktree.ps1 or Cursor setup-worktree-windows.ps1:
 . .\scripts\load-worktree-ports.ps1
 yarn agent:session:start -TaskTitle "auth fix" -ClaimPaths "next-forge/apps/app"
+yarn harness:control-cli   # probe status + mprocs + smoke
 yarn agent:tui          # requires mprocs on PATH
-yarn agent:status       # human-readable
-yarn agent:status --json  # CI/agents
+yarn agent:status       # JSON default
+yarn agent:status --human  # text table
 
-# End session:
-.\scripts\agent-session-finish.ps1 -VerifyStack -Yes -CommitMessage "feat: ..." -Push -CreatePr
+# End session (ephemeral — remove worktree after push):
+.\scripts\agent-session-finish.ps1 -VerifyStack -Yes -CommitMessage "feat: ..." -Push -CreatePr -RemoveWorktree -DeleteBranch
 ```
 
 Cursor worktree bootstrap calls `agent-session-start.ps1` automatically and prints `yarn agent:tui`.
@@ -100,11 +102,11 @@ CLI check: `scripts/lib/agent-task-registry-check.mjs` (used by session start).
 
 ## Trace & QA gates
 
-| Command | Behavior |
-|---------|----------|
-| `yarn agent:audit` | agenttrace doctor + overview + agent-status → markdown report |
+| Command                             | Behavior                                                                                 |
+| ----------------------------------- | ---------------------------------------------------------------------------------------- |
+| `yarn agent:audit`                  | agenttrace doctor + overview + agent-status → markdown report                            |
 | `-VerifyStack` on vibe/agent finish | `scripts/lib/run-verify-stack.mjs` → `verify:forge` / `verify:generative` by path filter |
-| `pre-push` hook | `scripts/pre-push-checks.mjs` — same path logic as CI |
+| `pre-push` hook                     | `scripts/pre-push-checks.mjs` — same path logic as CI                                    |
 
 Errors append to `logs/agent-orchestrator/errors.jsonl`.
 
@@ -123,11 +125,11 @@ Install all hooks:
 yarn hooks:install
 ```
 
-| Hook | Behavior |
-|------|----------|
+| Hook           | Behavior                                                      |
+| -------------- | ------------------------------------------------------------- |
 | **pre-commit** | Block commits on `main`/`master`; run `pre-commit-checks.mjs` |
-| **pre-push** | Path-filtered `verify:forge` / `verify:generative` |
-| **commit-msg** | Warn-only conventional commit regex |
+| **pre-push**   | Path-filtered `verify:forge` / `verify:generative`            |
+| **commit-msg** | Warn-only conventional commit regex                           |
 
 ---
 
@@ -150,17 +152,49 @@ Starter issues (orchestration + e2e): `yarn beads:init`
 
 E2E smoke doc: [`e2e/worktree-smoke/README.md`](../e2e/worktree-smoke/README.md)
 
-CI job: `.github/workflows/ci.yml` → `worktree-smoke` (continue-on-error, paths-filtered on `scripts/` + `e2e/`).
+CI job: `.github/workflows/ci.yml` → `worktree-smoke` + `nix-orchestration-smoke` (continue-on-error, paths-filtered).
+
+---
+
+## Control-cli harness
+
+`scripts/control-cli-harness.mjs` runs deterministic probes (JSON default):
+
+```powershell
+yarn harness:control-cli
+node scripts/control-cli-harness.mjs --probe=status
+.\scripts\control-cli-harness.ps1 -Human
+```
+
+Probes: `agent-status --json`, mprocs YAML generation, `e2e/worktree-smoke`, optional tmux status.
+
+`agent-status.mjs` defaults to JSON; use `--human` for text. Structured errors go to stderr.
+
+Nix: `nix develop -c yarn harness:control-cli` (see [`docs/nix-devshell.md`](nix-devshell.md)).
+
+---
+
+## Root builders (Rolldown analyse)
+
+Rolldown is registered in `scripts/builders.manifest.json` as a **bundler** (not a package manager). Yarn/Bun remain installs; Turborepo stays in next-forge (ADR-0011 / ADR-0013).
+
+```powershell
+node scripts/builders-orchestrator.mjs ensure --builder rolldown
+node scripts/builders-orchestrator.mjs build --builder rolldown
+# emits .cache/builders/rolldown/{agent-status,control-cli-harness}.mjs + analyze-data.json
+npx vitest run --config vitest.config.mjs --project orchestration scripts/__tests__/rolldown-builder.test.mjs
+```
 
 ---
 
 ## Yarn scripts reference
 
-| Script | Description |
-|--------|-------------|
-| `yarn agent:tui` | Generate mprocs.yaml + launch mprocs |
-| `yarn agent:mprocs:generate` | Regenerate mprocs.yaml only |
-| `yarn agent:status` | Worktree + ports + doctor |
-| `yarn agent:audit` | Session audit markdown report |
-| `yarn agent:session:start` | PowerShell session start |
-| `yarn agent:session:finish` | PowerShell session finish + vibe finish |
+| Script                       | Description                                                  |
+| ---------------------------- | ------------------------------------------------------------ |
+| `yarn harness:control-cli`   | Orchestration probe harness                                  |
+| `yarn agent:tui`             | Generate mprocs.yaml + launch mprocs                         |
+| `yarn agent:mprocs:generate` | Regenerate mprocs.yaml only                                  |
+| `yarn agent:status`          | Worktree + ports + doctor (JSON default; `--human` for text) |
+| `yarn agent:audit`           | Session audit markdown report                                |
+| `yarn agent:session:start`   | PowerShell session start                                     |
+| `yarn agent:session:finish`  | PowerShell session finish + vibe finish                      |

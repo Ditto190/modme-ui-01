@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Agent orchestrator status — JSON or text for agents/CI.
- * Usage: node scripts/agent-status.mjs [--json] [--ci]
+ * Agent orchestrator status — JSON default for agents/CI; --human for text.
+ * Usage: node scripts/agent-status.mjs [--human] [--json] [--ci]
  */
 import { execSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
@@ -10,8 +10,17 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
-const asJson = process.argv.includes("--json");
-const isCi = process.argv.includes("--ci");
+
+const args = process.argv.slice(2);
+const isCi = args.includes("--ci");
+const asHuman = args.includes("--human");
+const asJson = args.includes("--json") || (!asHuman && !isCi);
+
+function fail(code, message, suggestion) {
+  const payload = { error: true, code, message, suggestion };
+  process.stderr.write(`${JSON.stringify(payload)}\n`);
+  process.exit(code === "USAGE" ? 2 : 1);
+}
 
 function run(cmd) {
   try {
@@ -75,8 +84,6 @@ function activeSession() {
       return null;
     }
   }
-  const sessionsDir = resolve(ROOT, "logs/agent-orchestrator/sessions");
-  if (!existsSync(sessionsDir)) return null;
   return null;
 }
 
@@ -93,8 +100,7 @@ const payload = {
 
 if (isCi) {
   if (!payload.doctor.ok && !payload.doctor.skipped) {
-    console.error("agent-status: worktree doctor failed");
-    process.exit(1);
+    fail("DOCTOR_FAILED", "agent-status: worktree doctor failed", "Run yarn worktree:doctor -Fix");
   }
   console.log("agent-status: ok");
   process.exit(0);
@@ -102,15 +108,16 @@ if (isCi) {
 
 if (asJson) {
   console.log(JSON.stringify(payload, null, 2));
-} else {
-  console.log(`branch: ${payload.branch}`);
-  console.log(`worktrees: ${payload.worktrees.length}`);
-  for (const wt of payload.worktrees) {
-    console.log(`  - ${wt.path} (${wt.branch ?? "detached"})`);
-  }
-  const p = payload.ports;
-  if (Object.keys(p).length > 0) {
-    console.log("ports:", Object.entries(p).map(([k, v]) => `${k}=${v}`).join(" "));
-  }
-  console.log(`doctor: ${payload.doctor.ok ? "ok" : "issues"}`);
+  process.exit(0);
 }
+
+console.log(`branch: ${payload.branch}`);
+console.log(`worktrees: ${payload.worktrees.length}`);
+for (const wt of payload.worktrees) {
+  console.log(`  - ${wt.path} (${wt.branch ?? "detached"})`);
+}
+const p = payload.ports;
+if (Object.keys(p).length > 0) {
+  console.log("ports:", Object.entries(p).map(([k, v]) => `${k}=${v}`).join(" "));
+}
+console.log(`doctor: ${payload.doctor.ok ? "ok" : "issues"}`);

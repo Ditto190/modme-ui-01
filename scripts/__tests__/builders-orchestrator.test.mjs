@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
 
 describe("builders-orchestrator", () => {
-  it("builders.manifest.json defines swc, vite, dolt", () => {
+  it("builders.manifest.json defines swc, vite, dolt, rolldown", () => {
     const manifest = JSON.parse(
       readFileSync(join(ROOT, "scripts/builders.manifest.json"), "utf8")
     );
@@ -16,11 +16,14 @@ describe("builders-orchestrator", () => {
     expect(ids).toContain("swc");
     expect(ids).toContain("vite");
     expect(ids).toContain("dolt");
+    expect(ids).toContain("rolldown");
     expect(manifest.pipelines["copilot-session-create"]).toBeDefined();
+    expect(manifest.pipelines["preflight-builders"]).toContain("rolldown:build");
   });
 
-  it("swc config exists", () => {
+  it("swc and rolldown configs exist", () => {
     expect(existsSync(join(ROOT, "config/builders/swc.swcrc"))).toBe(true);
+    expect(existsSync(join(ROOT, "config/builders/rolldown.config.mjs"))).toBe(true);
   });
 
   it("dolt catalog schema exists", () => {
@@ -36,6 +39,7 @@ describe("builders-orchestrator", () => {
     expect(r.status).toBe(0);
     expect(r.stdout).toMatch(/swc/);
     expect(r.stdout).toMatch(/vite/);
+    expect(r.stdout).toMatch(/rolldown/);
   });
 
   it("github-app.yml exposes builder run scripts", () => {

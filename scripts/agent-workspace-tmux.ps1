@@ -4,14 +4,13 @@
   tmux dashboard for ModMe parallel agents (PowerShell launcher for WSL/Git Bash).
 #>
 param(
-  [string]$Session = $env:MODME_TMUX_SESSION,
+  [string]$Session = $(if ($env:MODME_TMUX_SESSION) { $env:MODME_TMUX_SESSION } else { 'modme-agents' }),
   [ValidateSet('status', 'attach', 'layout')]
   [string]$Command = 'attach',
   [switch]$Help
 )
 
-if ($Help -or -not $Session) {
-  if (-not $Session) { $Session = 'modme-agents' }
+if ($Help) {
   @"
 agent-workspace-tmux.ps1 — launch bash tmux helper on Windows (WSL/Git Bash)
 

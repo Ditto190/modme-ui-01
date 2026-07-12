@@ -1,46 +1,45 @@
 {
   "wave": 2,
-  "generated_at": "2026-07-04T10:10:00.000Z",
-  "branch": "feature/cursor/thermo-round2-redundancy",
+  "generated_at": "2026-07-12T02:50:00.000Z",
+  "branch": "feature/cursor/control-cli-orchestration",
   "baseline": "dev",
-  "scope": "thermo-round2-redundancy",
+  "scope": "control-cli-rolldown-orchestration",
+  "change_id": "control-cli-rolldown-orchestration",
   "lanes": {
-    "explorer-root": {
+    "explorer-root-orchestration": {
       "status": "complete",
-      "focus_paths": ["src/", "agent/", "harness/", "docs/codebase/"],
-      "findings": "Critical legacy root duplication vs next-forge + agent-server; archive after Phase 4"
+      "focus_paths": [
+        "scripts/",
+        "harness/",
+        "config/builders/",
+        "flake.nix",
+        ".worktreeexclude",
+        "e2e/worktree-smoke/"
+      ],
+      "findings": "Control-cli harness + worktree mirror + Rolldown builders registered"
     },
     "explorer-forge": {
-      "status": "complete",
-      "focus_paths": ["next-forge/apps", "next-forge/packages"],
-      "findings": "Phase 2-3 pass; Phase 4 fail (no feature-flag gating); Phase 1 partial"
+      "status": "skipped",
+      "focus_paths": ["next-forge/"],
+      "findings": "Out of scope — Turborepo stays siloed; ADR-0013 only documents root builders"
     },
     "explorer-legacy": {
-      "status": "complete",
-      "focus_paths": ["GenerativeUI_monorepo/apps", "packages/shared-schemas"],
-      "findings": "Dual schema packages (zod v3 vs v4); GenerativeCanvas/useAgentState duplicated"
+      "status": "skipped",
+      "focus_paths": ["GenerativeUI_monorepo/"],
+      "findings": "Out of scope — no GenUI app Vite replacement in this change"
     },
-    "explorer-universalworkbench": {
+    "contract-auditor": {
       "status": "complete",
-      "focus_paths": ["GenerativeUI_monorepo/UniversalWorkbench/"],
-      "findings": "MCP registry overlap conceptual only; no UI component registry collision with design-system"
-    },
-    "explorer-scripts": {
-      "status": "complete",
-      "focus_paths": ["scripts/", ".github/workflows/", "harness/"],
-      "findings": "Inbox orchestrator vs workflow fan-out drift; dual intake pipelines (inbox vs copilot-telemetry)"
-    },
-    "explorer-skills": {
-      "status": "complete",
-      "focus_paths": [".agents/skills/", ".cursor/skills/", ".vendor/awesome-copilot-main/"],
-      "findings": "4 local skill key collisions; 522 vendor skills; 6 vendor/local key overlaps"
-    },
-    "thermo-security": { "status": "complete", "critical": 2, "high": 1 },
-    "thermo-performance": { "status": "complete", "high": 2, "medium": 1 },
-    "thermo-correctness": { "status": "complete", "critical": 1, "high": 2 },
-    "thermo-readability": { "status": "complete", "code_judo_moves": 8 }
+      "focus_paths": [
+        "scripts/__tests__/rolldown-builder.test.mjs",
+        ".cache/builders/rolldown/analyze-data.json"
+      ],
+      "findings": "Vitest 9 passed; analyze-data.json has meta.bundler=rolldown, chunks, modules",
+      "tests_passed": 9,
+      "artefact": ".cache/builders/rolldown/analyze-data.json"
+    }
   },
-  "blocked_wave_2_until": "satisfied â€” wave 1 published",
-  "molecule_manifest": "data/molecule-index/manifest.json",
-  "synthesis": "docs/workflows/reports/thermo-nuclear-redundancy-2026-07-04.md"
+  "blocked_wave_2_until": "satisfied — wave 1 published",
+  "stack_paths": "scripts/lib/stack-paths.json",
+  "synthesis": "docs/workflows/reports/thermo-nuclear-control-cli-rolldown-2026-07-12.md"
 }

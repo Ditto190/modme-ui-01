@@ -62,8 +62,26 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ## [Unreleased]
 
+### Added
+
+- (repo) `scripts/control-cli-harness.mjs` + `yarn harness:control-cli` — deterministic orchestration probes for multi-agent workspaces
+- (repo) Root `flake.nix` devShell + CI `nix-orchestration-smoke` job (Hydra-inspired path-filtered evaluation)
+- (repo) `.worktreeexclude` mirror policy — git-tracked config stays on `dev`; runtime files via `.worktreeinclude`
+- (repo) `scripts/bats/agent-workspace-tmux.bats` POSIX smoke for tmux helper
+- (repo) `vitest.config.mjs` + `preflight.manifest.json` — restore `orchestration` project; smoke uses `agent-status` tests
+- (repo) Rolldown root builders bundler — `config/builders/rolldown.config.mjs`, `bundleAnalyzerPlugin` → `.cache/builders/rolldown/analyze-data.json`, Vitest `rolldown-builder.test.mjs` (ADR-0013)
+- (repo) Thermo-nuclear scoped review for control-cli + Rolldown — ECL `control-cli-rolldown-orchestration`, wave-1 manifest, synthesis report
+- (repo) `.logic-lens.yaml` scoped to orchestration fix-all
+
 ### Changed
 
+- (repo) `agent-status.mjs` — JSON default output (`--human` for text); ai-native-cli aligned
+- (repo) `worktree-copy-env.ps1` — reads `.worktreeinclude`, respects `.worktreeexclude`, `-ChangedOnly` for session start
+- (repo) `agent-session-finish.ps1` — `-RemoveWorktree` / `-DeleteBranch` for ephemeral sessions after push
+- (repo) `agent-session-start.ps1` — changed-only bootstrap sync from main checkout
+- (repo) control-cli + agent-terminal-orchestration skills — ModMe harness map and RSCIT prompt block
+- (repo) `.editorconfig` — `[*.nix]`, `[flake.nix]`, `[*.bats]` sections
+- (repo) `.cursor/hooks.json` — afterFileEdit orchestration status probe on agent/worktree scripts
 - (repo) Merge `github/main` into promotion branch `feature/cursor/promote-dev-to-main` to resolve dual-branch drift before promoting `dev` to `main`
 
 ### Fixed

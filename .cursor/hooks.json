@@ -1,1 +1,32 @@
-[]
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/ensure-lean-ctx-config.ps1 -CheckOnly",
+        "failClosed": false,
+        "timeoutSec": 5
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/lean-ctx-post-edit.ps1",
+        "failClosed": false,
+        "timeoutSec": 3
+      },
+      {
+        "command": "node scripts/control-cli-harness.mjs --probe=status",
+        "pattern": "scripts/agent-*.mjs|scripts/*worktree*.ps1|scripts/control-cli-harness.mjs",
+        "failClosed": false,
+        "timeoutSec": 8
+      }
+    ],
+    "stop": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/lean-ctx-stop-marker.ps1",
+        "failClosed": false,
+        "timeoutSec": 3
+      }
+    ]
+  }
+}

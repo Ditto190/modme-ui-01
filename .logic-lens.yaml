@@ -1,0 +1,11 @@
+focus:
+  - orchestration
+  - cli-harness
+  - worktree-lifecycle
+ignore:
+  - .vendor/**
+  - .worktrees/**
+  - next-forge/**
+  - GenerativeUI_monorepo/**
+fix_all:
+  max_iterations: 3

@@ -14,18 +14,27 @@ Or step-by-step:
 node scripts/generate-mprocs-config.mjs
 
 # 2. Agent status JSON (doctor may warn on main checkout)
-node scripts/agent-status.mjs --json
+
+node scripts/agent-status.mjs
+
+# 3. Control-cli harness (all probes)
+
+yarn harness:control-cli
 
 # 3. Path filter unit smoke
+
 node -e "import { classifyChangedStacks } from './scripts/lib/path-filter.mjs'; console.log(classifyChangedStacks(['next-forge/apps/app/page.tsx']));"
 
 # 4. Task registry round-trip
+
 node scripts/lib/agent-task-registry-check.mjs --title "smoke test task" --session-id "00000000-0000-0000-0000-000000000001" --force
 node scripts/lib/agent-task-registry-close.mjs --session-id "00000000-0000-0000-0000-000000000001"
 
 # 5. Pre-commit checks (staged-aware; no staged files = fast pass)
+
 yarn pre-commit:check
-```
+
+````
 
 ## Worktree-specific
 
@@ -33,7 +42,7 @@ yarn pre-commit:check
 cd .worktrees\dev-agent-cursor-<task>
 yarn worktree:doctor -Json
 yarn agent:status --json
-```
+````
 
 ## Playwright (optional future)
 

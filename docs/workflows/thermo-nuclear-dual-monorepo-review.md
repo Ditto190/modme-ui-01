@@ -54,6 +54,7 @@ yarn lint:harness
 | Molecule   | `yarn molecule-index:verify`                           |
 | Telemetry  | `yarn telemetry:audit --lens all`                      |
 | E2E        | `cd next-forge && bun run test:e2e` (full stack)       |
+| Rolldown   | `node scripts/builders-orchestrator.mjs build --builder rolldown` then assert `.cache/builders/rolldown/analyze-data.json` via `scripts/__tests__/rolldown-builder.test.mjs` |
 
 ## Synthesis output
 
