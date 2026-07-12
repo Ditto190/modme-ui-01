@@ -69,6 +69,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
+- (cursor) Continual-learning skill no longer uses `agents-memory-updater` subagents; routes capture via session/beads/inbox/dag-task-runner; sidecar setup junctions `Templates/`
 - (repo) Merge `github/main` into promotion branch `feature/cursor/promote-dev-to-main` to resolve dual-branch drift before promoting `dev` to `main`
 - (repo) `yarn test:shell` now prefers Devbox via `scripts/run-shell-tests.ps1` (fallback Git Bash → WSL)
 

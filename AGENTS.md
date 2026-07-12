@@ -94,6 +94,11 @@ After prototyping in a **worktree** (not the main checkout):
 
 ```powershell
 yarn worktree:doctor          # pre-flight in worktree (use -Fix via yarn worktree:doctor:fix)
+yarn session:start            # modme-launch session-start (env sync + runtime env)
+yarn launch:health            # advisory lean-ctx + doctor + session verify
+yarn launch:full              # health + km:verify + session-start (setup-modme-dev tail)
+yarn km:verify                # Phase 0 KM gate (BEADS_DISABLED=1 vitest + dry-runs)
+yarn session:verify           # env wiring smoke (modme-session verify phase)
 yarn agent:session:start      # beads + session envelope (auto on Cursor worktree setup)
 yarn agent:status             # worktree + ports + doctor summary
 yarn check:forge              # fast Ultracite check while iterating (next-forge)
@@ -140,6 +145,8 @@ Root `AGENTS.md` and `.cursor/rules/` are hand-maintained — use contextarch fo
 - [`docs/debug-launch-guide.md`](docs/debug-launch-guide.md) — VS Code `launch.json`, ports, CI validation
 - [`docs/multi-agent-worktrees.md`](docs/multi-agent-worktrees.md) — mandatory for feature work
 - [`docs/inbox-pipeline/README.md`](docs/inbox-pipeline/README.md) — **Inbox → Knowledge pipeline** (feature taxonomy, mermaid architecture, all scripts + DB + UI + workflows)
+- [`docs/KNOWLEDGE_QUICKSTART.md`](docs/KNOWLEDGE_QUICKSTART.md) — **Canonical KM:** inbox + beads → intake → KM brain (start here for knowledge)
+- [`docs/KNOWLEDGE_MANAGEMENT.md`](docs/KNOWLEDGE_MANAGEMENT.md) — KM architecture, C4 taxonomy, legacy GenUI quarantine
 - [`CHANGELOG.md`](CHANGELOG.md) — append under `[Unreleased]` per Agent Update Protocol
 - [`docs/codebase/STACK.md`](docs/codebase/STACK.md) — dual-monorepo dependency scorecard and ports
 - [`.agents/skills/next-forge/SKILL.md`](.agents/skills/next-forge/SKILL.md) — next-forge agent skill
@@ -202,12 +209,13 @@ The pipeline runs on every push to `docs/inbox/` and ingests new entries into Su
 ## Learned User Preferences
 
 - Prefer cloud-first hosted Supabase over local Docker as the default database path; local Supabase is optional offline-only. Do not run `yarn supabase:local:env` after cloud setup — it overwrites root `.env` with localhost; use `node scripts/fix-cloud-supabase-url.mjs` if that happens.
-- When working with Supabase: use Cursor Supabase plugin MCP for project management; verify credentials from dashboard or `npx supabase status -o env` — not generic demo defaults; Rube/supabase-automation needs a separate Composio connection.
+- When working with Supabase: use Cursor Supabase plugin MCP for project management; verify credentials from dashboard or `npx supabase status -o env` — not generic demo defaults; Rube/supabase-automation needs a separate Composio connection. Prefer MCP configs that inject secrets from root `.env` / devenv / devbox env placeholders over browser OAuth flows that repeatedly re-prompt for auth.
 - Run `yarn vibe:finish` / session finish only from a worktree under `.worktrees/`, not the main checkout.
-- When asked to push or open a GitHub PR, complete with `gh` immediately — do not defer without attempting; use `--repo Ditto190/modme-ui-01` outside a git checkout; prefer `feature/cursor/<task>` branch names over auto-generated Cursor branches.
+- When asked to push or open a GitHub PR, complete with `gh` immediately — do not defer without attempting; use `--repo Ditto190/modme-ui-01` outside a git checkout; prefer `feature/cursor/<task>` branch names over auto-generated Cursor branches; do not force-merge without clean CI/review state.
 - Use `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (not legacy anon-only naming) for next-forge browser/SSR Supabase clients via `@repo/supabase`.
 - Do not wire Supabase Auth middleware into `apps/app` by default — ModMe uses Auth.js for sign-in.
-- On Windows, prefer `bunx supabase login --token sbp_...` (dashboard access token) over browser login; avoid bare `supabase` on PATH (often v1.x, HTTP 401).
+- Never run continual-learning via `agents-memory-updater` / transcript-mining Task subagents (token cost); use session envelopes (`yarn agent:session:start|finish`), `scripts/lib/beads-hooks.mjs`, inbox/Obsidian capture, lean-ctx `ctx_knowledge`, and optional `dag-task-runner` ranks instead — see `.cursor/skills/continual-learning/SKILL.md`.
+- Prefer ModMe-Vault sidecar (`C:\Users\dylan\ModMe-Vault` via `yarn obsidian:sidecar:setup`) over opening the monorepo root in Obsidian — avoids indexing `node_modules`/packages; monorepo remains git SoR via junctions.
 - lean-ctx hybrid mode: global `~/.config/lean-ctx/config.toml` (`tool_profile=power`, `proxy_enabled=true`, `compression_level=max`, `memory_profile=balanced`); repo `.lean-ctx.toml` merges as project overrides; run `yarn lean-ctx:ensure` at session start/before smart-git finish; schema snapshot at `docs/lean-ctx/config-schema.json` (`yarn lean-ctx:schema:sync`).
 - Do not adopt Nx as a root meta-orchestrator — keep Turbo/Bun/Yarn inside each monorepo and use `yarn agent:*` terminal orchestration at the repo root instead.
 - Use beads (`bd`) for multi-session work with dependencies; chat todos only for single-session linear tasks; beads git hooks fall back to `npx @beads/bd` on Windows when global `bd` is broken.
@@ -226,8 +234,8 @@ The pipeline runs on every push to `docs/inbox/` and ingests new entries into Su
 - Schema deploy + Supabase CLI: `bun run db:push` from `next-forge/` before `bunx supabase db push` (no `--accept-data-loss`); config at `next-forge/supabase/` — run `bunx supabase` from `next-forge/packages/database` with `--workdir ../.. --dns-resolver https` on Windows.
 - next-forge default ports: app 3100, web 3101, api 3102, docs 3104, storybook 6106 (avoids GenerativeUI 3000–3004 block).
 - Unified intake: dual-store (GreptimeDB code/AST + Supabase pgvector inbox/knowledge, sync at promote); Zod contracts in `packages/intake-contracts/`; scrape via `yarn scrape:run|classify|promote` + `scripts/run-scrape-pipeline.ps1`; staging Prisma + `007_scrape_staging.sql`.
-- Agent terminal orchestration: `yarn agent:tui|status|audit|session:start|session:finish`; `yarn agent:tui` needs mprocs on PATH; session envelopes in `logs/agent-orchestrator/sessions/`; task registry `data/agent-registry.json`; smoke `yarn e2e:worktree-smoke`; pre-push path-filtered verify (`scripts/lib/run-verify-stack.mjs --pre-push`: forge lint-only, generative lint advisory); full `yarn verify:generative` via `scripts/verify-generative-ci.ps1` before merge; guide `docs/agent-terminal-orchestration.md`.
-- Bugbot PR review rules: `.cursor/BUGBOT.md` (skills, Oracle→Postgres bug templates, `next-forge/packages/feature-flags/FEATURE-FLAGS.md`).
+- Agent terminal orchestration: `yarn agent:tui|status|audit|session:start|session:finish`; `yarn agent:tui` needs mprocs on PATH; session envelopes in `logs/agent-orchestrator/sessions/`; task registry `data/agent-registry.json`; smoke `yarn e2e:worktree-smoke`; pre-push path-filtered verify (`scripts/lib/run-verify-stack.mjs --pre-push`: forge lint-only, generative lint advisory); full `yarn verify:generative` via `scripts/verify-generative-ci.ps1` before merge; guide `docs/agent-terminal-orchestration.md`; bounded parallel agent lifecycle ADR: `next-forge/docs/adr/0012-bounded-parallel-agent-lifecycle.md`.
+- ModMe Obsidian: sidecar vault `ModMe-Vault` at `C:\Users\dylan\ModMe-Vault` (`yarn obsidian:sidecar:setup`; docs `docs/obsidian/`, `docs/adam/Vault Plugin Policy.md`); Clipper templates in `templates/obsidian-clipper/` (match order: Issue/PR → Code Snippet → Obsidian Help before GitHub Repo); clips write vault `inbox` junction → `GenerativeUI_monorepo/docs/inbox/`.
 
 <!-- lean-ctx-compression -->
 
@@ -240,7 +248,7 @@ OUTPUT STYLE: dense
 - No narration, no filler, no hedging
 - BUDGET: ≤200 tokens per response unless code block required
   <!-- /lean-ctx-compression -->
-  <!-- lean-ctx -->
+    <!-- lean-ctx -->
 
 ## lean-ctx (mandatory)
 

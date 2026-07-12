@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
   Create a lean sidecar Obsidian vault (ModMe-Vault) outside the monorepo with directory junctions
-  to inbox, docs, and clipper templates.
+  to inbox, docs, clipper templates, and Obsidian note templates.
 
 .DESCRIPTION
   Solves slow Obsidian indexing by keeping the vault separate from the massive monorepo.
@@ -51,10 +51,10 @@ if (-not (Test-Path $obsidianDir)) {
 $appJsonPath = Join-Path $obsidianDir "app.json"
 $appJson = @{
   "attachmentFolderPath" = "attachments"
-  "newFileLocation" = "folder"
-  "newFileFolderPath" = "inbox"
-  "alwaysUpdateLinks" = $true
-  "userIgnoreFilters" = @(
+  "newFileLocation"      = "folder"
+  "newFileFolderPath"    = "inbox"
+  "alwaysUpdateLinks"    = $true
+  "userIgnoreFilters"    = @(
     "*.lock",
     "*.json",
     "*.ts",
@@ -83,7 +83,8 @@ $appJson | ConvertTo-Json | Set-Content $appJsonPath -Encoding UTF8
 $junctions = @(
   @{ name = "inbox"; target = Join-Path $MonorepoRoot "GenerativeUI_monorepo\docs\inbox" },
   @{ name = "docs"; target = Join-Path $MonorepoRoot "docs" },
-  @{ name = "clipper"; target = Join-Path $MonorepoRoot "templates\obsidian-clipper" }
+  @{ name = "clipper"; target = Join-Path $MonorepoRoot "templates\obsidian-clipper" },
+  @{ name = "Templates"; target = Join-Path $MonorepoRoot "templates\obsidian-note-templates" }
 )
 
 foreach ($junction in $junctions) {
@@ -120,8 +121,9 @@ Real files are in the monorepo; this vault accesses them via directory junctions
 - Monorepo root: $MonorepoRoot
 - Junctions:
   - inbox/ points to GenerativeUI_monorepo/docs/inbox (Clipper destination)
-  - docs/ points to docs (ADRs, pipeline docs)
+  - docs/ points to docs (ADRs, pipeline docs, ADAM notes)
   - clipper/ points to templates/obsidian-clipper (Clipper JSON templates)
+  - Templates/ points to templates/obsidian-note-templates (Obsidian note templates)
 
 ## How it works
 
@@ -133,6 +135,29 @@ Real files are in the monorepo; this vault accesses them via directory junctions
 ## Templates
 
 Import Clipper templates from clipper/ subfolder. Template path is already set to inbox (vault-relative).
+
+Obsidian Settings → Core plugins → Templates → folder: `Templates`.
+
+## KM stack (Project A.D.A.M)
+
+Open `docs/adam/ADAM Index.md` as the vault home MOC.
+
+| Layer | Vault path |
+|-------|------------|
+| Dashboards | `docs/adam/ADAM Command Center.md` + `.base` |
+| Visual map | `docs/adam/ADAM Command Center.canvas` |
+| Semantic links | `docs/adam/ADAM Semantic Map.md` |
+| Plugin policy | `docs/adam/Vault Plugin Policy.md` |
+| Query tools | `docs/adam/Query Tool Guide.md` |
+
+Enable core plugins: **Templates**, **Properties**, **Daily notes**, **Bases**, **Canvas**.
+
+## Project A.D.A.M (Obsidian Copilot)
+
+1. Open docs/adam/ADAM Index.md
+2. Copy docs/adam/copilot-project-system-prompt.md (section below the line) into Copilot → Projects → Project A.D.A.M
+3. Prefer {[[Note]]} / {#tag} / {docs/adam} — never paste whole {inbox}
+
 
 ## Limitations
 
@@ -153,11 +178,13 @@ Write-Host "SUCCESS: Sidecar vault created: $VaultPath" -ForegroundColor Green
 Write-Host ""
 Write-Host "Next steps:"
 Write-Host "  1. Obsidian: Open folder as vault -> $VaultPath"
-Write-Host "  2. Obsidian Settings: Choose core plugins (Daily notes, Templates, Properties, etc.)"
-Write-Host "  3. Chrome Clipper: Settings -> select vault ModMe-Vault"
-Write-Host "  4. Import JSON from clipper/ subfolder in vault"
-Write-Host "  5. Confirm a clip lands in inbox/ (which is the real monorepo path)"
-Write-Host "  6. yarn intake:orchestrate (from monorepo root)"
+Write-Host "  2. Obsidian Settings: Core plugins (Templates, Properties, Daily notes, Bases, Canvas); Templates folder = Templates"
+Write-Host "  3. Open docs/adam/ADAM Index.md and ADAM Command Center (.base / .canvas)"
+Write-Host "  4. Chrome Clipper: Settings -> select vault ModMe-Vault"
+Write-Host "  5. Import JSON from clipper/ subfolder in vault"
+Write-Host "  6. Confirm a clip lands in inbox/ (which is the real monorepo path)"
+Write-Host "  7. yarn intake:orchestrate (from monorepo root)"
+Write-Host "  8. Copilot Project A.D.A.M: paste docs/adam/copilot-project-system-prompt.md"
 
 if ($OpenVault) {
   Write-Host ""
