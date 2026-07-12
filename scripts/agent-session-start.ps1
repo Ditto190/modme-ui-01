@@ -26,8 +26,10 @@ Options:
   -ClaimPaths     Optional path prefixes to claim in agent registry
   -AgentRole      A2A role for catalog register (dev|review|test|plan) default dev
   -BootstrapIntelligence  Run lean-ctx-session-bootstrap.ps1 (index + MCP hints)
-  -SkipBeads      Skip bd ready / create
+  -SkipBeads      Skip bd ready / create (KM bootstrap also skips beads when set)
   -DebugTrace     Enable LEAN_CTX_DEBUG_LOG=1 for this session (observability debug mode)
+
+Also runs scripts/km-session-bootstrap.ps1 (non-strict) before catalog-cms-eval.
 "@
   exit 0
 }
@@ -195,9 +197,26 @@ if (Get-Command lean-ctx -ErrorAction SilentlyContinue) {
   lean-ctx -c "echo agent-session-start $sessionId" 2>$null | Out-Null
 }
 
+# Agent data plane: KM bootstrap (Dolt/Entire/Beads) then catalog-cms-eval
+$kmBootstrap = Join-Path $ScriptDir 'km-session-bootstrap.ps1'
+if (Test-Path $kmBootstrap) {
+  Write-Host 'Agent data plane: KM session bootstrap...' -ForegroundColor Cyan
+  $kmArgs = @()
+  if ($SkipBeads) { $kmArgs += '-SkipBeads' }
+  & $kmBootstrap @kmArgs
+  # Non-strict: continue even if KM warns (product path)
+}
+
+$buildersCli = Join-Path $ScriptDir 'builders-orchestrator.mjs'
+if (Test-Path $buildersCli) {
+  Write-Host 'Agent data plane: catalog-cms-eval preflight...' -ForegroundColor Cyan
+  node $buildersCli pipeline catalog-cms-eval 2>&1 | Out-Host
+}
+
 Write-Host ''
 Write-Host "Agent session started: $sessionId" -ForegroundColor Green
 Write-Host "  envelope: $envelopePath"
 Write-Host "  TUI:        yarn agent:tui"
 Write-Host "  status:     yarn agent:status --json"
+Write-Host "  km:status:  yarn km:status"
 Write-Host ''

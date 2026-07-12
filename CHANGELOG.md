@@ -69,9 +69,11 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - (repo) `.worktreeexclude` mirror policy — git-tracked config stays on `dev`; runtime files via `.worktreeinclude`
 - (repo) `scripts/bats/agent-workspace-tmux.bats` POSIX smoke for tmux helper
 - (repo) `vitest.config.mjs` + `preflight.manifest.json` — restore `orchestration` project; smoke uses `agent-status` tests
-- (repo) Rolldown root builders bundler — `config/builders/rolldown.config.mjs`, `bundleAnalyzerPlugin` → `.cache/builders/rolldown/analyze-data.json`, Vitest `rolldown-builder.test.mjs` (ADR-0013)
+- (repo) Rolldown root builders bundler — `config/builders/rolldown.config.mjs`, `bundleAnalyzerPlugin` → `.cache/builders/rolldown/analyze-data.json`, Vitest `rolldown-builder.test.mjs` (`next-forge/docs/adr/0013-rolldown-root-builders.md`)
 - (repo) Thermo-nuclear scoped review for control-cli + Rolldown — ECL `control-cli-rolldown-orchestration`, wave-1 manifest, synthesis report
 - (repo) `.logic-lens.yaml` scoped to orchestration fix-all
+- (repo) Agent data plane — Entire CLI (`yarn entire:*`), Dolt sql-server (`yarn dolt:*`), KM hub (`yarn km:status`, `docs/KNOWLEDGE_QUICKSTART.md`, `docs/knowledge/CATALOG.md`), ADR-0013 superseding ADR-0010
+- (repo) KM session startup wiring — `scripts/km-session-bootstrap.ps1` (`yarn km:bootstrap`), session start + worktree setup + VS Code tasks/launch (`Full Stack: Forge Core + Agent Data Plane`, soft `dependsOn` on `next-forge: dev core`); ADR-0014; beads `modme-awz`; runbook `docs/monorepo/km-agent-data-plane-startup.md`
 
 ### Changed
 
@@ -87,6 +89,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 ### Fixed
 
 - (next-forge) Apply Ultracite/Biome format fixes required for promote-dev-to-main pre-push verify
+- (repo) Beads auto-backup Error 1105 — disable broken `.beads/backup` destination (`backup.enabled: false`); see `docs/beads-workflow.md` troubleshooting
 
 ### Added
 
