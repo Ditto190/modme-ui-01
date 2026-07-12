@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/main/.schema/devbox.schema.json",
+  "packages": [
+    "nodejs@22",
+    "yarn-berry_3@3.8.7",
+    "bats@latest",
+    "shellcheck@latest",
+    "git@latest",
+    "python@3.12",
+    "jq@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "echo 'ModMe devbox — optional toolchain (bare shell still works via yarn)'"
+    ],
+    "scripts": {
+      "health": ["yarn launch:health"],
+      "km-verify": ["yarn km:verify"],
+      "session-start": ["yarn session:start"],
+      "test-shell": ["bats scripts/bats/"]
+    }
+  }
+}

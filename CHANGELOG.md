@@ -65,14 +65,17 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 ### Added
 
 - (docs/obsidian) Unique note + Advanced URI + Code Emitter pack — `docs/obsidian/`, `tpl-unique-note.md`, `tpl-code-sandbox.md`, Clipper `modme-inbox-obsidian-help.json`, `uid` on Clipper templates, vault path `inbox` for ModMe-Vault
+- (repo) WSL `modme-agent` profile + Jetify Devbox toolchain — `devbox.json`, `yarn wsl:ubuntu:setup`, `scripts/shell/setup-modme-agent-wsl.sh`, Docker/WSL doctor scripts, `docs/windows-docker-wsl-setup.md`
 
 ### Changed
 
 - (repo) Merge `github/main` into promotion branch `feature/cursor/promote-dev-to-main` to resolve dual-branch drift before promoting `dev` to `main`
+- (repo) `yarn test:shell` now prefers Devbox via `scripts/run-shell-tests.ps1` (fallback Git Bash → WSL)
 
 ### Fixed
 
 - (next-forge) Apply Ultracite/Biome format fixes required for promote-dev-to-main pre-push verify
+- (repo) Devbox package pin `yarn@3` → `yarn-berry_3@3.8.7`; Windows→WSL path conversion in Ubuntu setup; remove accidental npm `sudo`/`devbox` deps
 
 ### Added
 
