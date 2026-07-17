@@ -12,6 +12,7 @@ interface SessionOpsResponse {
 interface SessionOpsQueryParams {
   agentPlatform?: string;
   limit?: number;
+  sessionId?: string;
   severity?: string;
   tenantId?: string;
 }
@@ -31,6 +32,9 @@ async function fetchSessionOps(
   }
   if (params.agentPlatform) {
     searchParams.set("agent_platform", params.agentPlatform);
+  }
+  if (params.sessionId) {
+    searchParams.set("session_id", params.sessionId);
   }
 
   const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3102";

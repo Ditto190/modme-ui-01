@@ -1,25 +1,32 @@
-﻿{
+{
   "mcpServers": {
     "skills-sh": {
       "command": "node",
       "args": ["C:/Users/dylan/Monorepo_ModMe/.tools/skillsh-mcp/dist/index.js"]
     },
     "context7": {
-      "command": "npx",
+      "command": "npx.cmd",
       "args": ["-y", "@upstash/context7-mcp@latest"],
       "env": {
         "CONTEXT7_API_KEY": "${env:CONTEXT7_API_KEY}"
       }
     },
     "buildkite": {
-      "url": "https://mcp.buildkite.com/mcp"
+      "serverUrl": "https://mcp.buildkite.com/mcp"
+    },
+    "lean-ctx": {
+      "command": "C:/Users/dylan/miniconda3/Scripts/lean-ctx.cmd",
+      "env": {
+        "LEAN_CTX_DATA_DIR": "C:\\Users\\dylan\\Monorepo_ModMe\\data\\lean-ctx"
+      },
+      "trust": true
     },
     "mantine": {
-      "command": "npx",
+      "command": "npx.cmd",
       "args": ["-y", "@mantine/mcp-server"]
     },
     "next-devtools": {
-      "command": "npx",
+      "command": "npx.cmd",
       "args": ["-y", "next-devtools-mcp@latest"]
     }
   }

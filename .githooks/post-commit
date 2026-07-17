@@ -1,0 +1,5 @@
+#!/bin/sh
+# Installed by scripts/install-git-hooks.ps1
+set -e
+
+node scripts/telemetry/lib/git-hook-bridge.mjs post-commit

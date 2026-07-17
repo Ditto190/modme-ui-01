@@ -17,10 +17,12 @@ const PLATFORM_OPTIONS = [
 export function SessionOpsPanel() {
   const [severityFilter, setSeverityFilter] = useState<string>("");
   const [platformFilter, setPlatformFilter] = useState<string>("");
+  const [sessionFilter, setSessionFilter] = useState<string>("");
 
   const { data, isLoading, isError, error } = useSessionOps({
     severity: severityFilter || undefined,
     agentPlatform: platformFilter || undefined,
+    sessionId: sessionFilter || undefined,
     limit: 24,
   });
 
@@ -69,6 +71,18 @@ export function SessionOpsPanel() {
             </option>
           ))}
         </select>
+
+        <label className="text-muted-foreground text-xs" htmlFor="ops-session">
+          Session
+        </label>
+        <input
+          className="w-28 rounded border bg-background px-2 py-1 font-mono text-xs"
+          id="ops-session"
+          onChange={(e) => setSessionFilter(e.target.value.trim())}
+          placeholder="uuid prefix"
+          type="search"
+          value={sessionFilter}
+        />
 
         <span className="ml-auto text-[10px] text-muted-foreground">
           {data?.tenant_id

@@ -3,7 +3,8 @@
 # Creates .worktrees/dev persistent checkout from main repo root.
 
 param(
-  [switch]$IncludeStaging
+  [switch]$IncludeStaging,
+  [switch]$SkipBootstrap
 )
 
 $ErrorActionPreference = "Stop"
@@ -91,6 +92,16 @@ try {
     }
     else {
       Write-Host "   Staging worktree already exists." -ForegroundColor DarkYellow
+    }
+  }
+
+  if (-not $SkipBootstrap -and (Test-Path $DevCheckout)) {
+    Write-Host ""
+    Write-Host "Bootstrapping golden dependency source (.worktrees/dev)..." -ForegroundColor Cyan
+    . "$ScriptDir/lib/worktree-bootstrap.ps1"
+    Invoke-WorktreeBootstrap -WorktreeRoot $DevCheckout -SourceRoot $ProjectMainDir -Full -SkipSession
+    if ($LASTEXITCODE -ne 0) {
+      Write-Host "   Dev bootstrap reported issues — run yarn workspace:bootstrap from .worktrees/dev" -ForegroundColor DarkYellow
     }
   }
 

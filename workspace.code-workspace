@@ -1,10 +1,13 @@
 {
   "folders": [
-    { "name": "Root", "path": "." },
-    { "name": "next-forge", "path": "next-forge" },
-    { "name": "GenerativeUI", "path": "GenerativeUI_monorepo" },
-    { "name": "scripts", "path": "scripts" },
-    { "name": "agent-skills", "path": ".agents/skills" }
+    {
+      "name": "Root",
+      "path": "."
+    },
+    {
+      "name": "agent-skills",
+      "path": ".agents/skills"
+    }
   ],
   "settings": {
     "files.exclude": {
@@ -16,7 +19,9 @@
       "**/__pycache__": true,
       "**/.venv": true,
       "**/venv": true,
-      "**/*.pyc": true
+      "**/*.pyc": true,
+      "**/.worktrees": true,
+      "**/.vendor": true
     },
     "search.exclude": {
       "**/node_modules": true,
@@ -28,11 +33,56 @@
       "**/dist": true,
       "**/.git": true,
       "**/yarn.lock": true,
-      "**/pnpm-lock.yaml": true
+      "**/pnpm-lock.yaml": true,
+      "**/.worktrees": true,
+      "**/.vendor": true,
+      "**/.yarn": true,
+      "**/UniversalWorkbench*/**": true
     },
-    "editor.formatOnSave": true,
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.worktrees/**": true,
+      "**/.vendor/**": true,
+      "**/node_modules/**": true,
+      "**/.yarn/**": true,
+      "**/.next/**": true,
+      "**/dist/**": true,
+      "**/build/**": true,
+      "**/.venv/**": true,
+      "**/agent/.venv/**": true,
+      "**/UniversalWorkbench*/**": true
+    },
+    "python.defaultInterpreterPath": "${workspaceFolder:Root}/agent/.venv/Scripts/python.exe",
+    "python.analysis.diagnosticMode": "workspace",
+    "cursorpyright.analysis.diagnosticMode": "openFilesOnly",
+    "cursorpyright.importStrategy": "useBundled",
+    "cursorpyright.analysis.stubPath": "",
+    "cursorpyright.nodeMaxOldSpaceSize": 1024,
+    "codeQL.testDiscovery": false,
     "git.ignoreLimitWarning": true,
-    "terminal.integrated.defaultProfile.windows": "PowerShell"
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.inlineSuggest.showToolbar": "always",
+    "diffEditor.codeLens": true,
+    "editor.formatOnType": true,
+    "codeQL.addingDatabases.allowHttp": true,
+    "powershell.cwd": "Root",
+    "deno.enable": true,
+    "projectManager.supportSymlinksOnBaseFolders": true,
+    "codeQL.runningQueries.cacheSize": 1024,
+    "codeQL.runningQueries.memory": 1024,
+    "codeQL.runningQueries.maxQueries": 5,
+    "codeQL.runningQueries.numberOfThreads": 1024,
+    "codeQL.runningQueries.timeout": 3,
+    "cursor.general.emailPrivacyEnabled": true,
+    "python.languageServer": "Default",
+    "cursorpyright.analysis.exclude": [
+      "**/node_modules",
+      "**/__pycache__",
+      ".git",
+      ".venv"
+    ],
+    "python.terminal.shellIntegration.enabled": true
   },
   "extensions": {
     "recommendations": [
@@ -41,7 +91,8 @@
       "bradlc.vscode-tailwindcss",
       "GitHub.copilot",
       "GitHub.copilot-chat",
-      "eamodio.gitlens"
+      "eamodio.gitlens",
+      "anysphere.cursorpyright"
     ]
   },
   "tasks": {
@@ -51,35 +102,45 @@
         "label": "Dev: next-forge core",
         "type": "shell",
         "command": "yarn dev:forge:core",
-        "options": { "cwd": "${workspaceFolder:Root}" },
+        "options": {
+          "cwd": "${workspaceFolder:Root}"
+        },
         "problemMatcher": []
       },
       {
         "label": "Dev: GenerativeUI",
         "type": "shell",
         "command": "yarn dev:generative",
-        "options": { "cwd": "${workspaceFolder:Root}" },
+        "options": {
+          "cwd": "${workspaceFolder:Root}"
+        },
         "problemMatcher": []
       },
       {
         "label": "Verify: next-forge",
         "type": "shell",
         "command": "yarn verify:forge",
-        "options": { "cwd": "${workspaceFolder:Root}" },
+        "options": {
+          "cwd": "${workspaceFolder:Root}"
+        },
         "problemMatcher": []
       },
       {
         "label": "Verify: GenerativeUI",
         "type": "shell",
         "command": "yarn verify:generative",
-        "options": { "cwd": "${workspaceFolder:Root}" },
+        "options": {
+          "cwd": "${workspaceFolder:Root}"
+        },
         "problemMatcher": []
       },
       {
         "label": "Repo alignment doctor",
         "type": "shell",
         "command": "yarn repo:doctor",
-        "options": { "cwd": "${workspaceFolder:Root}" },
+        "options": {
+          "cwd": "${workspaceFolder:Root}"
+        },
         "problemMatcher": []
       }
     ]

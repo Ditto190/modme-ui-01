@@ -1,0 +1,309 @@
+{
+  "version": "1.0.0",
+  "schema_version": "1.0.0",
+  "generated_at": "2026-07-05T12:34:11.788Z",
+  "stack": "forge",
+  "source_only": false,
+  "content_hashes": {
+    "file_explorer": "550940df7153f785b6456da2575fc3cf1c624740b51480034ca5f2d3d0542495",
+    "code_editor": "f87657c57624bb9b647a39831d3b2733f76b607be6d3b407765e59bdba73f946",
+    "file_manager": "7f8c6028e83c2307daf84d686a0e90282c469bdb9d6c8bc9ba4dd209f81b019a",
+    "git_workspace": "10fff4bb14c9ba9afd19778b74aa6705a1724c8c1e5826c06352ef82543f3f53",
+    "git_committer": "dd5a8a54546732787e968681c4aaae473189f567714fd5a7c86da1f94221e455",
+    "sequential_analyzer": "9e4005ae352195f452578ef0a9f2fa6b7e83c17ae26972b9fe1f4154d946959f",
+    "web_scraper": "cac49220a97ab69fadfca2e8a250c40c6ee85405099fc14023ddebd075f71ff2",
+    "code_pattern_scanner": "a7cb815798acef5948954fab88709143eca125e7d8b13a433f797f9c8bfbd48c",
+    "knowledge_intake": "6e05af3e0c55a0645ff97eeeefc316e5037a3fd893711037453fb866078967b4",
+    "web_fetcher": "22161d5a08c9ce09d7d5fe5909d3a9625ef8f6aa4a92f59cbacfa4e966e14f35"
+  },
+  "molecule_ids": [
+    "file_explorer",
+    "code_editor",
+    "file_manager",
+    "git_workspace",
+    "git_committer",
+    "sequential_analyzer",
+    "web_scraper",
+    "code_pattern_scanner",
+    "knowledge_intake",
+    "web_fetcher"
+  ],
+  "molecules": [
+    {
+      "id": "file_explorer",
+      "name": "File Explorer",
+      "description": "Browse and navigate the file system",
+      "genUItier": "static",
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "pattern": {
+            "type": "string"
+          }
+        },
+        "required": ["path"]
+      },
+      "constraints": ["Cannot access system directories without permission"],
+      "route_hint": "component",
+      "tags": ["filesystem", "navigation"],
+      "underlyingTools": ["filesystem.list_directory", "filesystem.read_file"],
+      "complexity": "simple",
+      "examples": [
+        {
+          "description": "Explore project structure",
+          "input": {
+            "path": "/workspace",
+            "pattern": "*.ts"
+          },
+          "expectedOutcome": "List of TypeScript files in workspace"
+        }
+      ]
+    },
+    {
+      "id": "code_editor",
+      "name": "Code Editor",
+      "description": "View, edit, and create source code files",
+      "genUItier": "static",
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "filepath": {
+            "type": "string"
+          },
+          "action": {
+            "enum": ["read", "write", "append"]
+          },
+          "content": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          }
+        },
+        "required": ["filepath", "action"]
+      },
+      "constraints": ["Write operations require explicit user approval"],
+      "route_hint": "component",
+      "tags": ["code", "filesystem"],
+      "underlyingTools": ["filesystem.read_file", "filesystem.write_file"],
+      "complexity": "moderate",
+      "examples": []
+    },
+    {
+      "id": "file_manager",
+      "name": "File Manager",
+      "description": "Create, move, delete files and directories",
+      "genUItier": "declarative",
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "enum": ["create", "move", "delete", "mkdir"]
+          },
+          "source": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "string"
+          }
+        },
+        "required": ["action"]
+      },
+      "constraints": ["Destructive operations require confirmation"],
+      "route_hint": "component",
+      "tags": ["filesystem"],
+      "underlyingTools": ["filesystem.write_file"],
+      "complexity": "moderate",
+      "examples": []
+    },
+    {
+      "id": "git_workspace",
+      "name": "Git Workspace",
+      "description": "View git status, diffs, branches",
+      "genUItier": "declarative",
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "enum": ["status", "diff", "log", "branches"]
+          },
+          "branch": {
+            "type": "string"
+          }
+        },
+        "required": ["action"]
+      },
+      "constraints": ["Read-only operations only"],
+      "route_hint": "component",
+      "tags": ["git"],
+      "underlyingTools": ["git.git_status"],
+      "complexity": "simple",
+      "examples": []
+    },
+    {
+      "id": "git_committer",
+      "name": "Git Committer",
+      "description": "Stage and commit changes",
+      "genUItier": "declarative",
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["message"]
+      },
+      "constraints": ["Never force-push or amend without explicit approval"],
+      "route_hint": "audit",
+      "tags": ["git"],
+      "underlyingTools": ["git.git_commit"],
+      "complexity": "moderate",
+      "examples": []
+    },
+    {
+      "id": "sequential_analyzer",
+      "name": "Sequential Analyzer",
+      "description": "Break complex problems into steps",
+      "genUItier": "open-ended",
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "problem": {
+            "type": "string"
+          },
+          "maxSteps": {
+            "type": "number"
+          }
+        },
+        "required": ["problem"]
+      },
+      "constraints": ["Keep steps focused and small"],
+      "route_hint": "visualization",
+      "tags": ["reasoning"],
+      "underlyingTools": ["sequential-thinking.create_thinking_process"],
+      "complexity": "complex",
+      "examples": []
+    },
+    {
+      "id": "web_scraper",
+      "name": "Web Scraper",
+      "description": "Fetch and extract content from URLs",
+      "genUItier": "declarative",
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "selector": {
+            "type": "string"
+          }
+        },
+        "required": ["url"]
+      },
+      "constraints": ["Respect robots.txt and rate limits"],
+      "route_hint": "component",
+      "tags": ["web", "api"],
+      "underlyingTools": ["web.fetch"],
+      "complexity": "moderate",
+      "examples": []
+    },
+    {
+      "id": "code_pattern_scanner",
+      "name": "Code Pattern Scanner",
+      "description": "Scan codebase for patterns and anti-patterns",
+      "genUItier": "declarative",
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string"
+          },
+          "root": {
+            "type": "string"
+          }
+        },
+        "required": ["pattern"]
+      },
+      "constraints": ["Read-only scan"],
+      "route_hint": "audit",
+      "tags": ["code"],
+      "underlyingTools": ["code.search"],
+      "complexity": "moderate",
+      "examples": []
+    },
+    {
+      "id": "knowledge_intake",
+      "name": "Knowledge Intake",
+      "description": "Ingest inbox entries into knowledge pipeline",
+      "genUItier": "declarative",
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "enum": ["classify", "promote", "audit"]
+          },
+          "job_id": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          }
+        },
+        "required": ["action"]
+      },
+      "constraints": ["Service role required for promote"],
+      "route_hint": "audit",
+      "tags": ["intake", "knowledge"],
+      "underlyingTools": ["inbox.classify"],
+      "complexity": "complex",
+      "examples": []
+    },
+    {
+      "id": "web_fetcher",
+      "name": "Web Fetcher",
+      "description": "Retrieve web pages for agent context",
+      "genUItier": "static",
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "format": {
+            "enum": ["markdown", "text", "html"]
+          }
+        },
+        "required": ["url"]
+      },
+      "constraints": ["No authenticated endpoints without credentials"],
+      "route_hint": "component",
+      "tags": ["web", "api"],
+      "underlyingTools": ["web.fetch"],
+      "complexity": "simple",
+      "examples": []
+    }
+  ],
+  "tiers": {
+    "static": ["file_explorer", "code_editor", "web_fetcher"],
+    "declarative": [
+      "file_manager",
+      "git_workspace",
+      "git_committer",
+      "web_scraper",
+      "code_pattern_scanner",
+      "knowledge_intake"
+    ],
+    "open-ended": ["sequential_analyzer"]
+  }
+}

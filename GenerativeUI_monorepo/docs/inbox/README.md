@@ -8,16 +8,16 @@ Everything dropped here is automatically ingested by the MDA Pipeline → persis
 
 ## What Goes Here
 
-| Format | Examples |
-|--------|---------|
-| `.md` | Agent decisions, ADR candidates, research notes, session summaries |
-| `.txt` | Quick notes, shopping lists, `llms.txt` exports |
-| `.csv` | Data exports, link lists, inventory sheets |
-| `.pdf` | Whitepapers, specs, reference documents |
-| `.url` / `.txt` with URLs | Links for web scraper to fetch and summarize |
-| `.html` | Saved pages, documentation |
-| `.jsx` / `.tsx` | React components found online |
-| code snippets | Any `.ts`, `.py`, `.sh`, etc. worth keeping |
+| Format                    | Examples                                                           |
+| ------------------------- | ------------------------------------------------------------------ |
+| `.md`                     | Agent decisions, ADR candidates, research notes, session summaries |
+| `.txt`                    | Quick notes, shopping lists, `llms.txt` exports                    |
+| `.csv`                    | Data exports, link lists, inventory sheets                         |
+| `.pdf`                    | Whitepapers, specs, reference documents                            |
+| `.url` / `.txt` with URLs | Links for web scraper to fetch and summarize                       |
+| `.html`                   | Saved pages, documentation                                         |
+| `.jsx` / `.tsx`           | React components found online                                      |
+| code snippets             | Any `.ts`, `.py`, `.sh`, etc. worth keeping                        |
 
 **Don't overthink it.** Drop it in. The pipeline handles the rest.
 
@@ -32,6 +32,7 @@ YYYY-MM-DDTHH-MM-SS_{type}_{agent-role}_{summary-slug}.md
 ```
 
 Examples:
+
 ```
 2026-06-20T13-08-00_architecture_architect_supabase-hybrid-cloud.md
 2026-06-20T14-30-00_code-review_frontend_tanstack-query-patterns.md
@@ -46,20 +47,20 @@ For raw drops (links, PDFs, components), any filename is fine — the ingestor r
 
 ```yaml
 ---
-timestamp: 2026-06-20T13:08:52Z        # ISO 8601 UTC
-agent: copilot                          # Agent or human name
-agent_role: architect                   # frontend|backend|devops|architect|reviewer|researcher
-session_id: a22af2b0-...               # Optional: Copilot session ID
+timestamp: 2026-06-20T13:08:52Z # ISO 8601 UTC
+agent: copilot # Agent or human name
+agent_role: architect # frontend|backend|devops|architect|reviewer|researcher
+session_id: a22af2b0-... # Optional: Copilot session ID
 tags:
-  - decision                            # Free-form tags
+  - decision # Free-form tags
   - supabase
   - infrastructure
-type: architecture                      # architecture|design|code-review|solution|research|snippet|link|component
-severity: high                          # low|medium|high|critical
-related_files:                          # Optional: paths to related files in the repo
+type: architecture # architecture|design|code-review|solution|research|snippet|link|component
+severity: high # low|medium|high|critical
+related_files: # Optional: paths to related files in the repo
   - next-forge/docs/adr/0001-supabase.md
-branch: chore/agent-tooling-and-ci      # Current git branch
-pr_number: null                         # Optional: PR number if related
+branch: chore/agent-tooling-and-ci # Current git branch
+pr_number: null # Optional: PR number if related
 ---
 ```
 
@@ -89,6 +90,7 @@ yarn inbox:fix                # preview safe frontmatter fixes
 ## Querying
 
 Once ingested, entries are queryable at:
+
 - **Admin UI**: `http://localhost:3100/knowledge` (next-forge app)
 - **API**: `http://localhost:3102/api/inbox` (next-forge API)
 - **Direct**: Supabase dashboard → `inbox_entries` table
@@ -117,10 +119,12 @@ branch: $(git branch --show-current)
 Your content here.
 EOF
 ```
+
 The `EOF` here is used as a delimiter for the [heredoc](https://en.wikipedia.org/wiki/Here_document) in bash. It marks the end of the multiline input that is redirected into your new markdown inbox entry file. Everything typed or pasted before `EOF` becomes the file content.
 
 **Example:**
 Suppose you run:
+
 ```bash
 cat > GenerativeUI_monorepo/docs/inbox/2024-06-08T12-00-00_architecture_copilot_decision-foo.md << 'EOF'
 ---
@@ -138,8 +142,22 @@ branch: main
 Discussed options and decided to use Supabase because of X, Y, and Z.
 EOF
 ```
+
 This will create a new markdown file with all the above content. The `EOF` at the end closes the input for the file.
+
 ```
+
+---
+
+## Browser capture (Obsidian Web Clipper)
+
+Clip GitHub pages, docs, articles, AI chats, and arbitrary URLs from Chrome into this folder using the importable JSON templates in [`templates/obsidian-clipper/`](../../../templates/obsidian-clipper/).
+
+**Required:** open repo root `Monorepo_ModMe` as an Obsidian vault (see [`ModMe Vault.md`](../../../ModMe%20Vault.md) and `.\scripts\setup-obsidian-vault.ps1`). Without a vault + Clipper vault selection, no files appear here.
+
+**Defuddle / Interpreter probes:** see [`web-clipper/defuddle-interpreter-ollama.md`](web-clipper/defuddle-interpreter-ollama.md) and `yarn defuddle:smoke`.
+
+**Note:** most files under this folder are gitignored. Clips still land on disk; use `git add -f` to commit for ingest, and show gitignored files in the IDE if you do not see new notes.
 
 ---
 

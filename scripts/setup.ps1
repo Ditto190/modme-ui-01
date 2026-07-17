@@ -1,10 +1,12 @@
 # ModMe GenUI Workspace Setup (PowerShell)
+# TODO: UPDATE THIS SCRIPT TO USE THE NEW ARCHITECTURE/DECISIONS/0010-dolt-catalog-cms-evaluation.md
 # =========================================
 
 Write-Host "🚀 ModMe GenUI Workspace Setup" -ForegroundColor Cyan
 Write-Host "==============================" -ForegroundColor Cyan
 Write-Host ""
 
+# UPDATE THIS SCRIPT TO USE THE NEW ARCHITECTURE/DECISIONS/0010-dolt-catalog-cms-evaluation.md
 # Function to print colored output
 function Print-Success {
     param([string]$Message)

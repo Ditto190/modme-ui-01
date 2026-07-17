@@ -2,6 +2,8 @@
 
 > **Single devcontainer supporting parallel human + AI development across multiple git worktrees**
 
+**Alternative (no container):** use native workspace bootstrap — [`docs/multi-agent-worktrees.md`](../docs/multi-agent-worktrees.md#native-workspace-bootstrap-no-devcontainer) (`yarn workspace:bootstrap` from `.worktrees/dev`).
+
 ---
 
 ## Quick Start
@@ -67,17 +69,18 @@ Each worktree gets an **identical environment**:
 
 ### Worktree Detection
 
-The `post-create.sh` script automatically detects your current context:
+The `post-create.sh` script detects checkout context via `worktree-context.ps1`:
+
+- **Main checkout** — root `yarn install` + sub-monorepo deps only (no port allocation or worktree bootstrap)
+- **`.worktrees/*` checkout** — full `setup-worktree-unix.sh` (ports, env copy, hooks)
 
 ```bash
-# When you reopen in container, it prints:
-# 🔍 Detecting git context...
-#    ✓ Workspace: relaxed-hugle
-#    ✓ Branch: relaxed-hugle
-#    ✓ Commit: ff95b47
+# When you reopen in container, it prints git context (branch, commit).
+# Main: "skipping worktree port/bootstrap"
+# Worktree: "Running worktree bootstrap"
 ```
 
-No configuration needed - just reopen and go!
+No extra configuration needed — open the folder you intend to work in, then Reopen in Container.
 
 ---
 

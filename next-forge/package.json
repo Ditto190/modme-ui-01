@@ -71,7 +71,8 @@
     "nypm": "^0.6.5"
   },
   "overrides": {
-    "parse5": "^7.2.1"
+    "parse5": "^7.2.1",
+    "@vitejs/plugin-react": "5.1.4"
   },
   "type": "module",
   "workspaces": [

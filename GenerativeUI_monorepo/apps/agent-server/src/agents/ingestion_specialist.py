@@ -6,6 +6,16 @@ Formats: md/txt (frontmatter parse), pdf/html (text extraction), jsx/ts (AST ana
 @domain INBOX
 @layer AGENT
 """
+# TODO: Based on the /Root/GenerativeUI_monorepo/sico-digitalworker/sico-dbgen/db-gen-testcases.go file, we need to extract the following information:
+# - The name of the table
+# - The columns of the table
+# - The data types of the columns
+# - The primary key of the table
+# - The foreign key constraints of the table
+# - The indexes of the table
+# - The constraints of the table
+# - The triggers of the table
+# Explainer: This is an example but there are many more types of data to extract based on "/sico-digitalworker/sico-dbgen/db-gen-github.md" and "sico-dbgen/sico-llm-swagger.json" file and other files in the /sico-digitalworker/sico-dbgen/llm-hub.md file.
 
 from __future__ import annotations
 

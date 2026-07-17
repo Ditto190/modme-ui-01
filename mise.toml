@@ -1,0 +1,41 @@
+# ModMe root — polyglot tool versions and verify task templates
+# https://mise.jdx.dev/tasks/monorepo.html
+
+[settings]
+monorepo_root = true
+
+[tools]
+node = "22"
+python = "3.12"
+bun = "1.3"
+
+[env]
+LOG_LEVEL = "info"
+
+[tasks.test-orchestration]
+description = "Run root scripts vitest workspace"
+run = "yarn test:orchestration"
+
+[tasks.test-scripts-python]
+description = "Run pytest for scripts/ Python CLIs"
+run = "yarn test:scripts:python"
+
+[tasks.trunk-check]
+description = "Run Trunk polyglot lint gate"
+run = "yarn trunk:check"
+
+[tasks.verify-forge]
+description = "next-forge CI parity"
+run = "yarn verify:forge"
+
+[tasks.verify-generative]
+description = "GenerativeUI CI parity"
+run = "yarn verify:generative"
+
+[tasks.verify-scripts]
+description = "Root scripts CI parity"
+run = "yarn verify:scripts"
+
+[tasks.verify-all]
+description = "Full dual-monorepo verify"
+run = "yarn verify:all"

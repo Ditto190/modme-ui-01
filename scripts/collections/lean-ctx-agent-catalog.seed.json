@@ -52,6 +52,12 @@
       "namespace": "gitlab",
       "find_hint": "merge request pipeline",
       "mcp_server": "plugin-gitlab-GitLab"
+    },
+    {
+      "namespace": "agentgateway",
+      "find_hint": "a2a mcp llm routing proxy",
+      "mcp_server": "agentgateway-modme",
+      "config_path": "config/agentgateway/routes.example.yaml"
     }
   ]
 }

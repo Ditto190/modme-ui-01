@@ -1,0 +1,28 @@
+# TDD adjunct — advisory mirror of modme-tdd preflight (MR label: tdd)
+# Requires TDD_TEST_PATH variable or MR label `tdd`.
+
+tdd_preflight:
+  stage: test
+  image: node:20-bookworm
+  rules:
+    - if: $CI_MERGE_REQUEST_LABELS =~ /tdd/
+    - if: $TDD_TEST_PATH
+  variables:
+    GIT_STRATEGY: fetch
+  script:
+    - |
+      if [ ! -f scripts/preflight.mjs ]; then
+        echo "scripts/preflight.mjs not present — skipping TDD preflight adjunct"
+        exit 0
+      fi
+      if [ -z "$TDD_TEST_PATH" ]; then
+        echo "TDD_TEST_PATH not set — set on MR or pipeline variable"
+        exit 0
+      fi
+      node scripts/preflight.mjs --profile tdd-green --test "$TDD_TEST_PATH" --report
+  artifacts:
+    when: always
+    paths:
+      - docs/devops/reports/preflight-latest.json
+    expire_in: 7 days
+  allow_failure: true

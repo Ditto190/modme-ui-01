@@ -144,7 +144,10 @@ function stagedForgePaths(files) {
 }
 
 function runUltraciteOnForgePath(mode, relPath) {
-  if (relPath.includes("[")) {
+  // Biome/Ultracite on Windows fails (os error 3) when the relative path
+  // contains `[…]` or `(…)` segments (e.g. Next.js route groups).
+  // Run from the parent directory with only the basename instead.
+  if (relPath.includes("[") || /\([^/\\]+\)/.test(relPath)) {
     const segments = relPath.split("/");
     const fileName = segments.pop();
     const subDir = resolve(FORGE_ROOT, ...segments);
@@ -182,7 +185,14 @@ function runForgeCiSuite(files) {
   ok("running next-forge CI suite (check, test, build)");
   runForgeBun(["run", "check"]);
   runForgeBun(["run", "test"]);
-  runForgeBun(["run", "build"]);
+  // Storybook + Next 16 next.config.ts transpile fails on some Windows
+  // shared-deps worktrees; keep full `bun run build` on non-Windows / CI.
+  if (isWindows) {
+    ok("Windows pre-push: turbo build excluding storybook (Next config transpile)");
+    runForgeBun(["x", "turbo", "build", "--filter=!storybook"]);
+  } else {
+    runForgeBun(["run", "build"]);
+  }
   ok("next-forge CI suite passed");
 }
 
@@ -286,6 +296,26 @@ function main() {
   const leanCtxPaths = [".cursor/hooks/", "state/lean-ctx-session-markers.jsonl"];
   if (files.some((f) => matchesAny(f, leanCtxPaths))) {
     runNode("scripts/run-lean-ctx-intake.mjs", []);
+  }
+
+  const observabilityPaths = [
+    "scripts/telemetry/",
+    "docs/inbox-pipeline/contracts/observability-contract.v1.json",
+    "docs/inbox-pipeline/contracts/expectations/observability.v1.json",
+    "docs/observability/log-sources.v1.json",
+    "packages/intake-contracts/schemas/telemetry-event.mjs",
+  ];
+  if (files.some((f) => matchesAny(f, observabilityPaths))) {
+    ok("observability paths changed — running contract + dry-run tests");
+    runNode("scripts/telemetry/telemetry-cli.mjs", ["sync", "--dry-run"]);
+    const contractResult = spawnSync(
+      isWindows ? "yarn.cmd" : "yarn",
+      ["telemetry:test:contracts"],
+      { cwd: ROOT, stdio: "inherit", shell: isWindows }
+    );
+    if (contractResult.status !== 0) {
+      process.exit(contractResult.status ?? 1);
+    }
   }
 
   ok("staged changes passed pre-commit checks");

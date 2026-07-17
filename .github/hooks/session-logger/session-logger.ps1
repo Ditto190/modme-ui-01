@@ -89,15 +89,25 @@ function Write-JsonLine {
   Add-Content -LiteralPath $Path -Value $json -Encoding utf8
 }
 
+function Get-AgentPlatform {
+  if ($env:AGENT_OWNER) { return $env:AGENT_OWNER }
+  if ($env:CURSOR_AGENT) { return 'cursor' }
+  if ($env:COPILOT_AGENT) { return 'copilot' }
+  if ($env:GITHUB_COPILOT_AGENT) { return 'copilot' }
+  return 'unknown'
+}
+
 function New-BaseEntry {
   param([string]$EventName, [string]$Id)
   @{
-    timestamp = (Get-Date).ToUniversalTime().ToString('o')
-    event     = $EventName
-    sessionId = $Id
-    agent     = Get-AgentName
-    worktree  = Get-WorktreeName
-    branch    = Get-BranchName
+    timestamp         = (Get-Date).ToUniversalTime().ToString('o')
+    event             = $EventName
+    sessionId         = $Id
+    agent             = Get-AgentName
+    worktree          = Get-WorktreeName
+    branch            = Get-BranchName
+    agent_platform    = Get-AgentPlatform
+    parent_session_id = if ($env:PARENT_SESSION_ID) { $env:PARENT_SESSION_ID } else { $null }
   }
 }
 

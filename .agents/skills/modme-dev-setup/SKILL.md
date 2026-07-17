@@ -45,8 +45,8 @@ From repo root (PowerShell):
 Copy-Item .env.example .env   # if needed
 
 # 2. Full setup
-yarn setup:modme
-# or: .\scripts\setup-modme-dev.ps1
+yarn workspace:bootstrap:shared
+# or: yarn workspace:bootstrap:lite
 
 # 3. Start core apps
 yarn dev:forge:core
@@ -58,7 +58,7 @@ yarn dev:forge:core
 |--------|------------|---------|
 | `scripts/sync-env-from-root.ps1` | `yarn setup:env` | Root `.env` → next-forge dotenv files |
 | `scripts/setup-gh-aw-secrets.ps1` | `yarn setup:gh-aw` | `COPILOT_GITHUB_TOKEN` on GitHub from `.env` |
-| `scripts/setup-modme-dev.ps1` | `yarn setup:modme` | Orchestrates sync + secrets + forge check |
+| *(bootstrap deps)* | `yarn workspace:bootstrap:shared` | Workspace shared-deps bootstrap |
 
 ## gh-aw Copilot token
 
@@ -98,6 +98,15 @@ yarn worktree:doctor
 # WSL only:
 # gh aw compile --validate
 ```
+
+## Session start
+
+On ModMe session start, `scripts/dev-env-health.ps1` runs a lean-ctx + worktree
+healthcheck.
+If needed, it can run fallback workspace shared-deps bootstrap (`yarn workspace:bootstrap:shared`).
+
+If you see preflight/CI failures, route them via `yarn quality:route ...`
+(see `modme-quality-orchestrator`).
 
 Sign in: http://localhost:3100/sign-in (`dev@modme.local` / `devpassword`)
 

@@ -7,6 +7,11 @@ import { telemetryEventSchema } from './schemas/telemetry-event.mjs';
 import { pipelineRunSchema } from './schemas/pipeline-run.mjs';
 import { evalSignalSchema } from './schemas/eval-signal.mjs';
 import { testResultSchema } from './schemas/test-result.mjs';
+import {
+  moleculeCatalogSchema,
+  moleculeRecordSchema,
+  validateMoleculeCatalog,
+} from './schemas/molecule-catalog.mjs';
 
 export { safeValidate, formatZodIssues } from './lib/result.mjs';
 export {
@@ -42,6 +47,14 @@ export {
   TEST_FRAMEWORKS,
   testResultSchema,
 } from './schemas/test-result.mjs';
+export {
+  GENUI_TIERS,
+  ROUTE_HINTS,
+  moleculeExampleSchema,
+  moleculeCatalogSchema,
+  moleculeRecordSchema,
+  validateMoleculeCatalog,
+} from './schemas/molecule-catalog.mjs';
 
 export const SCRAPE_PAGE_STATUSES = ['raw', 'classified', 'promoted', 'failed'];
 

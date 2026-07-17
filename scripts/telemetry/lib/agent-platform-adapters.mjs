@@ -25,14 +25,16 @@ import { join } from 'node:path';
  * @returns {AgentPlatformInfo}
  */
 export function detectAgentPlatform(overrides = {}) {
-  const env = { ...process.env, ...overrides };
+  const isolated = Boolean(overrides.__isolate);
+  const env = isolated ? { ...overrides } : { ...process.env, ...overrides };
+  delete env.__isolate;
 
-  if (isCursor(env)) return buildCursorAdapter(env);
-  if (isCopilot(env)) return buildCopilotAdapter(env);
-  if (isClaude(env)) return buildClaudeAdapter(env);
-  if (isVoltAgent(env)) return buildVoltAgentAdapter(env);
+  if (isCursor(env, isolated)) return buildCursorAdapter(env);
+  if (isCopilot(env, isolated)) return buildCopilotAdapter(env);
+  if (isClaude(env, isolated)) return buildClaudeAdapter(env);
+  if (isVoltAgent(env, isolated)) return buildVoltAgentAdapter(env);
   if (isCloudAgent(env)) return buildCloudAgentAdapter(env);
-  if (isLeanCtx(env)) return buildLeanCtxAdapter(env);
+  if (isLeanCtx(env, isolated)) return buildLeanCtxAdapter(env);
   return buildHumanAdapter(env);
 }
 
@@ -58,37 +60,37 @@ export function normalizeAgentEvent(platform, event = {}) {
 
 // ─── Detectors ────────────────────────────────────────────────────────────────
 
-function isCursor(env) {
+function isCursor(env, skipFs = false) {
   return (
     Boolean(env.CURSOR_SESSION_ID) ||
     Boolean(env.CURSOR_TRACE_ID) ||
-    existsSync(join(process.cwd(), '.cursor', 'hooks', 'state'))
+    (!skipFs && existsSync(join(process.cwd(), '.cursor', 'hooks', 'state')))
   );
 }
 
-function isCopilot(env) {
+function isCopilot(env, skipFs = false) {
   return (
     Boolean(env.GITHUB_COPILOT_TOKEN) ||
     Boolean(env.COPILOT_SESSION_ID) ||
     Boolean(env.GITHUB_COPILOT_CHAT_ENABLED) ||
-    existsSync(join(process.cwd(), '.github', 'hooks', 'session-logger'))
+    (!skipFs && existsSync(join(process.cwd(), '.github', 'hooks', 'session-logger')))
   );
 }
 
-function isClaude(env) {
+function isClaude(env, skipFs = false) {
   return (
     Boolean(env.CLAUDECODE) ||
     Boolean(env.CLAUDE_CODE_ENTRYPOINT) ||
     Boolean(env.CLAUDE_SESSION_ID) ||
-    existsSync(join(homedir(), '.claude'))
+    (!skipFs && existsSync(join(homedir(), '.claude')))
   );
 }
 
-function isVoltAgent(env) {
+function isVoltAgent(env, skipFs = false) {
   return (
     Boolean(env.VOLTAGENT_SESSION_ID) ||
     Boolean(env.VOLTAGENT_API_KEY) ||
-    existsSync(join(process.cwd(), '.voltagent'))
+    (!skipFs && existsSync(join(process.cwd(), '.voltagent')))
   );
 }
 
@@ -96,11 +98,11 @@ function isCloudAgent(env) {
   return Boolean(env.CURSOR_CLOUD) || env.AGENT_OWNER === 'cloud';
 }
 
-function isLeanCtx(env) {
+function isLeanCtx(env, skipFs = false) {
   return (
     Boolean(env.LEAN_CTX_DATA_DIR) ||
     Boolean(env.LEAN_CTX_STATE_DIR) ||
-    existsSync(join(process.cwd(), '.lean-ctx.toml'))
+    (!skipFs && existsSync(join(process.cwd(), '.lean-ctx.toml')))
   );
 }
 
@@ -118,6 +120,7 @@ function buildCursorAdapter(env) {
     },
     event_fields: {
       agent_platform: 'cursor',
+      parent_session_id: env.PARENT_SESSION_ID ?? env.VOLTAGENT_PARENT_ID ?? null,
       worktree: env.WORKTREE_NAME ?? '',
       branch: env.GIT_BRANCH ?? '',
     },
@@ -136,6 +139,7 @@ function buildCopilotAdapter(env) {
     },
     event_fields: {
       agent_platform: 'copilot',
+      parent_session_id: env.PARENT_SESSION_ID ?? env.VOLTAGENT_PARENT_ID ?? null,
       worktree: env.WORKTREE_NAME ?? '',
       branch: env.GIT_BRANCH ?? env.GITHUB_REF_NAME ?? '',
     },
@@ -154,6 +158,7 @@ function buildClaudeAdapter(env) {
     },
     event_fields: {
       agent_platform: 'claude',
+      parent_session_id: env.PARENT_SESSION_ID ?? env.VOLTAGENT_PARENT_ID ?? null,
       worktree: env.WORKTREE_NAME ?? '',
       branch: env.GIT_BRANCH ?? '',
     },
@@ -173,7 +178,7 @@ function buildVoltAgentAdapter(env) {
     },
     event_fields: {
       agent_platform: 'voltagent',
-      parent_session_id: env.VOLTAGENT_PARENT_ID ?? null,
+      parent_session_id: env.PARENT_SESSION_ID ?? env.VOLTAGENT_PARENT_ID ?? null,
       worktree: env.WORKTREE_NAME ?? '',
       branch: env.GIT_BRANCH ?? '',
     },

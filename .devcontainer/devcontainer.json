@@ -21,6 +21,12 @@
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "version": "latest",
       "dockerComposeVersion":  "v2"
+    },
+    "ghcr.io/devcontainers/features/powershell:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers-extra/features/bun:1": {
+      "version": "latest"
     }
   },
   "customizations": {
@@ -100,14 +106,34 @@
     }
   },
 
-  "forwardPorts": [3000, 8000, 8001, 8002],
+  "forwardPorts": [3100, 3101, 3102, 3103, 3104, 6106, 8000, 8001, 8002],
   "portsAttributes": {
-    "3000": {
-      "label": "Next.js UI",
+    "3100": {
+      "label": "next-forge App (SaaS)",
+      "onAutoForward": "notify"
+    },
+    "3101": {
+      "label": "next-forge Web (Marketing)",
+      "onAutoForward": "notify"
+    },
+    "3102": {
+      "label": "next-forge API",
+      "onAutoForward": "notify"
+    },
+    "3103": {
+      "label": "next-forge (reserved)",
+      "onAutoForward": "silent"
+    },
+    "3104": {
+      "label": "next-forge Docs (Mintlify)",
+      "onAutoForward": "notify"
+    },
+    "6106": {
+      "label": "next-forge Storybook",
       "onAutoForward": "notify"
     },
     "8000": {
-      "label": "Python ADK Agent",
+      "label": "GenerativeUI Agent Server",
       "onAutoForward": "notify"
     },
     "8001": {
@@ -125,11 +151,11 @@
     "NODE_ENV": "development",
     "PYTHONPATH": "${containerWorkspaceFolder}/agent"
   },
-  "remoteUser": "vscode",
+  "remoteUser": "node",
 
   "mounts": [
     "source=${localWorkspaceFolder}/data,target=${containerWorkspaceFolder}/data,type=bind,consistency=cached",
-    "source=${localWorkspaceFolder}/.devcontainer/mcp-servers,target=/home/vscode/.config/mcp,type=bind,consistency=cached"
+    "source=${localWorkspaceFolder}/.devcontainer/mcp-servers,target=/home/node/.config/mcp,type=bind,consistency=cached"
   ],
   "containerEnv": {
     "WORKSPACE_TYPE": "genui-devcontainer-multiworktree"

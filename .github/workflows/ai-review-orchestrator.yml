@@ -1,0 +1,146 @@
+name: AI Review Orchestrator
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+  statuses: write
+
+jobs:
+  agent-fallback-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set initial pending status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            if (!pr) return;
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: pr.head.sha,
+              state: 'pending',
+              context: 'ai-review-orchestrator',
+              description: 'Waiting for AI reviews and PR triage...'
+            });
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: pr.head.sha,
+              state: 'pending',
+              context: 'pr-triage-pipeline',
+              description: 'PR triage pipeline (recommendation mode)'
+            });
+
+      - name: Wait for Coderabbit to post a review
+        id: coderabbit
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            const rabbitReview = reviews.find(r =>
+              r.user && r.user.login && r.user.login.includes('coderabbit')
+            );
+            if (!rabbitReview) {
+              core.setOutput('resolved', 'false');
+              core.setOutput('state', 'missing');
+              return;
+            }
+            // Customize the resolution criteria to match Coderabbit’s output.
+            const isUnsure = /not confident|unable to review|needs human review/i.test(rabbitReview.body || '');
+            core.setOutput('resolved', isUnsure ? 'false' : 'true');
+            core.setOutput('state', isUnsure ? 'unsure' : 'approved');
+
+      - name: Mark passing if Coderabbit resolved
+        if: steps.coderabbit.outputs.resolved == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.payload.pull_request.head.sha,
+              state: 'success',
+              context: 'ai-review-orchestrator',
+              description: `Coderabbit ${process.env.STATE}`
+            });
+        env:
+          STATE: ${{ steps.coderabbit.outputs.state }}
+
+      - name: Fallback to Cube
+        id: cube
+        if: steps.coderabbit.outputs.resolved == 'false'
+        run: |
+          echo "Triggering Cube review..."
+          # Replace with Cube CLI / API call, or a custom action.
+          # Example: curl -X POST https://api.cube.example/review \
+          #   -H "Authorization: Bearer ${{ secrets.CUBE_API_TOKEN }}" \
+          #   -d '{"repo":"${{ github.repository }}","pr":${{ github.event.pull_request.number }}}'
+          #
+          # Then parse the response and echo resolved=true/false.
+          echo "resolved=false" >> $GITHUB_OUTPUT
+          echo "state=unsure" >> $GITHUB_OUTPUT
+
+      - name: Fallback to Copilot Chat review
+        id: copilot
+        if: steps.coderabbit.outputs.resolved == 'false' && steps.cube.outputs.resolved == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // GitHub Copilot Chat for PRs does not have a stable public REST API
+            // for programmatic review. The practical fallback is to post an
+            // @-mention comment that invites Copilot to review inline, or to
+            // run the GitHub CLI with Copilot extension.
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '@copilot please review this PR for correctness, security, and style. Prior issues raised by other agents remain unresolved; provide actionable suggestions.'
+            });
+            core.setOutput('resolved', 'false'); // Copilot returns as comments, not a binary OK
+            core.setOutput('state', 'copilot_fallback');
+
+      - name: Final orchestrator status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const sha = pr ? pr.head.sha : context.sha;
+            if (!sha) return;
+            const rabbitResolved = '${{ steps.coderabbit.outputs.resolved }}' === 'true';
+            const cubeResolved = '${{ steps.cube.outputs.resolved }}' === 'true';
+            const finalState = rabbitResolved || cubeResolved ? 'success' : 'neutral';
+            const desc = rabbitResolved ? 'Coderabbit resolved' : cubeResolved ? 'Cube resolved' : 'Agents exhausted; human review required';
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha,
+              state: finalState,
+              context: 'ai-review-orchestrator',
+              description: desc
+            });
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha,
+              state: finalState === 'success' ? 'success' : 'neutral',
+              context: 'pr-triage-pipeline',
+              description: finalState === 'success'
+                ? 'AI review clear — run yarn pr:triage before merge'
+                : 'Run yarn pr:triage; high comments block merge'
+            });

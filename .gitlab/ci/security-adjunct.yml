@@ -1,0 +1,11 @@
+# Auto DevOps security templates (cherry-picked from autodev-reference.yml)
+# Primary security UX: .github/workflows/codeql.yml on GitHub
+# GitLab artifacts are adjunct signals on the mirror.
+
+stages:
+  - security
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml

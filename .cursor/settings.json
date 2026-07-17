@@ -11,9 +11,6 @@
     "superpowers": {
       "enabled": true
     },
-    "claude-code-plugins/hookify": {
-      "enabled": true
-    },
     "anthropic-agent-skills/document-skills": {
       "enabled": true
     },

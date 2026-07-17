@@ -33,15 +33,21 @@ foreach ($relativePath in $envPaths) {
   }
 }
 
-# Yarn 3 needs yarn.lock in the worktree root (dev branch may not track it).
-$yarnBootstrapPaths = @(
+# Lockfiles required for shared-deps junction matching (see scripts/lib/worktree-link-deps.mjs).
+$bootstrapLockPaths = @(
   "yarn.lock",
-  ".yarnrc.yml"
+  ".yarnrc.yml",
+  "next-forge/bun.lock",
+  "GenerativeUI_monorepo/apps/agent-server/poetry.lock"
 )
-foreach ($relativePath in $yarnBootstrapPaths) {
+foreach ($relativePath in $bootstrapLockPaths) {
   $source = Join-Path $SourceRoot $relativePath
   $target = Join-Path $TargetRoot $relativePath
   if (Test-Path $source) {
+    $targetDir = Split-Path -Parent $target
+    if ($targetDir -and -not (Test-Path $targetDir)) {
+      New-Item -ItemType Directory -Force -Path $targetDir | Out-Null
+    }
     Copy-Item $source $target -Force
     Write-Host "   Copied $relativePath" -ForegroundColor Green
   }

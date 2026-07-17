@@ -77,6 +77,20 @@ Feature work **must not** happen in the main checkout. Use isolated Git worktree
 **Ports:** `. .\scripts\load-worktree-ports.ps1` or `yarn worktree:ports` before `yarn dev:*`  
 **Docs:** [`docs/multi-agent-worktrees.md`](docs/multi-agent-worktrees.md)
 
+## Agent skills
+
+### Issue tracker
+
+GitHub issues on [`Ditto190/modme-ui-01`](https://github.com/Ditto190/modme-ui-01); use `gh --repo Ditto190/modme-ui-01` when origin is GitLab. Beads (`modme` prefix) for multi-session agent epics. External PRs are not a triage surface. See [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md).
+
+### Triage labels
+
+Default matt-pocock vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See [`docs/agents/triage-labels.md`](docs/agents/triage-labels.md).
+
+### Domain docs
+
+Single-context monorepo — root `docs/adr/`, optional `CONTEXT.md`, next-forge ADRs under `next-forge/docs/adr/`. Frontend Gen Engine program brief: [`docs/frontend-gen-engine/PROJECT_BRIEF.md`](docs/frontend-gen-engine/PROJECT_BRIEF.md). See [`docs/agents/domain.md`](docs/agents/domain.md).
+
 ## Agent behavior
 
 1. **Read via lean-ctx only:** Do not use native `Read`, `Grep`, or `Glob` for codebase files. Use `ctx_read(path, mode)` with an explicit mode (`full` before edits, `diff` after, `map`/`signatures` to orient). See [`LEAN-CTX.md`](LEAN-CTX.md) and [read modes](https://leanctx.com/docs/concepts/read-modes/). Shell → `lean-ctx -c` or `ctx_shell`.

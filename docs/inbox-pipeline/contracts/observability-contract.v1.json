@@ -37,7 +37,10 @@
       "lean-ctx-debug",
       "lean-ctx-marker",
       "lean-ctx-archive",
-      "lean-ctx-collect"
+      "lean-ctx-collect",
+      "git-hook",
+      "agenttrace",
+      "session-envelope"
     ]
   },
   "telemetryEvent": {

@@ -1,5 +1,4 @@
-import { describe, it } from 'node:test';
-import assert from 'node:assert/strict';
+import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -25,23 +24,23 @@ const registry = JSON.parse(readFileSync(REGISTRY_PATH, 'utf8'));
 describe('pattern coverage map', () => {
   it('every registry pattern has a coverage-map entry', () => {
     for (const id of Object.keys(registry.patterns)) {
-      assert.ok(map.patterns[id], `missing coverage for ${id}`);
+      expect(map.patterns[id], `missing coverage for ${id}`).toBeTruthy();
     }
   });
 
   it('every coverage path exists on disk', () => {
     for (const [id, entry] of Object.entries(map.patterns)) {
       for (const rel of entry.paths ?? []) {
-        assert.ok(pathExists(rel), `${id}: missing path ${rel}`);
+        expect(pathExists(rel), `${id}: missing path ${rel}`).toBe(true);
       }
     }
   });
 
   it('every yarn verify command maps to package.json scripts', () => {
-    for (const [id, entry] of Object.entries(map.patterns)) {
+    for (const entry of Object.values(map.patterns)) {
       for (const cmd of entry.verify ?? []) {
         for (const script of extractYarnScripts(cmd)) {
-          assert.ok(PKG.scripts[script], `${id}: unknown script yarn ${script}`);
+          expect(PKG.scripts[script], `missing script ${script} for ${cmd}`).toBeTruthy();
         }
       }
     }
@@ -49,7 +48,7 @@ describe('pattern coverage map', () => {
 
   it('every pattern has checklistDomain', () => {
     for (const [id, entry] of Object.entries(map.patterns)) {
-      assert.ok(entry.checklistDomain, `${id}: missing checklistDomain`);
+      expect(entry.checklistDomain, `${id} missing checklistDomain`).toBeTruthy();
     }
   });
 });

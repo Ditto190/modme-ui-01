@@ -11,10 +11,19 @@ Need a concise, actionable summary of feedback on the active pull request.
 
 ## Workflow
 
-1. Resolve the active PR for the current branch.
-2. Fetch review comments and discussion comments.
-3. Group feedback by severity and actionability.
-4. Return a concise action list.
+1. Resolve the active PR for the current branch (`gh pr view`) or pass `--pr <number>`.
+2. Run `yarn pr:comments --pr <n>` (or `node scripts/pr-triage/aggregate-pr-comments.mjs`).
+3. Script fetches inline review + discussion comments via `gh api`.
+4. Groups by severity (high/medium/low) from bot markers.
+5. Return prioritized action list.
+
+## Commands
+
+```bash
+yarn pr:comments --pr 91
+yarn pr:comments --pr 91 --markdown
+yarn pr:triage   # full pipeline + report in docs/pr-resolution/reports/
+```
 
 ## Output
 

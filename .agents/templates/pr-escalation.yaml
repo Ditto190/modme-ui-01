@@ -1,0 +1,51 @@
+# PR escalation template for beads / agent handoff
+# Usage: copy frontmatter into `bd create` or inbox capture
+
+---
+type: pr-escalation
+timestamp: <ISO8601>
+agent: cursor
+agent_role: devops
+severity: medium
+tags: [pr-triage, merge-blocked]
+branch: <head-ref>
+---
+
+## PR
+
+- **Number:** <pr-number>
+- **URL:** https://github.com/Ditto190/modme-ui-01/pull/<pr-number>
+- **Base:** dev
+
+## Blockers
+
+- [ ] high-comment-unresolved
+- [ ] compat-score-below-60
+- [ ] ci-failing
+- [ ] changelog-missing
+- [ ] human-review-required
+
+## Assignment
+
+| Field | Value |
+|-------|-------|
+| assigned_agent | cursor \| copilot \| human |
+| next_action | fix-null-safe-trim \| re-run-compat-scan \| request-re-review \| retarget-dev |
+
+## Context
+
+```yaml
+blockers:
+  - high-comment-unresolved
+compat_score: null
+high_comments: 0
+medium_comments: 0
+triage_report: docs/pr-resolution/reports/triage-<date>.json
+```
+
+## Resolution criteria
+
+- All high-severity inline comments addressed or dismissed
+- `yarn pre-commit:check` passes
+- `node scripts/validate-changelog.mjs --require-update` passes when monitored paths changed
+- Compatibility score ≥ 60 or override documented here

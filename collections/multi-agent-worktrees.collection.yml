@@ -1,0 +1,19 @@
+id: multi-agent-worktrees
+name: Multi-Agent Worktrees
+description: Bootstrap, verify, and session-finish agents for ModMe isolated Git worktrees
+items:
+  - path: agents/worktree-bootstrap.agent.md
+    kind: agent
+  - path: agents/forge-verifier.agent.md
+    kind: agent
+  - path: agents/generative-verifier.agent.md
+    kind: agent
+  - path: agents/session-finisher.agent.md
+    kind: agent
+  - path: .agents/skills/modme-worktree-orchestration/SKILL.md
+    kind: skill
+tags:
+  - worktree
+  - orchestration
+  - bootstrap
+  - verify

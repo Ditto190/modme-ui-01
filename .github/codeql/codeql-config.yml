@@ -1,0 +1,16 @@
+name: ModMe workspace CodeQL config
+paths:
+  - agent
+  - scripts
+  - next-forge/apps
+  - next-forge/packages
+  - GenerativeUI_monorepo/apps
+  - GenerativeUI_monorepo/packages
+paths-ignore:
+  - "**/node_modules/**"
+  - "**/.worktrees/**"
+  - "**/.vendor/**"
+  - "**/UniversalWorkbench*/**"
+  - "**/.venv/**"
+  - "**/dist/**"
+  - "**/build/**"
