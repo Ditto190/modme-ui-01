@@ -48,7 +48,7 @@ flowchart LR
 | File                                                          | Purpose                                                                                  |
 | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | [`.github/github-app.yml`](../.github/github-app.yml)         | Trust config: automation, branch prefix, system-prompt includes, lifecycle + Run scripts |
-| [`.worktreeinclude`](../.worktreeinclude)                     | Copy gitignored `.env`, lockfiles, `.yarn/` into new Copilot worktrees                   |
+| [`.worktreeinclude`](../.worktreeinclude)                     | Copy gitignored `.env` and lockfile bootstrap files into new Copilot worktrees            |
 | [`scripts/copilot-workspace/`](../scripts/copilot-workspace/) | `session.create` / `session.archive` implementation                                      |
 | [`.copilot/workspace.generated.env`](../.copilot/)            | Generated ModMe env (gitignored)                                                         |
 
@@ -68,6 +68,19 @@ Injected by Copilot App into lifecycle and Run scripts:
 | `COPILOT_PORT`           | Port seed; mapped to `FORGE_APP_PORT` in generated env      |
 
 Generated file `.copilot/workspace.generated.env` also includes `.worktree-ports.env` values after `worktree-allocate-ports.ps1`.
+
+---
+
+## Worktree root resolution
+
+Worktree scripts resolve the root in this order:
+
+1. `WORKTREES_ROOT` (if set)
+2. `MODME_WORKTREES_ROOT` (if set)
+3. `D:\Github_Projects\copilot-worktrees\<project>` (when `D:\` exists)
+4. `<repo>\.worktrees` (fallback)
+
+This keeps SSD storage as the default on machines with the external drive attached while preserving a local fallback.
 
 ---
 
@@ -178,4 +191,4 @@ Import Obsidian templates from `templates/obsidian-clipper/*.json`.
 | Bootstrap         | `setup-worktree-windows.ps1`         | `copilot-workspace/bootstrap.ps1` |
 | Shared core       | `scripts/lib/worktree-bootstrap.ps1` | same                              |
 
-Never implement feature work in the main checkout — use `.worktrees/` per [`multi-agent-worktrees.md`](multi-agent-worktrees.md).
+Never implement feature work in the main checkout — use the configured worktree root per [`multi-agent-worktrees.md`](multi-agent-worktrees.md).

@@ -33,16 +33,17 @@ Examples:
 }
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+. "$ScriptDir/lib/worktree-context.ps1"
 $RepoRoot = Split-Path -Parent $ScriptDir
-$ProjectName = Split-Path -Leaf $RepoRoot
-$ParentName = Split-Path -Leaf (Split-Path -Parent $RepoRoot)
-$ExpectedDevRoot = "${ProjectName}-dev"
+$ctx = Get-WorktreeContext -RepoRoot $RepoRoot
+$MainRepoRoot = $ctx.MainRepoRoot
+$WorktreesRoot = $ctx.WorktreesRoot
 
-if ($ParentName -eq $ExpectedDevRoot) {
-  Write-Error "Already in a worktree ($RepoRoot). Run from the main Monorepo_ModMe checkout."
+if ($ctx.IsWorktree) {
+  Write-Error "Already in a worktree ($($ctx.RepoRoot)). Run from the main Monorepo_ModMe checkout."
 }
 
-$status = git -C $RepoRoot status --porcelain
+$status = git -C $MainRepoRoot status --porcelain
 if ([string]::IsNullOrWhiteSpace($status)) {
   Write-Error "No uncommitted changes on main checkout. Use new-agent-worktree.ps1 instead."
 }
@@ -50,9 +51,8 @@ if ([string]::IsNullOrWhiteSpace($status)) {
 $Name = $Name.Trim().ToLower() -replace '\s+', '-'
 $BranchName = "feature/$Owner/$Name"
 $FolderName = if ($Owner -eq "human") { "dev-human-$Name" } else { "dev-agent-$Owner-$Name" }
-$DevWorktreeRoot = Join-Path (Split-Path -Parent $RepoRoot) $ExpectedDevRoot
-$TargetPath = Join-Path $DevWorktreeRoot $FolderName
-$CurrentBranch = git -C $RepoRoot branch --show-current
+$TargetPath = Join-Path $WorktreesRoot $FolderName
+$CurrentBranch = git -C $MainRepoRoot branch --show-current
 $stashMessage = "migrate-main-to-worktree-$Owner-$Name-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
 
 if (-not $FromCurrentBranch -and $CurrentBranch -ne "dev") {
@@ -62,8 +62,9 @@ if (-not $FromCurrentBranch -and $CurrentBranch -ne "dev") {
 Write-Host "===========================================" -ForegroundColor Cyan
 Write-Host "   MIGRATE MAIN TO WORKTREE" -ForegroundColor Cyan
 Write-Host "===========================================" -ForegroundColor Cyan
-Write-Host "   Main:       $RepoRoot"
+Write-Host "   Main:       $MainRepoRoot"
 Write-Host "   Branch:     $CurrentBranch"
+Write-Host "   Root:       $WorktreesRoot"
 Write-Host "   Target:     $TargetPath"
 Write-Host "   New branch: $BranchName"
 Write-Host "   From HEAD:  $FromCurrentBranch"
@@ -75,21 +76,21 @@ if (Test-Path $TargetPath) {
 
 function New-MigrateWorktree {
   if ($FromCurrentBranch) {
-    if (!(Test-Path $DevWorktreeRoot)) {
-      Write-Error "Dev worktree root not found at $DevWorktreeRoot. Run init-worktrees.ps1 first."
+    if (!(Test-Path $WorktreesRoot)) {
+      Write-Error "Worktree root not found at $WorktreesRoot. Run init-worktrees.ps1 first."
     }
     $branchExists = $false
     $prevEap = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
-    git -C $RepoRoot show-ref --verify --quiet "refs/heads/$BranchName" 2>$null | Out-Null
+    git -C $MainRepoRoot show-ref --verify --quiet "refs/heads/$BranchName" 2>$null | Out-Null
     if ($LASTEXITCODE -eq 0) { $branchExists = $true }
     $ErrorActionPreference = $prevEap
 
     if ($branchExists) {
-      git -C $RepoRoot worktree add $TargetPath $BranchName
+      git -C $MainRepoRoot worktree add $TargetPath $BranchName
     }
     else {
-      git -C $RepoRoot worktree add -b $BranchName $TargetPath HEAD
+      git -C $MainRepoRoot worktree add -b $BranchName $TargetPath HEAD
     }
     if ($LASTEXITCODE -ne 0) {
       throw "git worktree add failed for $TargetPath"
@@ -98,7 +99,7 @@ function New-MigrateWorktree {
     & "$ScriptDir/worktree-allocate-ports.ps1" -WorktreePath $TargetPath
     if ($LASTEXITCODE -ne 0) { throw "worktree-allocate-ports failed" }
 
-    & "$ScriptDir/worktree-copy-env.ps1" -SourceRoot $RepoRoot -TargetRoot $TargetPath
+    & "$ScriptDir/worktree-copy-env.ps1" -SourceRoot $MainRepoRoot -TargetRoot $TargetPath
     if ($LASTEXITCODE -ne 0) { throw "worktree-copy-env failed" }
 
     & "$ScriptDir/install-git-hooks.ps1"
@@ -126,7 +127,7 @@ if ($DryRun) {
 }
 
 Write-Host "Stashing uncommitted changes..." -ForegroundColor Cyan
-git -C $RepoRoot stash push -u -m $stashMessage
+git -C $MainRepoRoot stash push -u -m $stashMessage
 if ($LASTEXITCODE -ne 0) {
   Write-Error "git stash push failed"
 }
@@ -139,7 +140,7 @@ try {
   git -C $TargetPath stash pop
   if ($LASTEXITCODE -ne 0) {
     Write-Warning "stash pop reported conflicts or partial apply. Resolve under $TargetPath, then drop stash on main when done."
-    Write-Warning "Stash list: git -C `"$RepoRoot`" stash list"
+    Write-Warning "Stash list: git -C `"$MainRepoRoot`" stash list"
     exit $LASTEXITCODE
   }
 
@@ -155,6 +156,6 @@ try {
 }
 catch {
   Write-Warning "Migration failed - restoring stash on main checkout..."
-  git -C $RepoRoot stash pop 2>$null | Out-Null
+  git -C $MainRepoRoot stash pop 2>$null | Out-Null
   throw
 }

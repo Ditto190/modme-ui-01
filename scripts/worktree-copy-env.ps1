@@ -46,10 +46,3 @@ foreach ($relativePath in $yarnBootstrapPaths) {
     Write-Host "   Copied $relativePath" -ForegroundColor Green
   }
 }
-
-$yarnDir = Join-Path $SourceRoot ".yarn"
-if (Test-Path $yarnDir) {
-  $targetYarn = Join-Path $TargetRoot ".yarn"
-  Copy-Item $yarnDir $targetYarn -Recurse -Force
-  Write-Host "   Copied .yarn/" -ForegroundColor Green
-}

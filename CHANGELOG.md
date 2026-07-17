@@ -68,6 +68,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - (repo) KM session startup wiring — `scripts/km-session-bootstrap.ps1` (`yarn km:bootstrap`), session start + worktree setup + VS Code tasks/launch (`Full Stack: Forge Core + Agent Data Plane`, soft `dependsOn` on `next-forge: dev core`); ADR-0014; beads `modme-awz`; runbook `docs/monorepo/km-agent-data-plane-startup.md`
 
 ### Changed
+- (worktrees) Harden Copilot worktree bootstrap scripts and lean-ctx workspace profiles
 
 - (repo) Merge `github/main` into promotion branch `feature/cursor/promote-dev-to-main` to resolve dual-branch drift before promoting `dev` to `main`
 

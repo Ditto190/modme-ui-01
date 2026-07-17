@@ -11,7 +11,6 @@ next-forge/packages/database/.env
 # lockfiles for shared-deps bootstrap
 yarn.lock
 .yarnrc.yml
-.yarn/
 next-forge/bun.lock
 GenerativeUI_monorepo/apps/agent-server/poetry.lock
 
