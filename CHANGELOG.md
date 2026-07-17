@@ -62,6 +62,11 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ## [Unreleased]
 
+### Added
+- (obsidian) Intake trigger script, session gates schema/tests, and ADR-0013 intake gates
+
+- (intake) Event-triggered intake: `scripts/obsidian-intake-trigger.ps1` watches the ModMe-Vault inbox junction and invokes `intake-orchestrator.mjs` (dry-run default) when a note qualifies via `pipeline_ready`, high/critical severity, or `intake/ready` tag; typed gate phases + promotion predicate in `@repo/schemas/intake-gates`; ADR-0013 (next-forge), C4 intake-pipeline expansion, `docs/tech-matrix.md`, `docs/technical-change-tracker.md` (modme-7lo)
+
 ### Changed
 
 - (repo) Merge `github/main` into promotion branch `feature/cursor/promote-dev-to-main` to resolve dual-branch drift before promoting `dev` to `main`
