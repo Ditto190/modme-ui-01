@@ -1,0 +1,18 @@
+---
+description: Serena MCP auto-starts with Cursor; use for symbol-level code work
+globs:
+alwaysApply: true
+---
+
+# Serena MCP (startup)
+
+Cursor launches **Serena** from `.cursor/mcp.json` when this workspace opens (`--context ide --project-from-cwd`).
+
+- Ensure install: `yarn serena:ensure` (or `yarn serena:doctor` check-only)
+- Skill: `.agents/skills/serena/SKILL.md`
+- Project config: `.serena/project.yml`
+- ADR: `next-forge/docs/adr/0013-serena-mcp-startup.md`
+
+Prefer Serena for find-symbol / refs / rename / replace-symbol-body. Prefer lean-ctx `ctx_*` for compressed exploration.
+
+Fullstack kit: Wasp [llms.txt](https://wasp.sh/llms.txt) → [llms-0.24.txt](https://wasp.sh/llms-0.24.txt); `chrome-devtools` MCP; skills `wasp-plugin-init`, `start-dev-server`.

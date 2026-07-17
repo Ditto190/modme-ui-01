@@ -45,6 +45,7 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 
 ### Fixed
 
+- (next-forge) Normalize LF line endings so Ultracite check passes on Windows worktrees
 - (scope) Short description (#issue)
 ```
 
@@ -73,10 +74,13 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
+- (next-forge) Normalize LF line endings so Ultracite check passes on Windows worktrees
 - (next-forge) Apply Ultracite/Biome format fixes required for promote-dev-to-main pre-push verify
 - (repo) Beads auto-backup Error 1105 — disable broken `.beads/backup` destination (`backup.enabled: false`); see `docs/beads-workflow.md` troubleshooting
 
 ### Added
+
+- (agent) ADR-0013 Serena MCP auto-start on Cursor; chrome-devtools MCP; Wasp llms.txt skills; yarn serena:ensure|doctor|start
 
 - (repo) Builder orchestration layer — `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
 - (repo) Copilot workspace + builder incident runbook — `docs/runbooks/copilot-workspace-builder-incident.md`
@@ -115,6 +119,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
+- (next-forge) Normalize LF line endings so Ultracite check passes on Windows worktrees
 - (docs) Inbox audit report `latest.json` uses relative `root` (no machine-local path) (PR #89)
 - (scripts) `Get-CopilotRepoRoot` ascends 3 levels from `scripts/copilot-workspace/lib/paths.ps1`; null-safe `.Trim()` on git outputs in hooks/doctor scripts; schema-valid agent-gateway collection (PR #91)
 - (repo) Builder/preflight/hook spawns — Windows cmd shim via shell string (not `shell:true`+args); lean-ctx probe requires successful `--version`; `session-archive.ps1` checks `preflight:fast` exit code
@@ -166,6 +171,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
+- (next-forge) Normalize LF line endings so Ultracite check passes on Windows worktrees
 - (docs) Thermo Round 2 archive STATUS/links/manifest count alignment (PR #90)
 - (dev) `init-worktrees.ps1` — use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
 - (dev) `new-agent-worktree.ps1` — usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`

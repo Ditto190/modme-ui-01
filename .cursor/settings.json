@@ -104,9 +104,6 @@
     "supabase": {
       "enabled": true
     },
-    "prisma": {
-      "enabled": true
-    },
     "gitlab": {
       "enabled": true
     },
@@ -138,6 +135,9 @@
       "enabled": true
     },
     "claude-plugins-official/agent-sdk-dev": {
+      "enabled": true
+    },
+    "convex": {
       "enabled": true
     }
   }

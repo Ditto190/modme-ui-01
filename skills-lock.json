@@ -7,11 +7,29 @@
       "skillPath": "skills/create-voltagent/SKILL.md",
       "computedHash": "c128fdcdf93d5e40fe87e044ba4ca6b78b0251cf4c51b6179699c282906e5a8a"
     },
+    "deploying-app": {
+      "source": "wasp-lang/wasp-agent-plugins",
+      "sourceType": "github",
+      "skillPath": "plugins/wasp/skills/deploying-app/SKILL.md",
+      "computedHash": "a5ee57ed8dff0f9f27b48d88c500b0b14dca7f6050cde4e7602f9843279d7250"
+    },
     "developing-genkit-js": {
       "source": "genkit-ai/skills",
       "sourceType": "github",
       "skillPath": "skills/developing-genkit-js/SKILL.md",
       "computedHash": "9aacfcf07d0eda52488b56f135f88b6ff9f5ccc59c2a14dffe318ff28ef1ffa1"
+    },
+    "expert-advice": {
+      "source": "wasp-lang/wasp-agent-plugins",
+      "sourceType": "github",
+      "skillPath": "plugins/wasp/skills/expert-advice/SKILL.md",
+      "computedHash": "e7adcae57b244e53c7a64ab6a5fb232ab50025352cc985b9eea542d790d4767f"
+    },
+    "start-dev-server": {
+      "source": "wasp-lang/wasp-agent-plugins",
+      "sourceType": "github",
+      "skillPath": "plugins/wasp/skills/start-dev-server/SKILL.md",
+      "computedHash": "1ec97701616a9e262235621ca0423d482bbebaba53754d1070d6bab8423c5680"
     },
     "supabase": {
       "source": "supabase/agent-skills",
@@ -36,6 +54,18 @@
       "sourceType": "github",
       "skillPath": "skills/voltagent-docs-bundle/SKILL.md",
       "computedHash": "ac3ec8239897928883fb7451066796bb4e46903ee77558fb51621c1680617e25"
+    },
+    "wasp-plugin-help": {
+      "source": "wasp-lang/wasp-agent-plugins",
+      "sourceType": "github",
+      "skillPath": "plugins/wasp/skills/wasp-plugin-help/SKILL.md",
+      "computedHash": "17e151043d5231aa1239eed84e43b9d031fc3c659ce2cf6bbc88eb4980b4e68b"
+    },
+    "wasp-plugin-init": {
+      "source": "wasp-lang/wasp-agent-plugins",
+      "sourceType": "github",
+      "skillPath": "plugins/wasp/skills/wasp-plugin-init/SKILL.md",
+      "computedHash": "8728e988a730b3ca34d4e603328bedc719e5750e1aa566e380bfa003c6d6e7e9"
     }
   }
 }
