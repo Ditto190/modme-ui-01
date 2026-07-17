@@ -42,6 +42,7 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 
 ### Changed
 
+- (repo) Update Polis routing docs/tests and leftover agent settings for dolt/beads worktree
 - (repo) Expand workflow-gates coverage-map/registry schemas and `pattern:uw` / `pattern:e2e` verify scripts for UW non-migrate catalogue
 - (scope) Short description
 
@@ -74,6 +75,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
+- (repo) Update Polis routing docs/tests and leftover agent settings for dolt/beads worktree
 - (repo) Expand workflow-gates coverage-map/registry schemas and `pattern:uw` / `pattern:e2e` verify scripts for UW non-migrate catalogue
 - (repo) Merge `github/main` into promotion branch `feature/cursor/promote-dev-to-main` to resolve dual-branch drift before promoting `dev` to `main`
 
@@ -129,6 +131,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
+- (repo) Update Polis routing docs/tests and leftover agent settings for dolt/beads worktree
 - (repo) Expand workflow-gates coverage-map/registry schemas and `pattern:uw` / `pattern:e2e` verify scripts for UW non-migrate catalogue
 - (scripts) Null-safe git output handling in `install-git-hooks.ps1` and `repo-alignment-doctor.ps1` (PR #91 review)
 - (scripts) repo-alignment doctor accepts `github` remote when `origin` is the GitLab mirror
@@ -184,6 +187,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
+- (repo) Update Polis routing docs/tests and leftover agent settings for dolt/beads worktree
 - (repo) Expand workflow-gates coverage-map/registry schemas and `pattern:uw` / `pattern:e2e` verify scripts for UW non-migrate catalogue
 - (ci) Worktree bootstrap (`setup-worktree-windows.ps1`, `setup-worktree-unix.sh`, `new-agent-worktree.ps1`) auto-installs git pre-commit hooks
 - (next-forge) Replace Clerk with Auth.js credentials in `@repo/auth`; replace Neon adapter with Supabase local Postgres + Prisma
