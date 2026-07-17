@@ -55,8 +55,6 @@
     "builders:pipeline": "node scripts/builders-orchestrator.mjs pipeline copilot-session-create",
     "docs:clipper:export": "node scripts/knowledge-management/export-obsidian-clipper.mjs",
     "docs:clipper:list": "node scripts/knowledge-management/export-obsidian-clipper.mjs --list",
-<<<<<<< HEAD
-=======
     "entire:install": "powershell -ExecutionPolicy Bypass -File ./scripts/entire/install.ps1",
     "entire:status": "powershell -ExecutionPolicy Bypass -File ./scripts/entire/status.ps1",
     "entire:doctor": "powershell -ExecutionPolicy Bypass -File ./scripts/entire/doctor.ps1",
@@ -71,7 +69,6 @@
     "km:legacy:sync": "node scripts/knowledge-management/sync-docs.js",
     "km:legacy:diagram": "node scripts/knowledge-management/generate-diagram.js",
     "km:legacy:validate": "node scripts/knowledge-management/sync-docs.js --validate-only",
->>>>>>> origin/dev
     "worktree:doctor": "powershell -ExecutionPolicy Bypass -File ./scripts/worktree-doctor.ps1",
     "worktree:doctor:fix": "powershell -ExecutionPolicy Bypass -File ./scripts/worktree-doctor.ps1 -Fix",
     "lspmux:install": "powershell -ExecutionPolicy Bypass -File ./scripts/lspmux/install.ps1",
@@ -117,12 +114,9 @@
     "inbox:fix": "node scripts/inbox-fix.mjs --dry-run",
     "inbox:fix:apply": "node scripts/inbox-fix.mjs --apply",
     "inbox:test": "vitest run --config vitest.config.mjs",
-<<<<<<< HEAD
     "obsidian:vault": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-obsidian-vault.ps1",
     "obsidian:vault:open": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-obsidian-vault.ps1 -OpenVault",
     "defuddle:smoke": "node scripts/defuddle-smoke.mjs",
-=======
->>>>>>> origin/dev
     "test:orchestration": "vitest run --config vitest.config.mjs --project orchestration",
     "test:scripts": "yarn test:orchestration && yarn test:knowledge-management && yarn test:scripts:python",
     "test:scripts:python": "python -m pytest scripts/tests -q",
@@ -174,10 +168,7 @@
     "pr:queue": "node scripts/pr-triage/fetch-review-queue.mjs",
     "pr:comments": "node scripts/pr-triage/aggregate-pr-comments.mjs",
     "pr:classify": "node scripts/pr-triage/classify-pr.mjs",
-<<<<<<< HEAD
     "quality:route": "node scripts/quality-orchestrator.mjs",
-=======
->>>>>>> origin/dev
     "changelog:update": "node scripts/update-changelog.mjs"
   },
   "dependencies": {

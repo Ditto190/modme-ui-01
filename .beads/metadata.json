@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-{
-  "database": "dolt",
-  "backend": "dolt",
-  "dolt_mode": "embedded",
-  "dolt_database": "modme"
-}
-=======
 ﻿{
     "database":  "dolt",
     "backend":  "dolt",
@@ -17,4 +9,3 @@
     "dolt_server_recommended":  true,
     "dolt_mode_note":  "embedded active; sql-server :3307 for catalog + multi-writer prep (yarn dolt:beads:migrate-server)"
 }
->>>>>>> origin/dev

@@ -26,10 +26,6 @@
     "json": "docs/inbox-pipeline/reports/latest.json",
     "markdown": "docs/inbox-pipeline/reports/latest.md",
     "jsonl": ".cursor/hooks/state/inbox-errors.jsonl"
-<<<<<<< HEAD
-  }
-=======
   },
   "root": "."
->>>>>>> origin/dev
 }

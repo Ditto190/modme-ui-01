@@ -9,23 +9,13 @@ $ErrorActionPreference = 'Stop'
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $HooksDir = Join-Path $RepoRoot '.githooks'
 
-<<<<<<< HEAD
-$insideRaw = git -C $RepoRoot rev-parse --is-inside-work-tree 2>$null
-$inside = if ($null -ne $insideRaw) { $insideRaw.ToString().Trim() } else { '' }
-=======
 $inside = ([string](git -C $RepoRoot rev-parse --is-inside-work-tree 2>$null)).Trim()
->>>>>>> origin/dev
 if ($LASTEXITCODE -ne 0 -or $inside -ne 'true') {
     throw "Not a git repository: $RepoRoot"
 }
 
 # Canonical hooks dir (shared across linked worktrees)
-<<<<<<< HEAD
-$hooksRelRaw = git -C $RepoRoot rev-parse --git-path hooks 2>$null
-$hooksRel = if ($null -ne $hooksRelRaw) { $hooksRelRaw.ToString().Trim() } else { '' }
-=======
 $hooksRel = ([string](git -C $RepoRoot rev-parse --git-path hooks 2>$null)).Trim()
->>>>>>> origin/dev
 if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($hooksRel)) {
     throw "Could not resolve git hooks path for: $RepoRoot"
 }

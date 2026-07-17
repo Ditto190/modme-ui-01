@@ -1,10 +1,6 @@
 {
   "version": "1.0.0",
-<<<<<<< HEAD
   "generated_at": "2026-07-05T12:29:29.327Z",
-=======
-  "generated_at": "2026-07-04T10:06:38.981Z",
->>>>>>> origin/dev
   "stack": "forge",
   "schema_version": "1.0.0",
   "record_kinds": [
@@ -556,7 +552,6 @@
       "zod_export": null,
       "greptime_id": null,
       "route_hint": "dashboard"
-<<<<<<< HEAD
     },
     {
       "kind": "zod_module",
@@ -575,8 +570,6 @@
       "zod_export": null,
       "greptime_id": null,
       "route_hint": "dashboard"
-=======
->>>>>>> origin/dev
     },
     {
       "kind": "zod_module",

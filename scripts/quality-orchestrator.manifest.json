@@ -1,52 +1,5 @@
 {
   "version": 1,
-<<<<<<< HEAD
-  "description": "ModMe quality routing manifest (preflight/CI failures → next steps).",
-  "inputs": {
-    "reportJsonPath": "docs/devops/reports/preflight-latest.json"
-  },
-  "routing": {
-    "unit-test": {
-      "cursor": [
-        "Run: yarn test:orchestration",
-        "If failing: yarn test:scripts:node",
-        "Then re-run: yarn preflight:fast --report"
-      ]
-    },
-    "lint": {
-      "cursor": [
-        "Run: yarn fix:forge",
-        "Then verify: yarn verify:forge",
-        "Then re-run: yarn preflight:fast --report"
-      ]
-    },
-    "build": {
-      "cursor": [
-        "Investigate failing build in CI logs",
-        "Run: yarn verify:forge",
-        "Then re-run: yarn preflight:fast --report"
-      ]
-    },
-    "env": {
-      "cursor": [
-        "Run: yarn setup:modme",
-        "Then verify: yarn verify:forge",
-        "Then re-run: yarn preflight:fast --report"
-      ]
-    },
-    "guard": {
-      "cursor": [
-        "Run: yarn worktree:doctor",
-        "Then re-run: yarn preflight:fast --report"
-      ]
-    },
-    "green pass": {
-      "cursor": ["CI green — consider optional bugbot review for large diffs."]
-    }
-  }
-}
-
-=======
   "description": "ModMe quality loop — route preflight failures and PR context to Cursor subagents or tmux agent-manager (WSL)",
   "runtimes": {
     "cursor": {
@@ -169,4 +122,3 @@
     "adr": "next-forge/docs/adr/0010-gh-aw-copilot-secrets-and-root-env-sync.md"
   }
 }
->>>>>>> origin/dev

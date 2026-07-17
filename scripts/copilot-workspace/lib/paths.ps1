@@ -1,15 +1,10 @@
 # Shared path resolution for Copilot workspace scripts.
 
 function Get-CopilotRepoRoot {
-<<<<<<< HEAD
-  $scriptDir = Split-Path -Parent $PSScriptRoot
-  return Split-Path -Parent $scriptDir
-=======
   # paths.ps1 lives at scripts/copilot-workspace/lib/paths.ps1; ascend 3 levels to repo root
   $path = Split-Path -Parent $PSScriptRoot   # lib -> copilot-workspace
   $path = Split-Path -Parent $path           # copilot-workspace -> scripts
   return Split-Path -Parent $path            # scripts -> repo root
->>>>>>> origin/dev
 }
 
 function Resolve-CopilotWorktreeRoot {
@@ -58,7 +53,4 @@ function Write-CopilotLifecycleLog {
   foreach ($key in $Extra.Keys) { $entry[$key] = $Extra[$key] }
   $entry | ConvertTo-Json -Compress | Add-Content -Path (Join-Path $logDir 'workspace-lifecycle.jsonl') -Encoding utf8
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/dev

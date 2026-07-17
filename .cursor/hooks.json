@@ -1,15 +1,4 @@
 {
-<<<<<<< HEAD
-  "version": 1,
-  "hooks": {
-    "preToolUse": [
-      {
-        "command": "node \"C:\\\\Users\\\\dylan\\\\.cursor\\\\skills\\\\impeccable\\\\scripts\\\\hook-before-edit.mjs\"",
-        "timeout": 5
-      }
-    ]
-  }
-=======
   "hooks": {
     "beforeSubmitPrompt": [
       {
@@ -48,5 +37,4 @@
     ]
   },
   "version": 1
->>>>>>> origin/dev
 }

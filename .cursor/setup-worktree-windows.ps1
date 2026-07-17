@@ -14,8 +14,6 @@ Write-Host "Ensuring lean-ctx configuration..." -ForegroundColor Cyan
 Push-Location $WorktreeRoot
 yarn lean-ctx:ensure 2>&1 | Out-Null
 Pop-Location
-<<<<<<< HEAD
-=======
 
 # 4. Bun install (next-forge)
 Write-Host "4/9 bun install (next-forge)..." -ForegroundColor Cyan
@@ -66,4 +64,3 @@ Write-Host "Worktree setup complete." -ForegroundColor Green
 Write-Host "Source ports before dev: . .\scripts\load-worktree-ports.ps1" -ForegroundColor Cyan
 Write-Host "Dev TUI: yarn agent:tui  (mprocs — install mprocs if missing)" -ForegroundColor Cyan
 Write-Host "Status:  yarn agent:status" -ForegroundColor Cyan
->>>>>>> origin/dev

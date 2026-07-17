@@ -131,11 +131,7 @@ else {
 }
 
 # Git hooks (linked worktrees: .git is a file; use git-path hooks)
-<<<<<<< HEAD
-$hooksRel = (git -C $repo rev-parse --git-path hooks 2>$null).Trim()
-=======
 $hooksRel = ([string](git -C $repo rev-parse --git-path hooks 2>$null)).Trim()
->>>>>>> origin/dev
 if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($hooksRel)) {
   $hooksDir = if ([System.IO.Path]::IsPathRooted($hooksRel)) { $hooksRel } else { Join-Path $repo $hooksRel }
   $hookPath = Join-Path $hooksDir 'pre-commit'

@@ -14,10 +14,6 @@ echo "   Worktree: $WORKTREE_ROOT"
 echo "   Root:     $ROOT_WORKTREE"
 echo ""
 
-<<<<<<< HEAD
-export ROOT_WORKTREE_PATH="$ROOT_WORKTREE"
-pwsh -NoProfile -File "$WORKTREE_ROOT/scripts/setup-workspace-windows.ps1" -SharedDeps -SkipSession
-=======
 echo "1/9 Allocating ports..."
 pwsh -NoProfile -File "$WORKTREE_ROOT/scripts/worktree-allocate-ports.ps1" -WorktreePath "$WORKTREE_ROOT"
 
@@ -47,7 +43,6 @@ fi
 
 echo "8/9 Installing git pre-commit hook..."
 pwsh -NoProfile -File "$WORKTREE_ROOT/scripts/install-git-hooks.ps1"
->>>>>>> origin/dev
 
 echo "9/9 KM data plane + agent session envelope..."
 pwsh -NoProfile -File "$WORKTREE_ROOT/scripts/km-session-bootstrap.ps1" || true

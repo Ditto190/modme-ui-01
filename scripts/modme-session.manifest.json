@@ -1,35 +1,5 @@
 {
   "version": 1,
-<<<<<<< HEAD
-  "description": "ModMe session verify matrix for lean-ctx orchestration and multi-agent workflows",
-  "verify": {
-    "pre_session": [
-      "yarn lean-ctx:ensure:check",
-      "yarn worktree:doctor"
-    ],
-    "orchestration": [
-      "yarn agent:catalog:validate",
-      "yarn beads:bfs:dry",
-      "yarn test:orchestration"
-    ],
-    "post_session": [
-      "yarn pre-commit:check",
-      "yarn e2e:worktree-smoke"
-    ]
-  },
-  "paths": {
-    "task_profiles_example": "data/lean-ctx-task-profiles.toml.example",
-    "agent_catalog_seed": "scripts/collections/lean-ctx-agent-catalog.seed.json",
-    "session_markers": ".cursor/hooks/state/lean-ctx-session-markers.jsonl",
-    "bats_suite": "scripts/bats/"
-  },
-  "ci_jobs": [
-    "worktree-smoke",
-    "shell-orchestration",
-    "lean-ctx-config-validate"
-  ]
-}
-=======
   "description": "ModMe dev session lifecycle — single dispatcher (modme-session.ps1). VoltAgent-style: one bootstrap, explicit phases.",
   "phases": {
     "terminal": {
@@ -105,4 +75,3 @@
     "skill": ".agents/skills/modme-dev-setup/SKILL.md"
   }
 }
->>>>>>> origin/dev
