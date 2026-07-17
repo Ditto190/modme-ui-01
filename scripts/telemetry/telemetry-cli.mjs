@@ -5,7 +5,7 @@
  * Subcommands: sync | collect | report | ingest-copilot
  */
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadRootEnv } from "../lib/load-root-env.mjs";
@@ -17,6 +17,8 @@ import {
   registerObservabilityReportArtefact,
   resolveTenantId,
 } from "./lib/telemetry-bridge.mjs";
+import { synthesizeSpansFromEvents } from "./lib/span-synthesis.mjs";
+import { GIT_HOOKS_LOG } from "./lib/git-hook-bridge.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
@@ -24,6 +26,7 @@ const ROOT = resolve(__dirname, "../..");
 const args = process.argv.slice(2);
 const COMMAND = args[0];
 const DRY_RUN = args.includes("--dry-run");
+const STRICT = args.includes("--strict");
 const HUMAN = args.includes("--human");
 const SINCE = args.find((a) => a.startsWith("--since="))?.split("=")[1] ?? "7d";
 const TENANT_ID = args.find((a) => a.startsWith("--tenant-id="))?.split("=")[1];
@@ -219,6 +222,88 @@ function collectLeanCtxArchive() {
   return events;
 }
 
+function collectGitHookEvents() {
+  if (!existsSync(GIT_HOOKS_LOG)) return [];
+  return readJsonLines(GIT_HOOKS_LOG).map((entry) => ({
+    message: entry.event ?? `git.hook:${entry.hook ?? "unknown"}`,
+    source: "git-hook",
+    level: "info",
+    session_id: entry.session_id ?? null,
+    metadata: {
+      hook: entry.hook,
+      parent_session_id: entry.parent_session_id ?? null,
+      agent_platform: entry.agent_platform ?? null,
+      branch: entry.branch ?? null,
+      worktree: entry.worktree ?? null,
+      ...entry,
+    },
+  }));
+}
+
+function collectAgenttraceEvents() {
+  const dir = join(ROOT, "logs", "agenttrace", "sessions");
+  if (!existsSync(dir)) return [];
+  const events = [];
+  try {
+    for (const file of readdirSync(dir).slice(0, 50)) {
+      if (!file.endsWith(".json")) continue;
+      let data = {};
+      try {
+        data = JSON.parse(readFileSync(join(dir, file), "utf8"));
+      } catch {
+        continue;
+      }
+      events.push({
+        message: `agenttrace:session ${file.replace(/\.json$/, "")}`,
+        source: "agenttrace",
+        level: "info",
+        session_id: data.session_id ?? data.sessionId ?? process.env.AGENT_SESSION_ID ?? null,
+        metadata: {
+          file,
+          cost_usd: data.cost_usd ?? data.totalCost ?? null,
+          duration_ms: data.duration_ms ?? data.durationMs ?? null,
+          tool_calls: data.tool_calls ?? data.toolCalls ?? null,
+        },
+      });
+    }
+  } catch {
+    /* empty dir */
+  }
+  return events;
+}
+
+function collectSessionEnvelopes() {
+  const dir = join(ROOT, "logs", "agent-orchestrator", "sessions");
+  if (!existsSync(dir)) return [];
+  const events = [];
+  try {
+    for (const file of readdirSync(dir).slice(0, 50)) {
+      if (!file.endsWith(".json")) continue;
+      let data = {};
+      try {
+        data = JSON.parse(readFileSync(join(dir, file), "utf8"));
+      } catch {
+        continue;
+      }
+      events.push({
+        message: `session-envelope:${file.replace(/\.json$/, "")}`,
+        source: "session-envelope",
+        level: "debug",
+        session_id: data.session_id ?? data.id ?? file.replace(/\.json$/, ""),
+        metadata: {
+          envelope_path: join(dir, file),
+          worktree: data.worktree ?? null,
+          branch: data.branch ?? null,
+          finished_at: data.finished_at ?? null,
+        },
+      });
+    }
+  } catch {
+    /* empty */
+  }
+  return events;
+}
+
 function collectTestResultEvents() {
   const dir = join(ROOT, "test-results");
   if (!existsSync(dir)) return [];
@@ -259,21 +344,52 @@ async function cmdSync() {
     ...collectLeanCtxTee(),
     ...collectLeanCtxMarkers(),
     ...collectLeanCtxArchive(),
+    ...collectGitHookEvents(),
+    ...collectAgenttraceEvents(),
+    ...collectSessionEnvelopes(),
   ];
+
+  const { spans, coverage, trace_id: traceId } = synthesizeSpansFromEvents(events, {
+    tenantId: TENANT_ID,
+    pipelineRunId: run.id,
+  });
+
+  const platform = detectAgentPlatform();
 
   const bridge = await bridgeCollectPayload({
     events,
+    spans,
     tenantId: TENANT_ID,
     pipelineRunId: run.id,
     dryRun: DRY_RUN,
+    strict: STRICT,
+    coverage,
+    traceRefs: {
+      sessionId: process.env.AGENT_SESSION_ID ?? null,
+      agentPlatform: platform.agent_platform,
+      branch: process.env.GIT_BRANCH ?? "",
+      worktree: process.env.WORKTREE_NAME ?? "",
+      parentSessionId: process.env.PARENT_SESSION_ID ?? null,
+      traceId,
+    },
   });
+
+  if (bridge.strict_failed) {
+    fail(
+      "STRICT_NORMALIZE",
+      `${bridge.stats.dlq} event(s) failed Zod normalization`,
+      "Fix invalid events or run without --strict"
+    );
+  }
 
   const stats = {
     ...bridge.stats,
     duration_ms: Date.now() - started,
     events_collected: events.length,
+    spans_synthesized: spans.length,
     since: SINCE,
     dry_run: DRY_RUN,
+    strict: STRICT,
   };
 
   await closePipelineRun({
@@ -390,7 +506,33 @@ async function cmdReport() {
     reportResult = { raw: proc.stdout };
   }
 
-  emit({ command: "report", dry_run: DRY_RUN, ...reportResult }, { dry_run: DRY_RUN });
+  let syncStats = {};
+  try {
+    const syncProc = spawnSync(
+      process.execPath,
+      [resolve(ROOT, "scripts/telemetry/telemetry-cli.mjs"), "sync", "--dry-run"],
+      { cwd: ROOT, encoding: "utf8" }
+    );
+    if (syncProc.status === 0) {
+      syncStats = JSON.parse(syncProc.stdout.trim()).stats ?? {};
+    }
+  } catch {
+    syncStats = {};
+  }
+
+  emit(
+    {
+      command: "report",
+      dry_run: DRY_RUN,
+      coverage: {
+        correlation_pct: syncStats.correlation_coverage_pct ?? null,
+        events_collected: syncStats.events_collected ?? null,
+        spans_synthesized: syncStats.spans_synthesized ?? null,
+      },
+      ...reportResult,
+    },
+    { dry_run: DRY_RUN }
+  );
 
   if (OUTPUT && !DRY_RUN) {
     await registerObservabilityReportArtefact({
@@ -514,7 +656,7 @@ async function cmdLeanCtxCollect() {
 function printUsage() {
   fail(
     "USAGE",
-    "Usage: telemetry-cli.mjs <sync|collect|report|ingest-copilot|lean-ctx-collect> [--dry-run] [--human] [--since=7d] [--tenant-id=] [--output=path]",
+    "Usage: telemetry-cli.mjs <sync|collect|report|ingest-copilot|lean-ctx-collect> [--dry-run] [--strict] [--human] [--since=7d] [--tenant-id=] [--output=path]",
     "Example: node scripts/telemetry/telemetry-cli.mjs sync --dry-run"
   );
 }

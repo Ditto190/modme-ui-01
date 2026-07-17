@@ -1,0 +1,63 @@
+# GitLab CI for next-forge — mirrors .github/workflows/ci.yml next-forge job
+# Triggered by parent .gitlab-ci.yml (forge-child). Canonical CI: GitHub Actions.
+
+stages:
+  - install
+  - test
+
+default:
+  image: oven/bun:1.3.10
+  before_script:
+    - cd "${CI_PROJECT_DIR}/next-forge"
+    - bun --version
+
+variables:
+  GIT_STRATEGY: fetch
+
+.bun_cache: &bun_cache
+  cache:
+    key:
+      files:
+        - next-forge/bun.lock
+    paths:
+      - next-forge/node_modules
+      - .bun/install/cache
+    policy: pull-push
+
+workflow:
+  rules:
+    - when: always
+
+install:
+  stage: install
+  <<: *bun_cache
+  script:
+    - bun install --frozen-lockfile
+  artifacts:
+    paths:
+      - next-forge/node_modules/
+    expire_in: 1 hour
+
+check:
+  stage: test
+  <<: *bun_cache
+  needs: [install]
+  script:
+    - bun run check
+  allow_failure: true
+
+test:
+  stage: test
+  <<: *bun_cache
+  needs: [install]
+  script:
+    - bun run test
+  allow_failure: true
+
+build:
+  stage: test
+  <<: *bun_cache
+  needs: [install]
+  script:
+    - bun run build
+  allow_failure: true

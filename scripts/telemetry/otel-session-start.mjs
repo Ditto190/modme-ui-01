@@ -66,8 +66,43 @@ async function main() {
     process.exit(0);
   }
 
+  const parentSessionId =
+    process.env.PARENT_SESSION_ID ??
+    process.env.VOLTAGENT_PARENT_ID ??
+    null;
+
   const greptimeResult = await writeGreptimeSpan(span, { dryRun: false });
-  const traceRef = await writeTraceRef({ tenantId: TENANT_ID, sessionId: SESSION_ID, traceId, spanId, agentPlatform: platform.agent_platform, branch: BRANCH, worktree: WORKTREE, serviceName: SERVICE_NAME });
+
+  if (parentSessionId) {
+    const handoffSpan = {
+      span_id: generateSpanId(),
+      trace_id: traceId,
+      tenant_id: TENANT_ID,
+      session_id: SESSION_ID,
+      span_name: "agent.handoff",
+      duration_ms: 0,
+      timestamp: startedAt,
+      attributes: {
+        "parent.session_id": parentSessionId,
+        "child.session_id": SESSION_ID,
+        "agent.platform": platform.agent_platform,
+      },
+    };
+    await writeGreptimeSpan(handoffSpan, { dryRun: false });
+  }
+
+  const traceRef = await writeTraceRef({
+    tenantId: TENANT_ID,
+    sessionId: SESSION_ID,
+    traceId,
+    spanId,
+    spanName: "agent.session",
+    agentPlatform: platform.agent_platform,
+    branch: BRANCH,
+    worktree: WORKTREE,
+    serviceName: SERVICE_NAME,
+    parentSessionId,
+  });
 
   process.stdout.write(JSON.stringify({ result: 'ok', trace_id: traceId, span_id: spanId, session_id: SESSION_ID, agent_platform: platform.agent_platform, greptime: greptimeResult, trace_ref: traceRef }) + '\n');
   process.exit(0);

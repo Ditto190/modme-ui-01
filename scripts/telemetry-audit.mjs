@@ -4,9 +4,11 @@
  * Audit observability contracts, Supabase pipeline rows, and sync dry-run.
  *
  * Usage:
- *   node scripts/telemetry-audit.mjs [--lens contracts|pipeline|sync|all] [--strict]
+ *   node scripts/telemetry-audit.mjs [--lens contracts|pipeline|sync|sources|all] [--strict]
  */
 import { execSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { createClient } from '@supabase/supabase-js';
 import { redactSecrets } from './lib/telemetry-bridge.mjs';
 import {
@@ -194,6 +196,98 @@ function auditSync() {
   return { findings, filesScanned: 1 };
 }
 
+const TELEMETRY_CLI_COLLECTORS = new Set([
+  'collectSessionEvents',
+  'collectOrchestratorErrors',
+  'collectTestResultEvents',
+  'collectLeanCtxJournal',
+  'collectLeanCtxTee',
+  'collectLeanCtxMarkers',
+  'collectLeanCtxArchive',
+  'collectGitHookEvents',
+  'collectAgenttraceEvents',
+  'collectSessionEnvelopes',
+]);
+
+function auditSources() {
+  const findings = [];
+  const registryPath = join(REPO_ROOT, 'docs/observability/log-sources.v1.json');
+  const cliPath = join(REPO_ROOT, 'scripts/telemetry/telemetry-cli.mjs');
+
+  if (!existsSync(registryPath)) {
+    findings.push(createFinding({
+      code: 'OBS.SOURCES.REGISTRY_MISSING',
+      lens: 'sources',
+      severity: 'error',
+      automatable: true,
+      message: 'log-sources.v1.json registry not found',
+      fixHint: 'Create docs/observability/log-sources.v1.json',
+    }));
+    return { findings, filesScanned: 0 };
+  }
+
+  let registry;
+  try {
+    registry = JSON.parse(readFileSync(registryPath, 'utf8'));
+  } catch (err) {
+    findings.push(createFinding({
+      code: 'OBS.SOURCES.REGISTRY_INVALID',
+      lens: 'sources',
+      severity: 'error',
+      message: `log-sources.v1.json parse error: ${err.message}`,
+    }));
+    return { findings, filesScanned: 1 };
+  }
+
+  const cliSource = readFileSync(cliPath, 'utf8');
+  const sources = registry.sources ?? [];
+
+  for (const source of sources) {
+    if (source.status === 'deferred' || source.collector == null) {
+      continue;
+    }
+
+    if (!TELEMETRY_CLI_COLLECTORS.has(source.collector)) {
+      findings.push(createFinding({
+        code: 'OBS.SOURCES.UNKNOWN_COLLECTOR',
+        lens: 'sources',
+        severity: 'error',
+        automatable: true,
+        message: `Source ${source.id}: collector ${source.collector} not implemented in telemetry-cli`,
+        fixHint: `Add function ${source.collector}() to scripts/telemetry/telemetry-cli.mjs`,
+      }));
+      continue;
+    }
+
+    if (!cliSource.includes(`function ${source.collector}`)) {
+      findings.push(createFinding({
+        code: 'OBS.SOURCES.COLLECTOR_NOT_FOUND',
+        lens: 'sources',
+        severity: 'error',
+        automatable: true,
+        message: `Source ${source.id}: ${source.collector} missing from telemetry-cli.mjs`,
+      }));
+    }
+  }
+
+  const activeSources = sources.filter((s) => s.status !== 'deferred' && s.collector);
+  const unknownInCli = [...TELEMETRY_CLI_COLLECTORS].filter(
+    (name) => !activeSources.some((s) => s.collector === name),
+  );
+  for (const collector of unknownInCli) {
+    findings.push(createFinding({
+      code: 'OBS.SOURCES.UNREGISTERED_COLLECTOR',
+      lens: 'sources',
+      severity: 'warning',
+      automatable: true,
+      message: `Collector ${collector} exists in CLI but is not listed in log-sources.v1.json`,
+      fixHint: 'Add entry to docs/observability/log-sources.v1.json',
+    }));
+  }
+
+  return { findings, filesScanned: sources.length };
+}
+
 async function main() {
   const contract = loadObservabilityContract(REPO_ROOT);
   let allFindings = [];
@@ -202,6 +296,7 @@ async function main() {
   const runContracts = LENS === 'contracts' || LENS === 'all';
   const runPipeline = LENS === 'pipeline' || LENS === 'all';
   const runSync = LENS === 'sync' || LENS === 'all';
+  const runSources = LENS === 'sources' || LENS === 'all';
 
   if (runContracts) {
     const r = auditContracts();
@@ -215,6 +310,11 @@ async function main() {
   }
   if (runSync) {
     const r = auditSync();
+    allFindings = allFindings.concat(r.findings);
+    filesScanned += r.filesScanned;
+  }
+  if (runSources) {
+    const r = auditSources();
     allFindings = allFindings.concat(r.findings);
     filesScanned += r.filesScanned;
   }

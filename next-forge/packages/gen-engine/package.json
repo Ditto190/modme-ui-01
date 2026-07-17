@@ -1,0 +1,31 @@
+{
+  "name": "@repo/gen-engine",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./index.ts",
+    "./server": "./server.ts"
+  },
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "test": "vitest run forms/declarative-form-compiler.test.ts"
+  },
+  "dependencies": {
+    "@repo/design-system": "workspace:*",
+    "@repo/schemas": "workspace:*",
+    "@tanstack/react-query": "^5.101.1",
+    "react": "19.2.4",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "25.3.5",
+    "@types/react": "19.2.14",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

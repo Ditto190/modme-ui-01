@@ -1,12 +1,12 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-07-05T12:24:13.561Z",
-  "source": "test",
+  "generatedAt": "2026-07-17T21:09:45.437Z",
+  "source": "inbox-audit",
   "lens": "funnel",
   "strict": false,
   "passed": true,
   "summary": {
-    "files": 1,
+    "files": 0,
     "errors": 0,
     "warnings": 0,
     "total": 0,

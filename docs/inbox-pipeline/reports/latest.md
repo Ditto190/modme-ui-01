@@ -1,7 +1,7 @@
 # Inbox Pipeline Quality Report
 
-Generated: 2026-07-05T12:24:13.561Z
-Source: `test`
+Generated: 2026-07-17T21:09:45.437Z
+Source: `inbox-audit`
 Lens: **funnel**
 Status: **PASS**
 
@@ -9,7 +9,7 @@ Status: **PASS**
 
 | Metric | Count |
 |--------|-------|
-| Files scanned | 1 |
+| Files scanned | 0 |
 | Errors | 0 |
 | Warnings | 0 |
 | Automatable | 0 |

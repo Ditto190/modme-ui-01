@@ -46,7 +46,7 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 
 ### Fixed
 
-- (next-forge) Format `packages/schemas/molecule-index.test.ts` for Ultracite pre-push
+- (next-forge) Clear Ultracite lint/format blockers so workflow-speckit residual branch can push
 - (scope) Short description (#issue)
 ```
 
@@ -66,6 +66,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (next-forge/telemetry) GenUI molecule catalog/workbench, observability ingest/schema updates, and telemetry bridge/CLI residual before D: cutover
 - (repo) Workflow-speckit residual WIP � scripts, docs, dual-stack gates, and agent tooling before D: cutover
 - (repo) Builder orchestration layer — `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
 - (repo) Copilot workspace + builder incident runbook — `docs/runbooks/copilot-workspace-builder-incident.md`
@@ -100,7 +101,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
-- (next-forge) Format `packages/schemas/molecule-index.test.ts` for Ultracite pre-push
+- (next-forge) Clear Ultracite lint/format blockers so workflow-speckit residual branch can push
 - (repo) Builder/preflight/hook spawns — Windows cmd shim via shell string (not `shell:true`+args); lean-ctx probe requires successful `--version`; `session-archive.ps1` checks `preflight:fast` exit code
 
 ### Changed
@@ -150,7 +151,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
-- (next-forge) Format `packages/schemas/molecule-index.test.ts` for Ultracite pre-push
+- (next-forge) Clear Ultracite lint/format blockers so workflow-speckit residual branch can push
 - (dev) `init-worktrees.ps1` — use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
 - (dev) `new-agent-worktree.ps1` — usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`
 - (vscode) Set `git.path` in `.vscode/settings.json` so Cursor Agent Review finds Git on Windows when it is not on PATH

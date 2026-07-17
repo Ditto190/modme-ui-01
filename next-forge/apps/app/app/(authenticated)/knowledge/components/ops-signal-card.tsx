@@ -1,3 +1,5 @@
+const SESSIONS_PATH_RE = /^.*[/\\]sessions[/\\]/;
+
 const PLATFORM_BADGE_STYLES: Record<string, string> = {
   cursor: "bg-violet-100 text-violet-700 border-violet-200",
   copilot: "bg-sky-100 text-sky-700 border-sky-200",
@@ -27,6 +29,7 @@ export interface OpsSignalCardProps {
   readonly agentPlatform?: string | null;
   readonly description?: string | null;
   readonly durationMs?: number | null;
+  readonly envelopePath?: string | null;
   readonly impact?: "low" | "medium" | "high";
   readonly pipeline: string;
   readonly sessionId?: string | null;
@@ -118,6 +121,7 @@ export function OpsSignalCard({
   severity,
   startedAt,
   agentPlatform,
+  envelopePath,
   traceRefs,
 }: OpsSignalCardProps) {
   const statusStyle = STATUS_STYLES[status] ?? STATUS_STYLES.skipped;
@@ -190,6 +194,15 @@ export function OpsSignalCard({
       </div>
 
       {traceRefs && <TraceLink traceRefs={traceRefs} />}
+
+      {envelopePath && (
+        <p
+          className="mt-1 truncate font-mono text-[10px] text-muted-foreground"
+          title={envelopePath}
+        >
+          envelope: {envelopePath.replace(SESSIONS_PATH_RE, "sessions/")}
+        </p>
+      )}
 
       {startedAt && (
         <div className="mt-1 text-[10px] text-muted-foreground">

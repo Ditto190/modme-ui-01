@@ -5,7 +5,8 @@
  */
 import { createClient } from "@supabase/supabase-js";
 import { createHash, randomUUID } from "node:crypto";
-import { dirname, resolve } from "node:path";
+import { appendFileSync, existsSync, mkdirSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   evalSignalSchema,
@@ -418,11 +419,13 @@ export async function writeTraceRef({
   sessionId,
   traceId,
   spanId,
+  spanName = null,
   agentPlatform = "unknown",
   branch = "",
   worktree = "",
   serviceName = "modme-agent-orchestrator",
   parentSessionId = null,
+  telemetryEventId = null,
   dryRun = false,
 } = {}) {
   const tenant_id = resolveTenantId(tenantId);
@@ -432,12 +435,15 @@ export async function writeTraceRef({
     session_id: sessionId ?? null,
     trace_id: traceId,
     greptime_span_id: spanId,
-    agent_platform: agentPlatform,
-    service_name: serviceName,
-    branch: branch || null,
-    worktree: worktree || null,
-    parent_session_id: parentSessionId ?? null,
-    created_at: new Date().toISOString(),
+    span_name: spanName,
+    telemetry_event_id: telemetryEventId,
+    attributes: {
+      agent_platform: agentPlatform,
+      service_name: serviceName,
+      branch: branch || null,
+      worktree: worktree || null,
+      parent_session_id: parentSessionId ?? null,
+    },
   };
 
   if (dryRun) {
@@ -461,6 +467,16 @@ export async function writeTraceRef({
   return { written: true, id: data?.id ?? null, row };
 }
 
+export function appendDlqEntry(entry, { dlqDir } = {}) {
+  const dir = dlqDir ?? join(ROOT, "logs", "telemetry", "dlq");
+  if (!existsSync(dir)) {
+    mkdirSync(dir, { recursive: true });
+  }
+  const file = join(dir, `${new Date().toISOString().slice(0, 10)}.jsonl`);
+  appendFileSync(file, `${JSON.stringify({ ...entry, recorded_at: new Date().toISOString() })}\n`, "utf8");
+  return file;
+}
+
 export async function bridgeCollectPayload({
   events = [],
   signals = [],
@@ -469,6 +485,9 @@ export async function bridgeCollectPayload({
   tenantId,
   pipelineRunId = null,
   dryRun = false,
+  strict = false,
+  coverage = null,
+  traceRefs = {},
 }) {
   loadRootEnv({ fileWins: true });
   const stats = {
@@ -476,13 +495,24 @@ export async function bridgeCollectPayload({
     stored: 0,
     promoted: 0,
     greptime: 0,
+    trace_refs: 0,
     errors: 0,
+    dlq: 0,
+    correlation_coverage_pct: coverage?.pct ?? null,
   };
+
+  const dlqEntries = [];
 
   for (const raw of events) {
     const normalized = normalizeTelemetryEvent(raw, tenantId);
     if (!normalized.ok) {
       stats.errors += 1;
+      stats.dlq += 1;
+      dlqEntries.push({ stage: "normalize", raw, issues: normalized.issues });
+      if (strict) {
+        if (!dryRun) appendDlqEntry({ stage: "normalize", raw, issues: normalized.issues });
+        continue;
+      }
       continue;
     }
     stats.normalized += 1;
@@ -495,23 +525,40 @@ export async function bridgeCollectPayload({
     }
   }
 
+  if (strict && dlqEntries.length > 0 && dryRun) {
+    stats.strict_blocked = dlqEntries.length;
+  }
+
   const themeResult = await storeEvalThemes(themes, { dryRun });
   stats.stored += themeResult.count ?? 0;
 
   const signalResult = await storeEvalSignals(signals, { dryRun, tenantId });
   stats.stored += signalResult.count ?? 0;
 
+  const tenant_id = resolveTenantId(tenantId);
   for (const span of spans) {
-    const res = await writeGreptimeSpan(
-      { ...span, tenant_id: resolveTenantId(tenantId) },
-      { dryRun }
-    );
+    const res = await writeGreptimeSpan({ ...span, tenant_id }, { dryRun });
     if (res.greptime) stats.greptime += 1;
+
+    const ref = await writeTraceRef({
+      tenantId: tenant_id,
+      sessionId: span.session_id ?? traceRefs.sessionId ?? null,
+      traceId: span.trace_id,
+      spanId: span.span_id,
+      spanName: span.span_name ?? null,
+      agentPlatform: span.attributes?.["agent.platform"] ?? traceRefs.agentPlatform ?? "unknown",
+      branch: traceRefs.branch ?? "",
+      worktree: traceRefs.worktree ?? "",
+      parentSessionId: traceRefs.parentSessionId ?? process.env.PARENT_SESSION_ID ?? null,
+      dryRun,
+    });
+    if (ref.written) stats.trace_refs += 1;
   }
 
   return {
     pipeline_run_id: pipelineRunId,
     stats,
-    tenant_id: resolveTenantId(tenantId),
+    tenant_id,
+    strict_failed: strict && stats.dlq > 0,
   };
 }

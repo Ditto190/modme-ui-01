@@ -1,0 +1,104 @@
+{
+  "version": "1.0.0",
+  "description": "Registry of observability log sources collected by telemetry-cli sync",
+  "sources": [
+    {
+      "id": "session-logger",
+      "source": "session-logger",
+      "path": "logs/copilot/session.log",
+      "collector": "collectSessionEvents",
+      "freshness_slo_hours": 24,
+      "blocking": true
+    },
+    {
+      "id": "session-logger-prompt",
+      "source": "session-logger-prompt",
+      "path": "logs/copilot/prompts.log",
+      "collector": "collectSessionEvents",
+      "freshness_slo_hours": 24,
+      "blocking": false
+    },
+    {
+      "id": "agent-orchestrator",
+      "source": "agent-orchestrator",
+      "path": "logs/agent-orchestrator/errors.jsonl",
+      "collector": "collectOrchestratorErrors",
+      "freshness_slo_hours": 48,
+      "blocking": false
+    },
+    {
+      "id": "agenttrace",
+      "source": "agenttrace",
+      "path": "logs/agenttrace/sessions/*.json",
+      "collector": "collectAgenttraceEvents",
+      "freshness_slo_hours": 48,
+      "blocking": false
+    },
+    {
+      "id": "lean-ctx-journal",
+      "source": "lean-ctx-journal",
+      "path": "logs/lean-ctx/journal*",
+      "collector": "collectLeanCtxJournal",
+      "freshness_slo_hours": 24,
+      "blocking": false
+    },
+    {
+      "id": "lean-ctx-tee",
+      "source": "lean-ctx-tee",
+      "path": "logs/lean-ctx/tee/",
+      "collector": "collectLeanCtxTee",
+      "freshness_slo_hours": 24,
+      "blocking": false
+    },
+    {
+      "id": "lean-ctx-marker",
+      "source": "lean-ctx-marker",
+      "path": ".cursor/hooks/state/lean-ctx-session-markers.jsonl",
+      "collector": "collectLeanCtxMarkers",
+      "freshness_slo_hours": 24,
+      "blocking": false
+    },
+    {
+      "id": "lean-ctx-archive",
+      "source": "lean-ctx-archive",
+      "path": "data/lean-ctx/archive/",
+      "collector": "collectLeanCtxArchive",
+      "freshness_slo_hours": 168,
+      "blocking": false
+    },
+    {
+      "id": "git-hook",
+      "source": "git-hook",
+      "path": "logs/telemetry/git-hooks.jsonl",
+      "collector": "collectGitHookEvents",
+      "freshness_slo_hours": 24,
+      "blocking": false
+    },
+    {
+      "id": "session-envelope",
+      "source": "session-envelope",
+      "path": "logs/agent-orchestrator/sessions/*.json",
+      "collector": "collectSessionEnvelopes",
+      "freshness_slo_hours": 24,
+      "blocking": true
+    },
+    {
+      "id": "test-results",
+      "source": "test-results",
+      "path": "test-results/*.json",
+      "collector": "collectTestResultEvents",
+      "freshness_slo_hours": 48,
+      "blocking": false
+    },
+    {
+      "id": "eval-signals-embedding",
+      "source": "eval-signals-embedding",
+      "path": "supabase:eval_signals.embedding",
+      "collector": null,
+      "freshness_slo_hours": null,
+      "blocking": false,
+      "status": "deferred",
+      "note": "Semantic search deferred — see ADR-0011"
+    }
+  ]
+}

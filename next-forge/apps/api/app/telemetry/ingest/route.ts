@@ -35,6 +35,23 @@ function resolveSignalCount(
   return 0;
 }
 
+function pickStringField(
+  primary: Record<string, unknown> | null | undefined,
+  primaryKey: string,
+  fallback: Record<string, unknown> | null | undefined,
+  fallbackKey: string
+): string | null {
+  const fromPrimary = primary?.[primaryKey];
+  if (typeof fromPrimary === "string") {
+    return fromPrimary;
+  }
+  const fromFallback = fallback?.[fallbackKey];
+  if (typeof fromFallback === "string") {
+    return fromFallback;
+  }
+  return null;
+}
+
 function mapImpactToSeverity(impact: string): "low" | "medium" | "high" {
   if (impact === "high") {
     return "high";
@@ -99,6 +116,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
   const tenantId = resolveTenantId(request);
   const severity = searchParams.get("severity") ?? undefined;
+  const agentPlatform = searchParams.get("agent_platform") ?? undefined;
+  const sessionIdFilter = searchParams.get("session_id") ?? undefined;
   const limit = Math.min(Number(searchParams.get("limit")) || 20, 100);
 
   try {
@@ -106,7 +125,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       database.pipelineRun.findMany({
         where: { tenantId },
         orderBy: { startedAt: "desc" },
-        take: limit,
+        take: limit * 2,
       }),
       database.evalSignal.findMany({
         where: {
@@ -114,7 +133,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           ...(severity ? { impact: severity } : {}),
         },
         orderBy: { createdAt: "desc" },
-        take: limit,
+        take: limit * 2,
       }),
     ]);
 
@@ -129,48 +148,94 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const runRows = runs.map((run) => {
-      const metadata = run.metadata as Record<string, unknown>;
-      const sessionId =
-        typeof metadata?.agent_session_id === "string"
-          ? metadata.agent_session_id
-          : null;
-      const stats = run.stats as Record<string, unknown>;
-      const signalCount = resolveSignalCount(
-        stats,
-        sessionId,
-        signalCountBySession
-      );
+    const runRows = runs
+      .map((run) => {
+        const metadata = run.metadata as Record<string, unknown>;
+        const stats = run.stats as Record<string, unknown>;
+        const sessionId = pickStringField(
+          metadata,
+          "agent_session_id",
+          stats,
+          "session_id"
+        );
+        const signalCount = resolveSignalCount(
+          stats,
+          sessionId,
+          signalCountBySession
+        );
 
-      return {
-        pipeline: run.pipeline,
-        status: run.status as "running" | "completed" | "failed" | "skipped",
-        durationMs: run.durationMs ? Number(run.durationMs) : null,
-        signalCount,
-        impact: "medium" as const,
-        sessionId,
-        title: `${run.pipeline} · ${run.mode}`,
-        description:
-          run.errorMessage ??
-          (typeof stats?.label === "string" ? stats.label : null),
-        severity:
-          run.status === "failed" ? ("high" as const) : ("medium" as const),
-        startedAt: run.startedAt.toISOString(),
-      };
-    });
+        const rowAgentPlatform = pickStringField(
+          metadata,
+          "agent_platform",
+          stats,
+          "agent_platform"
+        );
 
-    const signalRows = signals.map((signal) => ({
-      pipeline: "eval-signal",
-      status: "completed" as const,
-      durationMs: null,
-      signalCount: 1,
-      impact: signal.impact as "low" | "medium" | "high",
-      sessionId: signal.sessionId,
-      title: signal.title,
-      description: signal.description,
-      severity: mapImpactToSeverity(signal.impact),
-      startedAt: signal.createdAt.toISOString(),
-    }));
+        return {
+          pipeline: run.pipeline,
+          status: run.status as "running" | "completed" | "failed" | "skipped",
+          durationMs: run.durationMs ? Number(run.durationMs) : null,
+          signalCount,
+          impact: "medium" as const,
+          sessionId,
+          title: `${run.pipeline} · ${run.mode}`,
+          description:
+            run.errorMessage ??
+            (typeof stats?.label === "string" ? stats.label : null),
+          severity:
+            run.status === "failed" ? ("high" as const) : ("medium" as const),
+          startedAt: run.startedAt.toISOString(),
+          agentPlatform: rowAgentPlatform,
+          envelopePath:
+            typeof metadata?.envelope_path === "string"
+              ? metadata.envelope_path
+              : null,
+          traceRefs: {
+            traceId:
+              typeof stats?.trace_id === "string" ? stats.trace_id : null,
+            greptimeSpanId:
+              typeof stats?.greptime_span_id === "string"
+                ? stats.greptime_span_id
+                : null,
+            parentSessionId:
+              typeof metadata?.parent_session_id === "string"
+                ? metadata.parent_session_id
+                : null,
+          },
+        };
+      })
+      .filter((row) => {
+        if (sessionIdFilter && row.sessionId !== sessionIdFilter) {
+          return false;
+        }
+        if (agentPlatform && row.agentPlatform !== agentPlatform) {
+          return false;
+        }
+        return true;
+      });
+
+    const signalRows = signals
+      .map((signal) => ({
+        pipeline: "eval-signal",
+        status: "completed" as const,
+        durationMs: null,
+        signalCount: 1,
+        impact: signal.impact as "low" | "medium" | "high",
+        sessionId: signal.sessionId,
+        title: signal.title,
+        description: signal.description,
+        severity: mapImpactToSeverity(signal.impact),
+        startedAt: signal.createdAt.toISOString(),
+        agentPlatform: null as string | null,
+        envelopePath: null as string | null,
+        traceRefs: null,
+      }))
+      .filter((row) => {
+        if (sessionIdFilter && row.sessionId !== sessionIdFilter) {
+          return false;
+        }
+        return !(severity && row.severity !== severity);
+      });
 
     const merged = [...runRows, ...signalRows]
       .sort(

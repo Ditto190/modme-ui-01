@@ -144,7 +144,10 @@ function stagedForgePaths(files) {
 }
 
 function runUltraciteOnForgePath(mode, relPath) {
-  if (relPath.includes("[")) {
+  // Biome/Ultracite on Windows fails (os error 3) when the relative path
+  // contains `[…]` or `(…)` segments (e.g. Next.js route groups).
+  // Run from the parent directory with only the basename instead.
+  if (relPath.includes("[") || /\([^/\\]+\)/.test(relPath)) {
     const segments = relPath.split("/");
     const fileName = segments.pop();
     const subDir = resolve(FORGE_ROOT, ...segments);
@@ -301,7 +304,7 @@ function main() {
     const contractResult = spawnSync(
       isWindows ? "yarn.cmd" : "yarn",
       ["telemetry:test:contracts"],
-      { cwd: ROOT, stdio: "inherit" }
+      { cwd: ROOT, stdio: "inherit", shell: isWindows }
     );
     if (contractResult.status !== 0) {
       process.exit(contractResult.status ?? 1);
