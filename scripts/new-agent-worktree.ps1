@@ -24,7 +24,7 @@ Examples:
   .\scripts\new-agent-worktree.ps1 -Name "auth-fix" -Owner cursor
   .\scripts\new-agent-worktree.ps1 -Name "api-refactor" -Owner copilot
 
-Run .\scripts\init-worktrees.ps1 first if .worktrees/dev does not exist.
+Run .\scripts\init-worktrees.ps1 first if the worktree root does not exist.
 
 "@ -ForegroundColor Yellow
   exit 1
@@ -36,9 +36,11 @@ $prevDirenvDisable = $env:DIRENV_DISABLE
 $env:DIRENV_DISABLE = "1"
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+. "$ScriptDir/lib/worktree-context.ps1"
 $ProjectMainDir = Split-Path -Parent $ScriptDir
-$ProjectName = Split-Path -Leaf $ProjectMainDir
-$DevWorktreeRoot = Join-Path $ProjectMainDir ".worktrees"
+$ctx = Get-WorktreeContext -RepoRoot $ProjectMainDir
+$MainRepoRoot = $ctx.MainRepoRoot
+$DevWorktreeRoot = $ctx.WorktreesRoot
 
 try {
   Write-Host "===========================================" -ForegroundColor Cyan
@@ -47,6 +49,7 @@ try {
   Write-Host ""
   Write-Host "   Feature: $Name"
   Write-Host "   Owner:   $Owner"
+  Write-Host "   Root:    $DevWorktreeRoot"
   Write-Host ""
 
   function Check-Git {
@@ -79,17 +82,17 @@ try {
   $branchExists = $false
   $prevEap = $ErrorActionPreference
   $ErrorActionPreference = 'Continue'
-  git -C $ProjectMainDir show-ref --verify --quiet "refs/heads/$BranchName" 2>$null | Out-Null
+  git -C $MainRepoRoot show-ref --verify --quiet "refs/heads/$BranchName" 2>$null | Out-Null
   if ($LASTEXITCODE -eq 0) { $branchExists = $true }
   $ErrorActionPreference = $prevEap
 
   if ($branchExists) {
     Write-Host "   Branch exists. Attaching worktree..." -ForegroundColor Yellow
-    git -C $ProjectMainDir worktree add $TargetPath $BranchName
+    git -C $MainRepoRoot worktree add $TargetPath $BranchName
   }
   else {
     Write-Host "   Creating new branch from dev..." -ForegroundColor Yellow
-    git -C $ProjectMainDir worktree add -b $BranchName $TargetPath dev
+    git -C $MainRepoRoot worktree add -b $BranchName $TargetPath dev
   }
 
   if ($LASTEXITCODE -ne 0) {
@@ -101,7 +104,7 @@ try {
   if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   Write-Host "Copying .env files from main checkout..." -ForegroundColor Cyan
-  & "$ScriptDir/worktree-copy-env.ps1" -SourceRoot $ProjectMainDir -TargetRoot $TargetPath
+  & "$ScriptDir/worktree-copy-env.ps1" -SourceRoot $MainRepoRoot -TargetRoot $TargetPath
   if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   Write-Host "Installing git pre-commit hook..." -ForegroundColor Cyan

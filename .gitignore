@@ -32,6 +32,7 @@ target/
 *.tsbuildinfo
 
 # Worktree local artifacts (git manages worktree dirs themselves)
+.worktrees/
 .worktrees/**/.worktree-ports.env
 .worktrees/**/logs/
 .lean-ctx/
