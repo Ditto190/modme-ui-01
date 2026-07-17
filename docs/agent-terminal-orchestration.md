@@ -166,7 +166,23 @@ node scripts/control-cli-harness.mjs --probe=status
 .\scripts\control-cli-harness.ps1 -Human
 ```
 
-Probes: `agent-status --json`, mprocs YAML generation, `e2e/worktree-smoke`, optional tmux status.
+Probes: `agent-status --json`, mprocs YAML generation, `e2e/worktree-smoke`, optional tmux status, path profile bootstrap (`paths`).
+
+### Bootstrap path profiles
+
+`scripts/validate-path-profiles.mjs` resolves and confines repo paths (main checkout vs agent worktree), runs a remediation decision tree, and caches the resolved profile for agents.
+
+Config: [`config/control-cli/path-profiles.json`](../config/control-cli/path-profiles.json)
+
+```powershell
+yarn validate:path-profiles
+yarn harness:paths
+node scripts/validate-path-profiles.mjs --human
+node scripts/control-cli-harness.mjs --probe=paths
+.\scripts\validate-path-profiles.ps1 -Human
+```
+
+Cache default: `.cache/control-cli/resolved-path-profile.json` (skip with `--no-write-cache`). Exit `1` on error-severity findings; `--strict` also fails on warnings.
 
 `agent-status.mjs` defaults to JSON; use `--human` for text. Structured errors go to stderr.
 
@@ -203,6 +219,8 @@ Session start runs `catalog-cms-eval` builders preflight. See [`docs/KNOWLEDGE_Q
 | Script                       | Description                                                  |
 | ---------------------------- | ------------------------------------------------------------ |
 | `yarn harness:control-cli`   | Orchestration probe harness                                  |
+| `yarn validate:path-profiles` | Bootstrap path profile gate (JSON default)                 |
+| `yarn harness:paths`         | Alias for `validate:path-profiles`                           |
 | `yarn agent:tui`             | Generate mprocs.yaml + launch mprocs                         |
 | `yarn agent:mprocs:generate` | Regenerate mprocs.yaml only                                  |
 | `yarn agent:status`          | Worktree + ports + doctor (JSON default; `--human` for text) |

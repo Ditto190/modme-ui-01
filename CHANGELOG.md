@@ -64,6 +64,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (repo) `validate:path-profiles` + `config/control-cli/path-profiles.json` — bootstrap path profile gate with defensive path confinement, remediation decision tree, and agent cache (`.cache/control-cli/resolved-path-profile.json`); wired as `paths` probe in `control-cli-harness.mjs`
 - (repo) `scripts/control-cli-harness.mjs` + `yarn harness:control-cli` — deterministic orchestration probes for multi-agent workspaces
 - (repo) Root `flake.nix` devShell + CI `nix-orchestration-smoke` job (Hydra-inspired path-filtered evaluation)
 - (repo) `.worktreeexclude` mirror policy — git-tracked config stays on `dev`; runtime files via `.worktreeinclude`

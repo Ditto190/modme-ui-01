@@ -25,6 +25,7 @@ dist/
 build/
 out/
 .cache/builders/
+.cache/control-cli/
 .next/
 .turbo/
 coverage/

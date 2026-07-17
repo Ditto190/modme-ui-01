@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * ModMe control-cli harness — deterministic orchestration probes (JSON default).
- * Usage: node scripts/control-cli-harness.mjs [--probe status|mprocs|smoke|tmux|all] [--human] [--brief] [--help]
+ * Usage: node scripts/control-cli-harness.mjs [--probe status|mprocs|smoke|tmux|paths|all] [--human] [--brief] [--help]
  */
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
@@ -39,6 +39,19 @@ const PROBES = {
     args: ["scripts/agent-workspace-tmux.sh", "status"],
     ready: (out) => out.includes("git worktree list"),
     optional: true,
+  },
+  paths: {
+    label: "path-profiles",
+    cmd: "node",
+    args: ["scripts/validate-path-profiles.mjs"],
+    ready: (out) => {
+      try {
+        const payload = JSON.parse(out);
+        return payload.ok === true;
+      } catch {
+        return false;
+      }
+    },
   },
 };
 
@@ -102,7 +115,7 @@ if (args.includes("--help")) {
         brief: BRIEF,
         commands: [
           { name: "default", description: "Run all probes; JSON to stdout" },
-          { name: "--probe", description: "Single probe: status|mprocs|smoke|tmux|all" },
+          { name: "--probe", description: "Single probe: status|mprocs|smoke|tmux|paths|all" },
           { name: "--human", description: "Transcript-style output" },
           { name: "--brief", description: "One-line identity" },
         ],
