@@ -1,0 +1,12 @@
+# Git-tracked config mirrored from dev branch — never copy from main checkout.
+# Complements .worktreeinclude (runtime secrets + lockfiles only).
+# See docs/multi-agent-worktrees.md and scripts/worktree-copy-env.ps1
+
+.editorconfig
+.cursor/rules/**
+.cursor/hooks.json
+AGENTS.md
+CLAUDE.md
+GENKIT.md
+LEAN-CTX.md
+.gitattributes

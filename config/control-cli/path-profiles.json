@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "cacheRelative": ".cache/control-cli/resolved-path-profile.json",
+  "profiles": {
+    "main-checkout": {
+      "id": "main-checkout",
+      "detect": { "notUnder": ".worktrees/" },
+      "requirePaths": [
+        "package.json",
+        "yarn.lock",
+        "scripts/control-cli-harness.mjs",
+        "docs/agent-terminal-orchestration.md"
+      ],
+      "allowPrefixes": [
+        "scripts/",
+        "docs/",
+        "config/",
+        "harness/",
+        "e2e/",
+        "next-forge/",
+        "GenerativeUI_monorepo/",
+        ".cursor/",
+        ".agents/"
+      ]
+    },
+    "agent-worktree": {
+      "id": "agent-worktree",
+      "detect": { "under": ".worktrees/" },
+      "requirePaths": [
+        "package.json",
+        "yarn.lock",
+        ".worktree-ports.env",
+        "scripts/control-cli-harness.mjs"
+      ],
+      "allowPrefixes": [
+        "scripts/",
+        "docs/",
+        "config/",
+        "harness/",
+        "e2e/",
+        "next-forge/",
+        "GenerativeUI_monorepo/",
+        ".cursor/",
+        ".agents/",
+        ".cache/"
+      ]
+    }
+  },
+  "decisionTree": [
+    {
+      "id": "not-repo-root",
+      "when": { "missing": "package.json" },
+      "severity": "error",
+      "message": "Not a ModMe repo root",
+      "remediation": ["cd to repo or worktree root"]
+    },
+    {
+      "id": "missing-yarn-lock",
+      "when": { "missing": "yarn.lock" },
+      "severity": "error",
+      "message": "yarn.lock missing — yarn scripts will fail",
+      "remediation": [
+        "Copy yarn.lock from main checkout via worktree-copy-env.ps1",
+        "Or run yarn install on main then re-sync"
+      ]
+    },
+    {
+      "id": "devbox-confusion",
+      "when": { "commandMissing": "devbox" },
+      "severity": "info",
+      "message": "devbox CLI not installed (expected). ModMe does not use jetify/Azure Devbox for agent TUI.",
+      "remediation": [
+        "Use: yarn agent:tui",
+        "Or: nix develop -c yarn harness:control-cli",
+        "Do not run: devbox shell"
+      ]
+    },
+    {
+      "id": "missing-mprocs",
+      "when": { "commandMissing": "mprocs" },
+      "severity": "warn",
+      "message": "mprocs not on PATH; yarn agent:tui uses npx mprocs",
+      "remediation": ["yarn agent:tui (npx --yes mprocs)", "cargo install mprocs"]
+    },
+    {
+      "id": "missing-bash",
+      "when": { "commandMissing": "bash" },
+      "severity": "warn",
+      "message": "bash missing — tmux probe skipped; prefer mprocs on Windows",
+      "remediation": ["Install Git Bash or WSL", "Or use yarn agent:tui"]
+    },
+    {
+      "id": "missing-ports-env",
+      "when": { "profile": "agent-worktree", "missing": ".worktree-ports.env" },
+      "severity": "error",
+      "message": "Worktree ports env missing",
+      "remediation": ["yarn worktree:ports", ". .\\scripts\\load-worktree-ports.ps1"]
+    }
+  ]
+}

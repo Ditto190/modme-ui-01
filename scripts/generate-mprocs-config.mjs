@@ -116,7 +116,7 @@ function main() {
   }
 
   procs.orchestrator_status = {
-    shell: "node scripts/agent-status.mjs",
+    shell: "node scripts/agent-status.mjs --json",
     cwd: ROOT.replace(/\\/g, "/"),
     env: {},
     autostart: false,

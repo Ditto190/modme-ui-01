@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "ModMe builder orchestration — SWC transpile, Vite dev/build, Dolt catalog CMS (optional)",
+  "description": "ModMe builder orchestration — SWC transpile, Vite, Rolldown analyse, Dolt catalog CMS (optional)",
   "builders": [
     {
       "id": "swc",
@@ -26,6 +26,27 @@
               "--config-file",
               "config/builders/swc.swcrc"
             ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "rolldown",
+      "name": "Rolldown",
+      "docs": "https://rolldown.rs/",
+      "rootDevDeps": ["rolldown"],
+      "config": "config/builders/rolldown.config.mjs",
+      "verify": {
+        "cmd": "npx",
+        "args": ["rolldown", "--version"]
+      },
+      "build": {
+        "steps": [
+          {
+            "id": "bundle-orchestration-smoke",
+            "cwd": ".",
+            "cmd": "npx",
+            "args": ["rolldown", "-c", "config/builders/rolldown.config.mjs"]
           }
         ]
       }
@@ -91,7 +112,7 @@
   ],
   "pipelines": {
     "copilot-session-create": ["swc:ensure", "vite:verify", "dolt:verify"],
-    "preflight-builders": ["swc:verify", "swc:build", "vite:verify"],
+    "preflight-builders": ["swc:verify", "swc:build", "rolldown:verify", "rolldown:build", "vite:verify"],
     "catalog-cms-eval": ["dolt:verify", "dolt:catalog-status"]
   }
 }

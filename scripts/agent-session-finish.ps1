@@ -10,6 +10,8 @@ param(
   [switch]$SkipFinish,
   [switch]$VerifyStack,
   [string]$PatternGate,
+  [switch]$RemoveWorktree,
+  [switch]$DeleteBranch,
   [switch]$Help,
   [parameter(ValueFromRemainingArguments = $true)]
   [string[]]$FinishArgs
@@ -25,6 +27,8 @@ Passes remaining args to vibe-session-finish.ps1 (e.g. -DryRun -Yes -CommitMessa
   -VerifyStack   Run yarn verify:forge/generative based on changed paths before finish
   -SkipFinish     Skip vibe-session-finish (trace + beads only)
   -PatternGate   Run pattern coverage verify (e.g. federated-dual-stack) before finish
+  -RemoveWorktree  After successful push, remove current worktree (ephemeral sessions)
+  -DeleteBranch    With -RemoveWorktree, also delete the feature branch
 "@
   exit 0
 }
@@ -131,12 +135,34 @@ if ($SessionId -and $env:AGENT_SESSION_ENVELOPE -and (Test-Path $env:AGENT_SESSI
 
 if (-not $SkipFinish) {
   $finishScript = Join-Path $ScriptDir 'vibe-session-finish.ps1'
+  $pushed = $FinishArgs -contains '-Push'
   if ($FinishArgs.Count -gt 0) {
     & $finishScript @FinishArgs
   } else {
     & $finishScript
   }
-  exit $LASTEXITCODE
+  $finishExit = $LASTEXITCODE
+  if ($finishExit -ne 0) { exit $finishExit }
+
+  if ($RemoveWorktree -and $pushed) {
+    $ahead = git -C $RepoRoot rev-list --count "@{u}..HEAD" 2>$null
+    if ($ahead -and [int]$ahead -gt 0) {
+      Write-Warning "Push may not have completed (branch ahead of upstream by $ahead). Skipping worktree removal."
+    }
+    else {
+      $removeScript = Join-Path $ScriptDir 'remove-agent-worktree.ps1'
+      $removeArgs = @('-Path', $RepoRoot, '-Yes')
+      if ($DeleteBranch) { $removeArgs += '-DeleteBranch' }
+      Write-Host "Removing ephemeral worktree: $RepoRoot" -ForegroundColor Cyan
+      & $removeScript @removeArgs
+      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    }
+  }
+  elseif ($RemoveWorktree -and -not $pushed) {
+    Write-Warning '-RemoveWorktree requires -Push in finish args. Worktree kept.'
+  }
+
+  exit 0
 }
 
 Write-Host 'Agent session finished (finish skipped).' -ForegroundColor Green

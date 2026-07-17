@@ -56,6 +56,18 @@ $branch = git -C $RepoRoot branch --show-current 2>$null
 $worktreeName = Split-Path -Leaf $RepoRoot
 $portsEnv = Join-Path $RepoRoot '.worktree-ports.env'
 
+# Sync gitignored bootstrap files from main checkout (idempotent on re-start)
+$gitCommonDir = (git -C $RepoRoot rev-parse --git-common-dir 2>$null).Trim()
+if ($gitCommonDir -and -not [System.IO.Path]::IsPathRooted($gitCommonDir)) {
+  $gitCommonDir = Join-Path $RepoRoot $gitCommonDir
+}
+$mainRepoRoot = if ($gitCommonDir) { Split-Path -Parent (Resolve-Path $gitCommonDir) } else { $RepoRoot }
+$copyScript = Join-Path $ScriptDir 'worktree-copy-env.ps1'
+if ((Test-Path $copyScript) -and ($mainRepoRoot -ne $RepoRoot)) {
+  Write-Host 'Syncing worktree bootstrap files (changed-only)...' -ForegroundColor DarkGray
+  & $copyScript -SourceRoot $mainRepoRoot -TargetRoot $RepoRoot -ChangedOnly
+}
+
 if ($TaskTitle) {
   $dupJson = node $registryCli check-duplicate $TaskTitle
   if ($dupJson -and $dupJson -ne 'null') {

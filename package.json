@@ -86,6 +86,9 @@
     "agent:audit": "node scripts/agent-audit.mjs",
     "agent:session:start": "powershell -ExecutionPolicy Bypass -File ./scripts/agent-session-start.ps1",
     "agent:session:finish": "powershell -ExecutionPolicy Bypass -File ./scripts/agent-session-finish.ps1",
+    "harness:control-cli": "node scripts/control-cli-harness.mjs",
+    "harness:paths": "node scripts/validate-path-profiles.mjs",
+    "validate:path-profiles": "node scripts/validate-path-profiles.mjs",
     "e2e:worktree-smoke": "node e2e/worktree-smoke/run.mjs",
     "supabase:setup": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-supabase-cloud.ps1",
     "supabase:local:setup": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-supabase-local.ps1",
@@ -180,6 +183,7 @@
     "@swc/cli": "^0.7.0",
     "@swc/core": "^1.11.0",
     "prisma": "^7.8.0",
+    "rolldown": "^1.0.0-beta.27",
     "vitest": "^4.0.18"
   }
 }

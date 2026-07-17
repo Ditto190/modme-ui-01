@@ -1,5 +1,5 @@
 {
-  description = "ModMe monorepo — reproducible Node/Bun/Yarn toolchain";
+  description = "ModMe dual-monorepo dev shell — node, yarn, bun for orchestration scripts";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
@@ -12,24 +12,23 @@
         pkgs = nixpkgs.legacyPackages.${system};
       in {
         devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
+          buildInputs = with pkgs; [
             nodejs_22
             bun
-            corepack
             git
+            tmux
+            corepack
           ];
-
           shellHook = ''
-            export MODME_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
             corepack enable 2>/dev/null || true
             corepack prepare yarn@3.3.0 --activate 2>/dev/null || true
-            echo "ModMe nix devShell — node $(node -v), bun $(bun --version 2>/dev/null || echo n/a)"
-            echo "  Root orchestration: yarn (Corepack 3.3.0)"
-            echo "  next-forge:         bun install / bunx (from next-forge/)"
-            echo "  GenerativeUI:       yarn (from GenerativeUI_monorepo/)"
+            echo "[nix] ModMe devShell — yarn worktree:doctor | yarn harness:control-cli"
           '';
         };
 
-        formatter = pkgs.nixpkgs-fmt;
+        packages.worktree-smoke = pkgs.writeShellScriptBin "worktree-smoke" ''
+          cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+          node e2e/worktree-smoke/run.mjs
+        '';
       });
 }
