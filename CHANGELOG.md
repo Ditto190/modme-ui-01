@@ -72,6 +72,8 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (agent) ADR-0013 Serena MCP auto-start on Cursor; chrome-devtools MCP; Wasp llms.txt skills; yarn serena:ensure|doctor|start
+
 - (repo) Builder orchestration layer — `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
 - (repo) Copilot workspace + builder incident runbook — `docs/runbooks/copilot-workspace-builder-incident.md`
 - (repo) GitHub Copilot App workspace orchestration — `.github/github-app.yml` lifecycle scripts, `.worktreeinclude`, `scripts/copilot-workspace/`, portable `.github/hooks/hooks.json`, and `docs/copilot-workspace-orchestration.md`

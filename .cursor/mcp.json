@@ -5,7 +5,7 @@
       "args": ["C:/Users/dylan/Monorepo_ModMe/.tools/skillsh-mcp/dist/index.js"]
     },
     "context7": {
-      "command": "npx",
+      "command": "npx.cmd",
       "args": ["-y", "@upstash/context7-mcp@latest"],
       "env": {
         "CONTEXT7_API_KEY": "${env:CONTEXT7_API_KEY}"
@@ -15,12 +15,29 @@
       "url": "https://mcp.buildkite.com/mcp"
     },
     "mantine": {
-      "command": "npx",
+      "command": "npx.cmd",
       "args": ["-y", "@mantine/mcp-server"]
     },
     "next-devtools": {
-      "command": "npx",
+      "command": "npx.cmd",
       "args": ["-y", "next-devtools-mcp@latest"]
+    },
+    "serena": {
+      "command": "C:/Users/dylan/.local/bin/serena.exe",
+      "args": [
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project-from-cwd",
+        "--enable-web-dashboard",
+        "false",
+        "--open-web-dashboard",
+        "false"
+      ]
+    },
+    "chrome-devtools": {
+      "command": "npx.cmd",
+      "args": ["-y", "chrome-devtools-mcp@latest"]
     }
   }
 }

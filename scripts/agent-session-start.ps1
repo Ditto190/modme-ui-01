@@ -1,7 +1,7 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
-  Start an agent terminal session — beads, session envelope, session-logger, task registry.
+  Start an agent terminal session â€” beads, session envelope, session-logger, task registry.
 #>
 param(
   [string]$TaskTitle = '',
@@ -18,7 +18,7 @@ $ErrorActionPreference = 'Stop'
 
 if ($Help) {
   @"
-agent-session-start — begin orchestrated agent session in current worktree
+agent-session-start â€” begin orchestrated agent session in current worktree
 
 Options:
   -TaskTitle      Optional task description (duplicate-checked against registry)
@@ -43,7 +43,7 @@ if (Test-Path $loadLeanCtx) {
   . $loadLeanCtx | Out-Null
 }
 
-# Enable LEAN_CTX_DEBUG_LOG when -DebugTrace or OBSERVABILITY_DEBUG=1 (not default — production-safe)
+# Enable LEAN_CTX_DEBUG_LOG when -DebugTrace or OBSERVABILITY_DEBUG=1 (not default â€” production-safe)
 if ($DebugTrace -or $env:OBSERVABILITY_DEBUG -eq '1') {
   $env:LEAN_CTX_DEBUG_LOG = '1'
   Write-Host '  [observability] LEAN_CTX_DEBUG_LOG=1 (debug-trace active)' -ForegroundColor DarkYellow
@@ -132,7 +132,7 @@ $env:AGENT_SESSION_ID = $sessionId
 $env:AGENT_SESSION_ENVELOPE = $envelopePath
 if ($beadsIssue) { $env:BEADS_ISSUE_ID = $beadsIssue }
 
-# OTel session bootstrap — set standard env vars before calling Node bridge
+# OTel session bootstrap â€” set standard env vars before calling Node bridge
 $env:OTEL_SERVICE_NAME = 'modme-agent-orchestrator'
 $env:OTEL_RESOURCE_ATTRIBUTES = "session.id=$sessionId,tenant.id=$($env:DEV_TENANT_ID ?? '00000000-0000-4000-8000-000000000001'),agent.platform=cursor,git.branch=$($branch ?? ''),agent.worktree=$worktreeName"
 $env:WORKTREE_NAME = $worktreeName
@@ -158,6 +158,16 @@ if (Test-Path $evalSync) {
 $desc = if ($TaskTitle) { $TaskTitle } else { 'agent session' }
 node $registryCli register $sessionId $desc $RepoRoot ($beadsIssue ?? '') ($branch ?? '') | Out-Null
 
+
+# Ensure Serena CLI + project config (Cursor MCP auto-starts via .cursor/mcp.json)
+$ensureSerena = Join-Path $ScriptDir 'ensure-serena.ps1'
+if (Test-Path $ensureSerena) {
+  try {
+    & $ensureSerena -CheckOnly 2>&1 | Out-Host
+  } catch {
+    Write-Warning "Serena doctor failed (non-fatal): $_"
+  }
+}
 if ($BootstrapIntelligence) {
   $bootstrap = Join-Path $ScriptDir 'lean-ctx-session-bootstrap.ps1'
   if (Test-Path $bootstrap) {

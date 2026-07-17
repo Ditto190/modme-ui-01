@@ -150,7 +150,10 @@
     "pr:queue": "node scripts/pr-triage/fetch-review-queue.mjs",
     "pr:comments": "node scripts/pr-triage/aggregate-pr-comments.mjs",
     "pr:classify": "node scripts/pr-triage/classify-pr.mjs",
-    "changelog:update": "node scripts/update-changelog.mjs"
+    "changelog:update": "node scripts/update-changelog.mjs",
+    "serena:ensure": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/ensure-serena.ps1",
+    "serena:doctor": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/ensure-serena.ps1 -CheckOnly",
+    "serena:start": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/start-serena.ps1"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",

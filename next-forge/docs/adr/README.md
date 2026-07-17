@@ -1,4 +1,4 @@
-# Architecture Decision Records (ADRs)
+﻿# Architecture Decision Records (ADRs)
 
 This directory contains Architecture Decision Records for the **next-forge** monorepo. ADRs capture significant architectural and technical decisions, their context, rationale, and consequences.
 
@@ -21,6 +21,8 @@ Architecture Decision Records provide:
 | **0009** | [Inbox Data Contract and Quality Gates](./0009-inbox-data-contract-and-quality-gates.md) | **Accepted** | 2026-06-20 | Inbox Pipeline |
 | **0010** | [Dual-store knowledge intake (GreptimeDB + Supabase)](./0010-dual-store-knowledge-intake.md) | **Accepted** | 2026-06-27 | Inbox / Intake |
 | **0011** | [Agent terminal orchestration without Nx](./0011-terminal-orchestration-without-nx.md) | **Accepted** | 2026-06-27 | Agent / DevEx |
+| **0012** | [Bounded parallel agent lifecycle](./0012-bounded-parallel-agent-lifecycle.md) | **Accepted** | 2026-06-27 | Agent / DevEx |
+| **0013** | [Serena MCP launches on Cursor startup](./0013-serena-mcp-startup.md) | **Accepted** | 2026-07-11 | Agent / DevEx |
 
 ## Creating a New ADR
 
@@ -67,19 +69,19 @@ Before writing, collect:
 ## ADR Status Lifecycle
 
 ```
-┌─────────────┐
-│  Proposed   │  Initial draft, under review
-└──────┬──────┘
-       │
-       ├─────────────────┐
-       │                 │
-       ▼                 ▼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  Proposed   â”‚  Initial draft, under review
+â””â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”˜
+       â”‚
+       â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+       â”‚                 â”‚
+       â–¼                 â–¼
    Accepted         Rejected
    (decision made)  (not adopted)
-       │
-       ├─────────────────┐
-       │                 │
-       ▼                 ▼
+       â”‚
+       â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+       â”‚                 â”‚
+       â–¼                 â–¼
   Deprecated        Superseded
   (no longer)       (replaced by
    relevant)        another ADR)
@@ -181,7 +183,7 @@ this decision.
 
 ## Writing Tips
 
-### Do's ✅
+### Do's âœ…
 
 - **Write early**: Document decisions before implementation
 - **Be specific**: Use concrete examples and numbers
@@ -191,7 +193,7 @@ this decision.
 - **Update status**: Deprecate or supersede when appropriate
 - **Keep focused**: One decision per ADR
 
-### Don'ts ❌
+### Don'ts âŒ
 
 - **Don't rewrite accepted ADRs**: Supersede them instead
 - **Don't skip alternatives**: Show your reasoning
@@ -324,3 +326,4 @@ Optionally validate ADRs in CI:
 **Last Updated**: 2026-06-20  
 **Maintainer**: next-forge team  
 **Questions/Feedback**: Create an issue or discussion in the repository
+
