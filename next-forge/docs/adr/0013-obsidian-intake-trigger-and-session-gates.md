@@ -79,7 +79,7 @@ Events are not a new bus; they are named checkpoints that map onto the existing 
 
 | Phase | Gate | Mechanism |
 |---|---|---|
-| Pre-session | env + workspace sane | `yarn lean-ctx:ensure`, `yarn worktree:doctor`, `yarn session:start`, beads claim |
+| Pre-session | env + workspace sane | `yarn lean-ctx:ensure`, `yarn worktree:doctor`, `yarn agent:session:start`, beads claim |
 | During-session | funnel quality, telemetry open | `inbox-audit --lens funnel` (first orchestrator step), telemetry `pipeline_run` opened |
 | Pre-upsert | contract + auth path | Zod strict parse against `InboxFunnelFileSchema` / `InboxEntryRecordSchema`; writes go through the service-role server path only (never a client key); RLS policies verified present before live mode |
 | Post-upsert | convergence + schema health | `inbox-audit --lens pipeline`, Supabase MCP `get_advisors` (security + performance), `beadsFinishPipelineRun` |
