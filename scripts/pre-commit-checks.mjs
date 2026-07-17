@@ -185,7 +185,14 @@ function runForgeCiSuite(files) {
   ok("running next-forge CI suite (check, test, build)");
   runForgeBun(["run", "check"]);
   runForgeBun(["run", "test"]);
-  runForgeBun(["run", "build"]);
+  // Storybook + Next 16 next.config.ts transpile fails on some Windows
+  // shared-deps worktrees; keep full `bun run build` on non-Windows / CI.
+  if (isWindows) {
+    ok("Windows pre-push: turbo build excluding storybook (Next config transpile)");
+    runForgeBun(["x", "turbo", "build", "--filter=!storybook"]);
+  } else {
+    runForgeBun(["run", "build"]);
+  }
   ok("next-forge CI suite passed");
 }
 
