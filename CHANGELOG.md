@@ -37,6 +37,7 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 ```markdown
 ### Added
 
+- (ci) Agent review routing � `agent-codeowners`, role-review workflows, Issue template, and `docs/devops/agent-review-routing.md` 
 - (scope) Short description (#PR)
 
 ### Changed
@@ -65,6 +66,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (ci) Agent review routing � `agent-codeowners`, role-review workflows, Issue template, and `docs/devops/agent-review-routing.md` 
 - (repo) UniversalWorkbench non-migrate pattern catalogue — inventory, six `nonMigrate` registry patterns, `yarn pattern:uw` / `pattern:coverage` / `pattern:e2e` gates, `--ast-only` code-index promote path (`docs/migration/uw-non-migrate-inventory.md`)
 - (repo) Agent data plane — Entire CLI (`yarn entire:*`), Dolt sql-server (`yarn dolt:*`), KM hub (`yarn km:status`, `docs/KNOWLEDGE_QUICKSTART.md`, `docs/knowledge/CATALOG.md`), ADR-0013 superseding ADR-0010
 - (repo) KM session startup wiring — `scripts/km-session-bootstrap.ps1` (`yarn km:bootstrap`), session start + worktree setup + VS Code tasks/launch (`Full Stack: Forge Core + Agent Data Plane`, soft `dependsOn` on `next-forge: dev core`); ADR-0014; beads `modme-awz`; runbook `docs/monorepo/km-agent-data-plane-startup.md`
@@ -83,6 +85,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (ci) Agent review routing � `agent-codeowners`, role-review workflows, Issue template, and `docs/devops/agent-review-routing.md` 
 - (repo) Builder orchestration layer — `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
 - (repo) Copilot workspace + builder incident runbook — `docs/runbooks/copilot-workspace-builder-incident.md`
 - (repo) GitHub Copilot App workspace orchestration — `.github/github-app.yml` lifecycle scripts, `.worktreeinclude`, `scripts/copilot-workspace/`, portable `.github/hooks/hooks.json`, and `docs/copilot-workspace-orchestration.md`

@@ -43,6 +43,38 @@ testing:
 security:
   - ".github/workflows/*security*"
   - "**/SECURITY.md"
+  - "**/auth/**"
+  - "**/supabase/**"
+  - "next-forge/packages/database/**"
+  - "next-forge/packages/auth/**"
+
+# Agent review roles (also applied by agent-review-dispatch from agent-codeowners.yml)
+review:forge:
+  - "next-forge/**"
+
+review:generative:
+  - "GenerativeUI_monorepo/**"
+
+review:devops:
+  - ".github/**"
+  - "scripts/**"
+  - ".githooks/**"
+  - ".gitlab/**"
+  - ".gitlab-ci.yml"
+
+review:security:
+  - "**/auth/**"
+  - "**/supabase/**"
+  - "next-forge/packages/database/**"
+  - "next-forge/packages/auth/**"
+  - "**/SECURITY.md"
+  - "**/.env*"
+
+review:docs:
+  - "docs/**"
+  - "**/AGENTS.md"
+  - "**/README.md"
+  - "CHANGELOG.md"
 
 developer-experience:
   - ".vscode/**"

@@ -20,6 +20,8 @@ on:
     paths-ignore:
       - "docs/**"
       - "LICENSE"
+  merge_group:
+    types: [checks_requested]
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
