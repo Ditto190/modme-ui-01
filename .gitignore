@@ -105,7 +105,8 @@ docs/devops/reports/
 .lean-ctx-id
 
 # agenttrace
-.agenttrace/
+.agent-resource.lock
+debug-*.log
 /agenttrace-report.*
 /agenttrace-baseline.*
 

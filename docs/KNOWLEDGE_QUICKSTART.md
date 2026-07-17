@@ -60,9 +60,12 @@ Debug launches: [debug-launch-guide.md](debug-launch-guide.md) §2 Agent data pl
 
 ## Inbox → Knowledge (canonical product KM)
 
+**Separate plane from agent Dolt/Beads.** `yarn intake:orchestrate` needs Supabase (`NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`). It does **not** start KM; use `yarn km:status` for the agent data plane.
+
 Drop notes in `GenerativeUI_monorepo/docs/inbox/` then:
 
 ```powershell
+yarn supabase:env:diagnose   # if intake fails
 yarn inbox:audit
 yarn intake:orchestrate
 ```

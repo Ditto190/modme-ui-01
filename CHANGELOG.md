@@ -64,8 +64,10 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (repo) UniversalWorkbench non-migrate pattern catalogue — inventory, six `nonMigrate` registry patterns, `yarn pattern:uw` / `pattern:coverage` / `pattern:e2e` gates, `--ast-only` code-index promote path (`docs/migration/uw-non-migrate-inventory.md`)
 - (repo) Agent data plane — Entire CLI (`yarn entire:*`), Dolt sql-server (`yarn dolt:*`), KM hub (`yarn km:status`, `docs/KNOWLEDGE_QUICKSTART.md`, `docs/knowledge/CATALOG.md`), ADR-0013 superseding ADR-0010
 - (repo) KM session startup wiring — `scripts/km-session-bootstrap.ps1` (`yarn km:bootstrap`), session start + worktree setup + VS Code tasks/launch (`Full Stack: Forge Core + Agent Data Plane`, soft `dependsOn` on `next-forge: dev core`); ADR-0014; beads `modme-awz`; runbook `docs/monorepo/km-agent-data-plane-startup.md`
+- (repo) KM auto-start proof — `scripts/lib/worktree-bootstrap.ps1` (Copilot), mprocs `km_bootstrap` autostart, `new-agent-worktree` KM call, contract tests `km-startup-wiring` + `km:bootstrap:smoke`, intake preflight (Supabase ≠ KM)
 
 ### Changed
 
@@ -75,6 +77,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 - (next-forge) Apply Ultracite/Biome format fixes required for promote-dev-to-main pre-push verify
 - (repo) Beads auto-backup Error 1105 — disable broken `.beads/backup` destination (`backup.enabled: false`); see `docs/beads-workflow.md` troubleshooting
+- (repo) `intake:orchestrate` — fail-fast Supabase env preflight; telemetry `pipeline_runs` failures are advisory (not fatal)
 
 ### Added
 

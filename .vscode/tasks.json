@@ -201,6 +201,21 @@
         "reveal": "always",
         "panel": "shared"
       }
+    },
+    {
+      "label": "modme: agent tui",
+      "dependsOn": ["modme: KM data plane up"],
+      "dependsOrder": "sequence",
+      "type": "shell",
+      "command": "yarn agent:mprocs:generate && yarn agent:tui",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
     }
   ]
 }

@@ -90,7 +90,8 @@ function toYaml(procs) {
         lines.push(`      ${k}: ${JSON.stringify(v)}`);
       }
     }
-    lines.push("    autostart: false");
+    const autostart = proc.autostart === true;
+    lines.push(`    autostart: ${autostart}`);
   }
 
   return `${lines.join("\n")}\n`;
@@ -114,6 +115,13 @@ function main() {
     const key = app.id.replace(/-/g, "_");
     procs[key] = buildProc(app, envPorts);
   }
+
+  procs.km_bootstrap = {
+    shell: "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/km-session-bootstrap.ps1",
+    cwd: ROOT.replace(/\\/g, "/"),
+    env: {},
+    autostart: true,
+  };
 
   procs.orchestrator_status = {
     shell: "node scripts/agent-status.mjs",

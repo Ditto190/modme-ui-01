@@ -17,6 +17,9 @@ import {
   validateFunnelFile,
 } from "./lib/inbox-contract.mjs";
 import { loadRootEnv } from "./lib/load-root-env.mjs";
+import { debugLog, memorySnapshot } from "./lib/debug-ndjson.mjs";
+import { acquireProcessLock, assertResourceBudget, releaseProcessLock } from "./lib/agent-resource-guard.mjs";
+import { assertSupabaseReachable } from "./lib/supabase-connectivity.mjs";
 
 loadRootEnv({ fileWins: true });
 
@@ -30,13 +33,30 @@ const SKIP_VALIDATION = process.argv.includes("--skip-validation");
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+if (!DRY_RUN && (!SUPABASE_URL || !SUPABASE_SERVICE_KEY)) {
   console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
   console.error("Run: yarn supabase:local:setup");
   process.exit(1);
 }
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+/** @type {import('@supabase/supabase-js').SupabaseClient | null} */
+let supabase = null;
+
+function getSupabaseClient() {
+  if (DRY_RUN) return null;
+  if (!supabase) {
+    if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+      throw new Error("Supabase env missing");
+    }
+    supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
+      global: {
+        fetch: (input, init) =>
+          fetch(input, { ...init, signal: AbortSignal.timeout(8_000) }),
+      },
+    });
+  }
+  return supabase;
+}
 const contract = loadContract();
 
 function extractTitle(content, filename) {
@@ -53,6 +73,23 @@ function extractSummary(body) {
 }
 
 async function ingestInbox() {
+  process.env.AGENT_RESOURCE_GUARD = process.env.AGENT_RESOURCE_GUARD || "1";
+  acquireProcessLock("inbox-ingest");
+  try {
+  // #region agent log
+  debugLog({
+    location: "inbox-ingest.mjs:ingestInbox",
+    message: "ingest start",
+    data: { dryRun: DRY_RUN, inboxDir: INBOX_DIR, memory: memorySnapshot("start") },
+    hypothesisId: "H2-H4",
+  });
+  // #endregion
+  assertResourceBudget("ingest-start");
+
+  if (!DRY_RUN) {
+    await assertSupabaseReachable({ hint: "Pass --dry-run to validate inbox files locally." });
+  }
+
   const files = listInboxFilesSync(INBOX_DIR);
   console.log(`Found ${files.length} files to process in ${INBOX_DIR}\n`);
 
@@ -79,18 +116,6 @@ async function ingestInbox() {
         }
       }
 
-      const { data: existing } = await supabase
-        .from("inbox_entries")
-        .select("id, content_hash")
-        .eq("content_hash", contentHash)
-        .maybeSingle();
-
-      if (existing) {
-        console.log(`  SKIP (already indexed): ${filename}`);
-        skipped++;
-        continue;
-      }
-
       const title = frontmatter.title || extractTitle(body, filename);
       const summary = frontmatter.summary || extractSummary(body);
       const tags = Array.isArray(frontmatter.tags) ? frontmatter.tags : [];
@@ -98,6 +123,42 @@ async function ingestInbox() {
       const severity = contract.enums.severity.includes(frontmatter.severity)
         ? frontmatter.severity
         : "medium";
+
+      if (DRY_RUN) {
+        console.log(`  DRY RUN - would ingest: ${filename}`);
+        console.log(`     title: ${title} | format: ${format} | severity: ${severity}`);
+        // #region agent log
+        debugLog({
+          location: "inbox-ingest.mjs:ingestInbox",
+          message: "dry-run skip supabase",
+          data: { filename, memory: memorySnapshot("dry-run") },
+          hypothesisId: "H4",
+        });
+        // #endregion
+        ingested++;
+        continue;
+      }
+
+      const client = getSupabaseClient();
+      const { data: existing } = await client
+        .from("inbox_entries")
+        .select("id, content_hash")
+        .eq("content_hash", contentHash)
+        .maybeSingle();
+      // #region agent log
+      debugLog({
+        location: "inbox-ingest.mjs:ingestInbox",
+        message: "supabase lookup",
+        data: { filename, hasExisting: !!existing, memory: memorySnapshot("lookup") },
+        hypothesisId: "H4",
+      });
+      // #endregion
+
+      if (existing) {
+        console.log(`  SKIP (already indexed): ${filename}`);
+        skipped++;
+        continue;
+      }
 
       const now = new Date().toISOString();
       const entry = {
@@ -122,14 +183,7 @@ async function ingestInbox() {
         updated_at: now,
       };
 
-      if (DRY_RUN) {
-        console.log(`  DRY RUN - would ingest: ${filename}`);
-        console.log(`     title: ${title} | format: ${format} | severity: ${severity}`);
-        ingested++;
-        continue;
-      }
-
-      const { error } = await supabase.from("inbox_entries").insert(entry);
+      const { error } = await client.from("inbox_entries").insert(entry);
       if (error) {
         console.error(`  ERROR: ${filename} — ${error.message}`);
         errors++;
@@ -138,7 +192,7 @@ async function ingestInbox() {
 
       if (isBinary) {
         const fileBuffer = readFileSync(filePath);
-        const { error: storageError } = await supabase.storage
+        const { error: storageError } = await client.storage
           .from("inbox-files")
           .upload(`${contentHash}/${filename}`, fileBuffer, { upsert: true });
         if (storageError) {
@@ -149,6 +203,17 @@ async function ingestInbox() {
       console.log(`  INGESTED: ${filename}`);
       ingested++;
     } catch (err) {
+      // #region agent log
+      debugLog({
+        location: "inbox-ingest.mjs:ingestInbox",
+        message: "file error",
+        hypothesisId: "H4",
+        data: {
+          filename,
+          error: err instanceof Error ? { name: err.name, message: err.message, cause: String(err.cause ?? "") } : String(err),
+        },
+      });
+      // #endregion
       console.error(`  ERROR processing ${filename}: ${err.message}`);
       errors++;
     }
@@ -157,7 +222,8 @@ async function ingestInbox() {
   console.log(`\nResults: ${ingested} ingested, ${skipped} skipped, ${errors} errors`);
 
   if (!DRY_RUN) {
-    const { data: allEntries } = await supabase
+    const client = getSupabaseClient();
+    const { data: allEntries } = await client
       .from("inbox_entries")
       .select("id, source_file, title, summary, tags, entry_type, severity, status, created_at")
       .order("created_at", { ascending: false })
@@ -183,6 +249,9 @@ async function ingestInbox() {
       writeFileSync(join(INBOX_DIR, "_index.json"), JSON.stringify(index, null, 2));
       console.log(`\nUpdated _index.json with ${allEntries.length} total entries`);
     }
+  }
+  } finally {
+    releaseProcessLock();
   }
 }
 
