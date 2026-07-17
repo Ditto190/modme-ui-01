@@ -65,7 +65,21 @@ Dual stack ports and package managers: [`harness/config/environment.json`](../ha
 
 ## Observability
 
-Session envelopes: `logs/agent-orchestrator/sessions/`. Agenttrace: `yarn agenttrace --overview`. Do **not** add Go `harness/trace/` unless explicitly requested.
+Distributed telemetry pipeline (collect → normalize → promote) feeds Session Ops in the Knowledge UI.
+
+| Artifact | Path |
+|----------|------|
+| Session envelopes | `logs/agent-orchestrator/sessions/` |
+| Git hook events | `logs/telemetry/git-hooks.jsonl` |
+| Log source registry | `docs/observability/log-sources.v1.json` |
+| ETL CLI | `yarn telemetry:sync` / `yarn telemetry:sync:dry-run` |
+| Strict normalize | `node scripts/telemetry/telemetry-cli.mjs sync --dry-run --strict` |
+| Audit | `yarn telemetry:audit --lens sources` |
+| Agenttrace overview | `yarn agenttrace --overview` |
+
+Git hooks emit `git.hook.*` events via `scripts/telemetry/lib/git-hook-bridge.mjs` (pre-commit + post-commit). Session finish runs `yarn telemetry:sync`.
+
+Do **not** add Go `harness/trace/` unless explicitly requested. Semantic search (`match_observability_signals`) is deferred — see ADR-0011.
 
 ## References
 

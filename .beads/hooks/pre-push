@@ -1,24 +1,12 @@
-#!/usr/bin/env sh
-# --- BEGIN BEADS INTEGRATION v1.0.5 ---
-run_bd() {
-  if command -v bd >/dev/null 2>&1 && bd version >/dev/null 2>&1; then
-    bd "$@"
-  elif command -v npx >/dev/null 2>&1; then
-    npx --yes @beads/bd "$@"
-  else
-    return 127
-  fi
-}
-if command -v bd >/dev/null 2>&1 || command -v npx >/dev/null 2>&1; then
-  export BD_GIT_HOOK=1
-  run_bd hooks run pre-push "$@"
-  _bd_exit=$?
-  if [ $_bd_exit -eq 3 ] || [ $_bd_exit -eq 1 ]; then
-    _bd_exit=0
-  fi
-  if [ $_bd_exit -ne 0 ]; then exit $_bd_exit; fi
-fi
-# --- END BEADS INTEGRATION v1.0.5 ---
-
+#!/bin/sh
 set -e
+
+# Run repo-alignment checks first so the hook fails fast on unresolved merge markers.
+if command -v powershell.exe >/dev/null 2>&1; then
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/repo-alignment-doctor.ps1 -Quiet
+else
+  node -e "const fs=require('fs');const p='AGENTS.md';if(fs.existsSync(p)&&(fs.readFileSync(p,'utf8').includes('<<<<<<<')||fs.readFileSync(p,'utf8').includes('>>>>>>>'))){console.error('repo-alignment: AGENTS.md conflict');process.exit(1)}"
+fi
+
 node scripts/pre-push-checks.mjs
+node scripts/pre-commit-checks.mjs --full

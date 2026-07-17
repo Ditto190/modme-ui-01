@@ -89,6 +89,14 @@ temp/
 **/docs/inbox/*
 !**/docs/inbox/README.md
 !**/docs/inbox/_index.json
+!**/docs/inbox/_attachments/
+!**/docs/inbox/_attachments/.gitkeep
+# Obsidian local UI state (vault config under .obsidian/ is tracked)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/graph.json
+.obsidian/cache
+.obsidian/plugins/
 .agents/temp_skills/
 *.bak
 

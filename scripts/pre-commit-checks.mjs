@@ -288,6 +288,26 @@ function main() {
     runNode("scripts/run-lean-ctx-intake.mjs", []);
   }
 
+  const observabilityPaths = [
+    "scripts/telemetry/",
+    "docs/inbox-pipeline/contracts/observability-contract.v1.json",
+    "docs/inbox-pipeline/contracts/expectations/observability.v1.json",
+    "docs/observability/log-sources.v1.json",
+    "packages/intake-contracts/schemas/telemetry-event.mjs",
+  ];
+  if (files.some((f) => matchesAny(f, observabilityPaths))) {
+    ok("observability paths changed — running contract + dry-run tests");
+    runNode("scripts/telemetry/telemetry-cli.mjs", ["sync", "--dry-run"]);
+    const contractResult = spawnSync(
+      isWindows ? "yarn.cmd" : "yarn",
+      ["telemetry:test:contracts"],
+      { cwd: ROOT, stdio: "inherit" }
+    );
+    if (contractResult.status !== 0) {
+      process.exit(contractResult.status ?? 1);
+    }
+  }
+
   ok("staged changes passed pre-commit checks");
 }
 

@@ -24,6 +24,7 @@
     "harness:change": "node scripts/harness-change.mjs",
     "molecule-index:run": "node scripts/molecule-index-orchestrator.mjs --stack forge --semver 1.0.0",
     "molecule-index:verify": "node scripts/molecule-index-orchestrator.mjs --stack forge --semver 1.0.0 && vitest run scripts/__tests__/molecule-index.test.mjs",
+    "gen-engine:verify": "yarn molecule-index:verify && powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run typecheck --filter @repo/gen-engine && powershell -ExecutionPolicy Bypass -File ./scripts/run-forge-bun.ps1 run test --filter @repo/gen-engine",
     "molecule-index": "node scripts/molecule-index-orchestrator.mjs",
     "repo:doctor": "powershell -ExecutionPolicy Bypass -File ./scripts/repo-alignment-doctor.ps1",
     "repo:doctor:fix": "powershell -ExecutionPolicy Bypass -File ./scripts/repo-alignment-doctor.ps1 -Fix",
@@ -99,6 +100,9 @@
     "inbox:fix": "node scripts/inbox-fix.mjs --dry-run",
     "inbox:fix:apply": "node scripts/inbox-fix.mjs --apply",
     "inbox:test": "vitest run --config vitest.config.mjs",
+    "obsidian:vault": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-obsidian-vault.ps1",
+    "obsidian:vault:open": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-obsidian-vault.ps1 -OpenVault",
+    "defuddle:smoke": "node scripts/defuddle-smoke.mjs",
     "test:orchestration": "vitest run --config vitest.config.mjs --project orchestration",
     "test:scripts": "yarn test:orchestration && yarn test:knowledge-management && yarn test:scripts:python",
     "test:scripts:python": "python -m pytest scripts/tests -q",
@@ -150,6 +154,7 @@
     "pr:queue": "node scripts/pr-triage/fetch-review-queue.mjs",
     "pr:comments": "node scripts/pr-triage/aggregate-pr-comments.mjs",
     "pr:classify": "node scripts/pr-triage/classify-pr.mjs",
+    "quality:route": "node scripts/quality-orchestrator.mjs",
     "changelog:update": "node scripts/update-changelog.mjs"
   },
   "dependencies": {

@@ -1,0 +1,6 @@
+shell=bash
+enable=all
+disable=SC1091,SC2115,SC2181
+external-sources=true
+read-isolation=true
+check-unassigned-uppercase=true

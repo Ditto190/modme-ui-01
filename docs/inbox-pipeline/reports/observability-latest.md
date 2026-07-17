@@ -1,7 +1,7 @@
 # Observability Pipeline Audit Report
 
-Generated: 2026-06-28T08:17:28.461Z
-Lens: `all` | Strict: false | Passed: **YES**
+Generated: 2026-07-04T22:05:37.254Z
+Lens: `sources` | Strict: false | Passed: **YES**
 
 ## Summary
 
@@ -10,7 +10,7 @@ Lens: `all` | Strict: false | Passed: **YES**
 | Errors | 0 |
 | Warnings | 0 |
 | Total findings | 0 |
-| Rows/files scanned | 4 |
+| Rows/files scanned | 12 |
 
 _No findings._
 

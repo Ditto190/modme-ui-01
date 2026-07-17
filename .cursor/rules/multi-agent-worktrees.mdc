@@ -24,7 +24,17 @@ Feature work **must not** happen in the main `Monorepo_ModMe` checkout. Use an i
 .\scripts\init-worktrees.ps1
 ```
 
-Creates `.worktrees/dev` (persistent `dev` branch checkout).
+Creates `.worktrees/dev` (persistent `dev` branch checkout) and runs **full** dependency bootstrap (golden image).
+
+## Shared dependencies (default)
+
+Agent worktrees use **junction-linked** deps from `.worktrees/dev` — not per-worktree `yarn`/`bun`/`poetry` installs.
+
+```powershell
+yarn workspace:bootstrap          # full — .worktrees/dev only
+yarn workspace:bootstrap:shared   # junction-link from dev (agent worktrees)
+yarn worktree:relink-deps         # migrate bloated worktrees
+```
 
 ## Per-task workflow
 

@@ -23,7 +23,8 @@ on:
       - 'docs/evaluation/**'
       - 'docs/inbox-pipeline/contracts/observability-contract.v1.json'
       - 'docs/inbox-pipeline/contracts/expectations/observability.v1.json'
-      - 'docs/observability/**'
+      - 'docs/observability/log-sources.v1.json'
+      - '.githooks/post-commit'
       - 'src/lib/observability/**'
       - 'agent/observability/**'
       - '.lean-ctx.toml'
@@ -87,8 +88,14 @@ jobs:
       - name: Telemetry sync dry-run
         run: node scripts/telemetry/telemetry-cli.mjs sync --dry-run
 
+      - name: Telemetry sync strict dry-run
+        run: node scripts/telemetry/telemetry-cli.mjs sync --dry-run --strict
+
       - name: Observability data-quality audit (contracts lens)
         run: yarn telemetry:audit --lens contracts
+
+      - name: Observability log-sources audit
+        run: yarn telemetry:audit --lens sources
 
       - name: Collection manifest validate
         run: yarn collection:validate

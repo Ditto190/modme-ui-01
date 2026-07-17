@@ -1,6 +1,6 @@
 
 # Monorepo_ModMe - Agent worktree creation
-# Usage: .\scripts\new-agent-worktree.ps1 -Name "auth-fix" -Owner cursor
+# Usage: .\scripts\new-agent-worktree.ps1 -Name "auth-fix" -Owner cursor [-SharedDeps] [-FullBootstrap]
 
 [CmdletBinding()]
 param(
@@ -9,7 +9,11 @@ param(
 
   [Parameter(Mandatory = $false)]
   [ValidateSet("cursor", "copilot", "claude", "antigravity", "human")]
-  [string]$Owner = "cursor"
+  [string]$Owner = "cursor",
+
+  [switch]$SharedDeps,
+
+  [switch]$FullBootstrap
 )
 
 $ErrorActionPreference = "Stop"
@@ -18,19 +22,27 @@ if ([string]::IsNullOrWhiteSpace($Name)) {
   Write-Host @"
 
 Usage:
-  .\scripts\new-agent-worktree.ps1 -Name <task-slug> [-Owner cursor|copilot|claude|antigravity|human]
+  .\scripts\new-agent-worktree.ps1 -Name <task-slug> [-Owner cursor|copilot|claude|antigravity|human] [-SharedDeps] [-FullBootstrap]
 
 Examples:
   .\scripts\new-agent-worktree.ps1 -Name "auth-fix" -Owner cursor
-  .\scripts\new-agent-worktree.ps1 -Name "api-refactor" -Owner copilot
+  .\scripts\new-agent-worktree.ps1 -Name "api-refactor" -Owner copilot -FullBootstrap
 
 Run .\scripts\init-worktrees.ps1 first if .worktrees/dev does not exist.
+Default bootstrap: shared-deps (junctions from .worktrees/dev).
 
 "@ -ForegroundColor Yellow
   exit 1
 }
 
 $Name = $Name.Trim().ToLower() -replace '\s+', '-'
+
+if ($FullBootstrap) {
+  $SharedDeps = $false
+}
+elseif (-not $PSBoundParameters.ContainsKey('SharedDeps')) {
+  $SharedDeps = $true
+}
 
 $prevDirenvDisable = $env:DIRENV_DISABLE
 $env:DIRENV_DISABLE = "1"
@@ -47,6 +59,12 @@ try {
   Write-Host ""
   Write-Host "   Feature: $Name"
   Write-Host "   Owner:   $Owner"
+  if ($FullBootstrap) {
+    Write-Host "   Bootstrap: full install" -ForegroundColor DarkYellow
+  }
+  elseif ($SharedDeps) {
+    Write-Host "   Bootstrap: shared-deps (junctions)" -ForegroundColor DarkYellow
+  }
   Write-Host ""
 
   function Check-Git {
@@ -96,16 +114,22 @@ try {
     Write-Error "Failed to create worktree at $TargetPath"
   }
 
-  Write-Host "Allocating ports..." -ForegroundColor Cyan
-  & "$ScriptDir/worktree-allocate-ports.ps1" -WorktreePath $TargetPath
-  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+  . "$ScriptDir/lib/worktree-bootstrap.ps1"
+  $devCheckout = Join-Path $DevWorktreeRoot "dev"
+  $sourceRoot = if (Test-Path $devCheckout) { $devCheckout } else { $ProjectMainDir }
 
-  Write-Host "Copying .env files from main checkout..." -ForegroundColor Cyan
-  & "$ScriptDir/worktree-copy-env.ps1" -SourceRoot $ProjectMainDir -TargetRoot $TargetPath
-  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+  if ($FullBootstrap) {
+    Invoke-WorktreeBootstrap -WorktreeRoot $TargetPath -SourceRoot $ProjectMainDir -Full -SkipSession
+  }
+  elseif ($SharedDeps) {
+    Invoke-WorktreeBootstrap -WorktreeRoot $TargetPath -SourceRoot $sourceRoot -SharedDeps -SkipSession
+  }
+  else {
+    Invoke-WorktreeBootstrap -WorktreeRoot $TargetPath -SourceRoot $ProjectMainDir -Lite -SkipSession
+    & "$ScriptDir/install-git-hooks.ps1"
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+  }
 
-  Write-Host "Installing git pre-commit hook..." -ForegroundColor Cyan
-  & "$ScriptDir/install-git-hooks.ps1"
   if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   Write-Host ""

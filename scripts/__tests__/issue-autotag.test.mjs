@@ -1,41 +1,42 @@
-import { describe, it } from "node:test";
-import assert from "node:assert/strict";
+import { describe, it, expect } from 'vitest';
 import {
   stackLabelsForPaths,
   labelsForPaths,
   labelsForIssueBody,
   globMatches,
-} from "../lib/issue-autotag.mjs";
+} from '../lib/issue-autotag.mjs';
 
-describe("issue-autotag", () => {
-  it("labels next-forge paths as stack:forge", () => {
-    const labels = stackLabelsForPaths(["next-forge/apps/app/page.tsx"]);
-    assert.deepEqual(labels, ["stack:forge"]);
+describe('issue-autotag', () => {
+  it('labels next-forge paths as stack:forge', () => {
+    const labels = stackLabelsForPaths(['next-forge/apps/app/page.tsx']);
+    expect(labels).toEqual(['stack:forge']);
   });
 
-  it("labels GenerativeUI paths as stack:generative", () => {
-    const labels = stackLabelsForPaths(["GenerativeUI_monorepo/apps/web/package.json"]);
-    assert.deepEqual(labels, ["stack:generative"]);
+  it('labels GenerativeUI paths as stack:generative', () => {
+    const labels = stackLabelsForPaths(['GenerativeUI_monorepo/apps/web/package.json']);
+    expect(labels).toEqual(['stack:generative']);
   });
 
-  it("labels orchestration paths", () => {
-    const labels = stackLabelsForPaths(["scripts/intake-orchestrator.mjs"]);
-    assert.deepEqual(labels, ["stack:orchestration"]);
+  it('labels orchestration paths', () => {
+    const labels = stackLabelsForPaths(['scripts/intake-orchestrator.mjs']);
+    expect(labels).toEqual(['stack:orchestration']);
   });
 
-  it("labelsForPaths adds ci-cd for workflow files", () => {
-    const labels = labelsForPaths([".github/workflows/ci.yml"]);
-    assert.ok(labels.includes("stack:orchestration"));
-    assert.ok(labels.includes("ci-cd"));
+  it('labelsForPaths adds ci-cd for workflow files', () => {
+    const labels = labelsForPaths(['.github/workflows/ci.yml']);
+    expect(labels).toContain('stack:orchestration');
+    expect(labels).toContain('ci-cd');
   });
 
-  it("labelsForIssueBody detects beads-linked", () => {
-    const labels = labelsForIssueBody("Linked beads modme-aqu for session");
-    assert.ok(labels.includes("beads-linked"));
+  it('labelsForIssueBody detects beads and self-heal markers', () => {
+    const body = 'Linked modme-abc123. Self-heal: Yes';
+    const labels = labelsForIssueBody(body);
+    expect(labels).toContain('beads-linked');
+    expect(labels).toContain('devops-autofix');
   });
 
-  it("globMatches supports **", () => {
-    assert.ok(globMatches("next-forge/**", "next-forge/apps/app/x.ts"));
-    assert.ok(!globMatches("next-forge/**", "GenerativeUI_monorepo/x.ts"));
+  it('globMatches supports simple globs', () => {
+    expect(globMatches('scripts/**', 'scripts/foo.mjs')).toBe(true);
+    expect(globMatches('scripts/**', 'next-forge/apps/x.ts')).toBe(false);
   });
 });

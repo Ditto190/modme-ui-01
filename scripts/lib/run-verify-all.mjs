@@ -23,9 +23,9 @@ if (prePush) {
   process.exit(result.status ?? 1);
 }
 
-console.log("verify:all — running full forge + generative CI parity");
+console.log("\nverify:all — running scripts + forge + generative CI parity");
 
-for (const script of ["verify:forge", "verify:generative"]) {
+for (const script of ["verify:scripts", "verify:forge", "verify:generative"]) {
   console.log(`\n=== yarn ${script} ===\n`);
   const result = spawnSync("yarn", [script], { cwd: ROOT, stdio: "inherit", shell: true });
   if (result.status !== 0) {

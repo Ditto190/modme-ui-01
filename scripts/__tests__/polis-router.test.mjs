@@ -1,23 +1,22 @@
-import { describe, it } from "node:test";
-import assert from "node:assert/strict";
-import { routeContract } from "../lib/polis-router.mjs";
+import { describe, it, expect } from 'vitest';
+import { routeContract } from '../lib/polis-router.mjs';
 
-describe("polis-router", () => {
-  it("routes ci-cd + selfHeal to devops-ci-champion", () => {
+describe('polis-router', () => {
+  it('routes ci-cd + selfHeal to devops-ci-champion', () => {
     const route = routeContract({
-      labels: ["ci-cd", "devops-autofix"],
-      selfHeal: "Yes",
-      changedPaths: [".github/workflows/ci.yml"],
+      labels: ['ci-cd', 'devops-autofix'],
+      selfHeal: 'Yes',
+      changedPaths: ['.github/workflows/ci.yml'],
     });
-    assert.equal(route.citizenId, "devops-ci-champion");
-    assert.ok(route.verifyCommands.length > 0);
+    expect(route.citizenId).toBe('devops-ci-champion');
+    expect(route.verifyCommands.length).toBeGreaterThan(0);
   });
 
-  it("routes forge paths to forge-reviewer", () => {
+  it('routes generative stack paths to generative-reviewer when labeled', () => {
     const route = routeContract({
-      labels: ["stack:forge"],
-      changedPaths: ["next-forge/apps/app/page.tsx"],
+      labels: ['stack:generative'],
+      changedPaths: ['GenerativeUI_monorepo/UniversalWorkbench/apps/web/src/foo.ts'],
     });
-    assert.equal(route.citizenId, "forge-reviewer");
+    expect(route.citizenId).toBe('generative-reviewer');
   });
 });

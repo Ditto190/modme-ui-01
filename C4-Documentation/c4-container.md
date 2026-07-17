@@ -31,13 +31,53 @@ C4Container
   Rel(as, app, "state_update stream")
 ```
 
+## Frontend Gen Engine containers (stub)
+
+| Container | Tech | Path | Role |
+|-----------|------|------|------|
+| **Molecule orchestrator** | Node (root scripts) | `scripts/molecule-index-orchestrator.mjs` | Emits `data/molecule-index/catalog.v1.json` |
+| **Intake contracts** | Zod (ESM) | `packages/intake-contracts/` | `molecule-catalog` schema validation |
+| **@repo/gen-engine** | TypeScript package | `next-forge/packages/gen-engine/` | Catalog loader, `MoleculeRenderer`, form compiler |
+| **Generative UI route** | Next.js client island | `next-forge/apps/app/.../generative-ui/` | Catalog browser + preview + WS panel |
+| **Workshop / Molecules** | Storybook | `next-forge/apps/workshop/stories/ModMe/Molecules/` | Per-tier visual baseline |
+
+### Engine container diagram
+
+```mermaid
+flowchart TB
+  subgraph ingest [Ingest — build only]
+    MolGen[molecule-generator.ts]
+    Orch[orchestrator.mjs]
+    Catalog[(catalog.v1.json)]
+    MolGen --> Orch --> Catalog
+  end
+
+  subgraph nf [next-forge]
+    GenEngine["@repo/gen-engine"]
+    App[generative-ui page]
+    SB[Storybook workshop]
+    Catalog --> GenEngine
+    GenEngine --> App
+    GenEngine --> SB
+  end
+
+  subgraph legacy [GenerativeUI — strangler]
+    AS[agent-server WSS]
+    AS -.-> App
+  end
+```
+
+**Boundary:** GenerativeUI sources are read by the root orchestrator only — no `workspace:*` link at runtime.
+
 ## Boundaries
 
 - next-forge and GenerativeUI are **separate monorepos** — integrate via WebSocket + shared contract JSON only.
 - Root `src/`/`agent/` excluded from product container map (legacy).
+- Runtime apps consume **built** `catalog.v1.json`, not live GenerativeUI imports.
 
 ## Evidence
 
 - `scripts/launch-manifest.json`
 - `harness/config/environment.json`
 - `C4-Documentation/c4-context.md`
+- `docs/frontend-gen-engine/PROJECT_BRIEF.md`

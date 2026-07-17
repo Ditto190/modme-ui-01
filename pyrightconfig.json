@@ -1,0 +1,44 @@
+{
+  "venvPath": "agent",
+  "venv": ".venv",
+  "pythonVersion": "3.12",
+  "typeCheckingMode": "basic",
+  "exclude": [
+    "**/.git",
+    "**/.next",
+    "**/.turbo",
+    "**/.worktrees",
+    "**/.cache",
+    "**/.venv",
+    "**/build",
+    "**/coverage",
+    "**/dist",
+    "**/logs",
+    "**/node_modules",
+    "**/out",
+    "**/tmp",
+    "**/__pycache__",
+    "**/venv",
+    "AntiGravity/**",
+    ".vendor/**",
+    "**/UniversalWorkbench*/**",
+    "**/.agents/skills/**",
+    "**/with-a2a-a2ui/**",
+    "**/knowledge-base.json"
+  ],
+  "executionEnvironments": [
+    {
+      "root": "agent",
+      "pythonVersion": "3.12",
+      "extraPaths": ["agent"]
+    },
+    {
+      "root": "GenerativeUI_monorepo/apps/agent-server",
+      "pythonVersion": "3.12"
+    },
+    {
+      "root": "scripts",
+      "pythonVersion": "3.12"
+    }
+  ]
+}

@@ -12,6 +12,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
@@ -89,7 +90,34 @@ function loadCollectPayload() {
   return lines.find((l) => l.type === "eval.collect") ?? null;
 }
 
-function buildReport({ sessions, prompts, sinceDays, collect }) {
+function loadTelemetrySyncStats() {
+  try {
+    const proc = spawnSync(
+      process.execPath,
+      [join(ROOT, "scripts/telemetry/telemetry-cli.mjs"), "sync", "--dry-run"],
+      { cwd: ROOT, encoding: "utf8" }
+    );
+    if (proc.status !== 0) return null;
+    const line = proc.stdout.trim().split("\n").pop();
+    const parsed = JSON.parse(line);
+    return parsed.stats ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function loadLogSourcesRegistry() {
+  const path = join(ROOT, "docs/observability/log-sources.v1.json");
+  if (!existsSync(path)) return [];
+  try {
+    const data = JSON.parse(readFileSync(path, "utf8"));
+    return (data.sources ?? []).filter((s) => s.status !== "deferred");
+  } catch {
+    return [];
+  }
+}
+
+function buildReport({ sessions, prompts, sinceDays, collect, telemetryStats, logSources }) {
   const sessionStarts = sessions.filter((e) => e.event === "sessionStart");
   const sessionEnds = sessions.filter((e) => e.event === "sessionEnd");
   const startedIds = new Set(sessionStarts.map((e) => e.id));
@@ -122,6 +150,29 @@ function buildReport({ sessions, prompts, sinceDays, collect }) {
     },
     popularity: {
       note: "Phase 4: merge local_usage + behavioral_score into catalogue_popularity_snapshots",
+    },
+    telemetry: {
+      correlationCoveragePct: telemetryStats?.correlation_coverage_pct ?? null,
+      eventsCollected: telemetryStats?.events_collected ?? null,
+      spansSynthesized: telemetryStats?.spans_synthesized ?? null,
+      traceRefs: telemetryStats?.trace_refs ?? null,
+      dlq: telemetryStats?.dlq ?? 0,
+      logSourceCount: logSources.length,
+      logSources: logSources.map((s) => ({
+        id: s.id,
+        collector: s.collector,
+        freshnessSloHours: s.freshness_slo_hours,
+        blocking: s.blocking ?? false,
+      })),
+      slos: {
+        sessionCaptureTargetPct: 95,
+        spanFlushTargetPct: 99,
+        sessionCaptureActualPct:
+          sessionStarts.length > 0 && sessionEnds.length > 0
+            ? Math.round((sessionEnds.length / sessionStarts.length) * 1000) / 10
+            : null,
+        correlationCoveragePct: telemetryStats?.correlation_coverage_pct ?? null,
+      },
     },
   };
 }
@@ -168,6 +219,26 @@ function renderHtml(report) {
       )
       .join("") || "<tr><td colspan=\"3\">No themes — run yarn eval:collect first</td></tr>"}
   </table>
+  <h2>Telemetry coverage &amp; SLOs</h2>
+  <table>
+    <tr><th>Metric</th><th>Value</th><th>Target</th></tr>
+    <tr><td>Correlation key coverage</td><td>${report.telemetry?.correlationCoveragePct ?? "n/a"}%</td><td>—</td></tr>
+    <tr><td>Events collected (dry-run)</td><td>${report.telemetry?.eventsCollected ?? "n/a"}</td><td>—</td></tr>
+    <tr><td>Spans synthesized</td><td>${report.telemetry?.spansSynthesized ?? "n/a"}</td><td>—</td></tr>
+    <tr><td>Session capture rate</td><td>${report.telemetry?.slos?.sessionCaptureActualPct ?? "n/a"}%</td><td>&gt;${report.telemetry?.slos?.sessionCaptureTargetPct ?? 95}%</td></tr>
+    <tr><td>Span flush (trace refs)</td><td>${report.telemetry?.traceRefs ?? "n/a"}</td><td>&gt;${report.telemetry?.slos?.spanFlushTargetPct ?? 99}% reliability</td></tr>
+    <tr><td>DLQ entries (strict)</td><td>${report.telemetry?.dlq ?? 0}</td><td>0</td></tr>
+  </table>
+  <h3>Log source registry</h3>
+  <table>
+    <tr><th>Source</th><th>Collector</th><th>Freshness SLO (h)</th><th>Blocking</th></tr>
+    ${(report.telemetry?.logSources ?? [])
+      .map(
+        (s) =>
+          `<tr><td>${esc(s.id)}</td><td>${esc(s.collector ?? "—")}</td><td>${s.freshnessSloHours ?? "—"}</td><td>${s.blocking ? "yes" : "no"}</td></tr>`
+      )
+      .join("") || "<tr><td colspan=\"4\">Registry not found</td></tr>"}
+  </table>
   <script type="application/json" id="raw-data">${esc(JSON.stringify(report))}</script>
 </body>
 </html>`;
@@ -178,7 +249,9 @@ function main() {
   const sessions = filterSince(readJsonLines(SESSION_LOG), sinceDays);
   const prompts = filterSince(readJsonLines(PROMPTS_LOG), sinceDays);
   const collect = loadCollectPayload();
-  const report = buildReport({ sessions, prompts, sinceDays, collect });
+  const telemetryStats = loadTelemetrySyncStats();
+  const logSources = loadLogSourcesRegistry();
+  const report = buildReport({ sessions, prompts, sinceDays, collect, telemetryStats, logSources });
 
   if (DRY_RUN) {
     report.dryRun = true;

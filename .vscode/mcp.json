@@ -1,16 +1,19 @@
 {
- "servers": {
-  "supabase": {
-   "type": "http",
-   "url": "https://mcp.supabase.com/mcp?project_ref=aevemmmmouxqlfyxthzf"
-  },
-  "next-devtools": {
-   "command": "npx",
-   "args": [
-    "-y",
-    "next-devtools-mcp@latest"
-   ]
+  "servers": {
+    "next-devtools": {
+      "args": [
+        "-y",
+        "next-devtools-mcp@latest"
+      ],
+      "command": "npx"
+    },
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=aevemmmmouxqlfyxthzf"
+    },
+    "lean-ctx": {
+      "type": "stdio",
+      "command": "lean-ctx"
+    }
   }
- }
 }
-

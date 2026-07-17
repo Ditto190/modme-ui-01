@@ -1,12 +1,12 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-06-28T08:17:28.461Z",
+  "generatedAt": "2026-07-04T22:05:37.254Z",
   "source": "telemetry-audit",
-  "lens": "all",
+  "lens": "sources",
   "strict": false,
   "passed": true,
   "summary": {
-    "files": 4,
+    "files": 12,
     "errors": 0,
     "warnings": 0,
     "total": 0,

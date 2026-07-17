@@ -22,7 +22,7 @@
 **Feature**: `INBOX.PIPELINE.FOUNDATION`  
 **Status**: Phase 1 complete — schema live, scripts wired, workflows created  
 **Branch**: `chore/agent-tooling-and-ci`  
-**Monorepos**: next-forge (DB/API/UI) + GenerativeUI_monorepo (inbox/MDA/scripts)  
+**Monorepos**: next-forge (DB/API/UI) + GenerativeUI_monorepo (inbox/MDA/scripts)
 
 ---
 
@@ -119,12 +119,12 @@ flowchart TD
     Orch[intake-orchestrator.mjs] --> validate
 ```
 
-| Stage | Script | Contract |
-|-------|--------|----------|
-| Scrape classify | `scripts/scrape-classify.mjs` | `packages/intake-contracts` Zod |
-| Scrape promote | `scripts/scrape-promote.mjs` | `scrape-promotion.v1.json` |
-| Code index | `scripts/code-index-orchestrator.mjs` | `code-chunk.v1.json` |
-| Full intake | `yarn intake:full` | scrape + code-index + ingest + embed |
+| Stage           | Script                                | Contract                             |
+| --------------- | ------------------------------------- | ------------------------------------ |
+| Scrape classify | `scripts/scrape-classify.mjs`         | `packages/intake-contracts` Zod      |
+| Scrape promote  | `scripts/scrape-promote.mjs`          | `scrape-promotion.v1.json`           |
+| Code index      | `scripts/code-index-orchestrator.mjs` | `code-chunk.v1.json`                 |
+| Full intake     | `yarn intake:full`                    | scrape + code-index + ingest + embed |
 
 ---
 
@@ -161,22 +161,22 @@ sequenceDiagram
 
 All pipeline features follow the `DOMAIN.ENTITY.OPERATION` taxonomy from `UniversalWorkbench/docs/FEATURE-TAXONOMY.md`.
 
-| Feature ID | Domain | Layer | File | Description |
-|------------|--------|-------|------|-------------|
-| `INBOX.ENTRY.INGEST` | INBOX | AGENT | `scripts/inbox-ingest.mjs` | SHA-256 dedup, format detection, Supabase upsert |
-| `INBOX.ENTRY.EMBED` | INBOX | AGENT | `scripts/inbox-embeddings.mjs` | Generate 384-dim MiniLM vectors |
-| `INBOX.ENTRY.CATEGORIZE` | INBOX | AGENT | `scripts/mda-categorize.mjs --team taxonomy` | Auto-tag, severity, category assignment |
-| `INBOX.ENTRY.RELATE` | INBOX | AGENT | `scripts/mda-categorize.mjs --team relations` | Cosine similarity → `entry_relations` |
-| `INBOX.ARTEFACT.GENERATE.SKILLS` | INBOX | AGENT | `scripts/output-generate.mjs --type skills` | Skill JSON schemas |
-| `INBOX.ARTEFACT.GENERATE.STORYBOOK` | INBOX | AGENT | `scripts/output-generate.mjs --type storybook` | `.stories.tsx` generation |
-| `INBOX.ARTEFACT.GENERATE.ADR` | INBOX | AGENT | `scripts/output-generate.mjs --type adr` | ADR promotion to `next-forge/docs/adr/` |
-| `DB.SCHEMA.INBOX_ENTRIES` | DB | DB | `next-forge/packages/database/prisma/schema.prisma` | InboxEntry Prisma model |
-| `DB.SCHEMA.CATEGORIES` | DB | DB | `next-forge/supabase/migrations/002_seed_categories.sql` | 19-category taxonomy tree |
-| `DB.SCHEMA.PGVECTOR` | DB | DB | `next-forge/supabase/migrations/001_inbox_pipeline_pgvector.sql` | pgvector ext, IVFFlat index, `match_inbox_entries()` |
-| `API.INBOX.LIST` | API | API | `next-forge/apps/api/app/inbox/route.ts` | GET with filters + cursor pagination |
-| `API.CATALOGUE.LIST` | API | API | `next-forge/apps/api/app/catalogue/route.ts` | GET output schemas + artefacts |
-| `UI.KNOWLEDGE.SEARCH` | UI | UI | `next-forge/apps/app/app/(authenticated)/knowledge/` | Knowledge browser with infinite scroll |
-| `AGENT.MDA.ORCHESTRATE` | AGENT | AGENT | `.github/agents/master-data-architect.agent.md` | MDA orchestrator agent definition |
+| Feature ID                          | Domain | Layer | File                                                             | Description                                          |
+| ----------------------------------- | ------ | ----- | ---------------------------------------------------------------- | ---------------------------------------------------- |
+| `INBOX.ENTRY.INGEST`                | INBOX  | AGENT | `scripts/inbox-ingest.mjs`                                       | SHA-256 dedup, format detection, Supabase upsert     |
+| `INBOX.ENTRY.EMBED`                 | INBOX  | AGENT | `scripts/inbox-embeddings.mjs`                                   | Generate 384-dim MiniLM vectors                      |
+| `INBOX.ENTRY.CATEGORIZE`            | INBOX  | AGENT | `scripts/mda-categorize.mjs --team taxonomy`                     | Auto-tag, severity, category assignment              |
+| `INBOX.ENTRY.RELATE`                | INBOX  | AGENT | `scripts/mda-categorize.mjs --team relations`                    | Cosine similarity → `entry_relations`                |
+| `INBOX.ARTEFACT.GENERATE.SKILLS`    | INBOX  | AGENT | `scripts/output-generate.mjs --type skills`                      | Skill JSON schemas                                   |
+| `INBOX.ARTEFACT.GENERATE.STORYBOOK` | INBOX  | AGENT | `scripts/output-generate.mjs --type storybook`                   | `.stories.tsx` generation                            |
+| `INBOX.ARTEFACT.GENERATE.ADR`       | INBOX  | AGENT | `scripts/output-generate.mjs --type adr`                         | ADR promotion to `next-forge/docs/adr/`              |
+| `DB.SCHEMA.INBOX_ENTRIES`           | DB     | DB    | `next-forge/packages/database/prisma/schema.prisma`              | InboxEntry Prisma model                              |
+| `DB.SCHEMA.CATEGORIES`              | DB     | DB    | `next-forge/supabase/migrations/002_seed_categories.sql`         | 19-category taxonomy tree                            |
+| `DB.SCHEMA.PGVECTOR`                | DB     | DB    | `next-forge/supabase/migrations/001_inbox_pipeline_pgvector.sql` | pgvector ext, IVFFlat index, `match_inbox_entries()` |
+| `API.INBOX.LIST`                    | API    | API   | `next-forge/apps/api/app/inbox/route.ts`                         | GET with filters + cursor pagination                 |
+| `API.CATALOGUE.LIST`                | API    | API   | `next-forge/apps/api/app/catalogue/route.ts`                     | GET output schemas + artefacts                       |
+| `UI.KNOWLEDGE.SEARCH`               | UI     | UI    | `next-forge/apps/app/app/(authenticated)/knowledge/`             | Knowledge browser with infinite scroll               |
+| `AGENT.MDA.ORCHESTRATE`             | AGENT  | AGENT | `.github/agents/master-data-architect.agent.md`                  | MDA orchestrator agent definition                    |
 
 ---
 
@@ -355,11 +355,11 @@ erDiagram
 
 ## Required Environment Variables
 
-| Variable | Used By | Purpose |
-|----------|---------|---------|
-| `NEXT_PUBLIC_SUPABASE_URL` | All scripts + Next.js | Supabase project URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | All scripts (write) | Service role key (NOT anon) |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Next.js client | Anon key for browser reads |
+| Variable                        | Used By               | Purpose                     |
+| ------------------------------- | --------------------- | --------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | All scripts + Next.js | Supabase project URL        |
+| `SUPABASE_SERVICE_ROLE_KEY`     | All scripts (write)   | Service role key (NOT anon) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Next.js client        | Anon key for browser reads  |
 
 Set in `.env.local` (next-forge) and as GitHub Actions secrets.
 
@@ -394,6 +394,19 @@ node scripts/inbox-ingest.mjs --dry-run
 node scripts/mda-categorize.mjs --team all --dry-run
 node scripts/output-generate.mjs --type all --dry-run
 ```
+
+---
+
+## Obsidian Web Clipper (browser capture)
+
+Import Chrome templates from [`templates/obsidian-clipper/`](../../templates/obsidian-clipper/) so clipped pages write inbox-contract frontmatter into `GenerativeUI_monorepo/docs/inbox/`.
+
+- Vault: open repo root as Obsidian vault ([`ModMe Vault.md`](../../ModMe%20Vault.md), `.\scripts\setup-obsidian-vault.ps1`)
+- Setup + import order: [`templates/obsidian-clipper/README.md`](../../templates/obsidian-clipper/README.md)
+- Starter pack: GitHub, docs, Article schema, multi-agent AI chat (`chatgpt-clipper.json`), generic link + [`kepano/`](../../templates/obsidian-clipper/kepano/) upstream templates
+- Required properties: `timestamp`, `agent`, `type` (see [`contracts/inbox-contract.v1.json`](contracts/inbox-contract.v1.json))
+
+Vault root must be `Monorepo_ModMe` so Clipper path `GenerativeUI_monorepo/docs/inbox` resolves correctly. Inbox markdown is mostly gitignored — clips appear on disk; `git add -f` to promote into the pipeline.
 
 ---
 
@@ -432,8 +445,8 @@ EOF
 
 ## Implementation History (Breadcrumb Trail)
 
-| Git Tag | Feature ID | Phase | Date | Description |
-|---------|-----------|-------|------|-------------|
+| Git Tag                                         | Feature ID                  | Phase   | Date       | Description                                        |
+| ----------------------------------------------- | --------------------------- | ------- | ---------- | -------------------------------------------------- |
 | `pipeline/INBOX.PIPELINE.FOUNDATION/2026-06-20` | `INBOX.PIPELINE.FOUNDATION` | Phase 1 | 2026-06-20 | Foundation: schema, scripts, workflows, agents, UI |
 
 ### Phase 1 Completed (2026-06-20)
@@ -480,13 +493,13 @@ EOF
 
 **ADR:** [`next-forge/docs/adr/0009-inbox-data-contract-and-quality-gates.md`](../next-forge/docs/adr/0009-inbox-data-contract-and-quality-gates.md)
 
-| Artifact | Path |
-|----------|------|
-| Contract JSON | `docs/inbox-pipeline/contracts/inbox-contract.v1.json` |
-| Funnel expectations | `docs/inbox-pipeline/contracts/expectations/funnel.v1.json` |
+| Artifact              | Path                                                          |
+| --------------------- | ------------------------------------------------------------- |
+| Contract JSON         | `docs/inbox-pipeline/contracts/inbox-contract.v1.json`        |
+| Funnel expectations   | `docs/inbox-pipeline/contracts/expectations/funnel.v1.json`   |
 | Pipeline expectations | `docs/inbox-pipeline/contracts/expectations/pipeline.v1.json` |
-| Latest report | `docs/inbox-pipeline/reports/latest.md` |
-| Event log | `.cursor/hooks/state/inbox-errors.jsonl` |
+| Latest report         | `docs/inbox-pipeline/reports/latest.md`                       |
+| Event log             | `.cursor/hooks/state/inbox-errors.jsonl`                      |
 
 ### Commands (repo root)
 
@@ -521,33 +534,33 @@ flowchart LR
     I --> E[embed → MDA → output]
 ```
 
-| Table | Role |
-|-------|------|
-| `scrape_manifests` | Named crawl config (seed URLs, allowlist, depth rules) |
-| `scrape_jobs` | One run per manifest (`pending` → `running` → `done` \| `failed`) |
-| `scrape_pages` | Per-URL raw extract; SHA-256 dedup; links to inbox after promote |
-| `scrape_classifications` | Ollama output (type, severity, tags) before promotion |
-| `inbox_entries` | Standard inbox pipeline entry (existing embed/MDA/output) |
+| Table                    | Role                                                              |
+| ------------------------ | ----------------------------------------------------------------- |
+| `scrape_manifests`       | Named crawl config (seed URLs, allowlist, depth rules)            |
+| `scrape_jobs`            | One run per manifest (`pending` → `running` → `done` \| `failed`) |
+| `scrape_pages`           | Per-URL raw extract; SHA-256 dedup; links to inbox after promote  |
+| `scrape_classifications` | Ollama output (type, severity, tags) before promotion             |
+| `inbox_entries`          | Standard inbox pipeline entry (existing embed/MDA/output)         |
 
-| Stage | Location |
-|-------|----------|
-| Crawl (Scrapy) | `GenerativeUI_monorepo/scrape-pipeline/` (Scrapy + scrapy-playwright) |
-| Crawl (Firecrawl) | `scripts/firecrawl-scrape-stage.mjs` + self-hosted Docker (`scripts/firecrawl/`) |
-| Classify | `scripts/scrape-classify.mjs` + `experiments/micro-agents/helpers/scrape-classifier-helper.ts` |
-| Promote | `scripts/scrape-promote.mjs` |
-| Orchestrate | `scripts/scrape-orchestrator.mjs` or `scripts/intake-orchestrator.mjs --mode=scrape` |
+| Stage             | Location                                                                                       |
+| ----------------- | ---------------------------------------------------------------------------------------------- |
+| Crawl (Scrapy)    | `GenerativeUI_monorepo/scrape-pipeline/` (Scrapy + scrapy-playwright)                          |
+| Crawl (Firecrawl) | `scripts/firecrawl-scrape-stage.mjs` + self-hosted Docker (`scripts/firecrawl/`)               |
+| Classify          | `scripts/scrape-classify.mjs` + `experiments/micro-agents/helpers/scrape-classifier-helper.ts` |
+| Promote           | `scripts/scrape-promote.mjs`                                                                   |
+| Orchestrate       | `scripts/scrape-orchestrator.mjs` or `scripts/intake-orchestrator.mjs --mode=scrape`           |
 
 ### Environment
 
-| Variable | Purpose |
-|----------|---------|
-| `OLLAMA_BASE_URL` | Ollama API base (default `http://localhost:11434`) |
-| `OLLAMA_MODEL` | Classifier model (e.g. `llama3.2:3b`) |
-| `FIRECRAWL_API_URL` | Self-hosted Firecrawl base URL (default `http://127.0.0.1:3022`) |
-| `FIRECRAWL_USE_CLI` | Set `1` to use `firecrawl` CLI instead of HTTP client |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | Pipeline writes (never in browser) |
-| `DATABASE_URL` | Prisma reads (`next-forge/packages/database/.env`) |
+| Variable                    | Purpose                                                          |
+| --------------------------- | ---------------------------------------------------------------- |
+| `OLLAMA_BASE_URL`           | Ollama API base (default `http://localhost:11434`)               |
+| `OLLAMA_MODEL`              | Classifier model (e.g. `llama3.2:3b`)                            |
+| `FIRECRAWL_API_URL`         | Self-hosted Firecrawl base URL (default `http://127.0.0.1:3022`) |
+| `FIRECRAWL_USE_CLI`         | Set `1` to use `firecrawl` CLI instead of HTTP client            |
+| `NEXT_PUBLIC_SUPABASE_URL`  | Supabase project URL                                             |
+| `SUPABASE_SERVICE_ROLE_KEY` | Pipeline writes (never in browser)                               |
+| `DATABASE_URL`              | Prisma reads (`next-forge/packages/database/.env`)               |
 
 Prisma and Supabase point at the **same** Postgres. Deploy schema: `bun run db:push` (next-forge) then `bunx supabase db push` (migration `007_scrape_staging.sql` adds RLS + indexes).
 
@@ -614,12 +627,12 @@ flowchart LR
 
 ### Staging tables
 
-| Table | Purpose |
-|-------|---------|
-| `scrape_manifests` | Named crawl configs (`slug`, `seeds`, `config`) |
-| `scrape_jobs` | One run per manifest (`pending/running/done/failed`) |
-| `scrape_pages` | Per-URL extract (`content_hash`, `text`, `status`) |
-| `scrape_classifications` | Ollama output before promote |
+| Table                    | Purpose                                              |
+| ------------------------ | ---------------------------------------------------- |
+| `scrape_manifests`       | Named crawl configs (`slug`, `seeds`, `config`)      |
+| `scrape_jobs`            | One run per manifest (`pending/running/done/failed`) |
+| `scrape_pages`           | Per-URL extract (`content_hash`, `text`, `status`)   |
+| `scrape_classifications` | Ollama output before promote                         |
 
 Prisma models: `next-forge/packages/database/prisma/schema.prisma`  
 Supabase migration: `next-forge/supabase/migrations/007_scrape_staging.sql`  
@@ -629,13 +642,13 @@ Deploy order: `bun run db:push` (Prisma) **before** `bunx supabase db push`.
 
 ### Environment variables
 
-| Variable | Used by | Default |
-|----------|---------|---------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Scrapy pipeline, classify, promote | — |
-| `SUPABASE_SERVICE_ROLE_KEY` | Scrapy pipeline, classify, promote | — |
-| `DATABASE_URL` | Prisma / next-forge API reads | `next-forge/packages/database/.env` |
-| `OLLAMA_BASE_URL` | `scrape-classify.mjs` | `http://localhost:11434` |
-| `OLLAMA_MODEL` | `scrape-classify.mjs` | `llama3.2:3b` |
+| Variable                    | Used by                            | Default                             |
+| --------------------------- | ---------------------------------- | ----------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`  | Scrapy pipeline, classify, promote | —                                   |
+| `SUPABASE_SERVICE_ROLE_KEY` | Scrapy pipeline, classify, promote | —                                   |
+| `DATABASE_URL`              | Prisma / next-forge API reads      | `next-forge/packages/database/.env` |
+| `OLLAMA_BASE_URL`           | `scrape-classify.mjs`              | `http://localhost:11434`            |
+| `OLLAMA_MODEL`              | `scrape-classify.mjs`              | `llama3.2:3b`                       |
 
 ### Commands (repo root)
 
@@ -673,16 +686,16 @@ Pattern for Supabase upsert: `intake-pipeline/supabase_syncer.py`
 
 Extends inbox patterns to **tenant-scoped telemetry** without forking enums.
 
-| Artifact | Path |
-|----------|------|
-| JSON contract | `docs/inbox-pipeline/contracts/observability-contract.v1.json` |
-| Zod (runtime) | `packages/intake-contracts/schemas/telemetry-event.mjs`, `pipeline-run.mjs`, `eval-signal.mjs`, `test-result.mjs` |
-| Golden + Vitest | `next-forge/packages/schemas/fixtures/observability-contract.golden.json` |
-| CLI | `scripts/telemetry/telemetry-cli.mjs` (`sync`, `collect`, `report`, `ingest-copilot`) |
-| Bridge | `scripts/telemetry/lib/telemetry-bridge.mjs` |
-| DB migration | `next-forge/supabase/migrations/009_observability_tenant.sql` |
-| UI molecule | `next-forge/apps/app/.../ops-signal-card.tsx` |
-| CI | `.github/workflows/observability-pipeline-check.yml` |
+| Artifact        | Path                                                                                                              |
+| --------------- | ----------------------------------------------------------------------------------------------------------------- |
+| JSON contract   | `docs/inbox-pipeline/contracts/observability-contract.v1.json`                                                    |
+| Zod (runtime)   | `packages/intake-contracts/schemas/telemetry-event.mjs`, `pipeline-run.mjs`, `eval-signal.mjs`, `test-result.mjs` |
+| Golden + Vitest | `next-forge/packages/schemas/fixtures/observability-contract.golden.json`                                         |
+| CLI             | `scripts/telemetry/telemetry-cli.mjs` (`sync`, `collect`, `report`, `ingest-copilot`)                             |
+| Bridge          | `scripts/telemetry/lib/telemetry-bridge.mjs`                                                                      |
+| DB migration    | `next-forge/supabase/migrations/009_observability_tenant.sql`                                                     |
+| UI molecule     | `next-forge/apps/app/.../ops-signal-card.tsx`                                                                     |
+| CI              | `.github/workflows/observability-pipeline-check.yml`                                                              |
 
 ```powershell
 yarn telemetry:sync --dry-run   # via node scripts/telemetry/telemetry-cli.mjs sync --dry-run
@@ -696,6 +709,7 @@ Skill: `.cursor/skills/observability-pipeline/SKILL.md`
 ## Related Docs
 
 - [`GenerativeUI_monorepo/docs/inbox/README.md`](../../GenerativeUI_monorepo/docs/inbox/README.md) — Inbox usage guide
+- [`templates/obsidian-clipper/README.md`](../../templates/obsidian-clipper/README.md) — Obsidian Web Clipper import pack
 - [`AGENTS.md`](../../AGENTS.md) — Root agent instructions + capture protocol
 - [`next-forge/AGENTS.md`](../../next-forge/AGENTS.md) — next-forge agent instructions
 - [`GenerativeUI_monorepo/AGENTS.md`](../../GenerativeUI_monorepo/AGENTS.md) — GenerativeUI agent instructions

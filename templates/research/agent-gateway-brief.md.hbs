@@ -1,0 +1,29 @@
+# Agent Gateway brief — {{title}}
+
+**Status:** research  
+**Updated:** {{updated}}
+
+## Stack position
+
+```
+Client → lean-ctx MCP (repo) → agentgateway (A2A/MCP/LLM) → upstream LLM + external MCP
+```
+
+## Sources
+
+- Upstream: https://github.com/agentgateway/agentgateway
+- ModMe fork: https://github.com/Ditto190/agentgateway-modme
+
+## Routing concerns
+
+{{#each routingPoints}}
+- {{this}}
+{{/each}}
+
+## ModMe touchpoints
+
+- `scripts/lean-ctx-tool-gateway.mjs` — namespace router
+- `scripts/collections/lean-ctx-agent-catalog.seed.json` — `mcp_gateways.agentgateway`
+- `config/agentgateway/routes.example.yaml` — stub routes (no deploy)
+
+See ADR-0012.

@@ -1,0 +1,72 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "ModMe Inbox — Defuddle Probe",
+	"behavior": "create",
+	"description": "Diagnostic template: Defuddle-backed {{content}} + metadata vs truncated fullHtml. Manual select only (no triggers). No Interpreter prompts.",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
+	"path": "GenerativeUI_monorepo/docs/inbox",
+	"triggers": [],
+	"properties": [
+		{
+			"name": "timestamp",
+			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
+			"type": "datetime"
+		},
+		{
+			"name": "agent",
+			"value": "human",
+			"type": "text"
+		},
+		{
+			"name": "agent_role",
+			"value": "researcher",
+			"type": "text"
+		},
+		{
+			"name": "type",
+			"value": "research",
+			"type": "text"
+		},
+		{
+			"name": "severity",
+			"value": "low",
+			"type": "text"
+		},
+		{
+			"name": "tags",
+			"value": "clipper, defuddle-probe, {{domain}}",
+			"type": "multitext"
+		},
+		{
+			"name": "title",
+			"value": "{{title}}",
+			"type": "text"
+		},
+		{
+			"name": "summary",
+			"value": "{{description ?? meta:og:description}}",
+			"type": "text"
+		},
+		{
+			"name": "source",
+			"value": "{{url}}",
+			"type": "text"
+		},
+		{
+			"name": "site",
+			"value": "{{site ?? domain}}",
+			"type": "text"
+		},
+		{
+			"name": "author",
+			"value": "{{author}}",
+			"type": "text"
+		},
+		{
+			"name": "words",
+			"value": "{{words}}",
+			"type": "text"
+		}
+	],
+	"noteContentFormat": "# {{title}}\n\n**URL:** {{url}}\n**Site:** {{site ?? domain}}\n\n## Defuddle metadata\n\n| Field | Value |\n| --- | --- |\n| title | {{title}} |\n| author | {{author}} |\n| description | {{description}} |\n| words | {{words}} |\n| site | {{site ?? domain}} |\n\n## Defuddle content (`{{content}}`)\n\n{{content}}\n\n## Contrast: raw HTML noise (`{{fullHtml|slice:0,200}}`)\n\n```html\n{{fullHtml|slice:0,200}}\n```\n\nCompare cleaned Markdown above vs HTML chrome below. Same extraction powers Clipper Copy-as-MD / Reader.\n"
+}

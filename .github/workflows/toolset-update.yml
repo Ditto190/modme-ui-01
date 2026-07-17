@@ -210,7 +210,7 @@ jobs:
         run: node scripts/update-readme-toolsets.js
       
       - name: Update CHANGELOG
-        run: node scripts/update-changelog.js
+        run: node scripts/update-changelog.mjs
       
       - name: Commit documentation updates
         run: |

@@ -2,7 +2,7 @@
 # Usage: .\scripts\worktree-doctor.ps1 [-Fix] [-Json] [-Quiet]
 #
 # Options:
-#   -Fix    Copy yarn.lock/.yarn from main checkout when missing (worktrees only)
+#   -Fix    Copy lockfiles and relink shared-deps junctions when bloated (worktrees only)
 #   -Json   Machine-readable output
 #   -Quiet  Only print summary line (exit code still reflects status)
 
@@ -22,7 +22,7 @@ function Show-Help {
 worktree-doctor - validate checkout, yarn, ports, gh, and Supabase env
 
 Options:
-  -Fix        Copy yarn.lock and .yarn/ from main checkout when missing
+  -Fix        Copy lockfiles and relink shared-deps junctions when bloated
   -Json       Output JSON (checks array + summary)
   -Quiet      Summary line only
   -RepoRoot   Git repo root (default: git rev-parse --show-toplevel from cwd)
@@ -193,6 +193,105 @@ if (Test-Path $forgeConfig) {
 }
 else {
   Add-Check 'supabase_cli' 'warn' 'No next-forge/supabase/config.toml at expected path' ''
+}
+
+# Shared-deps / junction health
+function Test-DoctorReparsePoint {
+  param([string]$Path)
+  if (-not (Test-Path $Path)) { return $false }
+  $item = Get-Item -LiteralPath $Path -Force -ErrorAction SilentlyContinue
+  if ($null -eq $item) { return $false }
+  return [bool]($item.Attributes -band [IO.FileAttributes]::ReparsePoint)
+}
+
+function Get-DoctorLockFingerprint {
+  param([string]$Path)
+  if (-not (Test-Path $Path)) { return $null }
+  return (Get-FileHash -Path $Path -Algorithm SHA256).Hash
+}
+
+$devCheckout = $ctx.DevCheckout
+$heavyRels = @(
+  @{ rel = 'node_modules'; locks = @('yarn.lock') },
+  @{ rel = 'GenerativeUI_monorepo/node_modules'; locks = @('GenerativeUI_monorepo/yarn.lock') },
+  @{ rel = 'next-forge/node_modules'; locks = @('next-forge/bun.lock') },
+  @{ rel = 'GenerativeUI_monorepo/apps/agent-server/.venv'; locks = @('GenerativeUI_monorepo/apps/agent-server/poetry.lock') }
+)
+
+$devHasDeps = $false
+if (Test-Path $devCheckout) {
+  $genUiNm = Join-Path $devCheckout 'GenerativeUI_monorepo/node_modules'
+  $forgeNm = Join-Path $devCheckout 'next-forge/node_modules'
+  $devHasDeps = (Test-Path $genUiNm) -or (Test-Path $forgeNm)
+}
+
+if ($ctx.IsWorktree -and (Test-Path $devCheckout) -and ($repo -ine (Resolve-Path $devCheckout).Path)) {
+  if (-not $devHasDeps) {
+    Add-Check 'deps_source' 'error' '.worktrees/dev missing dependency trees (golden source)' `
+      'cd .worktrees/dev && yarn workspace:bootstrap'
+  }
+  else {
+    Add-Check 'deps_source' 'ok' 'Golden dependency source .worktrees/dev is ready' ''
+  }
+
+  $realHeavy = @()
+  $bloatMb = 0.0
+  $lockDrift = @()
+
+  foreach ($spec in $heavyRels) {
+    $path = Join-Path $repo $spec.rel
+    if (-not (Test-Path $path)) { continue }
+    if (-not (Test-DoctorReparsePoint -Path $path)) {
+      $realHeavy += $spec.rel
+      $bytes = (Get-ChildItem -LiteralPath $path -Recurse -Force -ErrorAction SilentlyContinue |
+        Measure-Object -Property Length -Sum).Sum
+      if ($null -ne $bytes) { $bloatMb += [math]::Round($bytes / 1MB, 2) }
+    }
+    foreach ($lockRel in $spec.locks) {
+      $srcLock = Join-Path $devCheckout $lockRel
+      $tgtLock = Join-Path $repo $lockRel
+      if (-not (Test-Path $srcLock) -or -not (Test-Path $tgtLock)) { continue }
+      if ((Get-DoctorLockFingerprint $srcLock) -ne (Get-DoctorLockFingerprint $tgtLock)) {
+        $lockDrift += $lockRel
+      }
+    }
+  }
+
+  if ($realHeavy.Count -eq 0) {
+    Add-Check 'deps_junction' 'ok' 'Heavy dependency dirs are junctions or absent' ''
+  }
+  else {
+    Add-Check 'deps_junction' 'warn' "Real (non-junction) deps: $($realHeavy -join ', ')" 'yarn worktree:relink-deps'
+  }
+
+  if ($lockDrift.Count -eq 0) {
+    Add-Check 'deps_lock_drift' 'ok' 'Lockfiles match .worktrees/dev' ''
+  }
+  else {
+    Add-Check 'deps_lock_drift' 'warn' "Lockfile drift vs dev: $($lockDrift -join ', ')" 'yarn worktree:doctor:fix'
+  }
+
+  if ($bloatMb -gt 50) {
+    Add-Check 'deps_bloat' 'warn' "Duplicate dependency trees ~${bloatMb} MB" 'yarn worktree:relink-deps'
+  }
+  elseif ($realHeavy.Count -gt 0) {
+    Add-Check 'deps_bloat' 'warn' "Local dependency copies present (~${bloatMb} MB)" 'yarn worktree:relink-deps'
+  }
+  else {
+    Add-Check 'deps_bloat' 'ok' 'No duplicate heavy dependency trees detected' ''
+  }
+
+  if ($Fix -and ($realHeavy.Count -gt 0 -or $lockDrift.Count -gt 0)) {
+    & (Join-Path $PSScriptRoot 'worktree-relink-deps.ps1') -WorktreePath $repo
+  }
+}
+elseif ((Test-Path $devCheckout) -and ($repo -ieq (Resolve-Path $devCheckout).Path)) {
+  if ($devHasDeps) {
+    Add-Check 'deps_source' 'ok' 'Golden dev checkout has dependency trees' ''
+  }
+  else {
+    Add-Check 'deps_source' 'warn' 'Golden dev checkout needs full bootstrap' 'yarn workspace:bootstrap'
+  }
 }
 
 # Package manager scope

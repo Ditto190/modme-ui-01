@@ -62,4 +62,11 @@ Tier A (modme-preflight, modme-tdd, ci-watcher) already in repo.
 - **gh-aw compile** on native Windows hangs — use WSL or CI (ADR-0010)
 - Never cross-merge `next-forge/` and `GenerativeUI_monorepo/`
 
+## Session start
+
+On ModMe session start, the Cursor hook runs `scripts/dev-env-health.ps1`, which
+prints the quick quality routing commands.
+
+Use this skill after `yarn preflight:fast --report` or when CI is red.
+
 Related: `.agents/skills/modme-preflight/SKILL.md`, `.agents/skills/modme-tdd/SKILL.md`, `docs/devops/quality-loop.md`

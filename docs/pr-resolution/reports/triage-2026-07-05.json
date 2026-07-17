@@ -1,0 +1,683 @@
+{
+  "date": "2026-07-05",
+  "mode": "recommendation",
+  "repo": "Ditto190/modme-ui-01",
+  "queue": {
+    "total": 4,
+    "repo": "Ditto190/modme-ui-01",
+    "base": "dev",
+    "prs": [
+      {
+        "notification_id": null,
+        "title": "feat(workflow): speckit pattern gates for dual-stack agent reviews",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/91",
+        "repo": "Ditto190/modme-ui-01",
+        "pr_number": 91,
+        "author": "Ditto190",
+        "headRefName": "feature/cursor/workflow-speckit-gates",
+        "baseRefName": "dev",
+        "reviewDecision": "",
+        "reasons": [
+          "open PR on base dev"
+        ]
+      },
+      {
+        "notification_id": null,
+        "title": "docs(repo): thermo-nuclear Round 2 redundancy review synthesis",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/90",
+        "repo": "Ditto190/modme-ui-01",
+        "pr_number": 90,
+        "author": "Ditto190",
+        "headRefName": "feature/cursor/thermo-round2-redundancy",
+        "baseRefName": "dev",
+        "reviewDecision": "",
+        "reasons": [
+          "open PR on base dev"
+        ]
+      },
+      {
+        "notification_id": null,
+        "title": "Apply chat suggestion",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/89",
+        "repo": "Ditto190/modme-ui-01",
+        "pr_number": 89,
+        "author": "Ditto190",
+        "headRefName": "ditto190/change-stack-82-a94ad346/528ff99",
+        "baseRefName": "dev",
+        "reviewDecision": "",
+        "reasons": [
+          "open PR on base dev"
+        ]
+      },
+      {
+        "notification_id": null,
+        "title": "docs(review): thermo-nuclear full-repo baseline synthesis",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/88",
+        "repo": "Ditto190/modme-ui-01",
+        "pr_number": 88,
+        "author": "Ditto190",
+        "headRefName": "feature/cursor/thermo-nuclear-baseline",
+        "baseRefName": "dev",
+        "reviewDecision": "",
+        "reasons": [
+          "open PR on base dev"
+        ]
+      }
+    ]
+  },
+  "devClassification": {
+    "total": 4,
+    "repo": "Ditto190/modme-ui-01",
+    "baseFilter": "dev",
+    "byAction": {
+      "merge_candidate": 4
+    },
+    "prs": [
+      {
+        "number": 91,
+        "title": "feat(workflow): speckit pattern gates for dual-stack agent reviews",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/91",
+        "headRefName": "feature/cursor/workflow-speckit-gates",
+        "baseRefName": "dev",
+        "author": "Ditto190",
+        "ageDays": 0,
+        "action": "merge_candidate",
+        "reason": "Dev PR with green checks"
+      },
+      {
+        "number": 90,
+        "title": "docs(repo): thermo-nuclear Round 2 redundancy review synthesis",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/90",
+        "headRefName": "feature/cursor/thermo-round2-redundancy",
+        "baseRefName": "dev",
+        "author": "Ditto190",
+        "ageDays": 0,
+        "action": "merge_candidate",
+        "reason": "Dev PR with green checks"
+      },
+      {
+        "number": 89,
+        "title": "Apply chat suggestion",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/89",
+        "headRefName": "ditto190/change-stack-82-a94ad346/528ff99",
+        "baseRefName": "dev",
+        "author": "Ditto190",
+        "ageDays": 1,
+        "action": "merge_candidate",
+        "reason": "Dev PR with green checks"
+      },
+      {
+        "number": 88,
+        "title": "docs(review): thermo-nuclear full-repo baseline synthesis",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/88",
+        "headRefName": "feature/cursor/thermo-nuclear-baseline",
+        "baseRefName": "dev",
+        "author": "Ditto190",
+        "ageDays": 1,
+        "action": "merge_candidate",
+        "reason": "Dev PR with green checks"
+      }
+    ]
+  },
+  "mainClassification": {
+    "total": 23,
+    "repo": "Ditto190/modme-ui-01",
+    "baseFilter": "main",
+    "byAction": {
+      "retarget_dev": 7,
+      "escalate_before_close": 16
+    },
+    "prs": [
+      {
+        "number": 81,
+        "title": "Cursor/ignore skills f35ba",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/81",
+        "headRefName": "cursor/ignore-skills-f35ba",
+        "baseRefName": "main",
+        "author": "Ditto190",
+        "ageDays": 7,
+        "action": "retarget_dev",
+        "reason": "Wrong base main but recent and CI green"
+      },
+      {
+        "number": 80,
+        "title": "feat(supabase-arch): resolve conflicts, add skills library, catalogue CI, and Supabase migrations",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/80",
+        "headRefName": "feature/antigravity/supabase-architecture",
+        "baseRefName": "main",
+        "author": "Ditto190",
+        "ageDays": 8,
+        "action": "retarget_dev",
+        "reason": "Wrong base main but recent and CI green"
+      },
+      {
+        "number": 79,
+        "title": "chore(repo): update ignore rules, lspmux, code-reviewer, and mcp configs",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/79",
+        "headRefName": "feature/antigravity/ignore-skills",
+        "baseRefName": "main",
+        "author": "Ditto190",
+        "ageDays": 8,
+        "action": "retarget_dev",
+        "reason": "Wrong base main but recent and CI green"
+      },
+      {
+        "number": 76,
+        "title": "feat(onboard): agent index, beads CI wiring, and onboarding delta",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/76",
+        "headRefName": "feature/cursor/onboard-index-clean",
+        "baseRefName": "main",
+        "author": "Ditto190",
+        "ageDays": 8,
+        "action": "retarget_dev",
+        "reason": "Wrong base main but recent and CI green"
+      },
+      {
+        "number": 74,
+        "title": "chore(cursor): install official cursor/plugins and agent hooks",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/74",
+        "headRefName": "copilot/chore-install-cursor-plugins",
+        "baseRefName": "main",
+        "author": "app/copilot-swe-agent",
+        "ageDays": 15,
+        "action": "retarget_dev",
+        "reason": "Wrong base main but recent and CI green"
+      },
+      {
+        "number": 72,
+        "title": "Add prioritized post-merge checklist for GenUI registry/preset guardrails",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/72",
+        "headRefName": "copilot/update-genui-registry-components",
+        "baseRefName": "main",
+        "author": "app/copilot-swe-agent",
+        "ageDays": 51,
+        "action": "retarget_dev",
+        "reason": "Wrong base main but recent and CI green"
+      },
+      {
+        "number": 68,
+        "title": "feat: extend GenUI state contract with 5 project-management dashboard component types",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/68",
+        "headRefName": "copilot/add-genui-dashboard-extension",
+        "baseRefName": "main",
+        "author": "app/copilot-swe-agent",
+        "ageDays": 51,
+        "action": "retarget_dev",
+        "reason": "Wrong base main but recent and CI green"
+      },
+      {
+        "number": 67,
+        "title": "chore(deps): bump the uv group across 6 directories with 14 updates",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/67",
+        "headRefName": "dependabot/uv/agent/uv-52ad374dcd",
+        "baseRefName": "main",
+        "author": "app/dependabot",
+        "ageDays": 80,
+        "action": "escalate_before_close",
+        "reason": "Stale (80d) on main; 1 commit(s) not on dev"
+      },
+      {
+        "number": 65,
+        "title": "chore(deps): bump the pip group across 4 directories with 3 updates",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/65",
+        "headRefName": "dependabot/pip/agent/genai-toolbox/docs/en/getting-started/quickstart/python/adk/pip-842c2433d4",
+        "baseRefName": "main",
+        "author": "app/dependabot",
+        "ageDays": 81,
+        "action": "escalate_before_close",
+        "reason": "Stale (81d) on main; 1 commit(s) not on dev"
+      },
+      {
+        "number": 62,
+        "title": "chore(deps): bump next from 15.4.10 to 15.5.15 in /modme-ui-copilotkit/ui in the npm_and_yarn group across 1 directory",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/62",
+        "headRefName": "dependabot/npm_and_yarn/modme-ui-copilotkit/ui/npm_and_yarn-cb9f2424dc",
+        "baseRefName": "main",
+        "author": "app/dependabot",
+        "ageDays": 82,
+        "action": "escalate_before_close",
+        "reason": "Stale (82d) on main; 1 commit(s) not on dev"
+      },
+      {
+        "number": 61,
+        "title": "chore(deps): bump the uv group across 3 directories with 12 updates",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/61",
+        "headRefName": "dependabot/uv/agent/uv-6c34021a5c",
+        "baseRefName": "main",
+        "author": "app/dependabot",
+        "ageDays": 87,
+        "action": "escalate_before_close",
+        "reason": "Stale (87d) on main; 1 commit(s) not on dev"
+      },
+      {
+        "number": 59,
+        "title": "chore(deps): bump the npm_and_yarn group across 2 directories with 2 updates",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/59",
+        "headRefName": "dependabot/npm_and_yarn/experiments/micro-agents/models/examples/adaptive-retrieval/npm_and_yarn-c09c3fb87a",
+        "baseRefName": "main",
+        "author": "app/dependabot",
+        "ageDays": 88,
+        "action": "escalate_before_close",
+        "reason": "Stale (88d) on main; 1 commit(s) not on dev"
+      },
+      {
+        "number": 56,
+        "title": "chore(deps): bump the uv group across 3 directories with 11 updates",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/56",
+        "headRefName": "dependabot/uv/agent/uv-824bf9a8a6",
+        "baseRefName": "main",
+        "author": "app/dependabot",
+        "ageDays": 94,
+        "action": "escalate_before_close",
+        "reason": "Stale (94d), wrong base main, CI failing; 1 commit(s) not on dev"
+      },
+      {
+        "number": 55,
+        "title": "chore(deps): bump the uv group across 3 directories with 12 updates",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/55",
+        "headRefName": "dependabot/uv/agent/uv-cc3c187180",
+        "baseRefName": "main",
+        "author": "app/dependabot",
+        "ageDays": 94,
+        "action": "escalate_before_close",
+        "reason": "Stale (94d), wrong base main, CI failing; 1 commit(s) not on dev"
+      },
+      {
+        "number": 50,
+        "title": "chore(deps): bump the go_modules group across 6 directories with 3 updates",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/50",
+        "headRefName": "dependabot/go_modules/agent/genai-toolbox/go_modules-dc80079b9d",
+        "baseRefName": "main",
+        "author": "app/dependabot",
+        "ageDays": 108,
+        "action": "escalate_before_close",
+        "reason": "Stale (108d), wrong base main, CI failing; 1 commit(s) not on dev"
+      },
+      {
+        "number": 38,
+        "title": "Add Git hooks infrastructure from awesome-copilot",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/38",
+        "headRefName": "copilot/install-and-configure-hooks",
+        "baseRefName": "main",
+        "author": "app/copilot-swe-agent",
+        "ageDays": 142,
+        "action": "escalate_before_close",
+        "reason": "Stale (142d) on main; 1 commit(s) not on dev"
+      },
+      {
+        "number": 37,
+        "title": "Add llms.txt for GenUI architecture documentation",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/37",
+        "headRefName": "copilot/add-llms-txt-file",
+        "baseRefName": "main",
+        "author": "app/copilot-swe-agent",
+        "ageDays": 142,
+        "action": "escalate_before_close",
+        "reason": "Stale (142d) on main; 1 commit(s) not on dev"
+      },
+      {
+        "number": 35,
+        "title": "feat: Agent Library, Context7 Integration, and GenUI Enhancements",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/35",
+        "headRefName": "test-main-tracking",
+        "baseRefName": "main",
+        "author": "Ditto190",
+        "ageDays": 146,
+        "action": "escalate_before_close",
+        "reason": "Stale (146d), wrong base main, CI failing; 103 commit(s) not on dev"
+      },
+      {
+        "number": 32,
+        "title": "feat: integrate patterns from Containarium, OpenWork, Goose, and MCP-Use",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/32",
+        "headRefName": "claude/integrate-repo-suggestions-Y3Eyn",
+        "baseRefName": "main",
+        "author": "Ditto190",
+        "ageDays": 163,
+        "action": "escalate_before_close",
+        "reason": "Stale (163d), wrong base main, CI failing; 2 commit(s) not on dev"
+      },
+      {
+        "number": 30,
+        "title": "Add bash configuration library for agents working with actions, workflows, and tasks",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/30",
+        "headRefName": "copilot/configure-bash-for-agents",
+        "baseRefName": "main",
+        "author": "app/copilot-swe-agent",
+        "ageDays": 170,
+        "action": "escalate_before_close",
+        "reason": "Stale (170d) on main; 1 commit(s) not on dev"
+      },
+      {
+        "number": 29,
+        "title": "Initial repository assessment - no changes required",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/29",
+        "headRefName": "copilot/list-directory-contents",
+        "baseRefName": "main",
+        "author": "app/copilot-swe-agent",
+        "ageDays": 170,
+        "action": "escalate_before_close",
+        "reason": "Stale (170d) on main; 1 commit(s) not on dev"
+      },
+      {
+        "number": 28,
+        "title": "Add bash tool to copilot agents configuration and toolset",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/28",
+        "headRefName": "copilot/add-bash-tool-to-config",
+        "baseRefName": "main",
+        "author": "app/copilot-swe-agent",
+        "ageDays": 170,
+        "action": "escalate_before_close",
+        "reason": "Stale (170d) on main; 1 commit(s) not on dev"
+      },
+      {
+        "number": 27,
+        "title": "Integrate Containarium for automated container provisioning and orchestration",
+        "url": "https://github.com/Ditto190/modme-ui-01/pull/27",
+        "headRefName": "copilot/integrate-containarium-into-workspace",
+        "baseRefName": "main",
+        "author": "app/copilot-swe-agent",
+        "ageDays": 170,
+        "action": "escalate_before_close",
+        "reason": "Stale (170d) on main; 1 commit(s) not on dev"
+      }
+    ]
+  },
+  "commentSummaries": [
+    {
+      "pr": 91,
+      "title": "feat(workflow): speckit pattern gates for dual-stack agent reviews",
+      "url": "https://github.com/Ditto190/modme-ui-01/pull/91",
+      "high": 5,
+      "medium": 7,
+      "low": 6,
+      "topActions": [
+        {
+          "priority": 1,
+          "action": "Fix scripts/repo-alignment-doctor.ps1:56",
+          "severity": "high",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/91#discussion_r3523662994"
+        },
+        {
+          "priority": 1,
+          "action": "Fix scripts/install-git-hooks.ps1:12",
+          "severity": "high",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/91#discussion_r3523662995"
+        },
+        {
+          "priority": 1,
+          "action": "Fix scripts/install-git-hooks.ps1:18",
+          "severity": "high",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/91#discussion_r3523662996"
+        },
+        {
+          "priority": 1,
+          "action": "Fix scripts/worktree-doctor.ps1:134",
+          "severity": "high",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/91#discussion_r3523662997"
+        },
+        {
+          "priority": 1,
+          "action": "Fix scripts/install-git-hooks.ps1:12",
+          "severity": "high",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/91#discussion_r3523671842"
+        }
+      ]
+    },
+    {
+      "pr": 90,
+      "title": "docs(repo): thermo-nuclear Round 2 redundancy review synthesis",
+      "url": "https://github.com/Ditto190/modme-ui-01/pull/90",
+      "high": 1,
+      "medium": 3,
+      "low": 3,
+      "topActions": [
+        {
+          "priority": 1,
+          "action": "Fix docs/workflows/reports/manifest.json:40",
+          "severity": "high",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/90#discussion_r3523126578"
+        },
+        {
+          "priority": 2,
+          "action": "Review docs/workflows/reports/thermo-nuclear-redundancy-2026-07-04.md",
+          "severity": "medium",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/90#discussion_r3523126590"
+        },
+        {
+          "priority": 2,
+          "action": "Review harness/changes/archive/thermo-round2-redundancy/STATUS.md",
+          "severity": "medium",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/90#discussion_r3523126591"
+        },
+        {
+          "priority": 2,
+          "action": "Review harness/changes/archive/thermo-round2-redundancy/CHANGE.md",
+          "severity": "medium",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/90#discussion_r3523168059"
+        },
+        {
+          "priority": 3,
+          "action": "Optional: docs/workflows/reports/thermo-nuclear-redundancy-2026-07-04.md",
+          "severity": "low",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/90#discussion_r3523168062"
+        }
+      ]
+    },
+    {
+      "pr": 89,
+      "title": "Apply chat suggestion",
+      "url": "https://github.com/Ditto190/modme-ui-01/pull/89",
+      "high": 1,
+      "medium": 1,
+      "low": 2,
+      "topActions": [
+        {
+          "priority": 1,
+          "action": "Fix docs/inbox-pipeline/reports/latest.json:30",
+          "severity": "high",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/89#discussion_r3521551577"
+        },
+        {
+          "priority": 2,
+          "action": "Review docs/inbox-pipeline/reports/latest.json",
+          "severity": "medium",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/89#discussion_r3521560258"
+        },
+        {
+          "priority": 3,
+          "action": "Optional nit",
+          "severity": "low",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/89#issuecomment-4878849111"
+        },
+        {
+          "priority": 3,
+          "action": "Optional nit",
+          "severity": "low",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/89#issuecomment-4878849298"
+        }
+      ]
+    },
+    {
+      "pr": 88,
+      "title": "docs(review): thermo-nuclear full-repo baseline synthesis",
+      "url": "https://github.com/Ditto190/modme-ui-01/pull/88",
+      "high": 9,
+      "medium": 21,
+      "low": 2,
+      "topActions": [
+        {
+          "priority": 1,
+          "action": "Fix GenerativeUI_monorepo/apps/agent-server/src/adapters/inbound/websocket_route.py:46",
+          "severity": "high",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/88#discussion_r3521324303"
+        },
+        {
+          "priority": 1,
+          "action": "Fix GenerativeUI_monorepo/apps/agent-server/src/adapters/outbound/websocket_connection_manager.py:71",
+          "severity": "high",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/88#discussion_r3521324307"
+        },
+        {
+          "priority": 1,
+          "action": "Fix scripts/lib/path-filter.mjs:72",
+          "severity": "high",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/88#discussion_r3521376659"
+        },
+        {
+          "priority": 1,
+          "action": "Fix .agents/skills/monorepo-management/resources/implementation-playbook.md:535",
+          "severity": "high",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/88#discussion_r3521376661"
+        },
+        {
+          "priority": 1,
+          "action": "Fix GenerativeUI_monorepo/apps/agent-server/src/adapters/outbound/websocket_connection_manager.py:71",
+          "severity": "high",
+          "url": "https://github.com/Ditto190/modme-ui-01/pull/88#discussion_r3521376662"
+        }
+      ]
+    }
+  ],
+  "changelog": {
+    "ok": true,
+    "message": "ok"
+  },
+  "recommendations": [
+    {
+      "pr": 91,
+      "action": "fix_high_comments",
+      "detail": "5 high-severity comment(s) — do not merge"
+    },
+    {
+      "pr": 90,
+      "action": "fix_high_comments",
+      "detail": "1 high-severity comment(s) — do not merge"
+    },
+    {
+      "pr": 89,
+      "action": "fix_high_comments",
+      "detail": "1 high-severity comment(s) — do not merge"
+    },
+    {
+      "pr": 88,
+      "action": "fix_high_comments",
+      "detail": "9 high-severity comment(s) — do not merge"
+    },
+    {
+      "pr": 81,
+      "action": "retarget_dev",
+      "detail": "Wrong base main but recent and CI green"
+    },
+    {
+      "pr": 80,
+      "action": "retarget_dev",
+      "detail": "Wrong base main but recent and CI green"
+    },
+    {
+      "pr": 79,
+      "action": "retarget_dev",
+      "detail": "Wrong base main but recent and CI green"
+    },
+    {
+      "pr": 76,
+      "action": "retarget_dev",
+      "detail": "Wrong base main but recent and CI green"
+    },
+    {
+      "pr": 74,
+      "action": "retarget_dev",
+      "detail": "Wrong base main but recent and CI green"
+    },
+    {
+      "pr": 72,
+      "action": "retarget_dev",
+      "detail": "Wrong base main but recent and CI green"
+    },
+    {
+      "pr": 68,
+      "action": "retarget_dev",
+      "detail": "Wrong base main but recent and CI green"
+    },
+    {
+      "pr": 67,
+      "action": "escalate_before_close",
+      "detail": "Stale (80d) on main; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 65,
+      "action": "escalate_before_close",
+      "detail": "Stale (81d) on main; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 62,
+      "action": "escalate_before_close",
+      "detail": "Stale (82d) on main; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 61,
+      "action": "escalate_before_close",
+      "detail": "Stale (87d) on main; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 59,
+      "action": "escalate_before_close",
+      "detail": "Stale (88d) on main; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 56,
+      "action": "escalate_before_close",
+      "detail": "Stale (94d), wrong base main, CI failing; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 55,
+      "action": "escalate_before_close",
+      "detail": "Stale (94d), wrong base main, CI failing; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 50,
+      "action": "escalate_before_close",
+      "detail": "Stale (108d), wrong base main, CI failing; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 38,
+      "action": "escalate_before_close",
+      "detail": "Stale (142d) on main; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 37,
+      "action": "escalate_before_close",
+      "detail": "Stale (142d) on main; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 35,
+      "action": "escalate_before_close",
+      "detail": "Stale (146d), wrong base main, CI failing; 103 commit(s) not on dev"
+    },
+    {
+      "pr": 32,
+      "action": "escalate_before_close",
+      "detail": "Stale (163d), wrong base main, CI failing; 2 commit(s) not on dev"
+    },
+    {
+      "pr": 30,
+      "action": "escalate_before_close",
+      "detail": "Stale (170d) on main; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 29,
+      "action": "escalate_before_close",
+      "detail": "Stale (170d) on main; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 28,
+      "action": "escalate_before_close",
+      "detail": "Stale (170d) on main; 1 commit(s) not on dev"
+    },
+    {
+      "pr": 27,
+      "action": "escalate_before_close",
+      "detail": "Stale (170d) on main; 1 commit(s) not on dev"
+    }
+  ]
+}

@@ -9,13 +9,15 @@ $ErrorActionPreference = 'Stop'
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $HooksDir = Join-Path $RepoRoot '.githooks'
 
-$inside = (git -C $RepoRoot rev-parse --is-inside-work-tree 2>$null).Trim()
+$insideRaw = git -C $RepoRoot rev-parse --is-inside-work-tree 2>$null
+$inside = if ($null -ne $insideRaw) { $insideRaw.ToString().Trim() } else { '' }
 if ($LASTEXITCODE -ne 0 -or $inside -ne 'true') {
     throw "Not a git repository: $RepoRoot"
 }
 
 # Canonical hooks dir (shared across linked worktrees)
-$hooksRel = (git -C $RepoRoot rev-parse --git-path hooks 2>$null).Trim()
+$hooksRelRaw = git -C $RepoRoot rev-parse --git-path hooks 2>$null
+$hooksRel = if ($null -ne $hooksRelRaw) { $hooksRelRaw.ToString().Trim() } else { '' }
 if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($hooksRel)) {
     throw "Could not resolve git hooks path for: $RepoRoot"
 }
@@ -29,7 +31,7 @@ if (-not (Test-Path $DestDir)) {
     New-Item -ItemType Directory -Path $DestDir -Force | Out-Null
 }
 
-$hookNames = @('pre-commit', 'commit-msg', 'pre-push')
+$hookNames = @('pre-commit', 'commit-msg', 'pre-push', 'post-commit')
 foreach ($name in $hookNames) {
     $source = Join-Path $HooksDir $name
     if (-not (Test-Path $source)) {
@@ -43,5 +45,6 @@ foreach ($name in $hookNames) {
 Write-Host ''
 Write-Host 'Hooks:' -ForegroundColor Cyan
 Write-Host '  pre-commit  -> node scripts/pre-commit-checks.mjs (+ main/master guard)'
+Write-Host '  post-commit -> telemetry git-hook event JSONL'
 Write-Host '  commit-msg  -> conventional commit warn-only'
 Write-Host '  pre-push    -> node scripts/pre-push-checks.mjs (path-filtered verify)'

@@ -37,6 +37,7 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 ```markdown
 ### Added
 
+- (repo) Workflow-speckit residual WIP — scripts, docs, dual-stack gates, and agent tooling before D: cutover
 - (scope) Short description (#PR)
 
 ### Changed
@@ -64,6 +65,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (repo) Workflow-speckit residual WIP — scripts, docs, dual-stack gates, and agent tooling before D: cutover
 - (repo) Builder orchestration layer â€” `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
 - (repo) Copilot workspace + builder incident runbook â€” `docs/runbooks/copilot-workspace-builder-incident.md`
 - (repo) GitHub Copilot App workspace orchestration â€” `.github/github-app.yml` lifecycle scripts, `.worktreeinclude`, `scripts/copilot-workspace/`, portable `.github/hooks/hooks.json`, and `docs/copilot-workspace-orchestration.md`

@@ -1,0 +1,11 @@
+# GenerativeUI stack — Auto DevOps adjunct overlay (documentation + variable defaults)
+# Wired by parent: ../../.gitlab-ci.yml → generative-child trigger
+# Full upstream template (reference only): ../../.gitlab/autodev-reference.yml
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
+
+variables:
+  AUTO_DEVOPS_EXPLICITLY_ENABLED: '0'
+  REVIEW_DISABLED: 'true'
+  DAST_DISABLED: 'true'
+  BROWSER_PERFORMANCE_DISABLED: 'true'
+  CODE_INTELLIGENCE_DISABLED: 'true'

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated_at": "2026-06-28T07:44:48.601Z",
+  "generated_at": "2026-07-05T12:29:29.327Z",
   "stack": "forge",
   "schema_version": "1.0.0",
   "record_kinds": [
@@ -18,60 +18,419 @@
     },
     {
       "stage": "schema_crawler",
+      "path": "GenerativeUI_monorepo\\apps\\agent-generator\\dist\\mcp-registry\\schema-crawler.js",
+      "ok": false,
+      "skipped": true
+    },
+    {
+      "stage": "molecule_export",
+      "path": "GenerativeUI_monorepo\\apps\\agent-generator\\src\\mcp-registry\\molecule-generator.ts",
       "ok": true,
-      "path": "GenerativeUI_monorepo\\apps\\agent-generator\\src\\mcp-registry\\schema-crawler.ts"
+      "source": "fallback",
+      "moleculeCount": 10,
+      "catalogPath": "data/molecule-index/catalog.v1.json",
+      "catalogHash": "c81bb552fbca0ab7175e64bfacd53166c8b46afd68fcf5e8aad4ce0d909ba123",
+      "tiers": {
+        "static": [
+          "file_explorer",
+          "code_editor",
+          "web_fetcher"
+        ],
+        "declarative": [
+          "file_manager",
+          "git_workspace",
+          "git_committer",
+          "web_scraper",
+          "code_pattern_scanner",
+          "knowledge_intake"
+        ],
+        "open-ended": [
+          "sequential_analyzer"
+        ]
+      },
+      "molecules": [
+        {
+          "id": "file_explorer",
+          "name": "File Explorer",
+          "description": "Browse and navigate the file system",
+          "genUItier": "static",
+          "parameterSchema": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "pattern": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          },
+          "constraints": [
+            "Cannot access system directories without permission"
+          ],
+          "route_hint": "component",
+          "tags": [
+            "filesystem",
+            "navigation"
+          ],
+          "underlyingTools": [
+            "filesystem.list_directory",
+            "filesystem.read_file"
+          ],
+          "complexity": "simple",
+          "examples": [
+            {
+              "description": "Explore project structure",
+              "input": {
+                "path": "/workspace",
+                "pattern": "*.ts"
+              },
+              "expectedOutcome": "List of TypeScript files in workspace"
+            }
+          ]
+        },
+        {
+          "id": "code_editor",
+          "name": "Code Editor",
+          "description": "View, edit, and create source code files",
+          "genUItier": "static",
+          "parameterSchema": {
+            "type": "object",
+            "properties": {
+              "filepath": {
+                "type": "string"
+              },
+              "action": {
+                "enum": [
+                  "read",
+                  "write",
+                  "append"
+                ]
+              },
+              "content": {
+                "type": "string"
+              },
+              "language": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "filepath",
+              "action"
+            ]
+          },
+          "constraints": [
+            "Write operations require explicit user approval"
+          ],
+          "route_hint": "component",
+          "tags": [
+            "code",
+            "filesystem"
+          ],
+          "underlyingTools": [
+            "filesystem.read_file",
+            "filesystem.write_file"
+          ],
+          "complexity": "moderate",
+          "examples": []
+        },
+        {
+          "id": "file_manager",
+          "name": "File Manager",
+          "description": "Create, move, delete files and directories",
+          "genUItier": "declarative",
+          "parameterSchema": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "enum": [
+                  "create",
+                  "move",
+                  "delete",
+                  "mkdir"
+                ]
+              },
+              "source": {
+                "type": "string"
+              },
+              "destination": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          "constraints": [
+            "Destructive operations require confirmation"
+          ],
+          "route_hint": "component",
+          "tags": [
+            "filesystem"
+          ],
+          "underlyingTools": [
+            "filesystem.write_file"
+          ],
+          "complexity": "moderate",
+          "examples": []
+        },
+        {
+          "id": "git_workspace",
+          "name": "Git Workspace",
+          "description": "View git status, diffs, branches",
+          "genUItier": "declarative",
+          "parameterSchema": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "enum": [
+                  "status",
+                  "diff",
+                  "log",
+                  "branches"
+                ]
+              },
+              "branch": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          "constraints": [
+            "Read-only operations only"
+          ],
+          "route_hint": "component",
+          "tags": [
+            "git"
+          ],
+          "underlyingTools": [
+            "git.git_status"
+          ],
+          "complexity": "simple",
+          "examples": []
+        },
+        {
+          "id": "git_committer",
+          "name": "Git Committer",
+          "description": "Stage and commit changes",
+          "genUItier": "declarative",
+          "parameterSchema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              },
+              "files": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "message"
+            ]
+          },
+          "constraints": [
+            "Never force-push or amend without explicit approval"
+          ],
+          "route_hint": "audit",
+          "tags": [
+            "git"
+          ],
+          "underlyingTools": [
+            "git.git_commit"
+          ],
+          "complexity": "moderate",
+          "examples": []
+        },
+        {
+          "id": "sequential_analyzer",
+          "name": "Sequential Analyzer",
+          "description": "Break complex problems into steps",
+          "genUItier": "open-ended",
+          "parameterSchema": {
+            "type": "object",
+            "properties": {
+              "problem": {
+                "type": "string"
+              },
+              "maxSteps": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "problem"
+            ]
+          },
+          "constraints": [
+            "Keep steps focused and small"
+          ],
+          "route_hint": "visualization",
+          "tags": [
+            "reasoning"
+          ],
+          "underlyingTools": [
+            "sequential-thinking.create_thinking_process"
+          ],
+          "complexity": "complex",
+          "examples": []
+        },
+        {
+          "id": "web_scraper",
+          "name": "Web Scraper",
+          "description": "Fetch and extract content from URLs",
+          "genUItier": "declarative",
+          "parameterSchema": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "selector": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url"
+            ]
+          },
+          "constraints": [
+            "Respect robots.txt and rate limits"
+          ],
+          "route_hint": "component",
+          "tags": [
+            "web",
+            "api"
+          ],
+          "underlyingTools": [
+            "web.fetch"
+          ],
+          "complexity": "moderate",
+          "examples": []
+        },
+        {
+          "id": "code_pattern_scanner",
+          "name": "Code Pattern Scanner",
+          "description": "Scan codebase for patterns and anti-patterns",
+          "genUItier": "declarative",
+          "parameterSchema": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string"
+              },
+              "root": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "pattern"
+            ]
+          },
+          "constraints": [
+            "Read-only scan"
+          ],
+          "route_hint": "audit",
+          "tags": [
+            "code"
+          ],
+          "underlyingTools": [
+            "code.search"
+          ],
+          "complexity": "moderate",
+          "examples": []
+        },
+        {
+          "id": "knowledge_intake",
+          "name": "Knowledge Intake",
+          "description": "Ingest inbox entries into knowledge pipeline",
+          "genUItier": "declarative",
+          "parameterSchema": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "enum": [
+                  "classify",
+                  "promote",
+                  "audit"
+                ]
+              },
+              "job_id": {
+                "type": "string"
+              },
+              "limit": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          "constraints": [
+            "Service role required for promote"
+          ],
+          "route_hint": "audit",
+          "tags": [
+            "intake",
+            "knowledge"
+          ],
+          "underlyingTools": [
+            "inbox.classify"
+          ],
+          "complexity": "complex",
+          "examples": []
+        },
+        {
+          "id": "web_fetcher",
+          "name": "Web Fetcher",
+          "description": "Retrieve web pages for agent context",
+          "genUItier": "static",
+          "parameterSchema": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "format": {
+                "enum": [
+                  "markdown",
+                  "text",
+                  "html"
+                ]
+              }
+            },
+            "required": [
+              "url"
+            ]
+          },
+          "constraints": [
+            "No authenticated endpoints without credentials"
+          ],
+          "route_hint": "component",
+          "tags": [
+            "web",
+            "api"
+          ],
+          "underlyingTools": [
+            "web.fetch"
+          ],
+          "complexity": "simple",
+          "examples": []
+        }
+      ]
     }
   ],
   "molecules": [
     {
       "kind": "mcp_molecule",
-      "id": "file_explorer",
-      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
-      "semver": "1.0.0",
-      "zod_export": "validateMolecule",
-      "greptime_id": null,
-      "route_hint": "component"
-    },
-    {
-      "kind": "mcp_molecule",
       "id": "code_editor",
-      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
-      "semver": "1.0.0",
-      "zod_export": "validateMolecule",
-      "greptime_id": null,
-      "route_hint": "component"
-    },
-    {
-      "kind": "mcp_molecule",
-      "id": "file_manager",
-      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
-      "semver": "1.0.0",
-      "zod_export": "validateMolecule",
-      "greptime_id": null,
-      "route_hint": "component"
-    },
-    {
-      "kind": "mcp_molecule",
-      "id": "git_workspace",
-      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
-      "semver": "1.0.0",
-      "zod_export": "validateMolecule",
-      "greptime_id": null,
-      "route_hint": "component"
-    },
-    {
-      "kind": "mcp_molecule",
-      "id": "knowledge_intake",
-      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
-      "semver": "1.0.0",
-      "zod_export": "validateMolecule",
-      "greptime_id": null,
-      "route_hint": "audit"
-    },
-    {
-      "kind": "mcp_molecule",
-      "id": "web_fetcher",
-      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
+      "path": "data/molecule-index/molecules/code_editor.json",
       "semver": "1.0.0",
       "zod_export": "validateMolecule",
       "greptime_id": null,
@@ -80,7 +439,79 @@
     {
       "kind": "mcp_molecule",
       "id": "code_pattern_scanner",
-      "path": "GenerativeUI_monorepo/apps/agent-generator/src/mcp-registry/molecule-generator.ts",
+      "path": "data/molecule-index/molecules/code_pattern_scanner.json",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "audit"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "file_explorer",
+      "path": "data/molecule-index/molecules/file_explorer.json",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "component"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "file_manager",
+      "path": "data/molecule-index/molecules/file_manager.json",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "component"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "git_committer",
+      "path": "data/molecule-index/molecules/git_committer.json",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "audit"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "git_workspace",
+      "path": "data/molecule-index/molecules/git_workspace.json",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "component"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "knowledge_intake",
+      "path": "data/molecule-index/molecules/knowledge_intake.json",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "audit"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "sequential_analyzer",
+      "path": "data/molecule-index/molecules/sequential_analyzer.json",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "visualization"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "web_fetcher",
+      "path": "data/molecule-index/molecules/web_fetcher.json",
+      "semver": "1.0.0",
+      "zod_export": "validateMolecule",
+      "greptime_id": null,
+      "route_hint": "component"
+    },
+    {
+      "kind": "mcp_molecule",
+      "id": "web_scraper",
+      "path": "data/molecule-index/molecules/web_scraper.json",
       "semver": "1.0.0",
       "zod_export": "validateMolecule",
       "greptime_id": null,
@@ -102,7 +533,7 @@
       "semver": "1.0.0",
       "zod_export": null,
       "greptime_id": null,
-      "route_hint": "audit"
+      "route_hint": "dashboard"
     },
     {
       "kind": "zod_module",
@@ -111,7 +542,7 @@
       "semver": "1.0.0",
       "zod_export": null,
       "greptime_id": null,
-      "route_hint": "audit"
+      "route_hint": "dashboard"
     },
     {
       "kind": "zod_module",
@@ -120,7 +551,25 @@
       "semver": "1.0.0",
       "zod_export": null,
       "greptime_id": null,
-      "route_hint": "audit"
+      "route_hint": "dashboard"
+    },
+    {
+      "kind": "zod_module",
+      "id": "49a34f2d23447957",
+      "path": "next-forge/packages/schemas/observability.test.ts",
+      "semver": "1.0.0",
+      "zod_export": null,
+      "greptime_id": null,
+      "route_hint": "dashboard"
+    },
+    {
+      "kind": "zod_module",
+      "id": "51f7f78403795306",
+      "path": "next-forge/packages/schemas/observability.ts",
+      "semver": "1.0.0",
+      "zod_export": null,
+      "greptime_id": null,
+      "route_hint": "dashboard"
     },
     {
       "kind": "zod_module",
@@ -129,7 +578,7 @@
       "semver": "1.0.0",
       "zod_export": null,
       "greptime_id": null,
-      "route_hint": "audit"
+      "route_hint": "dashboard"
     },
     {
       "kind": "zod_module",
@@ -138,10 +587,12 @@
       "semver": "1.0.0",
       "zod_export": null,
       "greptime_id": null,
-      "route_hint": "audit"
+      "route_hint": "dashboard"
     }
   ],
-  "source_only": true,
+  "source_only": false,
+  "catalog_path": "data/molecule-index/catalog.v1.json",
+  "catalog_hash": "c81bb552fbca0ab7175e64bfacd53166c8b46afd68fcf5e8aad4ce0d909ba123",
   "excludes": [
     "node_modules",
     ".vendor",

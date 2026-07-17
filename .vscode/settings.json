@@ -13,6 +13,47 @@
     "**/GenerativeUI_monorepo/UniversalWorkbench*/**",
     "**/next-forge/node_modules/**"
   ],
+  "python.defaultInterpreterPath": "${workspaceFolder}/agent/.venv/Scripts/python.exe",
+  "python.terminal.activateEnvironment": false,
+  "python.analysis.diagnosticMode": "workspace",
+  "cursorpyright.analysis.diagnosticMode": "openFilesOnly",
+  "cursorpyright.importStrategy": "useBundled",
+  "cursorpyright.analysis.stubPath": "",
+  "cursorpyright.nodeMaxOldSpaceSize": 1024,
+  "codeQL.testDiscovery": false,
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.worktrees/**": true,
+    "**/.vendor/**": true,
+    "**/node_modules/**": true,
+    "**/.yarn/**": true,
+    "**/.next/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/.venv/**": true,
+    "**/agent/.venv/**": true,
+    "**/UniversalWorkbench*/**": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/out": true,
+    "**/__pycache__": true,
+    "**/.venv": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/.git": true,
+    "**/yarn.lock": true,
+    "**/pnpm-lock.yaml": true,
+    "**/.worktrees": true,
+    "**/.vendor": true,
+    "**/.yarn": true,
+    "**/UniversalWorkbench*/**": true
+  },
+  "files.exclude": {
+    "**/.worktrees": true,
+    "**/.vendor": true
+  },
   "terminal.integrated.env.windows": {
     "HTTP_PROXY": null,
     "HTTPS_PROXY": null
@@ -42,7 +83,6 @@
   "terminal.integrated.rightClickBehavior": "default",
   "debug.focusWindowOnBreak": false,
   "debug.focusEditorOnBreak": false,
-  "files.autoSave": "afterDelay",
   "editor.formatOnSave": true,
   "workbench.colorTheme": "Dark Modern",
   "terminal.integrated.gpuAcceleration": "off",
