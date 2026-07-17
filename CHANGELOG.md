@@ -37,7 +37,10 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 ```markdown
 ### Added
 
+<<<<<<< HEAD
 - (repo) Workflow-speckit residual WIP — scripts, docs, dual-stack gates, and agent tooling before D: cutover
+=======
+>>>>>>> origin/dev
 - (scope) Short description (#PR)
 
 ### Changed
@@ -46,7 +49,10 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 
 ### Fixed
 
+<<<<<<< HEAD
 - (next-forge) Clear Ultracite lint/format blockers so workflow-speckit residual branch can push
+=======
+>>>>>>> origin/dev
 - (scope) Short description (#issue)
 ```
 
@@ -66,21 +72,50 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+<<<<<<< HEAD
 - (next-forge/telemetry) GenUI molecule catalog/workbench, observability ingest/schema updates, and telemetry bridge/CLI residual before D: cutover
 - (repo) Workflow-speckit residual WIP — scripts, docs, dual-stack gates, and agent tooling before D: cutover
 - (repo) Builder orchestration layer â€” `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
 - (repo) Copilot workspace + builder incident runbook â€” `docs/runbooks/copilot-workspace-builder-incident.md`
 - (repo) GitHub Copilot App workspace orchestration â€” `.github/github-app.yml` lifecycle scripts, `.worktreeinclude`, `scripts/copilot-workspace/`, portable `.github/hooks/hooks.json`, and `docs/copilot-workspace-orchestration.md`
+=======
+- (repo) Agent data plane — Entire CLI (`yarn entire:*`), Dolt sql-server (`yarn dolt:*`), KM hub (`yarn km:status`, `docs/KNOWLEDGE_QUICKSTART.md`, `docs/knowledge/CATALOG.md`), ADR-0013 superseding ADR-0010
+- (repo) KM session startup wiring — `scripts/km-session-bootstrap.ps1` (`yarn km:bootstrap`), session start + worktree setup + VS Code tasks/launch (`Full Stack: Forge Core + Agent Data Plane`, soft `dependsOn` on `next-forge: dev core`); ADR-0014; beads `modme-awz`; runbook `docs/monorepo/km-agent-data-plane-startup.md`
+
+### Changed
+
+- (repo) Merge `github/main` into promotion branch `feature/cursor/promote-dev-to-main` to resolve dual-branch drift before promoting `dev` to `main`
+
+### Fixed
+
+- (next-forge) Apply Ultracite/Biome format fixes required for promote-dev-to-main pre-push verify
+- (repo) Beads auto-backup Error 1105 — disable broken `.beads/backup` destination (`backup.enabled: false`); see `docs/beads-workflow.md` troubleshooting
+
+### Added
+
+- (repo) Builder orchestration layer — `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
+- (repo) Copilot workspace + builder incident runbook — `docs/runbooks/copilot-workspace-builder-incident.md`
+- (repo) GitHub Copilot App workspace orchestration — `.github/github-app.yml` lifecycle scripts, `.worktreeinclude`, `scripts/copilot-workspace/`, portable `.github/hooks/hooks.json`, and `docs/copilot-workspace-orchestration.md`
+>>>>>>> origin/dev
 - (repo) Obsidian Web Clipper templates (`templates/obsidian-clipper/`) and `yarn docs:clipper:export`
 - (repo) ADR-0012 Agent Gateway MCP routing stub (`config/agentgateway/routes.example.yaml`, catalog gateway entry)
 - (repo) Inbox research notes for agentgateway and Expo/json-render tracks
 - (repo) Preflight profiles `copilot-workspace`, `fast`, `env` and `yarn preflight:copilot`
+<<<<<<< HEAD
 - (repo) PR triage pipeline â€” `scripts/pr-triage/`, `yarn pr:triage|pr:queue|pr:comments|pr:classify`, `pr-triage-orchestrator` CI workflow, and `docs/pr-resolution/`
 - (repo) `scripts/update-changelog.mjs` â€” append conventional commits to `[Unreleased]` (replaces missing `update-changelog.js`)
 - (repo) `.agents/skills/gh-review-requests` â€” ModMe personal-repo review queue skill
 - (repo) `.agents/templates/pr-escalation.yaml` â€” beads handoff template for blocked merges
 - (repo) Workflow speckit gates â€” `specs/013-agent-workflow-gates/`, pattern registry/coverage-map, `modme-workflow-speckit-bridge` skill, `/speckit-pattern-checklist`, and `run-pattern-gate.mjs`
 - (repo) Distributed observability pipeline â€” `yarn telemetry:sync`, telemetry CLI/bridge, DSP bootstrap (`.dsp/`), observability runbooks, and `observability-pipeline-check` CI workflow
+=======
+- (repo) PR triage pipeline — `scripts/pr-triage/`, `yarn pr:triage|pr:queue|pr:comments|pr:classify`, `pr-triage-orchestrator` CI workflow, and `docs/pr-resolution/`
+- (repo) `scripts/update-changelog.mjs` — append conventional commits to `[Unreleased]` (replaces missing `update-changelog.js`)
+- (repo) `.agents/skills/gh-review-requests` — ModMe personal-repo review queue skill
+- (repo) `.agents/templates/pr-escalation.yaml` — beads handoff template for blocked merges
+- (repo) Workflow speckit gates — `specs/013-agent-workflow-gates/`, pattern registry/coverage-map, `modme-workflow-speckit-bridge` skill, `/speckit-pattern-checklist`, and `run-pattern-gate.mjs`
+- (repo) Distributed observability pipeline — `yarn telemetry:sync`, telemetry CLI/bridge, DSP bootstrap (`.dsp/`), observability runbooks, and `observability-pipeline-check` CI workflow
+>>>>>>> origin/dev
 - (next-forge) `@repo/observability` ingest/categorize package, API telemetry routes, knowledge session-ops panel, and observability schema contract tests
 - (repo) lean-ctx project config (`.lean-ctx.toml`), universal intake script, and agent terminal session finish/start enhancements
 - (GenerativeUI) Hexagonal refactor of `apps/agent-server` â€” domain/ports/adapters/app layout with DI in `create_app()`
@@ -94,10 +129,25 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - (repo) GitHub Agentic Workflows assets (`.github/aw/`, agent definitions, workflow-health and inbox-pipeline-check CI)
 - (repo) GenerativeUI devops-voltagent app, intake-pipeline Python orchestrator, and Playwright test scaffolding
 - (repo) Evaluation pipeline docs (`docs/evaluation/`), agent eval collect/report scripts, and catalog e2e tests in next-forge
+<<<<<<< HEAD
 - (repo) Root inbox tooling â€” `yarn inbox:audit`, `inbox:fix`, `inbox:test`, `intake:orchestrate`, and beads starter scripts
 - (cursor) Cursor marketplace plugin skills under `.cursor/skills/` â€” thermos, fix-ci, orchestrate, principle-\*, voltagent, and related agent workflows
+=======
+- (repo) Root inbox tooling — `yarn inbox:audit`, `inbox:fix`, `inbox:test`, `intake:orchestrate`, and beads starter scripts
+- (cursor) Cursor marketplace plugin skills under `.cursor/skills/` — thermos, fix-ci, orchestrate, principle-\*, voltagent, and related agent workflows
+>>>>>>> origin/dev
 - (copilot) Expanded root `.github/copilot-instructions.md` for dual-monorepo (next-forge + GenerativeUI) commands and verification workflow
 - (cursor) Additional Claude plugin enables in `.cursor/settings.json` (commit-commands, supabase, typescript-lsp, rust-analyzer-lsp, agent-sdk-dev)
+- (repo) Dual monorepo audit — ECL harness (`harness/`, `yarn lint:harness`), `stack-paths.json`, C4 product docs, refreshed `docs/codebase/*`, schema contract tests, migration phase4 notes
+- (repo) Thermo-nuclear workflow — `thermo-nuclear-monorepo-review` skill, `modme-migration-review` collection, molecule-index orchestrator, ADR-0012 bounded-parallel lifecycle
+- (repo) `yarn molecule-index:verify` + `molecule-contract` CI job; PORTING_GUIDE ECL slices in `docs/migration/porting-guide-slices.md`
+- (repo) Thermo-nuclear Round 2 redundancy review — `CONTEXT.md`, synthesis report, wave-2 manifest, archived ECL change `thermo-round2-redundancy`
+
+### Fixed
+
+- (docs) Inbox audit report `latest.json` uses relative `root` (no machine-local path) (PR #89)
+- (scripts) `Get-CopilotRepoRoot` ascends 3 levels from `scripts/copilot-workspace/lib/paths.ps1`; null-safe `.Trim()` on git outputs in hooks/doctor scripts; schema-valid agent-gateway collection (PR #91)
+- (repo) Builder/preflight/hook spawns — Windows cmd shim via shell string (not `shell:true`+args); lean-ctx probe requires successful `--version`; `session-archive.ps1` checks `preflight:fast` exit code
 
 ### Fixed
 
@@ -155,9 +205,15 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
+<<<<<<< HEAD
 - (next-forge) Clear Ultracite lint/format blockers so workflow-speckit residual branch can push
 - (dev) `init-worktrees.ps1` â€” use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
 - (dev) `new-agent-worktree.ps1` â€” usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`
+=======
+- (docs) Thermo Round 2 archive STATUS/links/manifest count alignment (PR #90)
+- (dev) `init-worktrees.ps1` — use `$LASTEXITCODE` for git branch detection; disable direnv during setup (no spurious `direnv: error` / `branch already exists`)
+- (dev) `new-agent-worktree.ps1` — usage help when `-Name` omitted; `DIRENV_DISABLE` during creation; default `-Owner cursor`
+>>>>>>> origin/dev
 - (vscode) Set `git.path` in `.vscode/settings.json` so Cursor Agent Review finds Git on Windows when it is not on PATH
 - Add `install-direnv.ps1` helper script to install direnv on Windows to resolve "direnv: command not found" terminal errors.
 - (agent-server) WebSocket message handling uses `asyncio.create_task` + lock so cancel does not block the receive loop

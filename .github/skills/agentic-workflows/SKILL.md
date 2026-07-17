@@ -7,6 +7,17 @@ description: Route gh-aw workflow design/create/debug/upgrade requests to the ri
 
 Use this skill when a user asks to design, create, update, debug, or upgrade GitHub Agentic Workflows in this repository.
 
+## Secrets & env (ModMe — ADR-0010)
+
+Before creating or debugging **Copilot** workflows (`engine: copilot`):
+
+1. Repo secret **`COPILOT_GITHUB_TOKEN`** must exist on GitHub (fine-grained PAT, Copilot Requests: Read).
+2. Local values live in **root `.env`** only (gitignored). Run `yarn setup:gh-aw` to push PAT; `yarn setup:env` to sync next-forge dotenv.
+3. **Never** commit or echo secret values. Document variable **names** only.
+4. On native Windows, `gh aw compile` may hang — use WSL or CI.
+
+Full checklist: [ADR-0010](../../next-forge/docs/adr/0010-gh-aw-copilot-secrets-and-root-env-sync.md) · [modme-dev-setup SKILL](../../.agents/skills/modme-dev-setup/SKILL.md)
+
 This skill is a dispatcher: identify the task type, load the matching workflow prompt/skill file, and follow it directly. Keep responses concise and ask a clarifying question if the correct prompt is unclear.
 
 Read only the files you need:

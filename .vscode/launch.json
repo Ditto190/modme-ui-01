@@ -1,11 +1,12 @@
 {
   "version": "0.2.0",
   "configurations": [
-    
     {
       "name": "Web Dashboard (Next.js)",
       "type": "node-terminal",
       "request": "launch",
+      "preLaunchTask": "modme: env bootstrap",
+      "envFile": "${workspaceFolder}/.vscode/.env.runtime",
       "command": "yarn dev",
       "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/web-dashboard",
       "env": {
@@ -43,17 +44,11 @@
       "name": "Agent Server (FastAPI)",
       "type": "debugpy",
       "request": "launch",
+      "preLaunchTask": "modme: env bootstrap",
       "module": "uvicorn",
-      "args": [
-        "src.main:app",
-        "--reload",
-        "--host",
-        "127.0.0.1",
-        "--port",
-        "8000"
-      ],
+      "args": ["src.main:app", "--reload", "--host", "127.0.0.1", "--port", "8000"],
       "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-server",
-      "envFile": "${workspaceFolder}/.env",
+      "envFile": "${workspaceFolder}/.vscode/.env.runtime",
       "jinja": true,
       "justMyCode": true
     },
@@ -81,6 +76,7 @@
       "args": ["${relativeFile}"],
       "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-generator",
       "preLaunchTask": "agent-generator: build",
+      "envFile": "${workspaceFolder}/.vscode/.env.runtime",
       "console": "integratedTerminal",
       "skipFiles": ["<node_internals>/**"]
     },
@@ -91,13 +87,15 @@
       "program": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-generator/dist/mcp-registry/schema-crawler.js",
       "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-generator",
       "preLaunchTask": "agent-generator: build",
-      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.vscode/.env.runtime",
       "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "Example Next: dev server",
       "type": "node-terminal",
       "request": "launch",
+      "preLaunchTask": "modme: env bootstrap",
+      "envFile": "${workspaceFolder}/.vscode/.env.runtime",
       "command": "yarn dev",
       "cwd": "${workspaceFolder}/GenerativeUI_monorepo/packages/example-next-application",
       "env": {
@@ -118,6 +116,8 @@
       "name": "Example React: dev server",
       "type": "node-terminal",
       "request": "launch",
+      "preLaunchTask": "modme: env bootstrap",
+      "envFile": "${workspaceFolder}/.vscode/.env.runtime",
       "command": "yarn start",
       "cwd": "${workspaceFolder}/GenerativeUI_monorepo/packages/example-react-application",
       "env": {
@@ -139,10 +139,29 @@
       "name": "Node: current file",
       "type": "node",
       "request": "launch",
+      "preLaunchTask": "modme: env bootstrap",
+      "envFile": "${workspaceFolder}/.vscode/.env.runtime",
       "skipFiles": ["<node_internals>/**"],
       "program": "${file}",
       "cwd": "${fileDirname}",
       "console": "integratedTerminal"
+    },
+    {
+      "name": "next-forge: dev core",
+      "type": "node-terminal",
+      "request": "launch",
+      "preLaunchTask": "next-forge: dev core",
+      "envFile": "${workspaceFolder}/.vscode/.env.runtime",
+      "command": "yarn dev:forge:core",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Agent Data Plane: bootstrap (strict)",
+      "type": "node-terminal",
+      "request": "launch",
+      "preLaunchTask": "modme: KM data plane up (strict)",
+      "command": "node scripts/km-status.mjs",
+      "cwd": "${workspaceFolder}"
     }
   ],
   "compounds": [
@@ -160,6 +179,15 @@
       "stopAll": true,
       "presentation": {
         "order": 2
+      }
+    },
+    {
+      "name": "Full Stack: Forge Core + Agent Data Plane",
+      "configurations": ["Agent Data Plane: bootstrap (strict)", "next-forge: dev core"],
+      "stopAll": true,
+      "presentation": {
+        "order": 3,
+        "group": "forge"
       }
     }
   ]

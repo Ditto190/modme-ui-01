@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 -- ModMe agent catalog CMS evaluation schema (Dolt)
 -- See ADR-0010 — optional; git+Supabase remains primary.
 -- Apply after: cd config/dolt/catalog && dolt sql -f schema.sql
+=======
+-- ModMe agent catalog CMS schema (Dolt)
+-- See ADR-0013 — Dolt adopted for beads + catalog; Supabase remains product SoR.
+-- Apply: yarn dolt:catalog:init  (or: cd config/dolt/catalog && dolt sql -f schema.sql)
+>>>>>>> origin/dev
 
 CREATE TABLE IF NOT EXISTS agent_catalog_entries (
   id VARCHAR(64) PRIMARY KEY,
@@ -19,3 +25,18 @@ CREATE TABLE IF NOT EXISTS catalog_promotion_queue (
   promoted_to VARCHAR(32),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+<<<<<<< HEAD
+=======
+
+-- Knowledge doc index (catalog plane only — not product inbox_entries)
+CREATE TABLE IF NOT EXISTS knowledge_doc_index (
+  id VARCHAR(64) PRIMARY KEY,
+  path VARCHAR(512) NOT NULL,
+  title VARCHAR(256) NOT NULL,
+  classification VARCHAR(32) NOT NULL,
+  plane VARCHAR(32) NOT NULL,
+  status VARCHAR(16) DEFAULT 'active',
+  notes TEXT,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+>>>>>>> origin/dev

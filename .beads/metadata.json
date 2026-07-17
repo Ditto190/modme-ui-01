@@ -1,6 +1,20 @@
+<<<<<<< HEAD
 {
   "database": "dolt",
   "backend": "dolt",
   "dolt_mode": "embedded",
   "dolt_database": "modme"
 }
+=======
+﻿{
+    "database":  "dolt",
+    "backend":  "dolt",
+    "dolt_mode":  "embedded",
+    "dolt_database":  "modme",
+    "project_id":  "0182dec0-4005-41e8-953e-8b2d977b99cb",
+    "dolt_server_host":  "127.0.0.1",
+    "dolt_server_port":  3307,
+    "dolt_server_recommended":  true,
+    "dolt_mode_note":  "embedded active; sql-server :3307 for catalog + multi-writer prep (yarn dolt:beads:migrate-server)"
+}
+>>>>>>> origin/dev

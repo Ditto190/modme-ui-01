@@ -9,15 +9,23 @@ $ErrorActionPreference = 'Stop'
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $HooksDir = Join-Path $RepoRoot '.githooks'
 
+<<<<<<< HEAD
 $insideRaw = git -C $RepoRoot rev-parse --is-inside-work-tree 2>$null
 $inside = if ($null -ne $insideRaw) { $insideRaw.ToString().Trim() } else { '' }
+=======
+$inside = ([string](git -C $RepoRoot rev-parse --is-inside-work-tree 2>$null)).Trim()
+>>>>>>> origin/dev
 if ($LASTEXITCODE -ne 0 -or $inside -ne 'true') {
     throw "Not a git repository: $RepoRoot"
 }
 
 # Canonical hooks dir (shared across linked worktrees)
+<<<<<<< HEAD
 $hooksRelRaw = git -C $RepoRoot rev-parse --git-path hooks 2>$null
 $hooksRel = if ($null -ne $hooksRelRaw) { $hooksRelRaw.ToString().Trim() } else { '' }
+=======
+$hooksRel = ([string](git -C $RepoRoot rev-parse --git-path hooks 2>$null)).Trim()
+>>>>>>> origin/dev
 if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($hooksRel)) {
     throw "Could not resolve git hooks path for: $RepoRoot"
 }
@@ -48,3 +56,7 @@ Write-Host '  pre-commit  -> node scripts/pre-commit-checks.mjs (+ main/master g
 Write-Host '  post-commit -> telemetry git-hook event JSONL'
 Write-Host '  commit-msg  -> conventional commit warn-only'
 Write-Host '  pre-push    -> node scripts/pre-push-checks.mjs (path-filtered verify)'
+Write-Host ''
+Write-Host 'Note: ModMe .githooks are SoR. After `entire enable` or Entire hook install,' -ForegroundColor DarkYellow
+Write-Host '      re-run yarn hooks:install (this script) if Entire overwrote pre-commit/pre-push.' -ForegroundColor DarkYellow
+Write-Host '      Entire keeps prior hooks as *.pre-entire under .git/hooks / .beads/hooks.' -ForegroundColor DarkYellow

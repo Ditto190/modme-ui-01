@@ -6,6 +6,10 @@
 .orca.json
 orca.json
 
+# Local data and sandbox persistence (never commit client data)
+data/
+menv/
+
 # Dependencies and package managers
 node_modules/
 .pnp.*
@@ -81,6 +85,7 @@ Thumbs.db
 # Test and temp
 .tmp/
 temp/
+docs/devops/reports/
 **/playwright-report/
 **/test-results/
 **/intake-pipeline/outgoing/
@@ -100,7 +105,9 @@ temp/
 .agents/temp_skills/
 *.bak
 
-# Local agent runtime (SQLite)
+# Preflight / DevOps reports (generated locally and in CI)
+docs/devops/reports/
+
 **/.voltagent/*.db
 # lean-ctx machine-local id (project config .lean-ctx.toml is tracked)
 .lean-ctx-id
@@ -123,14 +130,25 @@ quality/
 -w
 *.backup
 .agents/skills/.antigravity-install-manifest.json
-
+.agents/
 
 # Beads / Dolt files (added by bd init)
 .dolt/
+.dolt-data/
 .beads/embeddeddolt/
 .beads/interactions.jsonl
+.beads/backup-pre-*.jsonl
+.beads/backup/
+.beads/backup-store/
 *.db
 .beads-credential-key
 .beads/proxieddb/
+
+# Entire local overrides (settings.json may be committed)
+.entire/settings.local.json
+.entire/tmp/
+.entire/logs/
+.entire/metadata/
+.entire/current_session
 
 /generated/prisma
