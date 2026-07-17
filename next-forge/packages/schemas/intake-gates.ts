@@ -43,8 +43,8 @@ export type GatePhase =
   | { readonly kind: "post-upsert" };
 
 export interface GateCheck {
-  readonly description: string;
   readonly command: string;
+  readonly description: string;
 }
 
 export function gateChecks(phase: GatePhase): readonly GateCheck[] {
