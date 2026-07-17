@@ -20,21 +20,21 @@ const GOLDEN_PATH = resolve(
 );
 
 interface GoldenContract {
+  agentAction: unknown;
+  agentState: unknown;
+  agentStateError: unknown;
   contractVersion: number;
+  done: unknown;
   enums: {
     agentActionTypes: string[];
     agentStateStatuses: string[];
     optimisticMessageRoles: string[];
     webSocketMessageTypes: string[];
   };
-  agentAction: unknown;
-  agentState: unknown;
-  agentStateError: unknown;
-  tokenEvent: unknown;
-  toolStart: unknown;
-  toolResult: unknown;
-  done: unknown;
   optimisticMessage: unknown;
+  tokenEvent: unknown;
+  toolResult: unknown;
+  toolStart: unknown;
   webSocketMessages: unknown[];
 }
 
