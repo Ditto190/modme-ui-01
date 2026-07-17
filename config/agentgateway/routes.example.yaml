@@ -40,6 +40,21 @@ routes:
     upstream:
       mcp_server: plugin-gitlab-GitLab
 
+  - name: local-llm-gemma4
+    match:
+      path_prefix: /v1
+      header: x-modme-gateway-namespace
+      value: local-llm
+    upstream:
+      openai_compatible: http://vllm:8000/v1
+      failover: http://llama-cpp-fallback:18080/v1
+    policies:
+      max_inflight: 4
+      queue_depth: 32
+      request_timeout_ms: 120000
+      rate_limit_rpm: 60
+    note: "ADR-0016 — vLLM primary; llama.cpp fallback when unhealthy"
+
   - name: agentgateway-modme-fork
     match:
       path_prefix: /a2a
@@ -51,3 +66,4 @@ policies:
   require_lean_ctx_session: true
   max_parallel_agents: 4
   token_budget_hint: route_repo_reads_through_lean_ctx_only
+  resource_policy_file: policies/resource-management.yaml

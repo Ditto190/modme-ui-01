@@ -6,6 +6,9 @@ $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $ProjectMainDir = Split-Path -Parent $ScriptDir
 
+. (Join-Path $ScriptDir "lib/worktree-context.ps1")
+$ctx = Get-WorktreeContext -RepoRoot $ProjectMainDir
+
 function Read-WorktreePorts($worktreePath) {
   $envFile = Join-Path $worktreePath ".worktree-ports.env"
   if (!(Test-Path $envFile)) {
@@ -24,6 +27,12 @@ function Read-WorktreePorts($worktreePath) {
 Write-Host "===========================================" -ForegroundColor Cyan
 Write-Host "   GIT WORKTREES" -ForegroundColor Cyan
 Write-Host "===========================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "Agent worktrees root: $($ctx.WorktreesRoot)" -ForegroundColor Gray
+Write-Host "Golden .worktrees/dev: $($ctx.DevCheckout)" -ForegroundColor Gray
+if ($ctx.WorktreesRoot -ne [System.IO.Path]::GetFullPath($ctx.LegacyWorktreesRoot)) {
+  Write-Host "Legacy root (still scanned via git): $($ctx.LegacyWorktreesRoot)" -ForegroundColor DarkYellow
+}
 Write-Host ""
 
 $lines = git -C $ProjectMainDir worktree list --porcelain

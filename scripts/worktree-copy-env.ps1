@@ -1,4 +1,6 @@
-# Monorepo_ModMe — Copy .env files from root worktree into a target worktree (names only, never commit)
+# Monorepo_ModMe - Copy essential ignored files into a target worktree (names only, never commit).
+# Keep in sync with .worktreeinclude (Copilot App mirror list).
+# Does NOT copy node_modules / .venv - use shared-deps junctions instead.
 
 param(
   [Parameter(Mandatory = $true)]
@@ -10,10 +12,12 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# secrets (by name; never commit)
 $envPaths = @(
   ".env",
   "GenerativeUI_monorepo/apps/agent-server/.env",
-  "GenerativeUI_monorepo/apps/web-dashboard/.env.local"
+  "GenerativeUI_monorepo/apps/web-dashboard/.env.local",
+  "next-forge/packages/database/.env"
 )
 
 foreach ($relativePath in $envPaths) {
@@ -33,15 +37,21 @@ foreach ($relativePath in $envPaths) {
   }
 }
 
-# Yarn 3 needs yarn.lock in the worktree root (dev branch may not track it).
-$yarnBootstrapPaths = @(
+# lockfiles for shared-deps bootstrap / yarn doctor
+$lockfilePaths = @(
   "yarn.lock",
-  ".yarnrc.yml"
+  ".yarnrc.yml",
+  "next-forge/bun.lock",
+  "GenerativeUI_monorepo/apps/agent-server/poetry.lock"
 )
-foreach ($relativePath in $yarnBootstrapPaths) {
+foreach ($relativePath in $lockfilePaths) {
   $source = Join-Path $SourceRoot $relativePath
   $target = Join-Path $TargetRoot $relativePath
   if (Test-Path $source) {
+    $targetDir = Split-Path -Parent $target
+    if (-not (Test-Path $targetDir)) {
+      New-Item -ItemType Directory -Force -Path $targetDir | Out-Null
+    }
     Copy-Item $source $target -Force
     Write-Host "   Copied $relativePath" -ForegroundColor Green
   }

@@ -1,6 +1,8 @@
 
 # Monorepo_ModMe - Agent worktree creation
 # Usage: .\scripts\new-agent-worktree.ps1 -Name "auth-fix" -Owner cursor
+# Agent root: WORKTREES_ROOT / -WorktreesRoot / legacy <repo>/.worktrees
+# Golden shared-deps image remains at <repo>/.worktrees/dev
 
 [CmdletBinding()]
 param(
@@ -9,7 +11,10 @@ param(
 
   [Parameter(Mandatory = $false)]
   [ValidateSet("cursor", "copilot", "claude", "antigravity", "human")]
-  [string]$Owner = "cursor"
+  [string]$Owner = "cursor",
+
+  [Parameter(Mandatory = $false)]
+  [string]$WorktreesRoot
 )
 
 $ErrorActionPreference = "Stop"
@@ -18,13 +23,16 @@ if ([string]::IsNullOrWhiteSpace($Name)) {
   Write-Host @"
 
 Usage:
-  .\scripts\new-agent-worktree.ps1 -Name <task-slug> [-Owner cursor|copilot|claude|antigravity|human]
+  .\scripts\new-agent-worktree.ps1 -Name <task-slug> [-Owner cursor|copilot|claude|antigravity|human] [-WorktreesRoot <path>]
 
 Examples:
   .\scripts\new-agent-worktree.ps1 -Name "auth-fix" -Owner cursor
   .\scripts\new-agent-worktree.ps1 -Name "api-refactor" -Owner copilot
+  `$env:WORKTREES_ROOT = "D:\Github_Projects\worktrees\Monorepo_ModMe"
+  .\scripts\new-agent-worktree.ps1 -Name "my-task" -Owner cursor
 
 Run .\scripts\init-worktrees.ps1 first if .worktrees/dev does not exist.
+Agent trees use WORKTREES_ROOT / -WorktreesRoot when set; otherwise <repo>/.worktrees.
 
 "@ -ForegroundColor Yellow
   exit 1
@@ -38,7 +46,10 @@ $env:DIRENV_DISABLE = "1"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $ProjectMainDir = Split-Path -Parent $ScriptDir
 $ProjectName = Split-Path -Leaf $ProjectMainDir
-$DevWorktreeRoot = Join-Path $ProjectMainDir ".worktrees"
+
+. (Join-Path $ScriptDir "lib/worktree-context.ps1")
+$AgentWorktreesRoot = Resolve-AgentWorktreesRoot -MainRepoRoot $ProjectMainDir -WorktreesRoot $WorktreesRoot
+$GoldenDev = Get-GoldenDevCheckout -MainRepoRoot $ProjectMainDir
 
 try {
   Write-Host "===========================================" -ForegroundColor Cyan
@@ -47,6 +58,7 @@ try {
   Write-Host ""
   Write-Host "   Feature: $Name"
   Write-Host "   Owner:   $Owner"
+  Write-Host "   Root:    $AgentWorktreesRoot"
   Write-Host ""
 
   function Check-Git {
@@ -57,9 +69,16 @@ try {
 
   Check-Git
 
-  if (!(Test-Path $DevWorktreeRoot)) {
-    Write-Error "Worktrees root not found at $DevWorktreeRoot. Run .\scripts\init-worktrees.ps1 first."
+  if (!(Test-Path $GoldenDev)) {
+    Write-Error "Golden .worktrees/dev not found at $GoldenDev. Run .\scripts\init-worktrees.ps1 first."
   }
+
+  if (!(Test-Path $AgentWorktreesRoot)) {
+    Write-Host "   Creating agent worktrees root at $AgentWorktreesRoot..." -ForegroundColor Yellow
+    New-Item -ItemType Directory -Force -Path $AgentWorktreesRoot | Out-Null
+  }
+
+  Write-ModMeWorktreeResourceWarnings -AgentWorktreesRoot $AgentWorktreesRoot
 
   $BranchName = "feature/$Owner/$Name"
   if ($Owner -eq "human") {
@@ -68,7 +87,7 @@ try {
   else {
     $FolderName = "dev-agent-$Owner-$Name"
   }
-  $TargetPath = Join-Path $DevWorktreeRoot $FolderName
+  $TargetPath = Join-Path $AgentWorktreesRoot $FolderName
 
   if (Test-Path $TargetPath) {
     Write-Error "Worktree path already exists: $TargetPath"
@@ -100,19 +119,35 @@ try {
   & "$ScriptDir/worktree-allocate-ports.ps1" -WorktreePath $TargetPath
   if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-  Write-Host "Copying .env files from main checkout..." -ForegroundColor Cyan
+  Write-Host "Copying essential env + lockfiles from main checkout..." -ForegroundColor Cyan
   & "$ScriptDir/worktree-copy-env.ps1" -SourceRoot $ProjectMainDir -TargetRoot $TargetPath
   if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+  Write-Host "Linking shared deps from .worktrees/dev (junctions; no full install)..." -ForegroundColor Cyan
+  $bootstrapLib = Join-Path $ScriptDir "lib/worktree-bootstrap.ps1"
+  if (Test-Path $bootstrapLib) {
+    . $bootstrapLib
+    if (Test-Path $GoldenDev) {
+      $linked = Invoke-WorktreeSharedDepJunctions -WorktreeRoot $TargetPath -DevCheckout $GoldenDev
+      if (-not $linked) {
+        Write-Host "   No junctions created - run yarn workspace:bootstrap in .worktrees/dev, then yarn worktree:relink-deps" -ForegroundColor DarkYellow
+      }
+    }
+  }
+  else {
+    Write-Host "   worktree-bootstrap.ps1 missing - skip shared-deps link" -ForegroundColor DarkYellow
+  }
 
   Write-Host "Installing git pre-commit hook..." -ForegroundColor Cyan
   & "$ScriptDir/install-git-hooks.ps1"
   if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   Write-Host ""
-  Write-Host "Agent worktree ready." -ForegroundColor Green
+  Write-Host "Agent worktree ready (essential mirror + shared-deps)." -ForegroundColor Green
   Write-Host "   Path:   $TargetPath"
   Write-Host "   Branch: $BranchName"
   Write-Host "   Ports:  $TargetPath\.worktree-ports.env"
+  Write-Host "   Root:   $AgentWorktreesRoot"
   Write-Host ""
   Write-Host "   Open this folder in your IDE, or let Cursor Agents Window bootstrap via .cursor/worktrees.json"
 }

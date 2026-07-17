@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "Clip agentgateway README and routing docs for A2A/MCP gateway ADR research.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
-	"path": "inbox",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
 	"triggers": [
 		"/^https:\\/\\/github\\.com\\/(agentgateway\\/agentgateway|Ditto190\\/agentgateway-modme)/"
 	],

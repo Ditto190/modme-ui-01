@@ -3,8 +3,8 @@
 	"name": "ModMe Inbox — Obsidian Help",
 	"behavior": "create",
 	"description": "Clip Obsidian Help and Advanced URI Publish docs as TechArticle research notes (Defuddle content). Never SoftwareSourceCode — use before generic Docs Site for obsidian.md/help and publish.obsidian.md.",
-	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
-	"path": "inbox",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{url|split:\"/\"|last|split:\"?\"|first|safe_name}}",
+	"path": "inbox/web-clipper/obsidian",
 	"triggers": [
 		"/^https:\\/\\/(www\\.)?obsidian\\.md\\/help\\//",
 		"/^https:\\/\\/help\\.obsidian\\.md\\//",

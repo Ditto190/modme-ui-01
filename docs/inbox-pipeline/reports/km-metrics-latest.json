@@ -1,0 +1,2547 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-07-12T08:04:15.564Z",
+  "capture_compliance": {
+    "valid_drops": 408,
+    "invalid_drops": 12
+  },
+  "beads_lifecycle": {
+    "created": 0,
+    "claimed": 0,
+    "closed": 0,
+    "blocked": 0,
+    "orphaned": 0
+  },
+  "intake_run_links": [],
+  "doc_freshness": {
+    "km_entry_points": [
+      "docs/KNOWLEDGE_QUICKSTART.md",
+      "docs/KNOWLEDGE_MANAGEMENT.md",
+      "docs/inbox-pipeline/README.md",
+      "docs/beads-workflow.md"
+    ],
+    "last_rewrite": "2026-07-11"
+  },
+  "events": [
+    {
+      "at": "2026-07-12T07:45:14.775Z",
+      "event": "capture_invalid",
+      "file": "AutoDev-Ops.gitlab.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:45:14.784Z",
+      "event": "capture_invalid",
+      "file": "cursor-pyright-extension-info.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:45:14.790Z",
+      "event": "capture_invalid",
+      "file": "lapce-gui-editor.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:45:14.793Z",
+      "event": "capture_invalid",
+      "file": "lean-ctx-code_intelligence.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:45:14.797Z",
+      "event": "capture_invalid",
+      "file": "shopping-list.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:45:14.802Z",
+      "event": "capture_invalid",
+      "file": "wasp-plugin-setup.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:50:59.734Z",
+      "event": "capture_valid",
+      "file": "AutoDev-Ops.gitlab.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:50:59.748Z",
+      "event": "capture_valid",
+      "file": "cursor-pyright-extension-info.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:50:59.752Z",
+      "event": "capture_valid",
+      "file": "lapce-gui-editor.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:50:59.756Z",
+      "event": "capture_valid",
+      "file": "lean-ctx-code_intelligence.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:50:59.759Z",
+      "event": "capture_valid",
+      "file": "shopping-list.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:50:59.763Z",
+      "event": "capture_valid",
+      "file": "wasp-plugin-setup.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.608Z",
+      "event": "capture_valid",
+      "file": "AutoDev-Ops.gitlab.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.614Z",
+      "event": "capture_valid",
+      "file": "cursor-pyright-extension-info.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.617Z",
+      "event": "capture_valid",
+      "file": "lapce-gui-editor.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.620Z",
+      "event": "capture_valid",
+      "file": "lean-ctx-code_intelligence.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.623Z",
+      "event": "capture_valid",
+      "file": "shopping-list.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.626Z",
+      "event": "capture_valid",
+      "file": "wasp-plugin-setup.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.628Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-05T08-30-00_research_cursor_agentgateway-routing-synthesis.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.631Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-05T08-35-00_research_cursor_expo-json-render-research.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.633Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-05T12-15-00_architecture_cursor_webmcp-declarative-bridge.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.637Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-05T22-15-00_architecture_cursor_webmcp-declarative-bridge.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.644Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-18-39_research_researcher_Ditto190dioxus-modme Fullstack app framework for web, desktop, and mobile.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.649Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-19-22_research_researcher_Fullstack crossplatform app framework for Rust.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.654Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-20-18_research_researcher_Fullstack crossplatform app framework for Rust.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.659Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-21-05_research_researcher_dioxuspackagesnative at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.663Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-24-36_research_researcher_MCP Registry.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.668Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-24-52_research_researcher_oraiosserena A powerful MCP toolkit for coding, providing semantic retrieval and editing capabilities  - the IDE for your agent.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.673Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-27-22_research_researcher_oraiosserena A powerful MCP toolkit for coding, providing semantic retrieval and editing capabilities  - the IDE for your agent.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.676Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-28-00_research_researcher_Variables.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.681Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-28-31_research_researcher_dockerd.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.688Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-29-41_research_researcher_obsidian-communityweb-clipper-templates Community collection of templates for the official Obsidian web clipper.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.693Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-53-30_research_researcher_Defuddle — Get the main content of any page as Markdown.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.697Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-59-53_research_researcher_Fullstack crossplatform app framework for Rust.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.701Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-17-03_research_researcher_Home • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.705Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-17-23_research_researcher_Anatomy of a Component • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.709Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-17-38_research_researcher_API Reference • Overview • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.713Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-18-12_research_researcher_File structure • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.718Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-18-20_research_researcher_Workspace configuration • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.722Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-18-34_research_researcher_npm dependencies • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.726Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-18-42_research_researcher_Local set-up • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.733Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-19-17_research_researcher_npm Docs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.739Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-19-53_research_researcher_npm Docs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.743Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-20-07_research_researcher_CLI Reference • Overview • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.746Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-25-15_research_researcher_WebMCP • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.750Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-27-08_snippet_researcher_WebMCP • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.754Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-28-41_research_researcher_WebMCP • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.759Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-36-38_research_researcher_kepanokepano-obsidian My personal Obsidian vault template. A bottom-up approach to note-taking and organizing things I am interested in.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.763Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-38-57_snippet_researcher_Defuddle — Get the main content of any page as Markdown.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.766Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-47-16_research_researcher_D3.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.771Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-53-27_research_researcher_kepanoclipper-templates Obsidian Web Clipper templates for various sites.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.775Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-53-37_research_researcher_Schemas - Schema.org.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.778Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-54-34_research_researcher_mlcommonscroissant Croissant is a high-level format for machine learning datasets that brings together four rich layers.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.783Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-55-43_research_researcher_Interpreter.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.787Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T23-00-29_research_researcher_Defuddle — Get the main content of any page as Markdown.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.790Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T23-34-44_research_researcher_Use-the-saw-fear-the-saw.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.792Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T23-36-54_research_researcher_Use-the-saw-fear-the-saw.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.795Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T03-39-06_snippet_researcher_@mcp-bwebmcp-polyfill.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.799Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T03-39-29_snippet_researcher_webmachinelearningwebmcp 🤖 WebMCP.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.802Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T03-46-31_snippet_researcher_webmcpdocsservice-workers.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.805Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T03-48-03_snippet_researcher_webmcpREADME.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.808Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T03-57-10_snippet_researcher_Deploy the binary.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.811Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-18-41_snippet_researcher_liabrumatter-js a 2D rigid body physics engine for the web ▲● ■.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.813Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-24-32_snippet_researcher_observablehqnotebook-kit A command-line tool for building static sites from Observable Notebooks.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.815Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-25-39_snippet_researcher_Observable Framework.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.818Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-26-20_snippet_researcher_observablehqframework A static site generator for data apps, dashboards, reports, and more. Observable Framework combines JavaScript on the front-end for interactive graphics with any language on the back-e.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.821Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-30-42_snippet_researcher_jdxmise dev tools, env vars, task runner.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.824Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-32-49_snippet_researcher_entireiocli 📜 Entire CLI hooks into your Git workflow to capture AI agent sessions as you work. Sessions are indexed alongside commits, creating a searchable record of how code was written in your repo.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.826Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-37-41_snippet_researcher_go-mysql-serverARCHITECTURE.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.829Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-38-21_snippet_researcher_dolthubdolt Dolt – Git for Data.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.833Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-47-11_snippet_researcher_gastownhallbeads Beads - A memory upgrade for your coding agent.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.836Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-47-40_snippet_researcher_gastownhallgastown Gas Town - multi-agent workspace manager.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.838Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-48-49_snippet_researcher_gastowndocsWASTELAND.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.841Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-49-09_snippet_researcher_My Databases.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.845Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-57-47_snippet_researcher_Untitled.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.850Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T05-50-53_research_researcher_Adding LSP servers for GitHub Copilot CLI.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.854Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T05-52-51_snippet_researcher_observablehqframework A static site generator for data apps, dashboards, reports, and more. Observable Framework combines JavaScript on the front-end for interactive graphics with any language on the back-e.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.858Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-02-30_snippet_researcher_croissantcroissant-rdf at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.861Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-03-22_snippet_researcher_huggingface_hubsrchuggingface_hubtemplatesdatasetcard_template.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.866Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-03-33_snippet_researcher_huggingface_hubsrchuggingface_hubtemplatesdatasetcard_template.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.871Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-06-08_snippet_researcher_The Data Cards Playbook.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.876Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-18-05_snippet_researcher_🤗 Hub client library.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.880Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-19-04_snippet_researcher_🤗 Hub client library.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.885Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-21-29_snippet_researcher_Hub Local Cache · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.890Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-22-34_snippet_researcher_Hub Local Cache · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.894Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-22-51_snippet_researcher_Hub Local Cache · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.898Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-23-12_snippet_researcher_Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.903Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-23-25_snippet_researcher_AutoTrain – Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.907Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-23-35_snippet_researcher_Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.912Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-24-24_snippet_researcher_Extractive Question Answering with AutoTrain.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.917Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-25-48_snippet_researcher_How to Fine-Tune Custom Embedding Models Using AutoTrain.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.923Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-44-59_snippet_researcher_Training Large Language Models with Interpreter Feedback using WebAssembly.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.928Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-45-20_snippet_researcher_axolotl-ai-cloudgrpo_code A fast, local, and secure approach for training LLMs for coding tasks using GRPO with WebAssembly and interpreter feedback.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.939Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-49-02_snippet_researcher_Gemma 4 - a google Collection.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.951Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-00-49_snippet_researcher_Docker Spaces · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.958Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-01-42_snippet_researcher_Docker Spaces · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.963Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-04-38_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.969Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-05-14_snippet_researcher_croissantdocscroissant-spec.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.974Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-11-01_snippet_researcher_Xet Protocol Specification · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.981Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-12-00_snippet_researcher_Docker Spaces · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.985Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-12-40_snippet_researcher_Docker Spaces · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.989Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-15-21_snippet_researcher_Spaces ZeroGPU Dynamic GPU Allocation for Spaces.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.992Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-16-55_snippet_researcher_Open Source Data Labeling and AI Evaluation.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.995Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-17-08_snippet_researcher_Label Studio Documentation — Quick start guide for Label Studio.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:06.997Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-19-12_snippet_researcher_Label Studio — Taxonomy Data Labeling Template.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.000Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-20-54_snippet_researcher_Label Studio — ReactCode tag.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.004Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-21-35_snippet_researcher_Label Studio — ReactCode tag.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.007Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-21-51_snippet_researcher_Label Studio — ReactCode tag.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.010Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-25-14_snippet_researcher_HumanSignalcreate-interface-skill Agent skill for building HumanSignal Interfaces.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.014Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T08-46-49_snippet_researcher_entireiogit-sync 🪩 Mirror git refs from a source remote to a target remote without a local checkout. Packfiles stream directly over Smart HTTP and an in-memory object store.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.017Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-27-30_snippet_researcher_The Data Cards Playbook.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.021Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-27-40_snippet_researcher_The Data Cards Playbook.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.026Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-38-49_snippet_researcher_AutoTrain – Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.030Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-39-07_snippet_researcher_TRL - Transformers Reinforcement Learning.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.033Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-39-26_snippet_researcher_Harbor Integration for Training LLMs with Environments.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.036Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-40-00_snippet_researcher_Motivation.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.040Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-51-33_snippet_researcher_dolthubdolt-mcp The MCP server for Dolt.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.043Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T11-02-43_snippet_researcher_Editing rolldowndocsbuiltin-pluginsindex.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.046Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T11-07-59_snippet_researcher_Label Studio Documentation — Quick start guide for Label Studio.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.049Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T12-14-01_snippet_researcher_SmolLM2 - a HuggingFaceTB Collection.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.052Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T12-14-24_snippet_researcher_🧠 SmolLM3 - a HuggingFaceTB Collection.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.056Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T12-31-17_snippet_researcher_PAIR-codeagent-trace-vis.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.060Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T15-20-08_snippet_researcher_gastownhallgascity Orchestration-builder SDK for multi-agent coding workflows.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.063Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T15-54-42_snippet_researcher_entireiocli 📜 Entire CLI hooks into your Git workflow to capture AI agent sessions as you work. Sessions are indexed alongside commits, creating a searchable record of how code was written in your repo.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.066Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T15-54-49_snippet_researcher_aube.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.071Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T16-00-05_snippet_researcher_Registry.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.077Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T16-00-10_snippet_researcher_Dev Tools.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.081Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T16-00-19_snippet_researcher_IDE Integration.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.086Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T16-00-35_snippet_researcher_IDE Integration.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.091Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T16-26-25_snippet_researcher_Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.095Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T17-51-39_snippet_researcher_beadsdocsINTEGRATION_CHARTER.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.099Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T17-52-02_snippet_researcher_beadsdocsINTEGRATION_CHARTER.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.103Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T18-21-03_snippet_researcher_7GUIs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.106Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T19-00-01_snippet_researcher_trunk-rstrunk Build, bundle & ship your Rust WASM application to the web.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.110Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T19-20-32_snippet_researcher_Untitled.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.114Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T19-53-57_Serena_Configuration.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.116Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T19-54-42_snippet_researcher_WASP_AI_Skills.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.120Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-19-33_snippet_researcher_The JavaScript Oxidation Compiler.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.123Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-45-55_snippet_researcher_Intro - microvm.nix.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.128Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-48-04_snippet_researcher_Declaring MicroVMs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.132Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-48-30_snippet_researcher_Configuration options.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.137Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-49-23_snippet_researcher_microvm.nixnixos-modulesmicrovmoptions.nix at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.140Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-50-14_snippet_researcher_microvm.nixnixos-modulesmicrovmoptions.nix at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.143Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-51-26_snippet_researcher_MicroVM_VirtualSystem_Emulator_QEMU System Emulator Targets.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.146Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-52-05_snippet_researcher_CPU emulation.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.149Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-52-18_snippet_researcher_Running a MicroVM as a package.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.152Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-52-38_snippet_researcher_Host systemd services.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.156Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-52-42_snippet_researcher_Declarative MicroVMs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.160Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-53-11_snippet_researcher_Imperative MicroVM management.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.167Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-53-19_snippet_researcher_Deploy via SSH.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.174Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-53-42_snippet_researcher_Shared directories.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.184Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-53-48_snippet_researcher_MicroVM options reference ⚙️.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.192Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T22-14-41_snippet_researcher_Matrix Specification.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.198Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T22-15-08_snippet_researcher_Matrix Specification.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.204Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T22-19-06_snippet_researcher_matrix-orgmatrix-spec at 68994d7fcde5f024df7431f4199cfbb5864c0b72.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.208Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T22-22-59_snippet_researcher_Clients.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.212Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T22-27-34_snippet_researcher_NixOShydra Hydra, the Nix-based continuous build system maintainers=@dasj,@Ericson2314.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.216Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T22-27-58_snippet_researcher_NixOSinfra Infrastructure as Code for the NixOS.org ecosystem maintainers=@mweinelt, @Mic92, @arianvp, @vcunat, @jfly.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.222Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-25-04_snippet_researcher_Label Studio — Template for agentic tracing.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.226Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-30-26_snippet_researcher_dolthubdolt-mcp The MCP server for Dolt.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.231Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-38-35_snippet_researcher_gastownhallgascity Orchestration-builder SDK for multi-agent coding workflows.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.235Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-41-37_snippet_researcher_gastownhallgascity-packs Gas City packs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.239Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-42-10_snippet_researcher_gastownhallgascity-packs Gas City packs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.244Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-49-14_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.249Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-50-59_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.255Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-51-15_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.260Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-51-35_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.263Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-51-55_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.267Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-54-20_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.271Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-54-54_snippet_researcher_gastownhallgascity Orchestration-builder SDK for multi-agent coding workflows.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.274Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-55-24_snippet_researcher_gastownhallgascity Orchestration-builder SDK for multi-agent coding workflows_API_CONTROL_PLANE.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.278Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-57-05_snippet_researcher_gastownhallgascity-packs Gas City packs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.281Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-58-00_snippet_researcher_gastownhallgascity Orchestration-builder SDK for multi-agent coding workflows.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.285Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T00-12-07_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.290Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T00-15-12_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.293Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-10-42_snippet_researcher_nogharttawesome-obsidian-plugins An awesome & curated list to plugins and themes to Obsidian.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.297Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-10-54_snippet_researcher_kmaasrudawesome-obsidian 🕶️ Awesome stuff for Obsidian.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.300Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-14-40_snippet_researcher_Release Windows installer, data inspector edit and updater fixes.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.304Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-28-20_snippet_researcher_Import Zettelkasten notes.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.306Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-28-58_snippet_researcher_Basic formatting syntax.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.310Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-29-28_snippet_researcher_Advanced formatting syntax.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.312Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-44-53_snippet_researcher_obsidianmdobsidian-releases Community plugins list, theme list, and releases of Obsidian.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.315Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-46-25_snippet_researcher_Core plugins.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.318Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T02-17-42_snippet_researcher_LLMs.txt.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.321Z",
+      "event": "capture_invalid",
+      "file": "web-clipper/2026-07-12T02-29-26_snippet_researcher_Multi tenancy  ClickHouse Docs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.327Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T04-55-01_snippet_researcher_oraiosserena A powerful MCP toolkit for coding, providing semantic retrieval and editing capabilities  - the IDE for your agent.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.332Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T05-04-20_snippet_researcher_rahulretnanmcp-ragdocs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.335Z",
+      "event": "capture_invalid",
+      "file": "web-clipper/2026-07-12T05-44-12_snippet_researcher_dioxuspackagesnative at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.339Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T07-48-39_snippet_researcher_TinyBase.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.342Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T09-49-10_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.345Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T10-42-34_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.347Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T10-43-42_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.350Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T10-46-45_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.359Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T10-48-19_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.363Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T10-51-30_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.367Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-27-55_snippet_researcher_Unique note creator.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.371Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-37-45_snippet_researcher_Templates.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.375Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-41-16_snippet_researcher_Templates.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.377Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-42-05_snippet_researcher_Import Zettelkasten notes.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.382Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-44-27_snippet_researcher_mokeyishobsidian-code-emitter An obsidian plugin that allows  code blocks executed interactively in sandbox like jupyter notebooks. Supported language rust、kotlin、python、Javascript、TypeScript etc.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.385Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-49-31_snippet_researcher_Obsidian URI.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.389Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-51-55_snippet_researcher_deathauNotation-for-Obsidian A theme for Obsidian, inspired by and borrowing elements from Notion.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.395Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-52-30_snippet_researcher_deathauNotation-for-Obsidian A theme for Obsidian, inspired by and borrowing elements from Notion.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.399Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-53-53_snippet_researcher_deathaumarkdownload A Firefox and Google Chrome extension to clip websites and download them into a readable markdown file.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.403Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-54-40_snippet_researcher_Home - Advanced URI Documentation.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.408Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-56-13_snippet_researcher_Vinzent03obsidian-advanced-uri Advanced modes for Obsidian URI.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.414Z",
+      "event": "capture_invalid",
+      "file": "web-clipper/2026-07-12T12-31-18_snippet_researcher_dioxuspackagesgenerational-box at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.420Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T16-42-20_snippet_researcher_Interpreter.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.426Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T17-06-52_snippet_researcher_Untitled.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.433Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T17-31-58_snippet_researcher_Untitled.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.439Z",
+      "event": "capture_invalid",
+      "file": "web-clipper/ANTHROPIC_SKILLS_INTEGRATION.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.445Z",
+      "event": "capture_valid",
+      "file": "web-clipper/defuddle-interpreter-ollama.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.452Z",
+      "event": "capture_valid",
+      "file": "web-clipper/gascity.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.457Z",
+      "event": "capture_invalid",
+      "file": "web-clipper/obsidian-plugin-mcp-RESTAPI.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.463Z",
+      "event": "capture_invalid",
+      "file": "web-clipper/wasp-llms.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T07:59:07.469Z",
+      "event": "capture_valid",
+      "file": "web-clipper/web-clipper-interpreter.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.917Z",
+      "event": "capture_valid",
+      "file": "AutoDev-Ops.gitlab.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.922Z",
+      "event": "capture_valid",
+      "file": "cursor-pyright-extension-info.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.925Z",
+      "event": "capture_valid",
+      "file": "lapce-gui-editor.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.927Z",
+      "event": "capture_valid",
+      "file": "lean-ctx-code_intelligence.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.929Z",
+      "event": "capture_valid",
+      "file": "shopping-list.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.932Z",
+      "event": "capture_valid",
+      "file": "wasp-plugin-setup.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.945Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-05T08-30-00_research_cursor_agentgateway-routing-synthesis.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.947Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-05T08-35-00_research_cursor_expo-json-render-research.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.950Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-05T12-15-00_architecture_cursor_webmcp-declarative-bridge.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.952Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-05T22-15-00_architecture_cursor_webmcp-declarative-bridge.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.956Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-18-39_research_researcher_Ditto190dioxus-modme Fullstack app framework for web, desktop, and mobile.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.960Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-19-22_research_researcher_Fullstack crossplatform app framework for Rust.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.964Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-20-18_research_researcher_Fullstack crossplatform app framework for Rust.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.968Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-21-05_research_researcher_dioxuspackagesnative at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.973Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-24-36_research_researcher_MCP Registry.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.977Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-24-52_research_researcher_oraiosserena A powerful MCP toolkit for coding, providing semantic retrieval and editing capabilities  - the IDE for your agent.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.981Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-27-22_research_researcher_oraiosserena A powerful MCP toolkit for coding, providing semantic retrieval and editing capabilities  - the IDE for your agent.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.985Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-28-00_research_researcher_Variables.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.989Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-28-31_research_researcher_dockerd.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.994Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-29-41_research_researcher_obsidian-communityweb-clipper-templates Community collection of templates for the official Obsidian web clipper.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:14.996Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-53-30_research_researcher_Defuddle — Get the main content of any page as Markdown.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.001Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T21-59-53_research_researcher_Fullstack crossplatform app framework for Rust.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.003Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-17-03_research_researcher_Home • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.007Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-17-23_research_researcher_Anatomy of a Component • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.009Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-17-38_research_researcher_API Reference • Overview • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.011Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-18-12_research_researcher_File structure • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.016Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-18-20_research_researcher_Workspace configuration • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.018Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-18-34_research_researcher_npm dependencies • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.022Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-18-42_research_researcher_Local set-up • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.026Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-19-17_research_researcher_npm Docs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.030Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-19-53_research_researcher_npm Docs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.033Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-20-07_research_researcher_CLI Reference • Overview • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.037Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-25-15_research_researcher_WebMCP • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.040Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-27-08_snippet_researcher_WebMCP • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.045Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-28-41_research_researcher_WebMCP • Angular.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.048Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-36-38_research_researcher_kepanokepano-obsidian My personal Obsidian vault template. A bottom-up approach to note-taking and organizing things I am interested in.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.053Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-38-57_snippet_researcher_Defuddle — Get the main content of any page as Markdown.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.056Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-47-16_research_researcher_D3.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.060Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-53-27_research_researcher_kepanoclipper-templates Obsidian Web Clipper templates for various sites.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.064Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-53-37_research_researcher_Schemas - Schema.org.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.069Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-54-34_research_researcher_mlcommonscroissant Croissant is a high-level format for machine learning datasets that brings together four rich layers.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.073Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T22-55-43_research_researcher_Interpreter.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.075Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T23-00-29_research_researcher_Defuddle — Get the main content of any page as Markdown.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.077Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T23-34-44_research_researcher_Use-the-saw-fear-the-saw.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.080Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-10T23-36-54_research_researcher_Use-the-saw-fear-the-saw.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.083Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T03-39-06_snippet_researcher_@mcp-bwebmcp-polyfill.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.087Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T03-39-29_snippet_researcher_webmachinelearningwebmcp 🤖 WebMCP.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.091Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T03-46-31_snippet_researcher_webmcpdocsservice-workers.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.094Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T03-48-03_snippet_researcher_webmcpREADME.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.098Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T03-57-10_snippet_researcher_Deploy the binary.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.101Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-18-41_snippet_researcher_liabrumatter-js a 2D rigid body physics engine for the web ▲● ■.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.103Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-24-32_snippet_researcher_observablehqnotebook-kit A command-line tool for building static sites from Observable Notebooks.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.106Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-25-39_snippet_researcher_Observable Framework.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.109Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-26-20_snippet_researcher_observablehqframework A static site generator for data apps, dashboards, reports, and more. Observable Framework combines JavaScript on the front-end for interactive graphics with any language on the back-e.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.112Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-30-42_snippet_researcher_jdxmise dev tools, env vars, task runner.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.115Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-32-49_snippet_researcher_entireiocli 📜 Entire CLI hooks into your Git workflow to capture AI agent sessions as you work. Sessions are indexed alongside commits, creating a searchable record of how code was written in your repo.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.117Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-37-41_snippet_researcher_go-mysql-serverARCHITECTURE.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.120Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-38-21_snippet_researcher_dolthubdolt Dolt – Git for Data.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.124Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-47-11_snippet_researcher_gastownhallbeads Beads - A memory upgrade for your coding agent.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.127Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-47-40_snippet_researcher_gastownhallgastown Gas Town - multi-agent workspace manager.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.130Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-48-49_snippet_researcher_gastowndocsWASTELAND.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.132Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-49-09_snippet_researcher_My Databases.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.134Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T04-57-47_snippet_researcher_Untitled.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.137Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T05-50-53_research_researcher_Adding LSP servers for GitHub Copilot CLI.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.140Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T05-52-51_snippet_researcher_observablehqframework A static site generator for data apps, dashboards, reports, and more. Observable Framework combines JavaScript on the front-end for interactive graphics with any language on the back-e.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.142Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-02-30_snippet_researcher_croissantcroissant-rdf at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.145Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-03-22_snippet_researcher_huggingface_hubsrchuggingface_hubtemplatesdatasetcard_template.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.148Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-03-33_snippet_researcher_huggingface_hubsrchuggingface_hubtemplatesdatasetcard_template.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.150Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-06-08_snippet_researcher_The Data Cards Playbook.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.153Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-18-05_snippet_researcher_🤗 Hub client library.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.156Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-19-04_snippet_researcher_🤗 Hub client library.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.159Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-21-29_snippet_researcher_Hub Local Cache · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.162Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-22-34_snippet_researcher_Hub Local Cache · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.165Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-22-51_snippet_researcher_Hub Local Cache · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.167Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-23-12_snippet_researcher_Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.170Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-23-25_snippet_researcher_AutoTrain – Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.173Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-23-35_snippet_researcher_Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.176Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-24-24_snippet_researcher_Extractive Question Answering with AutoTrain.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.180Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-25-48_snippet_researcher_How to Fine-Tune Custom Embedding Models Using AutoTrain.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.184Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-44-59_snippet_researcher_Training Large Language Models with Interpreter Feedback using WebAssembly.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.188Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-45-20_snippet_researcher_axolotl-ai-cloudgrpo_code A fast, local, and secure approach for training LLMs for coding tasks using GRPO with WebAssembly and interpreter feedback.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.191Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T06-49-02_snippet_researcher_Gemma 4 - a google Collection.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.194Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-00-49_snippet_researcher_Docker Spaces · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.197Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-01-42_snippet_researcher_Docker Spaces · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.200Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-04-38_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.204Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-05-14_snippet_researcher_croissantdocscroissant-spec.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.207Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-11-01_snippet_researcher_Xet Protocol Specification · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.211Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-12-00_snippet_researcher_Docker Spaces · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.214Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-12-40_snippet_researcher_Docker Spaces · Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.218Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-15-21_snippet_researcher_Spaces ZeroGPU Dynamic GPU Allocation for Spaces.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.220Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-16-55_snippet_researcher_Open Source Data Labeling and AI Evaluation.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.223Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-17-08_snippet_researcher_Label Studio Documentation — Quick start guide for Label Studio.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.226Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-19-12_snippet_researcher_Label Studio — Taxonomy Data Labeling Template.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.229Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-20-54_snippet_researcher_Label Studio — ReactCode tag.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.233Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-21-35_snippet_researcher_Label Studio — ReactCode tag.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.237Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-21-51_snippet_researcher_Label Studio — ReactCode tag.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.240Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T07-25-14_snippet_researcher_HumanSignalcreate-interface-skill Agent skill for building HumanSignal Interfaces.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.243Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T08-46-49_snippet_researcher_entireiogit-sync 🪩 Mirror git refs from a source remote to a target remote without a local checkout. Packfiles stream directly over Smart HTTP and an in-memory object store.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.246Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-27-30_snippet_researcher_The Data Cards Playbook.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.248Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-27-40_snippet_researcher_The Data Cards Playbook.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.251Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-38-49_snippet_researcher_AutoTrain – Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.254Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-39-07_snippet_researcher_TRL - Transformers Reinforcement Learning.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.257Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-39-26_snippet_researcher_Harbor Integration for Training LLMs with Environments.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.259Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-40-00_snippet_researcher_Motivation.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.263Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T10-51-33_snippet_researcher_dolthubdolt-mcp The MCP server for Dolt.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.265Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T11-02-43_snippet_researcher_Editing rolldowndocsbuiltin-pluginsindex.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.268Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T11-07-59_snippet_researcher_Label Studio Documentation — Quick start guide for Label Studio.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.270Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T12-14-01_snippet_researcher_SmolLM2 - a HuggingFaceTB Collection.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.273Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T12-14-24_snippet_researcher_🧠 SmolLM3 - a HuggingFaceTB Collection.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.276Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T12-31-17_snippet_researcher_PAIR-codeagent-trace-vis.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.279Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T15-20-08_snippet_researcher_gastownhallgascity Orchestration-builder SDK for multi-agent coding workflows.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.281Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T15-54-42_snippet_researcher_entireiocli 📜 Entire CLI hooks into your Git workflow to capture AI agent sessions as you work. Sessions are indexed alongside commits, creating a searchable record of how code was written in your repo.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.284Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T15-54-49_snippet_researcher_aube.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.287Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T16-00-05_snippet_researcher_Registry.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.290Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T16-00-10_snippet_researcher_Dev Tools.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.293Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T16-00-19_snippet_researcher_IDE Integration.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.296Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T16-00-35_snippet_researcher_IDE Integration.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.299Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T16-26-25_snippet_researcher_Hugging Face.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.302Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T17-51-39_snippet_researcher_beadsdocsINTEGRATION_CHARTER.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.304Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T17-52-02_snippet_researcher_beadsdocsINTEGRATION_CHARTER.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.307Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T18-21-03_snippet_researcher_7GUIs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.311Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T19-00-01_snippet_researcher_trunk-rstrunk Build, bundle & ship your Rust WASM application to the web.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.315Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T19-20-32_snippet_researcher_Untitled.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.318Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T19-53-57_Serena_Configuration.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.320Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T19-54-42_snippet_researcher_WASP_AI_Skills.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.323Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-19-33_snippet_researcher_The JavaScript Oxidation Compiler.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.326Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-45-55_snippet_researcher_Intro - microvm.nix.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.328Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-48-04_snippet_researcher_Declaring MicroVMs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.331Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-48-30_snippet_researcher_Configuration options.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.334Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-49-23_snippet_researcher_microvm.nixnixos-modulesmicrovmoptions.nix at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.337Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-50-14_snippet_researcher_microvm.nixnixos-modulesmicrovmoptions.nix at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.340Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-51-26_snippet_researcher_MicroVM_VirtualSystem_Emulator_QEMU System Emulator Targets.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.343Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-52-05_snippet_researcher_CPU emulation.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.346Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-52-18_snippet_researcher_Running a MicroVM as a package.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.349Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-52-38_snippet_researcher_Host systemd services.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.352Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-52-42_snippet_researcher_Declarative MicroVMs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.355Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-53-11_snippet_researcher_Imperative MicroVM management.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.358Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-53-19_snippet_researcher_Deploy via SSH.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.360Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-53-42_snippet_researcher_Shared directories.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.365Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T21-53-48_snippet_researcher_MicroVM options reference ⚙️.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.368Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T22-14-41_snippet_researcher_Matrix Specification.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.370Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T22-15-08_snippet_researcher_Matrix Specification.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.373Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T22-19-06_snippet_researcher_matrix-orgmatrix-spec at 68994d7fcde5f024df7431f4199cfbb5864c0b72.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.376Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T22-22-59_snippet_researcher_Clients.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.378Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T22-27-34_snippet_researcher_NixOShydra Hydra, the Nix-based continuous build system maintainers=@dasj,@Ericson2314.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.381Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T22-27-58_snippet_researcher_NixOSinfra Infrastructure as Code for the NixOS.org ecosystem maintainers=@mweinelt, @Mic92, @arianvp, @vcunat, @jfly.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.384Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-25-04_snippet_researcher_Label Studio — Template for agentic tracing.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.388Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-30-26_snippet_researcher_dolthubdolt-mcp The MCP server for Dolt.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.391Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-38-35_snippet_researcher_gastownhallgascity Orchestration-builder SDK for multi-agent coding workflows.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.395Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-41-37_snippet_researcher_gastownhallgascity-packs Gas City packs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.397Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-42-10_snippet_researcher_gastownhallgascity-packs Gas City packs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.400Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-49-14_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.403Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-50-59_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.405Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-51-15_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.408Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-51-35_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.411Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-51-55_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.413Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-54-20_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.416Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-54-54_snippet_researcher_gastownhallgascity Orchestration-builder SDK for multi-agent coding workflows.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.419Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-55-24_snippet_researcher_gastownhallgascity Orchestration-builder SDK for multi-agent coding workflows_API_CONTROL_PLANE.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.432Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-57-05_snippet_researcher_gastownhallgascity-packs Gas City packs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.436Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-11T23-58-00_snippet_researcher_gastownhallgascity Orchestration-builder SDK for multi-agent coding workflows.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.439Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T00-12-07_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.442Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T00-15-12_snippet_researcher_mcp-ragdocsTASK.md at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.445Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-10-42_snippet_researcher_nogharttawesome-obsidian-plugins An awesome & curated list to plugins and themes to Obsidian.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.448Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-10-54_snippet_researcher_kmaasrudawesome-obsidian 🕶️ Awesome stuff for Obsidian.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.451Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-14-40_snippet_researcher_Release Windows installer, data inspector edit and updater fixes.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.453Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-28-20_snippet_researcher_Import Zettelkasten notes.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.456Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-28-58_snippet_researcher_Basic formatting syntax.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.461Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-29-28_snippet_researcher_Advanced formatting syntax.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.463Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-44-53_snippet_researcher_obsidianmdobsidian-releases Community plugins list, theme list, and releases of Obsidian.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.466Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T01-46-25_snippet_researcher_Core plugins.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.469Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T02-17-42_snippet_researcher_LLMs.txt.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.471Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T02-29-26_snippet_researcher_Multi tenancy  ClickHouse Docs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.474Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T04-55-01_snippet_researcher_oraiosserena A powerful MCP toolkit for coding, providing semantic retrieval and editing capabilities  - the IDE for your agent.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.477Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T05-04-20_snippet_researcher_rahulretnanmcp-ragdocs.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.479Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T05-44-12_snippet_researcher_dioxuspackagesnative at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.483Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T07-48-39_snippet_researcher_TinyBase.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.486Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T09-49-10_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.489Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T10-42-34_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.492Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T10-43-42_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.495Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T10-46-45_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.499Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T10-48-19_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.502Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T10-51-30_snippet_researcher_Rust bundler for JavaScript.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.505Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-27-55_snippet_researcher_Unique note creator.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.509Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-37-45_snippet_researcher_Templates.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.512Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-41-16_snippet_researcher_Templates.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.514Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-42-05_snippet_researcher_Import Zettelkasten notes.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.518Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-44-27_snippet_researcher_mokeyishobsidian-code-emitter An obsidian plugin that allows  code blocks executed interactively in sandbox like jupyter notebooks. Supported language rust、kotlin、python、Javascript、TypeScript etc.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.521Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-49-31_snippet_researcher_Obsidian URI.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.524Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-51-55_snippet_researcher_deathauNotation-for-Obsidian A theme for Obsidian, inspired by and borrowing elements from Notion.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.527Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-52-30_snippet_researcher_deathauNotation-for-Obsidian A theme for Obsidian, inspired by and borrowing elements from Notion.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.531Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-53-53_snippet_researcher_deathaumarkdownload A Firefox and Google Chrome extension to clip websites and download them into a readable markdown file.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.533Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-54-40_snippet_researcher_Home - Advanced URI Documentation.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.536Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T11-56-13_snippet_researcher_Vinzent03obsidian-advanced-uri Advanced modes for Obsidian URI.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.538Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T12-31-18_snippet_researcher_dioxuspackagesgenerational-box at main.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.541Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T16-42-20_snippet_researcher_Interpreter.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.544Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T17-06-52_snippet_researcher_Untitled.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.547Z",
+      "event": "capture_valid",
+      "file": "web-clipper/2026-07-12T17-31-58_snippet_researcher_Untitled.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.550Z",
+      "event": "capture_valid",
+      "file": "web-clipper/ANTHROPIC_SKILLS_INTEGRATION.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.553Z",
+      "event": "capture_valid",
+      "file": "web-clipper/defuddle-interpreter-ollama.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.555Z",
+      "event": "capture_valid",
+      "file": "web-clipper/gascity.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.558Z",
+      "event": "capture_valid",
+      "file": "web-clipper/obsidian-plugin-mcp-RESTAPI.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.561Z",
+      "event": "capture_valid",
+      "file": "web-clipper/wasp-llms.md",
+      "source": "inbox-audit"
+    },
+    {
+      "at": "2026-07-12T08:04:15.564Z",
+      "event": "capture_valid",
+      "file": "web-clipper/web-clipper-interpreter.md",
+      "source": "inbox-audit"
+    }
+  ]
+}

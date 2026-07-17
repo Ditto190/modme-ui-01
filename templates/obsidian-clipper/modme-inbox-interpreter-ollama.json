@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "Clip-time tagging via Interpreter + Ollama llama3.2. Set context to Defuddle MD slice. Click Interpret before Add to Obsidian. Manual select only.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
-	"path": "inbox",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
 	"triggers": [],
 	"context": "{{content|slice:0,1500}}",
 	"properties": [

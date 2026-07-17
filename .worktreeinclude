@@ -1,6 +1,9 @@
 # Gitignored paths copied into new GitHub Copilot App / agent worktrees.
 # Syntax: .gitignore-style — only ignored files matching these patterns are copied.
-# See docs/copilot-workspace-orchestration.md and scripts/worktree-copy-env.ps1.
+# Essential mirror ONLY — never list node_modules, .venv, or build caches.
+# Keep in sync with scripts/worktree-copy-env.ps1.
+# See docs/copilot-workspace-orchestration.md and
+# D:\Github_Projects\workspace\docs\worktree-essential-mirror-limits.md.
 
 # secrets (by name; never commit)
 .env

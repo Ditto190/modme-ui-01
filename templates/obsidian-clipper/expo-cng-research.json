@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "Clip Expo Router, prebuild, and self-host docs for mobile OSS deployment research.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
-	"path": "inbox",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
 	"triggers": [
 		"/^https:\\/\\/docs\\.expo\\.dev\\//"
 	],

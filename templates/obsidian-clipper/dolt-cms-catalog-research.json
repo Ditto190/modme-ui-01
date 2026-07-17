@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "Clip Dolt catalog CMS use-case articles for inbox/knowledge promotion patterns.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
-	"path": "inbox",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
 	"triggers": [
 		"/^https:\\/\\/www\\.dolthub\\.com\\/blog\\//",
 		"schema:@Article"

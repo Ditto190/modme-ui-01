@@ -37,6 +37,7 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 ```markdown
 ### Added
 
+- (repo) Pre-cutover WIP on obsidian-unique-note-pack � scripts/docs/templates/agent tooling carried from main checkout before D: move
 - (scope) Short description (#PR)
 
 ### Changed
@@ -64,6 +65,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (repo) Pre-cutover WIP on obsidian-unique-note-pack � scripts/docs/templates/agent tooling carried from main checkout before D: move
 - (docs/obsidian) Unique note + Advanced URI + Code Emitter pack — `docs/obsidian/`, `tpl-unique-note.md`, `tpl-code-sandbox.md`, Clipper `modme-inbox-obsidian-help.json`, `uid` on Clipper templates, vault path `inbox` for ModMe-Vault
 - (repo) WSL `modme-agent` profile + Jetify Devbox toolchain — `devbox.json`, `yarn wsl:ubuntu:setup`, `scripts/shell/setup-modme-agent-wsl.sh`, Docker/WSL doctor scripts, `docs/windows-docker-wsl-setup.md`
 
@@ -80,6 +82,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (repo) Pre-cutover WIP on obsidian-unique-note-pack � scripts/docs/templates/agent tooling carried from main checkout before D: move
 - (repo) Obsidian sidecar vault — `scripts/setup-modme-obsidian-sidecar.ps1`, directory junctions, `docs/obsidian-sidecar-setup.md`, `yarn obsidian:sidecar:*` scripts (solves 10–30s Obsidian startup when vault is monorepo root; now 1–2s)
 - (repo) Builder orchestration layer — `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
 - (repo) Copilot workspace + builder incident runbook — `docs/runbooks/copilot-workspace-builder-incident.md`

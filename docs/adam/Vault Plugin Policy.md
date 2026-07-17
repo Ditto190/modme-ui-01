@@ -20,32 +20,32 @@ Lean plugin stack for **ModMe-Vault** / Project A.D.A.M. Core-first; community p
 
 ## Core plugins (enable)
 
-| Plugin                 | Role                                       |
-| ---------------------- | ------------------------------------------ |
-| **Templates**          | Insert `Templates/tpl-*.md`                |
-| **Unique note creator**| Zettel UIDs; template = `Templates/tpl-unique-note` |
-| **Properties**         | Frontmatter editing; required for Bases    |
-| **Daily notes**        | Session capture                            |
-| **Bases**              | Property tables: beads, ADRs, inbox review |
-| **Canvas**             | Visual command center (read-only overview) |
-| **Backlinks**          | Wikilink discovery                         |
-| **File recovery**      | Safety net                                 |
-| **Format converter**   | Optional — Zettelkasten link fixer/beautifier after imports |
+| Plugin                  | Role                                                        |
+| ----------------------- | ----------------------------------------------------------- |
+| **Templates**           | Insert `Templates/tpl-*.md`                                 |
+| **Unique note creator** | Zettel UIDs; template = `Templates/tpl-unique-note`         |
+| **Properties**          | Frontmatter editing; required for Bases                     |
+| **Daily notes**         | Session capture                                             |
+| **Bases**               | Property tables: beads, ADRs, inbox review                  |
+| **Canvas**              | Visual command center (read-only overview)                  |
+| **Backlinks**           | Wikilink discovery                                          |
+| **File recovery**       | Safety net                                                  |
+| **Format converter**    | Optional — Zettelkasten link fixer/beautifier after imports |
 
 Optional core: **Graph** (light use), **Outline**.
 
 ## Community plugins
 
-| Plugin                   | Status      | Allowed use                                            |
-| ------------------------ | ----------- | ------------------------------------------------------ |
-| **Smart Connections**    | Recommended | Semantic related-notes while writing; local embeddings |
-| **Copilot for Obsidian** | Recommended | Project A.D.A.M system prompt + file context           |
+| Plugin                   | Status      | Allowed use                                                                                              |
+| ------------------------ | ----------- | -------------------------------------------------------------------------------------------------------- |
+| **Smart Connections**    | Recommended | Semantic related-notes while writing; local embeddings                                                   |
+| **Copilot for Obsidian** | Recommended | Project A.D.A.M system prompt + file context                                                             |
 | **Advanced URI**         | Recommended | Automations: open/create notes, frontmatter, commands ([cookbook](../obsidian/advanced-uri-cookbook.md)) |
-| **Code Emitter**         | Optional    | Run **local** Python / TypeScript / JavaScript fences only ([guide](../obsidian/code-emitter.md)) |
-| **Periodic Notes**       | Optional    | Weekly review template                                 |
-| **Obsidian Git**         | Optional    | `.obsidian/` config sync only                          |
-| **Templater**            | Defer       | Only if core Templates lacks needed logic              |
-| **Dataview**             | Defer       | Only when Bases cannot express the query               |
+| **Code Emitter**         | Optional    | Run **local** Python / TypeScript / JavaScript fences only ([guide](../obsidian/code-emitter.md))        |
+| **Periodic Notes**       | Optional    | Weekly review template                                                                                   |
+| **Obsidian Git**         | Optional    | `.obsidian/` config sync only                                                                            |
+| **Templater**            | Defer       | Only if core Templates lacks needed logic                                                                |
+| **Dataview**             | Defer       | Only when Bases cannot express the query                                                                 |
 
 **Code Emitter constraint:** vault templates must not use remote playground languages (Kotlin, Rust, Sololearn, etc.). Pyodide + JS/TS sandbox only.
 
@@ -73,5 +73,9 @@ Optional core: **Graph** (light use), **Outline**.
 - [[Query Tool Guide]]
 - [[ADAM Semantic Map]]
 - [[ADAM Command Center]] — Bases views
+- [[Zettelkasten Workflow]]
+- [[MOC Obsidian]]
+- [[agent-syntax-brief]] — KB syntax + core plugin brief
 - [[obsidian-sidecar-setup]]
 - [Obsidian pack](../obsidian/README.md) — unique notes, Advanced URI, Code Emitter, Clipper matching
+- [Obsidian KB index](../obsidian/kb/_index.md) — Firecrawl phase-1 promote

@@ -23,11 +23,27 @@
 [CmdletBinding()]
 param(
   [string]$VaultPath = "C:\Users\dylan\ModMe-Vault",
-  [string]$MonorepoRoot = $(Resolve-Path (Join-Path $PSScriptRoot "..")),
+  # Do not use $PSScriptRoot in param defaults — it is empty during default binding
+  # when yarn/nested powershell invoke this script.
+  [string]$MonorepoRoot = "",
   [switch]$OpenVault
 )
 
 $ErrorActionPreference = "Stop"
+
+if (-not $MonorepoRoot) {
+  $scriptDir = $PSScriptRoot
+  if (-not $scriptDir -and $PSCommandPath) {
+    $scriptDir = Split-Path -Parent $PSCommandPath
+  }
+  if (-not $scriptDir -and $MyInvocation.MyCommand.Path) {
+    $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+  }
+  if (-not $scriptDir) {
+    throw "Cannot resolve script directory (PSScriptRoot empty). Pass -MonorepoRoot explicitly."
+  }
+  $MonorepoRoot = (Resolve-Path (Join-Path $scriptDir "..")).Path
+}
 
 Write-Host "=== ModMe Sidecar Obsidian Vault Setup ===" -ForegroundColor Cyan
 Write-Host "Vault:    $VaultPath"

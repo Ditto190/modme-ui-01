@@ -4,6 +4,12 @@ description: Toolkit for styling artifacts with a theme. These artifacts can be 
 license: Complete terms in LICENSE.txt
 ---
 
+# TODO : @Copilot this skill has two important priorities: t should definitely be combined with["C:\Users\dylan\Monorepo_ModMe\agent\skills_ref\installed\artifacts-builder\SKILL.md"] and,
+
+# (2) Combine this with a [link][DESIGN.md] flow that rapidly composes artefacts from our pipeline, with post-processing involving this design layer as part of a multi-agent flow. Think of how we might build a GenUI pipeline and how an agent would use their Theme-Factory skill as a role... need to brainstorm a bit more.
+
+# @Ditto190 TODO : Combine this theme-factory with stitch mcp and design md skills. 
+
 # Theme Factory Skill
 
 This skill provides a curated collection of professional font and color themes themes, each with carefully selected color palettes and font pairings. Once a theme is chosen, it can be applied to any artifact.

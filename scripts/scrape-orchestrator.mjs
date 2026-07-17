@@ -10,6 +10,11 @@ import { spawnSync } from 'node:child_process';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadRootEnv } from './lib/load-root-env.mjs';
+import {
+  beadsCreateScrapeIssue,
+  beadsFinishPipelineRun,
+  beadsStartPipelineRun,
+} from './lib/beads-hooks.mjs';
 import { checkHealth, getFirecrawlBaseUrl } from './lib/firecrawl-local-client.mjs';
 import { parseCollectionYaml, validateWithSchema } from './yaml-parser.mjs';
 import { appendValidationError } from './lib/intake-validation-report.mjs';
@@ -21,6 +26,7 @@ const args = process.argv.slice(2);
 const manifestArg = args.find((a) => a.startsWith('--manifest='));
 const MANIFEST = manifestArg ? manifestArg.split('=')[1] : 'docs-sitemap';
 const DRY_RUN = args.includes('--dry-run');
+const SKIP_BEADS = args.includes('--skip-beads');
 const engineArg = args.find((a) => a.startsWith('--engine='));
 const ENGINE = engineArg ? engineArg.split('=')[1] : 'scrapy';
 
@@ -117,8 +123,20 @@ async function validateManifestPreflight() {
 
 async function main() {
   loadRootEnv({ fileWins: true });
+  let beadsIssueId = null;
+
+  try {
   await validateManifestPreflight();
   await firecrawlPreflight();
+
+  if (!SKIP_BEADS) {
+    const beadsRun = await beadsStartPipelineRun({
+      title: `scrape:${MANIFEST}`,
+      description: `Scrape orchestrator manifest=${MANIFEST} engine=${ENGINE} dry_run=${DRY_RUN}`,
+      priority: 2,
+    });
+    beadsIssueId = beadsRun.issueId ?? (await beadsCreateScrapeIssue(MANIFEST)).id ?? null;
+  }
 
   runStep(ENGINE === 'firecrawl' ? 'Firecrawl scrape' : 'Scrapy crawl', () => runScrapeEngine());
 
@@ -135,9 +153,19 @@ async function main() {
   runStep('Promote to inbox', () => runNode('scripts/scrape-promote.mjs', promoteArgs));
 
   console.log('\nscrape-orchestrator: complete');
+  await beadsFinishPipelineRun(beadsIssueId, true, `scrape:${MANIFEST} complete`);
+  } catch (err) {
+    console.error('Fatal:', err);
+    await beadsFinishPipelineRun(
+      beadsIssueId,
+      false,
+      err instanceof Error ? err.message : String(err)
+    );
+    process.exit(1);
+  }
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error('Fatal:', err);
   process.exit(1);
 });

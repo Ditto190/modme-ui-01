@@ -1,9 +1,13 @@
 
 # Monorepo_ModMe - Worktree Initialization Script
-# Creates .worktrees/dev persistent checkout from main repo root.
+# Creates .worktrees/dev golden checkout under the main repo (shared-deps source).
+# Agent worktrees root: WORKTREES_ROOT / -WorktreesRoot / legacy .worktrees
 
 param(
-  [switch]$IncludeStaging
+  [switch]$IncludeStaging,
+
+  [Parameter(Mandatory = $false)]
+  [string]$WorktreesRoot
 )
 
 $ErrorActionPreference = "Stop"
@@ -16,6 +20,8 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $ProjectMainDir = Split-Path -Parent $ScriptDir
 $ProjectName = Split-Path -Leaf $ProjectMainDir
 $MonorepoRoot = Split-Path -Parent $ProjectMainDir
+
+. (Join-Path $ScriptDir "lib/worktree-context.ps1")
 
 function Test-GitBranchExists {
   param([string]$BranchName)
@@ -65,13 +71,14 @@ try {
     Ensure-Branch "staging"
   }
 
-  $WorktreesRoot = Join-Path $ProjectMainDir ".worktrees"
-  if (!(Test-Path $WorktreesRoot)) {
-    Write-Host "   Creating worktrees root at $WorktreesRoot..." -ForegroundColor Yellow
-    New-Item -ItemType Directory -Force -Path $WorktreesRoot | Out-Null
+  # Golden shared-deps image always lives under the main repo's .worktrees/dev
+  $LegacyWorktreesRoot = Join-Path $ProjectMainDir ".worktrees"
+  if (!(Test-Path $LegacyWorktreesRoot)) {
+    Write-Host "   Creating golden worktrees root at $LegacyWorktreesRoot..." -ForegroundColor Yellow
+    New-Item -ItemType Directory -Force -Path $LegacyWorktreesRoot | Out-Null
   }
 
-  $DevCheckout = Join-Path $WorktreesRoot "dev"
+  $DevCheckout = Get-GoldenDevCheckout -MainRepoRoot $ProjectMainDir
   if (!(Test-Path $DevCheckout)) {
     Write-Host "   Creating persistent dev checkout at $DevCheckout..." -ForegroundColor Yellow
     git -C $ProjectMainDir worktree add $DevCheckout dev
@@ -80,6 +87,18 @@ try {
   }
   else {
     Write-Host "   Dev worktree already exists at $DevCheckout." -ForegroundColor DarkYellow
+  }
+
+  # Agent worktrees may live on an external drive (e.g. D:\Github_Projects\worktrees\Monorepo_ModMe)
+  $AgentWorktreesRoot = Resolve-AgentWorktreesRoot -MainRepoRoot $ProjectMainDir -WorktreesRoot $WorktreesRoot
+  if ($AgentWorktreesRoot -ne [System.IO.Path]::GetFullPath($LegacyWorktreesRoot)) {
+    if (!(Test-Path $AgentWorktreesRoot)) {
+      Write-Host "   Creating agent worktrees root at $AgentWorktreesRoot..." -ForegroundColor Yellow
+      New-Item -ItemType Directory -Force -Path $AgentWorktreesRoot | Out-Null
+    }
+    else {
+      Write-Host "   Agent worktrees root: $AgentWorktreesRoot" -ForegroundColor Gray
+    }
   }
 
   if ($IncludeStaging) {

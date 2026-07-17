@@ -1,6 +1,7 @@
 # Secrets and local env
 .env
 .env.*
+.envrc.local
 !.env.example
 .orca/
 .orca.json
@@ -133,3 +134,6 @@ quality/
 .beads/proxieddb/
 
 /generated/prisma
+# Local MCP build checkout (do not nest as submodule by accident)
+.tools/skillsh-mcp/
+

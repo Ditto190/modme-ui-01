@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "Clip GitHub Copilot App repository configuration pages into inbox research notes.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_architect_{{title|safe_name}}",
-	"path": "inbox",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
 	"triggers": [
 		"/^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/blob\\/[^/]+\\/\\.github\\/github-app\\.yml/"
 	],

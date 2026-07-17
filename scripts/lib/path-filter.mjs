@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Path filters mirroring the CI workflow and the canonical stack manifest.
  */

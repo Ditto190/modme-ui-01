@@ -4,39 +4,49 @@ Why bad clips happened: HTML Obsidian Help pages matched **Code Snippet** (`Soft
 
 ## Rule of thumb
 
-| URL shape | Template | Body | schema |
-| --------- | -------- | ---- | ------ |
-| `obsidian.md/help/*`, `help.obsidian.md/*`, `publish.obsidian.md/*` | **Obsidian Help** | Defuddle `{{content}}` | TechArticle |
-| GitHub `blob` / `raw` / gist / Cubic PR | **Code Snippet** | textarea / selection fence | SoftwareSourceCode |
-| `docs.*`, ReadTheDocs, GitBook, Expo docs | **Docs Site** | Defuddle | TechArticle |
-| Article schema | **Article / Landing** | Defuddle | Article |
-| Anything else | **Generic Link** (last) | Defuddle | — |
+| URL shape                                                           | Template                | Body                       | schema             |
+| ------------------------------------------------------------------- | ----------------------- | -------------------------- | ------------------ |
+| `obsidian.md/help/*`, `help.obsidian.md/*`, `publish.obsidian.md/*` | **Obsidian Help**       | Defuddle `{{content}}`     | TechArticle        |
+| GitHub `blob` / `raw` / gist / Cubic PR                             | **Code Snippet**        | textarea / selection fence | SoftwareSourceCode |
+| `docs.*`, ReadTheDocs, GitBook, Expo docs                           | **Docs Site**           | Defuddle                   | TechArticle        |
+| Article schema                                                      | **Article / Landing**   | Defuddle                   | Article            |
+| Anything else                                                       | **Generic Link** (last) | Defuddle                   | —                  |
 
 Never use Code Snippet for HTML help pages. Never use Defuddle `{{content}}` as the primary source for GitHub blobs.
 
 ## Clipper path (ModMe-Vault)
 
-All ModMe (and kepano) Clipper JSON templates use vault-relative:
+ModMe Clipper templates write under URL-derived folders (sidecar-relative):
 
 ```json
-"path": "inbox"
+"path": "inbox/web-clipper/{parent}"
 ```
 
-Deprecated: `GenerativeUI_monorepo/docs/inbox` (monorepo-root vault). Sidecar junction `inbox/` → real monorepo inbox.
+| URL shape                  | `path`                       | Leaf in `noteNameFormat`      |
+| -------------------------- | ---------------------------- | ----------------------------- |
+| GitHub blob / repo / issue | `inbox/web-clipper/{repo}`   | `README`, `AGENTS`, file stem |
+| Obsidian Help              | `inbox/web-clipper/obsidian` | last URL segment              |
+| Docs / article / generic   | `inbox/web-clipper/{domain}` | title `safe_name`             |
+
+Filename keeps inbox-contract prefix: `YYYY-MM-DDTHH-mm-ss_{type}_{role}_{leaf}.md`.
+
+Kepano pack still uses flat `"path": "inbox"` until re-imported. Run `yarn clipper:organize` to nest misfiled clips from `source:` frontmatter.
+
+Sidecar junction `inbox/` → `GenerativeUI_monorepo/docs/inbox/`. Deprecated monorepo-root path: `GenerativeUI_monorepo/docs/inbox` in template JSON.
 
 ## Trigger order (drag in Clipper UI)
 
-1. GitHub Issue / PR  
-2. Code Snippet  
-3. **Obsidian Help** ← new  
-4. GitHub Repo  
-5. Docs Site  
-6. Article / Landing  
-7. AI Chat  
-8. Topic templates  
-9. Kepano site pack  
-10. Defuddle / Interpreter probes (manual)  
-11. Generic Link last  
+1. GitHub Issue / PR
+2. Code Snippet
+3. **Obsidian Help** ← new
+4. GitHub Repo
+5. Docs Site
+6. Article / Landing
+7. AI Chat
+8. Topic templates
+9. Kepano site pack
+10. Defuddle / Interpreter probes (manual)
+11. Generic Link last
 
 ## UID
 
@@ -50,9 +60,10 @@ Filename stays inbox-contract; `uid` enables Zettel-style linking and Advanced U
 
 ## Verify
 
-1. Re-import `clipper/modme-inbox-obsidian-help.json`.
-2. Clip `https://obsidian.md/help/import/zettelkasten` → research + TechArticle + content body.
-3. Clip a GitHub `.py` blob → snippet + fenced python (Code Emitter runnable).
+1. Re-import ModMe Clipper JSONs from vault `clipper/`.
+2. Clip `https://obsidian.md/help/import/zettelkasten` → `inbox/web-clipper/obsidian/…_zettelkasten.md` (research + TechArticle).
+3. Clip a GitHub `.py` blob → `inbox/web-clipper/{repo}/…_snippet_…` + fenced python.
+4. Optional: `yarn clipper:organize --dry-run` then without `--dry-run` for flat leftovers.
 
 ## Files
 

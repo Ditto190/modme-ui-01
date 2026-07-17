@@ -34,8 +34,12 @@ C:\Users\dylan\ModMe-Vault\          ← Open THIS in Obsidian (fast, ~1-2s)
 ### Automated
 
 ```powershell
-# From repo root:
+# From repo root (preferred — yarn-free):
 .\scripts\setup-modme-obsidian-sidecar.ps1 -OpenVault
+# or: yarn obsidian:sidecar:setup -OpenVault
+# If yarn says monorepo_modme-root missing from lockfile: restore Berry lockfile
+#   git checkout HEAD -- yarn.lock
+# (do not run classic Yarn — it rewrites yarn.lock to v1)
 ```
 
 This script:

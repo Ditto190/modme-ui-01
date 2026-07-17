@@ -17,11 +17,14 @@ One bootstrap layer — `scripts/lib/modme-env-bootstrap.ps1` — feeds all entr
 |-------|---------|------|
 | Terminal open | *(automatic)* ModMe Dev profile | New integrated terminal |
 | Session / worktree start | `yarn session:start` | After clone, worktree setup |
+| Launch health (advisory) | `yarn launch:health` | lean-ctx + worktree doctor + verify |
+| Full launch (advisory) | `yarn launch:full` | health + KM verify + session-start |
+| KM Phase 0 gate | `yarn km:verify` | beads-hooks + km-pipeline vitest + dry-runs |
 | Pre-launch (debug/tasks) | `yarn env:runtime` | Writes `.vscode/.env.runtime` |
 | Verify | `yarn session:verify` | Smoke test env wiring |
 | Session end | `yarn session:end` | Marker; add `-Yes -CommitMessage` for git |
 
-Manifest: `scripts/modme-session.manifest.json`
+Manifest: `scripts/modme-session.manifest.json` · Dispatcher: `scripts/modme-launch.ps1`
 
 ## Pre-flight quality pipeline
 
@@ -95,9 +98,17 @@ Integrated from [araguaci/cursor-skills](https://github.com/araguaci/cursor-skil
 ```powershell
 yarn verify:forge
 yarn worktree:doctor
+yarn launch:health      # advisory env + doctor + session verify
+yarn km:verify            # Phase 0 KM gate (BEADS_DISABLED=1)
 # WSL only:
 # gh aw compile --validate
 ```
+
+## Session start
+
+On ModMe session start, `.cursor/hooks/modme-session-launch.ps1` runs `modme-launch.ps1 -Mode auto` (advisory, idempotent). PowerShell profile also calls auto mode once per terminal when `MODME_LAUNCH_DONE` is unset.
+
+Manual: `yarn launch:full` or `yarn session:start`.
 
 Sign in: http://localhost:3100/sign-in (`dev@modme.local` / `devpassword`)
 

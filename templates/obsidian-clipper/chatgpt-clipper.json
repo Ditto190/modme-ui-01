@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "Clip shared/chat threads from ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot, and Cursor into inbox notes. Based on kepano/chatgpt-clipper; agent field inferred from domain.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
-	"path": "inbox",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
 	"triggers": [
 		"https://chatgpt.com/share",
 		"https://chatgpt.com/c",

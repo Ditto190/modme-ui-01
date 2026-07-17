@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "Clip a GitHub issue or pull request into an inbox research note (inbox-contract.v1).",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
-	"path": "inbox",
+	"path": "inbox/web-clipper/{{meta:octolytics-dimension-repository_nwo|split:\"/\"|last|safe_name ?? url|split:\"/\"|slice:3,4|first|safe_name}}",
 	"triggers": [
 		"/^https:\\/\\/github\\.com\\/.+\\/(issues|pull)\\/\\d+/"
 	],

@@ -1,7 +1,8 @@
 # Obsidian Sidecar Vault – Quick Start
 
 ```powershell
-yarn obsidian:sidecar:setup -OpenVault
+.\scripts\setup-modme-obsidian-sidecar.ps1 -OpenVault
+# or: yarn obsidian:sidecar:setup -OpenVault
 ```
 
 - `C:\Users\dylan\ModMe-Vault` — lean Obsidian vault (opens automatically)
@@ -20,10 +21,10 @@ yarn obsidian:sidecar:setup -OpenVault
 
 1. Obsidian opens: `C:\Users\dylan\ModMe-Vault/`
 2. Clip a page with Chrome Clipper
-3. Note lands in vault `inbox/` folder
+3. Note lands under vault `inbox/web-clipper/…` (ModMe Clipper templates)
 4. Junction redirects to: `Monorepo_ModMe\GenerativeUI_monorepo\docs\inbox\`
 5. Git (from monorepo root) commits it
-6. Run: `yarn intake:orchestrate`
+6. Run: `yarn inbox:audit` then `yarn intake:orchestrate` (or `node scripts/inbox-audit.mjs --lens all` if yarn is broken)
 
 ## Manual Obsidian Setup (after setup script)
 
@@ -51,8 +52,10 @@ yarn obsidian:sidecar:setup -OpenVault
 ## Commands
 
 ```powershell
+.\scripts\setup-modme-obsidian-sidecar.ps1 -OpenVault
 yarn obsidian:sidecar:setup
 yarn obsidian:sidecar:open
+yarn inbox:audit
 yarn intake:orchestrate
 ```
 

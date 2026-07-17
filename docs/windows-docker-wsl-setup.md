@@ -4,14 +4,14 @@ Resource-tuned guide for **8 GB RAM** machines running ModMe with Docker Desktop
 
 ## Quick commands
 
-| Task | Command |
-|------|---------|
-| Audit WSL/Docker | `yarn docker:doctor` |
-| Apply Ubuntu + systemd | `yarn wsl:ubuntu:setup` |
-| Docker disk cap (10 GB) | `yarn docker:configure` |
-| Shell tests (no bare bash) | `yarn test:shell` |
-| Agent terminal TUI | `yarn agent:tui` (mprocs) |
-| Prune Docker | `yarn docker:prune` |
+| Task                       | Command                   |
+| -------------------------- | ------------------------- |
+| Audit WSL/Docker           | `yarn docker:doctor`      |
+| Apply Ubuntu + systemd     | `yarn wsl:ubuntu:setup`   |
+| Docker disk cap (10 GB)    | `yarn docker:configure`   |
+| Shell tests (no bare bash) | `yarn test:shell`         |
+| Agent terminal TUI         | `yarn agent:tui` (mprocs) |
+| Prune Docker               | `yarn docker:prune`       |
 
 ## Architecture
 
@@ -42,12 +42,12 @@ flowchart LR
 
 We map [microvm.nix resource options](https://microvm-nix.github.io/microvm.nix/options.html) to Windows controls (intent only — NixOS microVM is not used on Windows):
 
-| microvm.nix | Windows equivalent |
-|-------------|-------------------|
-| `microvm.hypervisor` | Docker **WSL2 engine** |
-| `microvm.vcpu` | `.wslconfig` `processors` |
-| `microvm.mem` | `.wslconfig` `memory` |
-| `microvm.volumes` | `docker_data.vhdx` (~10 GB budget) |
+| microvm.nix            | Windows equivalent                     |
+| ---------------------- | -------------------------------------- |
+| `microvm.hypervisor`   | Docker **WSL2 engine**                 |
+| `microvm.vcpu`         | `.wslconfig` `processors`              |
+| `microvm.mem`          | `.wslconfig` `memory`                  |
+| `microvm.volumes`      | `docker_data.vhdx` (~10 GB budget)     |
 | `microvm.forwardPorts` | Worktree ports + devcontainer forwards |
 
 ## `.wslconfig` (8 GB RAM template)
@@ -70,10 +70,10 @@ Apply: `wsl --shutdown`, wait 8s, reopen terminals.
 ### Other RAM tiers
 
 | System RAM | `memory` | `processors` |
-|------------|----------|--------------|
-| 8 GB | 4GB | 2 |
-| 16 GB | 8GB | 4 |
-| 32 GB | 16GB | 6 |
+| ---------- | -------- | ------------ |
+| 8 GB       | 4GB      | 2            |
+| 16 GB      | 8GB      | 4            |
+| 32 GB      | 16GB     | 6            |
 
 Docker + Ubuntu share the pool. Stop Docker when not using containers.
 
@@ -141,41 +141,41 @@ Windows PowerShell does not use direnv — use `yarn session:start` / `yarn laun
 
 ## Agent terminal orchestration
 
-| Tool | When | Command |
-|------|------|---------|
-| **mprocs** | Primary on Windows | `yarn agent:tui` |
-| **tmux** | Optional via WSL | `yarn worktree:tmux:ps` |
-| Worktree doctor | Pre-flight | `yarn worktree:doctor` |
-| Docker/WSL doctor | Resource audit | `yarn worktree:doctor -- -CheckDockerWsl` |
+| Tool              | When               | Command                                   |
+| ----------------- | ------------------ | ----------------------------------------- |
+| **mprocs**        | Primary on Windows | `yarn agent:tui`                          |
+| **tmux**          | Optional via WSL   | `yarn worktree:tmux:ps`                   |
+| Worktree doctor   | Pre-flight         | `yarn worktree:doctor`                    |
+| Docker/WSL doctor | Resource audit     | `yarn worktree:doctor -- -CheckDockerWsl` |
 
 See [agent-terminal-orchestration.md](agent-terminal-orchestration.md) and [multi-agent-worktrees.md](multi-agent-worktrees.md).
 
 ## Daily workflow (8 GB)
 
-| Task | Docker? |
-|------|---------|
-| `yarn dev:forge:core` | No |
-| `yarn agent:tui` | No |
-| `yarn test:shell` | No |
-| `yarn km:verify` | No |
-| Devcontainer | Yes — close other heavy apps |
-| Cloud Supabase | No local DB Docker |
+| Task                  | Docker?                      |
+| --------------------- | ---------------------------- |
+| `yarn dev:forge:core` | No                           |
+| `yarn agent:tui`      | No                           |
+| `yarn test:shell`     | No                           |
+| `yarn km:verify`      | No                           |
+| Devcontainer          | Yes — close other heavy apps |
+| Cloud Supabase        | No local DB Docker           |
 
 ## Scripts reference
 
-| Script | Purpose |
-|--------|---------|
-| [`scripts/docker-wsl-doctor.ps1`](../scripts/docker-wsl-doctor.ps1) | Audit WSL/Docker/VHDX |
+| Script                                                                                      | Purpose                    |
+| ------------------------------------------------------------------------------------------- | -------------------------- |
+| [`scripts/docker-wsl-doctor.ps1`](../scripts/docker-wsl-doctor.ps1)                         | Audit WSL/Docker/VHDX      |
 | [`scripts/configure-docker-wsl-settings.ps1`](../scripts/configure-docker-wsl-settings.ps1) | Disk cap + WSL engine flag |
-| [`scripts/setup-ubuntu-wsl.ps1`](../scripts/setup-ubuntu-wsl.ps1) | Ubuntu + systemd |
-| [`scripts/run-shell-tests.ps1`](../scripts/run-shell-tests.ps1) | devbox/Git Bash/WSL bats |
-| [`scripts/lib/wsl-distros.ps1`](../scripts/lib/wsl-distros.ps1) | UTF-16-safe distro parsing |
+| [`scripts/setup-ubuntu-wsl.ps1`](../scripts/setup-ubuntu-wsl.ps1)                           | Ubuntu + systemd           |
+| [`scripts/run-shell-tests.ps1`](../scripts/run-shell-tests.ps1)                             | devbox/Git Bash/WSL bats   |
+| [`scripts/lib/wsl-distros.ps1`](../scripts/lib/wsl-distros.ps1)                             | UTF-16-safe distro parsing |
 
 ## Troubleshooting
 
-| Symptom | Fix |
-|---------|-----|
+| Symptom                     | Fix                                                                    |
+| --------------------------- | ---------------------------------------------------------------------- |
 | `execvpe(/bin/bash) failed` | Use `yarn test:shell` (not raw `bats`); install Git Bash or Ubuntu WSL |
-| `VmmemWSL` high RAM | `wsl --shutdown`; quit Docker; check `.wslconfig` |
-| Docker pipe not found | Start Docker Desktop after `wsl --shutdown` |
-| Unknown `.wslconfig` key | Remove unsupported keys (e.g. older WSL without `pageReporting`) |
+| `VmmemWSL` high RAM         | `wsl --shutdown`; quit Docker; check `.wslconfig`                      |
+| Docker pipe not found       | Start Docker Desktop after `wsl --shutdown`                            |
+| Unknown `.wslconfig` key    | Remove unsupported keys (e.g. older WSL without `pageReporting`)       |

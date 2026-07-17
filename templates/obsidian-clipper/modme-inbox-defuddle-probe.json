@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "Diagnostic template: Defuddle-backed {{content}} + metadata vs truncated fullHtml. Manual select only (no triggers). No Interpreter prompts.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
-	"path": "inbox",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
 	"triggers": [],
 	"properties": [
 		{

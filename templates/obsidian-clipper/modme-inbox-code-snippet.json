@@ -3,8 +3,8 @@
 	"name": "ModMe Inbox — Code Snippet",
 	"behavior": "create",
 	"description": "AST-ready SoftwareSourceCode envelope for GitHub blobs/raw/gists and Cubic PR file views. Captures source from GitHub textarea (#read-only-cursor-text-area), not Defuddle {{content}}. True AST indexing stays in code-chunk.v1 / code-index.",
-	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_snippet_researcher_{{title|safe_name}}",
-	"path": "inbox",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_snippet_researcher_{{url|split:\"/\"|last|split:\"?\"|first|split:\".\"|first|safe_name}}",
+	"path": "inbox/web-clipper/{{meta:octolytics-dimension-repository_nwo|split:\"/\"|last|safe_name ?? url|split:\"/\"|slice:3,4|first|safe_name ?? domain|safe_name}}",
 	"triggers": [
 		"/^https:\\/\\/github\\.com\\/.+\\/blob\\//",
 		"/^https:\\/\\/raw\\.githubusercontent\\.com\\//",

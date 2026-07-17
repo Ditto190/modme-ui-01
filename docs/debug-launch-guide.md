@@ -6,6 +6,7 @@ How to use VS Code / Cursor debug configs in **Monorepo_ModMe**, keep them in sy
 |----------|------------|
 | New contributor | Run `/init` in Cursor chat |
 | Agent session | `AGENTS.md` → this guide → `.vscode/launch.json` |
+| Windows Docker/WSL | [`windows-docker-wsl-setup.md`](windows-docker-wsl-setup.md) |
 | CI maintainer | `scripts/validate-launch-json.mjs`, `.github/workflows/launch-json-check.yml` |
 
 ---
@@ -96,6 +97,18 @@ poetry install
 - Root `.env` is used by Agent Server (`envFile` in launch.json).
 - Reference **variable names** in docs only (`OPENAI_API_KEY`, `PORT`, `HOST`, `CORS_ORIGINS`).
 - Never commit secrets.
+
+### Launch health (advisory)
+
+Before debugging, optional env smoke:
+
+```powershell
+yarn launch:health    # lean-ctx + worktree doctor + session verify
+yarn session:verify     # env bootstrap assert only
+yarn env:runtime        # refresh .vscode/.env.runtime for envFile
+```
+
+Devcontainer `postStartCommand` runs `yarn launch:health`. See `.cursor/commands/devcontainer-setup.md`.
 
 ### Extensions
 

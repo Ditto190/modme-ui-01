@@ -140,7 +140,7 @@ async function ingestInbox() {
         const fileBuffer = readFileSync(filePath);
         const { error: storageError } = await supabase.storage
           .from("inbox-files")
-          .upload(`${contentHash}/${filename}`, fileBuffer, { upsert: true });
+          .upload(`${contentHash}/${basename(filename)}`, fileBuffer, { upsert: true });
         if (storageError) {
           console.warn(`  Storage warning for ${filename}: ${storageError.message}`);
         }

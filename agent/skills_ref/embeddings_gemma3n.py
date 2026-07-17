@@ -1,8 +1,7 @@
 """Python bridge to Node.js Gemma3N embeddings.
-
+# TODO: @Copilot - UPDATE MODEL TO USE GEMMA3 OR 4 OR [localLLM][https://huggingface.co/yuxinlu1/gemma-4-12B-agentic-fable5-composer2.5-v2-3.5x-tau2-GGUF]
 Replaces SHA256-based embeddings with real semantic embeddings
 using transformers.js via subprocess calls to Node.js.
-
 Usage:
   from agent.skills_ref.embeddings_gemma3n import embed_text_gemma3n
   

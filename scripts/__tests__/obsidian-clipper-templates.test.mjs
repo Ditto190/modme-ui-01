@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   applyClipperUidAndPath,
   DEPRECATED_INBOX_PATH,
+  isVaultInboxPath,
   listClipperJsonFiles,
   UID_PROP,
   VAULT_INBOX_PATH,
@@ -62,10 +63,10 @@ describe("obsidian clipper pack invariants", () => {
     ).toBe(true);
   });
 
-  it("every template uses vault path inbox and has uid property", () => {
+  it("every template uses vault path inbox (or inbox/web-clipper/…) and has uid property", () => {
     for (const file of files) {
       const json = JSON.parse(fs.readFileSync(file, "utf8"));
-      expect(json.path, file).toBe(VAULT_INBOX_PATH);
+      expect(isVaultInboxPath(json.path), `${file} path=${json.path}`).toBe(true);
       expect(json.path, file).not.toBe(DEPRECATED_INBOX_PATH);
       expect(Array.isArray(json.properties), file).toBe(true);
       expect(

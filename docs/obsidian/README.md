@@ -4,25 +4,33 @@ Lean Obsidian tooling for ModMe: unique-note UIDs, Clipper source matching, Adva
 
 ## Quick Start
 
+Prefer the script directly if `yarn` fails (e.g. corrupted classic `yarn.lock` on a dirty tree):
+
 ```powershell
+.\scripts\setup-modme-obsidian-sidecar.ps1 -OpenVault
+# or, after a healthy Berry lockfile:
 yarn obsidian:sidecar:setup -OpenVault
 ```
+
+If yarn reports `monorepo_modme-root@workspace:.` missing from the lockfile, restore Berry lockfile (`git checkout HEAD -- yarn.lock`) — do not run classic Yarn against this repo.
 
 1. Open vault `C:\Users\dylan\ModMe-Vault` (sidecar — not the monorepo root).
 2. Install community plugins: **Advanced URI**, **Code Emitter** (see [Vault Plugin Policy](../adam/Vault%20Plugin%20Policy.md)).
 3. Core plugins: **Unique note creator** → Template file location = `Templates/tpl-unique-note`.
-4. Re-import Clipper JSON from vault `clipper/` (junction → `templates/obsidian-clipper/`). Prefer **Obsidian Help** above generic Docs for help pages.
+4. Re-import Clipper JSON from vault `clipper/` (junction → `templates/obsidian-clipper/`). Prefer **Obsidian Help** above generic Docs for help pages. ModMe templates write under vault-relative `inbox/web-clipper/…` (junction → monorepo inbox).
 5. Clip `https://obsidian.md/help/import/zettelkasten` — expect `type: research`, Defuddle body, `uid` set.
 
 ## Features
 
-| Feature | Doc |
-| ------- | --- |
-| Unique note / Zettelkasten UID | [unique-notes.md](unique-notes.md) |
-| Clipper HTML vs code matching | [clipper-source-matching.md](clipper-source-matching.md) |
-| Advanced URI cookbook | [advanced-uri-cookbook.md](advanced-uri-cookbook.md) |
-| Code Emitter (py/ts/js local) | [code-emitter.md](code-emitter.md) |
-| Sidecar architecture | [obsidian-sidecar-setup.md](../obsidian-sidecar-setup.md) |
+| Feature                                | Doc                                                                                |
+| -------------------------------------- | ---------------------------------------------------------------------------------- |
+| Unique note / Zettelkasten UID         | [unique-notes.md](unique-notes.md)                                                 |
+| Clipper HTML vs code matching          | [clipper-source-matching.md](clipper-source-matching.md)                           |
+| URL hierarchy (`web-clipper/{parent}`) | [clipper-source-matching.md](clipper-source-matching.md) · `yarn clipper:organize` |
+| Obsidian KB (Firecrawl phase 1)        | [kb/\_index.md](kb/_index.md)                                                      |
+| Advanced URI cookbook                  | [advanced-uri-cookbook.md](advanced-uri-cookbook.md)                               |
+| Code Emitter (py/ts/js local)          | [code-emitter.md](code-emitter.md)                                                 |
+| Sidecar architecture                   | [obsidian-sidecar-setup.md](../obsidian-sidecar-setup.md)                          |
 
 ## Architecture (Sidecar)
 
@@ -38,12 +46,12 @@ Clipper / Unique note / Advanced URI
 
 ## Configuration
 
-| Setting | Value |
-| ------- | ----- |
-| Vault name (Advanced URI) | `ModMe-Vault` |
-| Clipper folder path | `inbox` |
-| Unique note template | `Templates/tpl-unique-note` |
-| Code sandbox template | `Templates/tpl-code-sandbox` |
+| Setting                   | Value                                                |
+| ------------------------- | ---------------------------------------------------- |
+| Vault name (Advanced URI) | `ModMe-Vault`                                        |
+| Clipper folder path       | `inbox` (templates use `inbox/web-clipper/{parent}`) |
+| Unique note template      | `Templates/tpl-unique-note`                          |
+| Code sandbox template     | `Templates/tpl-code-sandbox`                         |
 
 ## Offline scrapes
 

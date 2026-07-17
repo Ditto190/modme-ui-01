@@ -1,0 +1,60 @@
+filters:
+  or:
+    - file.hasTag("bead")
+    - file.hasTag("adr")
+    - file.hasTag("decision")
+    - file.hasTag("inbox")
+    - file.inFolder("docs/adam")
+properties:
+  status:
+    displayName: Status
+  priority:
+    displayName: Priority
+  type:
+    displayName: Type
+  updated:
+    displayName: Updated
+  file.mtime:
+    displayName: Modified
+views:
+  - type: table
+    name: Open Beads
+    filters:
+      and:
+        - file.hasTag("bead")
+        - status != "closed"
+    order:
+      - priority
+      - file.name
+      - status
+      - updated
+    limit: 25
+  - type: table
+    name: ADRs and Decisions
+    filters:
+      or:
+        - file.hasTag("adr")
+        - file.hasTag("decision")
+    order:
+      - status
+      - file.mtime
+    limit: 30
+  - type: table
+    name: Inbox Review 14d
+    filters:
+      and:
+        - file.inFolder("inbox")
+        - file.ext == "md"
+        - file.mtime > now() - "14 days"
+    order:
+      - file.mtime
+    limit: 40
+  - type: table
+    name: ADAM Hubs
+    filters:
+      and:
+        - file.inFolder("docs/adam")
+        - file.hasTag("adam")
+    order:
+      - file.name
+    limit: 50

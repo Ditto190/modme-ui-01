@@ -196,6 +196,43 @@ if ($Fix) {
     { "name": "agent-skills", "path": ".agents/skills" }
   ],
   "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/node_modules": true,
+      "**/.next": true,
+      "**/out": true,
+      "**/__pycache__": true,
+      "**/.venv": true,
+      "**/venv": true,
+      "**/*.pyc": true,
+      "**/.vendor": true,
+      "**/.worktrees": true,
+      "**/.tools": true,
+      "**/UniversalWorkbench*": true,
+      "**/.turbo": true,
+      "**/coverage": true,
+      "**/.yarn/cache": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/.next": true,
+      "**/out": true,
+      "**/__pycache__": true,
+      "**/.venv": true,
+      "**/build": true,
+      "**/dist": true,
+      "**/.git": true,
+      "**/yarn.lock": true,
+      "**/pnpm-lock.yaml": true,
+      "**/.vendor": true,
+      "**/.worktrees": true,
+      "**/.tools": true,
+      "**/UniversalWorkbench*": true,
+      "**/.turbo": true,
+      "**/coverage": true,
+      "**/.yarn/cache": true
+    },
     "git.ignoreLimitWarning": true
   }
 }

@@ -15,29 +15,29 @@ Full inventory of template types for Project A.D.A.M / ModMe. Prefer existing pa
 
 Folder: `templates/obsidian-note-templates/` (vault: `Templates/` via sidecar junction).
 
-| #   | Type                         | File / status                     | Purpose                                 |
-| --- | ---------------------------- | --------------------------------- | --------------------------------------- |
-| 1   | Daily note                   | planned                           | Journal + focus beads                   |
-| 2   | Weekly review                | planned                           | Sphere progress, EI/mission reflection  |
-| 3   | Meeting                      | planned                           | Agenda, decisions, follow-ups           |
+| #   | Type                         | File / status                     | Purpose                                  |
+| --- | ---------------------------- | --------------------------------- | ---------------------------------------- |
+| 1   | Daily note                   | planned                           | Journal + focus beads                    |
+| 2   | Weekly review                | planned                           | Sphere progress, EI/mission reflection   |
+| 3   | Meeting                      | planned                           | Agenda, decisions, follow-ups            |
 | 4   | Literature / Zettel          | `tpl-unique-note.md`              | Unique note creator UID + claim/evidence |
-| 5   | MOC / Index                  | [[ADAM Index]] pattern            | Hub maps                                |
-| 6   | Person / Stakeholder         | planned                           | People context                          |
-| 7   | Concept                      | planned                           | Domain term                             |
-| 8   | Experiment log               | planned                           | Hypothesis / result                     |
-| 9   | Session handoff              | `tpl-session-handoff.md`          | Agent/session continuity                |
-| 10  | Runbook                      | planned                           | Ops procedures                          |
-| 11  | ADR                          | `tpl-adr.md`                      | Architecture decisions                  |
-| 12  | Bead / issue                 | `tpl-bead.md`                     | Vault mirror of `modme-*`               |
-| 13  | Inbox capture (manual)       | `tpl-inbox-capture.md`            | Contract-valid funnel note + `uid`      |
-| 14  | Agent brief                  | `tpl-agent-brief.md`              | Scoped agent task                       |
-| 15  | Architecture sketch          | planned                           | Pre-ADR diagram + options               |
-| 16  | Decision log (light)         | planned                           | Sub-ADR choice                          |
-| 17  | Retrospective               | planned                           | What worked / next                      |
-| 18  | Prompt / system-prompt draft | [[copilot-project-system-prompt]] | Copilot instructions                    |
-| 19  | Clipper QA / Defuddle probe  | planned note + clipper JSON       | Extraction diagnostics                  |
-| 20  | Conductor-style              | planned                           | product / tech-stack / workflow / track |
-| 21  | Code sandbox                 | `tpl-code-sandbox.md`             | Code Emitter local py/ts/js |
+| 5   | MOC / Index                  | `tpl-moc.md` + [[ADAM Index]]     | Hub maps + Bases embed                   |
+| 6   | Person / Stakeholder         | planned                           | People context                           |
+| 7   | Concept                      | planned                           | Domain term                              |
+| 8   | Experiment log               | planned                           | Hypothesis / result                      |
+| 9   | Session handoff              | `tpl-session-handoff.md`          | Agent/session continuity                 |
+| 10  | Runbook                      | planned                           | Ops procedures                           |
+| 11  | ADR                          | `tpl-adr.md`                      | Architecture decisions                   |
+| 12  | Bead / issue                 | `tpl-bead.md`                     | Vault mirror of `modme-*`                |
+| 13  | Inbox capture (manual)       | `tpl-inbox-capture.md`            | Contract-valid funnel note + `uid`       |
+| 14  | Agent brief                  | `tpl-agent-brief.md`              | Scoped agent task                        |
+| 15  | Architecture sketch          | planned                           | Pre-ADR diagram + options                |
+| 16  | Decision log (light)         | planned                           | Sub-ADR choice                           |
+| 17  | Retrospective                | planned                           | What worked / next                       |
+| 18  | Prompt / system-prompt draft | [[copilot-project-system-prompt]] | Copilot instructions                     |
+| 19  | Clipper QA / Defuddle probe  | planned note + clipper JSON       | Extraction diagnostics                   |
+| 20  | Conductor-style              | planned                           | product / tech-stack / workflow / track  |
+| 21  | Code sandbox                 | `tpl-code-sandbox.md`             | Code Emitter local py/ts/js              |
 
 ## B. Web Clipper JSON templates
 

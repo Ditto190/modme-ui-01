@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"description": "Fallback catch-all for arbitrary URLs and landing pages. Place last in Clipper template order. type=link.",
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_link_researcher_{{title|safe_name}}",
-	"path": "inbox",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
 	"triggers": [],
 	"properties": [
 		{

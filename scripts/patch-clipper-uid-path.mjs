@@ -11,7 +11,21 @@ export const UID_PROP = {
 };
 
 export const DEPRECATED_INBOX_PATH = "GenerativeUI_monorepo/docs/inbox";
+/** Vault-relative inbox root (ModMe-Vault junction). Nested Clipper paths stay under this. */
 export const VAULT_INBOX_PATH = "inbox";
+export const VAULT_WEB_CLIPPER_PATH_PREFIX = "inbox/web-clipper/";
+
+/**
+ * True when Clipper template path targets the ModMe-Vault inbox junction
+ * (flat `inbox` or nested `inbox/web-clipper/...`).
+ * @param {unknown} p
+ */
+export function isVaultInboxPath(p) {
+  if (typeof p !== "string" || !p.trim()) return false;
+  if (p === VAULT_INBOX_PATH) return true;
+  if (p === DEPRECATED_INBOX_PATH) return false;
+  return p === "inbox/web-clipper" || p.startsWith(VAULT_WEB_CLIPPER_PATH_PREFIX);
+}
 
 /**
  * @param {Record<string, unknown>} json

@@ -15,7 +15,7 @@ A comprehensive MCP (Model Context Protocol) server that provides Claude with pr
 
 - **Semantic search**: Natural language queries using local AI embeddings
 - **Vector similarity**: Find conceptually related entries, not just keyword matches
-- **Local AI processing**: Uses @xenova/transformers - no external API calls required
+- **Local AI processing**: Uses @xenova/transformers - no external API call required # TODO: @Copilot as we update this method, the embedding model will likely be embedding gemma3 or 4 or [localLLM][https://huggingface.co/yuxinlu1/gemma-4-12B-agentic-fable5-composer2.5-v2-3.5x-tau2-GGUF]
 - **Automatic indexing**: Embeddings generated for all entries on startup and ongoing
 
 ### Privacy & Performance
@@ -62,7 +62,7 @@ The server provides comprehensive journaling and search capabilities:
 Multi-section private journaling with these optional categories:
 
 - **feelings**: Private emotional processing space
-- **project_notes**: Technical insights specific to current project  
+- **project_notes**: Technical insights specific to current project
 - **user_context**: Notes about collaborating with humans
 - **technical_insights**: General software engineering learnings
 - **world_knowledge**: Domain knowledge and interesting discoveries
@@ -118,7 +118,7 @@ Each markdown file contains YAML frontmatter and structured sections:
 
 ```markdown
 ---
-title: "2:30:45 PM - May 31, 2025"
+title: '2:30:45 PM - May 31, 2025'
 date: 2025-05-31T14:30:45.123Z
 timestamp: 1717160645123
 ---

@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "mocs": [
+    {
+      "id": "obsidian",
+      "title": "MOC Obsidian",
+      "tags": ["adam", "moc", "obsidian"],
+      "folders": ["inbox/web-clipper/obsidian", "docs/obsidian/kb"],
+      "tagAny": ["obsidian", "zettelkasten", "clipper"],
+      "hubLinks": [
+        "Vault Plugin Policy",
+        "Query Tool Guide",
+        "Zettelkasten Workflow",
+        "Inbox Capture Protocol",
+        "clipper-source-matching"
+      ]
+    },
+    {
+      "id": "clipper",
+      "title": "MOC Clipper",
+      "tags": ["adam", "moc", "clipper"],
+      "folders": ["inbox/web-clipper"],
+      "tagAny": ["clipper"],
+      "hubLinks": ["Inbox Capture Protocol", "MOC Obsidian"]
+    },
+    {
+      "id": "zettelkasten",
+      "title": "MOC Zettelkasten",
+      "tags": ["adam", "moc", "zettelkasten"],
+      "folders": ["docs/adam"],
+      "tagAny": ["zettelkasten", "uid"],
+      "hubLinks": ["Zettelkasten Workflow", "unique-notes", "MOC Obsidian"]
+    }
+  ]
+}

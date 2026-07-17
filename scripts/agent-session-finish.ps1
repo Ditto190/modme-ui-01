@@ -44,7 +44,8 @@ if (-not $SessionId -and $env:AGENT_SESSION_ENVELOPE -and (Test-Path $env:AGENT_
     $envData = Get-Content $env:AGENT_SESSION_ENVELOPE -Raw | ConvertFrom-Json
     $SessionId = $envData.session_id
     if (-not $BeadsIssueId) { $BeadsIssueId = $envData.beads_issue }
-  } catch { }
+  }
+  catch { }
 }
 
 # agenttrace (advisory)
@@ -100,7 +101,7 @@ if ($VerifyStack) {
     $errLog = Join-Path $RepoRoot 'logs/agent-orchestrator/errors.jsonl'
     New-Item -ItemType Directory -Force -Path (Split-Path $errLog) | Out-Null
     @{ at = (Get-Date).ToUniversalTime().ToString('o'); level = 'error'; event = 'verify_stack_failed'; session_id = $SessionId } |
-      ConvertTo-Json -Compress | Add-Content -Path $errLog -Encoding utf8
+    ConvertTo-Json -Compress | Add-Content -Path $errLog -Encoding utf8
     exit $LASTEXITCODE
   }
 }
@@ -111,7 +112,8 @@ if ($SessionId) {
 }
 
 if ($BeadsIssueId) {
-  npx --yes @beads/bd update $BeadsIssueId --status closed --comment $CloseReason 2>&1 | Out-Host
+  $beadsCli = Join-Path $ScriptDir 'beads-cli.mjs'
+  node $beadsCli session-finish --issue $BeadsIssueId --reason $CloseReason 2>&1 | Out-Host
 }
 
 # lean-ctx diary marker
@@ -119,21 +121,23 @@ $markerDir = Join-Path $RepoRoot '.cursor/hooks/state'
 New-Item -ItemType Directory -Force -Path $markerDir | Out-Null
 $marker = Join-Path $markerDir 'lean-ctx-session-markers.jsonl'
 @{ at = (Get-Date).ToUniversalTime().ToString('o'); event = 'agent-session-finish'; session_id = $SessionId; reason = $CloseReason } |
-  ConvertTo-Json -Compress | Add-Content -Path $marker -Encoding utf8
+ConvertTo-Json -Compress | Add-Content -Path $marker -Encoding utf8
 
 if ($SessionId -and $env:AGENT_SESSION_ENVELOPE -and (Test-Path $env:AGENT_SESSION_ENVELOPE)) {
   try {
     $envObj = Get-Content $env:AGENT_SESSION_ENVELOPE -Raw | ConvertFrom-Json
     $envObj | Add-Member -NotePropertyName finished_at -NotePropertyValue (Get-Date).ToUniversalTime().ToString('o') -Force
     $envObj | ConvertTo-Json -Depth 5 | Set-Content -Path $env:AGENT_SESSION_ENVELOPE -Encoding utf8
-  } catch { }
+  }
+  catch { }
 }
 
 if (-not $SkipFinish) {
   $finishScript = Join-Path $ScriptDir 'vibe-session-finish.ps1'
   if ($FinishArgs.Count -gt 0) {
     & $finishScript @FinishArgs
-  } else {
+  }
+  else {
     & $finishScript
   }
   exit $LASTEXITCODE

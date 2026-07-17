@@ -4,6 +4,11 @@
     "addons": {
       "description": "Addon ecosystem security floor: install policy, signature requirement, per-addon capability sandbox (#863, P1). Global-only.",
       "keys": {
+        "allow_bootstrap": {
+          "type": "bool",
+          "default": true,
+          "description": "Allow `addon add` to install an addon's upstream package via a pinned manager (uv/pip/cargo/npm/brew/dotnet). Off = refuse bootstrap installs"
+        },
         "allowlist": {
           "type": "array",
           "default": [],
@@ -18,6 +23,11 @@
           "type": "bool",
           "default": false,
           "description": "Fail closed when an addon declares restricted [capabilities] but no OS sandbox launcher is available to enforce them"
+        },
+        "grammar_auto_fetch": {
+          "type": "bool",
+          "default": true,
+          "description": "Zero-config grammar-addon fetch (#690): download a SHA-256-pinned grammar dylib on first use of a covered extension. Off = regex-signature fallback only (strict egress/DLP posture)"
         },
         "metering": {
           "type": "bool",
@@ -218,7 +228,12 @@
         "default_model": {
           "type": "string?",
           "default": null,
-          "description": "Fallback pricing model for MCP-only IDEs whose real model lean-ctx cannot observe (Cursor, Copilot, Windsurf, ΓÇª). Unset ΓåÆ blended heuristic. Per-IDE overrides live in [cost.models]"
+          "description": "Fallback pricing model for MCP-only IDEs whose real model lean-ctx cannot observe (Cursor, Copilot, Windsurf, …). Unset → blended heuristic. Per-IDE overrides live in [cost.models]"
+        },
+        "prices": {
+          "type": "table?",
+          "default": [],
+          "description": "Operator price overrides per model, USD per million tokens: [cost.prices.\"<model>\"] with input_per_m / output_per_m / cache_write_per_m / cache_read_per_m. For negotiated enterprise rates (committed-use discounts, Azure PTU, zero-rated internal models); overrides embedded and live catalog rows, only a provider-measured bill beats it"
         }
       }
     },
@@ -255,12 +270,12 @@
         "dimensions": {
           "type": "integer",
           "default": null,
-          "description": "Declared embedding width for hf: custom models (fallback only ΓÇö the real width is probed from the ONNX graph at load time). Built-in models ignore this key."
+          "description": "Declared embedding width for hf: custom models (fallback only — the real width is probed from the ONNX graph at load time). Built-in models ignore this key."
         },
         "model": {
           "type": "string",
           "default": "minilm",
-          "description": "Local ONNX embedding model for ctx_semantic_search. One of: minilm (all-MiniLM-L6-v2, 384d, default), nomic (768d) ΓÇö or any HuggingFace repo with an ONNX export via hf:org/repo[@revision] (e.g. hf:jinaai/jina-embeddings-v2-base-code for code). Switching models re-indexes once on the next search.",
+          "description": "Local ONNX embedding model for ctx_semantic_search. One of: minilm (all-MiniLM-L6-v2, 384d, default), nomic (768d) — or any HuggingFace repo with an ONNX export via hf:org/repo[@revision] (e.g. hf:jinaai/jina-embeddings-v2-base-code for code). Switching models re-indexes once on the next search.",
           "env_override": "LEAN_CTX_EMBEDDING_MODEL"
         }
       }
@@ -286,7 +301,7 @@
         "last_auto_publish": {
           "type": "string?",
           "default": null,
-          "description": "Timestamp of the last automatic publish (written by lean-ctx for throttling ΓÇö not meant to be edited)"
+          "description": "Timestamp of the last automatic publish (written by lean-ctx for throttling — not meant to be edited)"
         },
         "leaderboard": {
           "type": "bool",
@@ -365,6 +380,31 @@
         }
       }
     },
+    "gateway_server.mcp_servers": {
+      "description": "Org-gateway MCP registry (array of tables: `[[gateway_server.mcp_servers]]`): reverse-proxied under /mcp/{id} with per-person keys, metered into mcp_events, tool definitions hash-tracked (observe stage, GL#91)",
+      "keys": {
+        "auth_env": {
+          "type": "string",
+          "default": "",
+          "description": "Env var holding the upstream credential the gateway injects as `Authorization: Bearer <env value>` (callers never see it)"
+        },
+        "enabled": {
+          "type": "bool",
+          "default": true,
+          "description": "Per-server switch (default true)"
+        },
+        "id": {
+          "type": "string",
+          "default": "",
+          "description": "Registry id; becomes the governed route `/mcp/{id}` on the proxy port (lowercase alnum/-/_)"
+        },
+        "url": {
+          "type": "string",
+          "default": "",
+          "description": "Upstream Streamable-HTTP endpoint (HTTPS; loopback HTTP ok; plain HTTP needs [proxy] allow_insecure_http_upstream)"
+        }
+      }
+    },
     "graph": {
       "description": "Code-graph settings, including traversal (co-access) edges learned from sessions",
       "keys": {
@@ -378,6 +418,26 @@
     "ide_paths": {
       "description": "Per-IDE allowed paths. Keys are agent names (cursor, codex, opencode, antigravity, etc.), values are arrays of paths to index for that agent",
       "keys": {}
+    },
+    "index": {
+      "description": "Index-time file filters: declare the retrieval corpus explicitly (BM25 + graph + semantic + watch share one filter layer, #735)",
+      "keys": {
+        "exclude": {
+          "type": "string[]",
+          "default": [],
+          "description": "Globs dropped from the index corpus (root-relative, forward slashes), e.g. [\"**/*.csv\", \"fixtures/**\"]. Wins over include. CLI --exclude appends per run. Excluded files produce no chunks, graph nodes, or embeddings."
+        },
+        "include": {
+          "type": "string[]",
+          "default": [],
+          "description": "When non-empty, ONLY matching files enter the index corpus, e.g. [\"**/*.rs\", \"**/*.ts\"]. Empty = no restriction. CLI --include replaces this set per run."
+        },
+        "respect_gitignore": {
+          "type": "bool",
+          "default": true,
+          "description": "Honor .gitignore / global gitignore / .git/info/exclude during index walks. false indexes ignored files too (the vendor-directory guard still applies). CLI override: --no-gitignore / --respect-gitignore."
+        }
+      }
     },
     "llm": {
       "description": "Optional LLM enhancement settings (query expansion, contradiction explanation). Deterministic fallback when disabled or unreachable.",
@@ -602,6 +662,18 @@
           "default": 0.3,
           "description": "Threshold below which facts are considered low-confidence"
         },
+        "reclaim_enabled": {
+          "type": "bool",
+          "default": true,
+          "description": "Master switch for the proactive capacity reclaim (#995). false trims only the overflow (escape hatch, no headroom); eviction stays lossless either way",
+          "env_override": "LEAN_CTX_LIFECYCLE_RECLAIM_ENABLED"
+        },
+        "reclaim_headroom_pct": {
+          "type": "f32",
+          "default": 0.25,
+          "description": "Proactive headroom on a capacity reclaim: settle a full store at 1 - this fraction (0.25 = 75%) instead of churning at the cap. Lossless — the reclaimed tail is archived and restorable",
+          "env_override": "LEAN_CTX_LIFECYCLE_RECLAIM_HEADROOM_PCT"
+        },
         "similarity_threshold": {
           "type": "f32",
           "default": 0.85,
@@ -638,6 +710,10 @@
           "description": "Minimum sequence length for procedure detection"
         }
       }
+    },
+    "model_context_windows": {
+      "description": "Per-model context-window overrides in tokens. Keys are model names (case-insensitive), values override every registry layer — use for models the bundled/local registry does not know yet. Bracketed window markers in the model name itself (e.g. `claude-opus-4-8[1m]`) are parsed automatically and need no entry here. Example: `[model_context_windows]\\n\"my-custom-model\" = 500000`",
+      "keys": {}
     },
     "providers": {
       "description": "External context providers (GitHub, GitLab, Jira, MCP bridges, etc.). Set tokens via env vars (GITHUB_TOKEN, GITLAB_TOKEN). MCP bridges connect external MCP servers as context sources.",
@@ -702,6 +778,12 @@
     "proxy": {
       "description": "Proxy upstream configuration for API routing",
       "keys": {
+        "allow_custom_upstream": {
+          "type": "bool",
+          "default": false,
+          "description": "Allow a custom (non-allowlisted) HTTPS upstream host, e.g. a corporate gateway in front of the provider API. Opt-in; default false. Unlike the env var, this config flag reaches the managed (service-spawned) proxy started by `proxy enable`/`restart` (#590)",
+          "env_override": "LEAN_CTX_ALLOW_CUSTOM_UPSTREAM"
+        },
         "allow_insecure_http_upstream": {
           "type": "bool",
           "default": false,
@@ -713,10 +795,16 @@
           "default": null,
           "description": "Custom upstream URL for Anthropic API proxy"
         },
-        "cache_aligner": {
+        "cache_align_relocate": {
           "type": "bool",
           "default": false,
-          "description": "Opt-in cache-aligner volatile-field telemetry (#940). When on, the proxy scans each unanchored Anthropic system prompt for volatile, cache-busting fields (ISO dates/datetimes, UUIDs, git SHAs) and reports how many it found on /status cache_safety (volatile_system_requests, volatile_fields_detected) - purely to quantify how much prompt-cache the client leaks. Measurement only: the request body is never mutated, so it is strictly cache-safe. The deterministic scan is the precursor to an opt-in tail-relocate. Default false",
+          "description": "Opt-in active cache-aligner relocate (#974). When on, the proxy rewrites an unanchored Anthropic system prompt into a stable block (volatile values - ISO dates/datetimes, UUIDs, git SHAs - replaced by constant placeholders) carrying the cache_control breakpoint, plus an uncached trailing block that re-states the relocated values. The cacheable prefix then stays byte-stable turn-to-turn and finally caches; only the small tail is reprocessed. Anthropic-only, Treatment-arm, gated on a client that anchored nothing and on Anthropic's minimum cacheable size. Deterministic (#498) and idempotent. The cache_aligner telemetry is the precursor that quantifies the saving. Default false",
+          "env_override": "LEAN_CTX_PROXY_CACHE_ALIGN_RELOCATE"
+        },
+        "cache_aligner": {
+          "type": "bool",
+          "default": true,
+          "description": "Cache-aligner volatile-field telemetry (#940), on by default. The proxy scans each unanchored Anthropic system prompt for volatile, cache-busting fields (ISO dates/datetimes, UUIDs, git SHAs) and reports how many it found on /status cache_safety (volatile_system_requests, volatile_fields_detected) - purely to quantify how much prompt-cache the client leaks. Measurement only: the request body is never mutated, so it is strictly cache-safe, which is why it ships on for every proxy (#986 premium defaults). The deterministic scan is the precursor to the opt-in tail-relocate below. Set false to opt out of the per-request scan. Default true",
           "env_override": "LEAN_CTX_PROXY_CACHE_ALIGNER"
         },
         "cache_breakpoint": {
@@ -725,10 +813,16 @@
           "description": "Opt-in active prompt-cache breakpoint injection for Anthropic (#939). When on and the client set no cache_control of its own, the proxy adds one cache_control: {type:ephemeral} marker to the system field so an otherwise-uncached, stable system prompt bills later turns at the cached rate (the win a raw API client leaves on the table). Anthropic-only: OpenAI/Gemini cache prefixes automatically and ignore the marker, so those paths stay byte-unchanged. Deterministic, never adds a second breakpoint, and skipped below Anthropic's minimum cacheable size. Default false",
           "env_override": "LEAN_CTX_PROXY_CACHE_BREAKPOINT"
         },
+        "cache_policy": {
+          "type": "bool",
+          "default": true,
+          "description": "Cache-economics (#986), on by default. Enables prompt-cache miss attribution telemetry (per turn, classify the outcome as cold start / warm reuse / TTL lapse / prefix change and report cumulative gauges on /status cache_attribution) plus a net-cost gate on the cold-prefix repack that skips re-seeding prefixes too small to be cached (below Anthropic's ~1024-token minimum). The telemetry never mutates the body and the gate only makes repacking more conservative, so it can never bust a cache that would otherwise have been kept - both halves are strictly safe, so every proxy gets them out of the box (#986 premium defaults). Set false to opt out (drops the /status attribution gauges and the per-request prefix hash). Default true",
+          "env_override": "LEAN_CTX_PROXY_CACHE_POLICY"
+        },
         "ccr_inband": {
           "type": "bool",
           "default": false,
-          "description": "Opt-in in-band CCR retrieval for a remote proxy with no shared filesystem (#493). When on, a lossy stub advertises a compact <lc_expand:HASH> marker instead of a local tee path; when the model echoes that marker, the proxy splices the verbatim original (from its local tee store) back inline next turn ΓÇö one turn of latency, no MCP/filesystem on the agent host. The splice is a strict no-op on marker-less turns, so it never perturbs the provider cache prefix unless the model asked to expand. Default false",
+          "description": "Opt-in in-band CCR retrieval for a remote proxy with no shared filesystem (#493). When on, a lossy stub advertises a compact <lc_expand:HASH> marker instead of a local tee path; when the model echoes that marker, the proxy splices the verbatim original (from its local tee store) back inline next turn — one turn of latency, no MCP/filesystem on the agent host. The splice is a strict no-op on marker-less turns, so it never perturbs the provider cache prefix unless the model asked to expand. Default false",
           "env_override": "LEAN_CTX_PROXY_CCR_INBAND"
         },
         "chatgpt_upstream": {
@@ -736,11 +830,33 @@
           "default": null,
           "description": "Custom upstream URL for ChatGPT/Codex subscription API proxy"
         },
+        "codex_chatgpt_proxy": {
+          "type": "bool",
+          "default": false,
+          "description": "Opt-in routing of a Codex ChatGPT-subscription login through the proxy for model-turn compression (#603/#616). Default false leaves Codex native (history visible, cloud/remote intact, no #597). When true, setup pins model_provider = leanctx-chatgpt + chatgpt_base_url + a [model_providers.leanctx-chatgpt] block, so model turns route through /backend-api/codex/responses (the proxy strips the responses-lite marker so every model incl. gpt-5.5 works); pinning a provider scopes Codex history to it (#597), hence opt-in. Toggle durably with `lean-ctx proxy codex-chatgpt on|off|status`. Default false",
+          "env_override": "LEAN_CTX_CODEX_CHATGPT_PROXY"
+        },
         "cold_prefix_repack": {
           "type": "bool",
           "default": false,
           "description": "Opt-in big-gap cold-prefix repack (#480): on a session-resume request the proxy may predict (from idle time vs the provider cache TTL) that the client-cached prefix has already expired, then prune that now-cold prefix to re-seed a leaner cache and keep applying the same deterministic compression on later turns so warm follow-ups hit it (sticky; baselines persist across restarts, #499). A wrong guess re-bills cache reads as writes (~12x), so default false",
           "env_override": "LEAN_CTX_PROXY_COLD_PREFIX_REPACK"
+        },
+        "compress_protect": {
+          "type": "string[]",
+          "default": [],
+          "description": "File-path globs whose reads are never compressed (#1150): a matching path is returned verbatim (full) by the read tools, for files where exact bytes matter more than token savings (golden snapshots, byte-asserted fixtures, security-sensitive configs). Globs (*/**/?) match the path and its file name, so *.snap, **/golden/**, tests/fixtures/* all work. Empty (default) protects nothing — the lossless crushers and beneficial gate already keep compression safe; this is an explicit escape hatch"
+        },
+        "cost_response_header": {
+          "type": "string",
+          "default": null,
+          "description": "Extra response header carrying the upstream gateway's billed USD for the turn (e.g. a corporate gateway's cost header). LiteLLM's x-litellm-response-cost is always recognized. Measured header costs beat table estimates; body-reported costs (OpenRouter usage.cost) beat headers"
+        },
+        "counterfactual_metering": {
+          "type": "bool",
+          "default": false,
+          "description": "Opt-in counterfactual savings metering (#701): each rewritten Anthropic /v1/messages request fires a free count_tokens probe with the original, uncompressed body, concurrently with the real forward. The provider-counted answer is paired with the same response's billed usage — provider-authoritative savings receipts ('would have cost N, billed M') instead of local tokenizer estimates, shown as verified_savings on /status. The probe never mutates or delays the forwarded request; failures degrade to the estimate. Default false (one extra free HTTP call per compressed request)",
+          "env_override": "LEAN_CTX_PROXY_COUNTERFACTUAL"
         },
         "effort": {
           "type": "enum",
@@ -774,7 +890,7 @@
         "live_compress": {
           "type": "bool",
           "default": true,
-          "description": "Live-compress non-protected tool_result content on the wire (#481). Default true. Set false for a meter-only proxy ΓÇö real billed/cache token metering with zero request rewriting (combine with history_mode = \"off\" and no role_aggressiveness for a byte-unchanged body)",
+          "description": "Live-compress non-protected tool_result content on the wire (#481). Default true. Set false for a meter-only proxy — real billed/cache token metering with zero request rewriting (combine with history_mode = \"off\" and no role_aggressiveness for a byte-unchanged body)",
           "env_override": "LEAN_CTX_PROXY_LIVE_COMPRESS"
         },
         "live_compress_exclude": {
@@ -782,7 +898,7 @@
           "default": [
             "serena"
           ],
-          "description": "Tool-name patterns (case-insensitive substring) whose tool_result is never live-compressed ΓÇö treated as protected, like a file read (#481). Unset protects Serena's code-reading tools; set an explicit list to narrow it, or [] to disable"
+          "description": "Tool-name patterns (case-insensitive substring) whose tool_result is never live-compressed — treated as protected, like a file read (#481). Unset protects Serena's code-reading tools; set an explicit list to narrow it, or [] to disable"
         },
         "meter_openai_usage": {
           "type": "bool",
@@ -803,7 +919,7 @@
         "prose_ranker": {
           "type": "enum",
           "default": "auto",
-          "description": "How the proxy squeezes prose it must shrink (#895). auto (default) and extractive use embedding-based extractive ranking ΓÇö keeping the most central sentences instead of just the prefix ΓÇö when the local embedding engine is available, else fall back to truncation; truncate keeps the original deterministic FIFO squeeze and never loads the engine. Wire rewrites are memoized per content so the engine's coldΓåÆwarm transition never changes an already-emitted frozen-region rewrite (cache-safe, #448/#498)",
+          "description": "How the proxy squeezes prose it must shrink (#895). auto (default) and extractive use embedding-based extractive ranking — keeping the most central sentences instead of just the prefix — when the local embedding engine is available, else fall back to truncation; truncate keeps the original deterministic FIFO squeeze and never loads the engine. Wire rewrites are memoized per content so the engine's cold→warm transition never changes an already-emitted frozen-region rewrite (cache-safe, #448/#498)",
           "values": [
             "auto",
             "extractive",
@@ -825,13 +941,13 @@
         "system": {
           "type": "f64",
           "default": null,
-          "description": "Opt-in prose compression intensity (0.0ΓÇô1.0) for system prompts in the proxy's frozen request region. Unset = leave untouched. Higher = more aggressive. Cache-safe (deterministic, never touches the client-cached prefix)",
+          "description": "Opt-in prose compression intensity (0.0–1.0) for system prompts in the proxy's frozen request region. Unset = leave untouched. Higher = more aggressive. Cache-safe (deterministic, never touches the client-cached prefix)",
           "env_override": "LEAN_CTX_PROXY_SYSTEM_AGGR"
         },
         "user": {
           "type": "f64",
           "default": null,
-          "description": "Opt-in prose compression intensity (0.0ΓÇô1.0) for free-text user turns (never tool results) in the proxy's frozen request region. Unset = leave untouched",
+          "description": "Opt-in prose compression intensity (0.0–1.0) for free-text user turns (never tool results) in the proxy's frozen request region. Unset = leave untouched",
           "env_override": "LEAN_CTX_PROXY_USER_AGGR"
         }
       }
@@ -853,7 +969,7 @@
         "allow_ide_config_dirs": {
           "type": "bool",
           "default": null,
-          "description": "Allow jailed ctx_* tools to read home-level IDE config dirs (registry-derived; covers all editors). Off by default ΓÇö exposes other agents' sessions/credentials",
+          "description": "Allow jailed ctx_* tools to read home-level IDE config dirs (registry-derived; covers all editors). Off by default — exposes other agents' sessions/credentials",
           "env_override": "LEAN_CTX_ALLOW_IDE_DIRS"
         },
         "allow_paths": {
@@ -861,6 +977,12 @@
           "default": [],
           "description": "Additional paths allowed by PathJail (absolute)",
           "env_override": "LEAN_CTX_ALLOW_PATH"
+        },
+        "allow_symlink_roots": {
+          "type": "string[]",
+          "default": [],
+          "description": "Trusted roots OUTSIDE $HOME lean-ctx may follow when an agent config is symlinked there (#596). Empty = strict $HOME-only",
+          "env_override": "LEAN_CTX_ALLOW_SYMLINK_ROOTS"
         },
         "auto_capture": {
           "type": "bool",
@@ -915,7 +1037,7 @@
         "compression_aggressiveness": {
           "type": "f64",
           "default": null,
-          "description": "Global compression intensity 0.0 (lossless) ΓÇô 1.0 (max), mapped onto read modes/entropy/IB. Empty = per-mode defaults",
+          "description": "Global compression intensity 0.0 (lossless) – 1.0 (max), mapped onto read modes/entropy/IB. Empty = per-mode defaults",
           "env_override": "LEAN_CTX_AGGRESSIVENESS"
         },
         "compression_level": {
@@ -945,6 +1067,11 @@
           "type": "array",
           "default": [],
           "description": "Custom command aliases (array of {command, alias} entries)"
+        },
+        "dashboard_auth": {
+          "type": "bool",
+          "default": true,
+          "description": "Require Bearer-token auth for the dashboard (default true). Set false for no-auth mode protected by Sec-Fetch-Site/Origin/Host checks. Override per-run with --no-auth or LEAN_CTX_DASHBOARD_AUTH"
         },
         "debug_log": {
           "type": "bool",
@@ -992,6 +1119,12 @@
           "type": "u64",
           "default": 0,
           "description": "Maximum files in graph index. 0 = unlimited (default). Set >0 to cap for constrained systems"
+        },
+        "hook_binary": {
+          "type": "string?",
+          "default": null,
+          "description": "Verbatim binary path/expression for generated agent-hook commands (e.g. $HOME/.local/bin/lean-ctx) — for settings files synced across machines with different usernames. Shell-expanded by the hook host at run time; doctor accepts it as current. Empty = automatic absolute-path resolution",
+          "env_override": "LEAN_CTX_HOOK_BINARY"
         },
         "journal_enabled": {
           "type": "bool",
@@ -1073,7 +1206,7 @@
         "path_jail": {
           "type": "bool?",
           "default": null,
-          "description": "Filesystem path jail. null/true = enforced (tools confined to the project root + allow_paths). false = the blanket \"any path\" opt-out ΓÇö every tool path is allowed (for containers/sandboxes where the boundary is external). Compression and secret redaction are unaffected. Flip both planes at once with `lean-ctx yolo` / `lean-ctx secure`"
+          "description": "Filesystem path jail. null/true = enforced (tools confined to the project root + allow_paths). false = the blanket \"any path\" opt-out — every tool path is allowed (for containers/sandboxes where the boundary is external). Compression and secret redaction are unaffected. Flip both planes at once with `lean-ctx yolo` / `lean-ctx secure`"
         },
         "permission_inheritance": {
           "type": "enum",
@@ -1087,13 +1220,13 @@
         "persona": {
           "type": "string",
           "default": "coding",
-          "description": "Active context persona (persona-spec-v1): selects the domain bundle ΓÇö tool surface, read-mode/compressor/chunker defaults, intent taxonomy, sensitivity floor. Built-ins: coding (default), research, lead-gen, support, data-analysis; or a custom <name>.toml from the personas dir. Override via LEAN_CTX_PERSONA",
+          "description": "Active context persona (persona-spec-v1): selects the domain bundle — tool surface, read-mode/compressor/chunker defaults, intent taxonomy, sensitivity floor. Built-ins: coding (default), research, lead-gen, support, data-analysis; or a custom <name>.toml from the personas dir. Override via LEAN_CTX_PERSONA",
           "env_override": "LEAN_CTX_PERSONA"
         },
         "prefer_native_editor": {
           "type": "bool",
           "default": false,
-          "description": "Disable lean-ctx edit tools (ctx_edit) so the host's native editor handles edits (#454)"
+          "description": "Disable lean-ctx edit tools (ctx_edit, ctx_patch) so the host's native editor handles edits (#454)"
         },
         "preserve_compact_formats": {
           "type": "string[]",
@@ -1118,6 +1251,11 @@
           "default": null,
           "description": "Enable/disable the proxy layer. null = auto-detect, true = force on, false = force off"
         },
+        "proxy_loopback_open": {
+          "type": "bool",
+          "default": false,
+          "description": "Skip ALL proxy authentication on loopback binds. MCP/HTTP clients work without tokens. Ignored on non-loopback (gateway mode)"
+        },
         "proxy_port": {
           "type": "u16?",
           "default": null,
@@ -1133,11 +1271,43 @@
           "default": null,
           "description": "Proxy reachability timeout in ms (default: 200). Override via LEAN_CTX_PROXY_TIMEOUT_MS"
         },
+        "read_dedup": {
+          "type": "enum",
+          "default": "auto",
+          "description": "Controls the PostToolUse native-Read re-read dedup. auto (default): replace only re-reads of unchanged files with the compact stub, and only on guard hosts (Claude Code / CodeBuddy) where the PreToolUse redirect is off — first reads stay byte-identical and the read-before-write guard is untouched. on: dedup wherever the hook fires. off: never replace a Read result",
+          "values": [
+            "auto",
+            "on",
+            "off"
+          ],
+          "env_override": "LEAN_CTX_READ_DEDUP"
+        },
         "read_only_roots": {
           "type": "string[]",
           "default": [],
           "description": "Read-only sibling roots: reads allowed, writes always denied (edit/refactor/export)",
           "env_override": "LEAN_CTX_READ_ONLY_ROOTS"
+        },
+        "read_redirect": {
+          "type": "enum",
+          "default": "auto",
+          "description": "Controls the native-Read → ctx_read redirect hook. auto (default): redirect everywhere except hosts with a native read-before-write guard (Claude Code / CodeBuddy), where rewriting Read to a temp copy breaks native Write/Edit (#637). on: always redirect. off: never redirect native Read (ctx_read MCP tool + Grep/Glob redirect stay active)",
+          "values": [
+            "auto",
+            "on",
+            "off"
+          ],
+          "env_override": "LEAN_CTX_READ_REDIRECT"
+        },
+        "recovery_hints": {
+          "type": "enum",
+          "default": "minimal",
+          "description": "Verbosity of the reactive recovery footer on compressed output (path-first, MCP-optional)",
+          "values": [
+            "off",
+            "minimal",
+            "full"
+          ]
         },
         "redirect_exclude": {
           "type": "string[]",
@@ -1164,7 +1334,7 @@
         "rules_injection": {
           "type": "enum",
           "default": "shared",
-          "description": "How rules load for CLAUDE.md/AGENTS.md/GEMINI.md agents: shared block, dedicated (no shared-file edits; SessionStart hook / instructions[] / context.fileName), or off (write no rules file ΓÇö for hosts that supply their own steering or phase-isolated/non-caching harnesses). Override via LEAN_CTX_RULES_INJECTION",
+          "description": "How rules load for CLAUDE.md/AGENTS.md/GEMINI.md agents: shared block, dedicated (no shared-file edits; SessionStart hook / instructions[] / context.fileName), or off (write no rules file — for hosts that supply their own steering or phase-isolated/non-caching harnesses). Override via LEAN_CTX_RULES_INJECTION",
           "values": [
             "shared",
             "dedicated",
@@ -1201,13 +1371,13 @@
         "shadow_mode": {
           "type": "bool",
           "default": false,
-          "description": "Opt-in (default off): transparently route native Read/Grep/Edit/Shell through lean-ctx ΓÇö via hooks for hook-based agents, via the interception plugin for OpenCode",
+          "description": "Opt-in (default off): transparently route native Read/Grep/Edit/Shell through lean-ctx — via hooks for hook-based agents, via the interception plugin for OpenCode",
           "env_override": "LEAN_CTX_SHADOW_MODE"
         },
         "shell_activation": {
           "type": "enum",
-          "default": "always",
-          "description": "Controls when the shell hook auto-activates aliases",
+          "default": "agents-only",
+          "description": "Controls when the shell hook auto-activates aliases (agents-only since #699: transparent in plain human terminals)",
           "values": [
             "always",
             "agents-only",
@@ -1218,7 +1388,7 @@
         "shell_allow_writes": {
           "type": "bool",
           "default": false,
-          "description": "Allow ctx_shell file-write redirects (>, >>, tee, heredoc-to-file, curl -o, wget default mode). Default false ΓÇö prefer the native Write/Edit tool. The real command gating (allowlist, dangerous-pattern, interpreter-eval) still applies",
+          "description": "Allow ctx_shell file-write redirects (>, >>, tee, heredoc-to-file, curl -o, wget default mode). Default false — prefer the native Write/Edit tool. The real command gating (allowlist, dangerous-pattern, interpreter-eval) still applies",
           "env_override": "LEAN_CTX_SHELL_ALLOW_WRITES"
         },
         "shell_allowlist": {
@@ -1261,6 +1431,11 @@
           "description": "Shell command timeout (seconds) for normal commands. null = built-in 2-minute default. LEAN_CTX_SHELL_TIMEOUT_MS overrides both tiers (in ms)",
           "env_override": "LEAN_CTX_SHELL_TIMEOUT_SECS"
         },
+        "skip_agent_aliases": {
+          "type": "bool",
+          "default": false,
+          "description": "Do not install agent CLI aliases (claude, codex, gemini) into shell rc files. Existing alias blocks are removed on next setup"
+        },
         "slow_command_threshold_ms": {
           "type": "u64",
           "default": 5000,
@@ -1269,13 +1444,13 @@
         "structure_first": {
           "type": "bool",
           "default": false,
-          "description": "Opt-in: bias `auto` toward structure-first reads (map) for medium code files on a cold read. Off by default ΓÇö for phase-isolated harnesses with no warm-session cache payback. Override via LEAN_CTX_STRUCTURE_FIRST",
+          "description": "Opt-in: bias `auto` toward structure-first reads (map) for medium code files on a cold read. Off by default — for phase-isolated harnesses with no warm-session cache payback. Override via LEAN_CTX_STRUCTURE_FIRST",
           "env_override": "LEAN_CTX_STRUCTURE_FIRST"
         },
         "symbol_map_auto": {
           "type": "bool",
           "default": false,
-          "description": "Opt-in: ╬▒-code identifier substitution in aggressive reads (>50-file projects). Off by default ΓÇö abbreviated symbols hinder editing/refactoring"
+          "description": "Opt-in: α-code identifier substitution in aggressive reads (>50-file projects). Off by default — abbreviated symbols hinder editing/refactoring"
         },
         "team_auto_push": {
           "type": "bool",
@@ -1294,11 +1469,12 @@
         },
         "tee_mode": {
           "type": "enum",
-          "default": "failures",
+          "default": "highcompression",
           "description": "Controls when shell output is tee'd to disk for later retrieval",
           "values": [
             "never",
             "failures",
+            "highcompression",
             "always"
           ]
         },
@@ -1322,7 +1498,7 @@
         "tool_profile": {
           "type": "enum",
           "default": "",
-          "description": "Tool visibility profile: minimal (6 tools), standard (17), power (all). Override via LEAN_CTX_TOOL_PROFILE",
+          "description": "Tool visibility profile: minimal (5 tools), standard (16), power (all). Override via LEAN_CTX_TOOL_PROFILE",
           "values": [
             "minimal",
             "standard",
@@ -1332,7 +1508,7 @@
         "tools_enabled": {
           "type": "string[]",
           "default": [],
-          "description": "Explicit list of enabled tool names (overrides tool_profile when non-empty)"
+          "description": "Explicit list of enabled tool names. Used only when no tool_profile is pinned (tool_profile takes precedence); leave tool_profile unset to apply this list. The universal invoker ctx_call stays advertised so unlisted tools remain reachable — add it to disabled_tools (disabled_tools = [\"ctx_call\"]) to make this allowlist authoritative."
         },
         "ultra_compact": {
           "type": "bool",
@@ -1368,7 +1544,7 @@
         "dense_enabled": {
           "type": "bool",
           "default": true,
-          "description": "Enable the dense (embedding) retrieval path. false ΓåÆ hybrid search ranks with BM25 + graph + rerank (+ SPLADE) only, skipping the embedding engine and the persistent embeddings.json (lighter footprint, no embed latency). An explicit mode=dense query still forces dense."
+          "description": "Enable the dense (embedding) retrieval path. false → hybrid search ranks with BM25 + graph + rerank (+ SPLADE) only, skipping the embedding engine and the persistent embeddings.json (lighter footprint, no embed latency). An explicit mode=dense query still forces dense."
         },
         "dense_weight": {
           "type": "f64",
@@ -1394,6 +1570,11 @@
           "type": "bool",
           "default": true,
           "description": "Enable secret/credential detection in tool outputs"
+        },
+        "exclude_patterns": {
+          "type": "array",
+          "default": [],
+          "description": "Subtractive allowlist: matches covered by these regexes are never reported or redacted (#718)"
         },
         "redact": {
           "type": "bool",

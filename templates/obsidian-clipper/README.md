@@ -1,26 +1,30 @@
 # Obsidian Web Clipper → ModMe Inbox
 
-Importable JSON templates for the [Obsidian Web Clipper](https://obsidian.md/clipper) Chrome extension. Prefer vault **ModMe-Vault** (sidecar): template `"path": "inbox"` writes through the junction to `GenerativeUI_monorepo/docs/inbox/` with frontmatter matching [`docs/inbox-pipeline/contracts/inbox-contract.v1.json`](../../docs/inbox-pipeline/contracts/inbox-contract.v1.json). Every ModMe template also sets `uid: YYYYMMDDHHmm` (Zettel UID) without changing the inbox filename contract.
+Importable JSON templates for the [Obsidian Web Clipper](https://obsidian.md/clipper) Chrome extension. Prefer vault **ModMe-Vault** (sidecar): ModMe templates use `"path": "inbox/web-clipper/{parent}"` (URL-derived) through the junction to `GenerativeUI_monorepo/docs/inbox/web-clipper/…` with frontmatter matching [`docs/inbox-pipeline/contracts/inbox-contract.v1.json`](../../docs/inbox-pipeline/contracts/inbox-contract.v1.json). Filenames keep the contract prefix; leaf slug comes from the URL (`README`, `AGENTS`, `zettelkasten`). Every ModMe template also sets `uid: YYYYMMDDHHmm` (Zettel UID).
 
 Official docs: [Templates](https://help.obsidian.md/web-clipper/templates) · [Variables](https://help.obsidian.md/web-clipper/variables) · [Filters](https://help.obsidian.md/web-clipper/filters) · [Logic](https://help.obsidian.md/web-clipper/logic) · ModMe pack: [`docs/obsidian/`](../../docs/obsidian/)
 
 ## Why nothing appeared in Inbox
 
-Two common causes:
+Common causes:
 
-1. **No Obsidian vault** — this repo had no `.obsidian/` folder, so Clipper could not target `Monorepo_ModMe`. Fixed: vault config is now at [`.obsidian/`](../../.obsidian/). Open the **repo root** as a vault (see [`ModMe Vault.md`](../../ModMe%20Vault.md)).
-2. **IDE hides gitignored files** — `GenerativeUI_monorepo/docs/inbox/*` is gitignored (except README / `_index.json`). Cursor/VS Code may hide new clips. Check on disk:
+1. **Wrong vault** — open **ModMe-Vault** (`C:\Users\dylan\ModMe-Vault`), not the monorepo root. Run `.\scripts\setup-modme-obsidian-sidecar.ps1 -OpenVault` (or `yarn obsidian:sidecar:setup -OpenVault`).
+2. **Template path** — ModMe templates write to `inbox/web-clipper/{parent}` (junction → monorepo). Re-import JSON from vault `clipper/` after template updates.
+3. **IDE hides gitignored files** — `GenerativeUI_monorepo/docs/inbox/*` is gitignored (except README / `_index.json`). Check on disk:
 
 ```powershell
-Get-ChildItem GenerativeUI_monorepo\docs\inbox -File | Sort-Object LastWriteTime -Descending | Select-Object -First 10
+Get-ChildItem GenerativeUI_monorepo\docs\inbox\web-clipper -Recurse -File | Sort-Object LastWriteTime -Descending | Select-Object -First 10
 ```
 
-To commit a clip for the ingest pipeline: `git add -f GenerativeUI_monorepo/docs/inbox/<file>.md`
+Pipeline: `yarn inbox:audit` → `yarn inbox:fix:apply` (safe FM) → `yarn intake` / `yarn intake:orchestrate`. Ingest walks top-level inbox **and** `web-clipper/**`.
+
+To commit a clip for the ingest pipeline: `git add -f GenerativeUI_monorepo/docs/inbox/web-clipper/<…>.md`
 
 ## One-time setup
 
 ```powershell
-yarn obsidian:sidecar:setup -OpenVault
+.\scripts\setup-modme-obsidian-sidecar.ps1 -OpenVault
+# or: yarn obsidian:sidecar:setup -OpenVault
 # Deprecated monorepo-root vault: .\scripts\setup-obsidian-vault.ps1
 ```
 
@@ -28,7 +32,8 @@ yarn obsidian:sidecar:setup -OpenVault
 2. Obsidian → **Open folder as vault** → `C:\Users\dylan\ModMe-Vault` (sidecar).
 3. Clipper extension → Settings → select vault **ModMe-Vault** · default folder `inbox`.
 4. Import templates from vault `clipper/` (below). Re-import after template updates.
-5. Clip a test page → confirm a new `.md` under `ModMe-Vault/inbox/` (same files as `GenerativeUI_monorepo/docs/inbox/`).
+5. Clip a test page → confirm a new `.md` under `ModMe-Vault/inbox/web-clipper/{parent}/` (same files as `GenerativeUI_monorepo/docs/inbox/web-clipper/…`).
+6. Misfiled flat clips: `yarn clipper:organize --dry-run` then `yarn clipper:organize`.
 
 ## Import templates
 
@@ -37,18 +42,18 @@ yarn obsidian:sidecar:setup -OpenVault
 
 ### Starter pack (ModMe inbox-contract)
 
-| File                                                                   | When it auto-selects                                       | `type`     |
-| ---------------------------------------------------------------------- | ---------------------------------------------------------- | ---------- |
-| [`modme-inbox-github-issue-pr.json`](modme-inbox-github-issue-pr.json) | `github.com/.../(issues\|pull)/N`                          | `research` |
-| [`modme-inbox-code-snippet.json`](modme-inbox-code-snippet.json)       | GitHub `blob`/`raw`/gist, Cubic PR file views              | `snippet`  |
-| [`modme-inbox-obsidian-help.json`](modme-inbox-obsidian-help.json)     | `obsidian.md/help`, `help.obsidian.md`, `publish.obsidian.md` (TechArticle HTML) | `research` |
-| [`modme-inbox-github-repo.json`](modme-inbox-github-repo.json)         | GitHub repo home URL                                       | `research` |
-| [`modme-inbox-docs-site.json`](modme-inbox-docs-site.json)             | `docs.*`, Expo, TechArticle, etc.                          | `research` |
-| [`modme-inbox-article-landing.json`](modme-inbox-article-landing.json) | `schema:@Article` / NewsArticle / BlogPosting              | `research` |
-| [`chatgpt-clipper.json`](chatgpt-clipper.json)                         | ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot, Cursor | `research` |
-| [`modme-inbox-defuddle-probe.json`](modme-inbox-defuddle-probe.json)   | Manual — Defuddle `{{content}}` vs `fullHtml` diagnostic   | `research` |
-| [`modme-inbox-interpreter-ollama.json`](modme-inbox-interpreter-ollama.json) | Manual — Ollama llama3.2 summary/tags/severity          | `research` |
-| [`modme-inbox-generic-link.json`](modme-inbox-generic-link.json)       | Manual / fallback (no triggers)                            | `link`     |
+| File                                                                         | When it auto-selects                                                             | `type`     |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------- |
+| [`modme-inbox-github-issue-pr.json`](modme-inbox-github-issue-pr.json)       | `github.com/.../(issues\|pull)/N`                                                | `research` |
+| [`modme-inbox-code-snippet.json`](modme-inbox-code-snippet.json)             | GitHub `blob`/`raw`/gist, Cubic PR file views                                    | `snippet`  |
+| [`modme-inbox-obsidian-help.json`](modme-inbox-obsidian-help.json)           | `obsidian.md/help`, `help.obsidian.md`, `publish.obsidian.md` (TechArticle HTML) | `research` |
+| [`modme-inbox-github-repo.json`](modme-inbox-github-repo.json)               | GitHub repo home URL                                                             | `research` |
+| [`modme-inbox-docs-site.json`](modme-inbox-docs-site.json)                   | `docs.*`, Expo, TechArticle, etc.                                                | `research` |
+| [`modme-inbox-article-landing.json`](modme-inbox-article-landing.json)       | `schema:@Article` / NewsArticle / BlogPosting                                    | `research` |
+| [`chatgpt-clipper.json`](chatgpt-clipper.json)                               | ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot, Cursor                       | `research` |
+| [`modme-inbox-defuddle-probe.json`](modme-inbox-defuddle-probe.json)         | Manual — Defuddle `{{content}}` vs `fullHtml` diagnostic                         | `research` |
+| [`modme-inbox-interpreter-ollama.json`](modme-inbox-interpreter-ollama.json) | Manual — Ollama llama3.2 summary/tags/severity                                   | `research` |
+| [`modme-inbox-generic-link.json`](modme-inbox-generic-link.json)             | Manual / fallback (no triggers)                                                  | `link`     |
 
 Topic templates (optional): `agent-gateway-research.json`, `expo-cng-research.json`, `dolt-cms-catalog-research.json`, `copilot-workspace-config.json`, `multi-agent-orchestration-adr.json`.
 
@@ -80,11 +85,11 @@ See also [`docs/obsidian/clipper-source-matching.md`](../../docs/obsidian/clippe
 
 ### Defuddle vs Copy-as-MD vs Interpreter
 
-| Piece | What it does | LLM? |
-| ----- | ------------ | ---- |
-| **[Defuddle](https://github.com/kepano/defuddle)** | Strips page chrome; main article → Markdown. Powers Clipper `{{content}}`, `{{title}}`, `{{author}}`, `{{words}}`, etc. | No |
-| **Copy as MD** | Same extraction: Clipper note body / Reader / [defuddle.md](https://defuddle.md/) API / bookmarklets — not a separate template variable | No |
-| **[Interpreter](https://help.obsidian.md/web-clipper/interpreter)** | Prompt vars `{{"..."}}`; click **Interpret** before save. Template `"context"` should be trimmed Defuddle MD (not full HTML) | Yes — **Ollama only** in this pack |
+| Piece                                                               | What it does                                                                                                                            | LLM?                               |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| **[Defuddle](https://github.com/kepano/defuddle)**                  | Strips page chrome; main article → Markdown. Powers Clipper `{{content}}`, `{{title}}`, `{{author}}`, `{{words}}`, etc.                 | No                                 |
+| **Copy as MD**                                                      | Same extraction: Clipper note body / Reader / [defuddle.md](https://defuddle.md/) API / bookmarklets — not a separate template variable | No                                 |
+| **[Interpreter](https://help.obsidian.md/web-clipper/interpreter)** | Prompt vars `{{"..."}}`; click **Interpret** before save. Template `"context"` should be trimmed Defuddle MD (not full HTML)            | Yes — **Ollama only** in this pack |
 
 **Defuddle probe** ([`modme-inbox-defuddle-probe.json`](modme-inbox-defuddle-probe.json)): dumps Defuddle metadata + `{{content}}` vs truncated `{{fullHtml}}`. No prompts.
 
@@ -144,16 +149,16 @@ git add -f GenerativeUI_monorepo/docs/inbox/<your-clip>.md
 
 ## Selector notes (verified 2026-07-10)
 
-| Template        | Verified sources                                                                                                                  |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| GitHub Repo     | `meta:octolytics-dimension-user_login`, `#repo-stars-counter-star`, `og:*`, `<article>` README                                    |
-| GitHub Issue/PR | `.js-comment-body`, `.markdown-body`, `og:title` / description                                                                    |
-| Obsidian Help   | URL triggers on `obsidian.md/help`, `help.obsidian.md`, `publish.obsidian.md`; body Defuddle `{{content}}`; `schema_type` TechArticle (2026-07-12) |
-| Docs            | `schema:@TechArticle` (Expo), `meta:description`, `og:*` (Obsidian Help hosts deferred to Obsidian Help template)                 |
-| Article         | `schema:@Article` (Wikipedia), `og:*`, `{{content}}`                                                                              |
-| AI Chat         | ChatGPT: `article[data-testid*="conversation-turn"]`; others: `{{content}}`                                                       |
+| Template        | Verified sources                                                                                                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| GitHub Repo     | `meta:octolytics-dimension-user_login`, `#repo-stars-counter-star`, `og:*`, `<article>` README                                                                                                         |
+| GitHub Issue/PR | `.js-comment-body`, `.markdown-body`, `og:title` / description                                                                                                                                         |
+| Obsidian Help   | URL triggers on `obsidian.md/help`, `help.obsidian.md`, `publish.obsidian.md`; body Defuddle `{{content}}`; `schema_type` TechArticle (2026-07-12)                                                     |
+| Docs            | `schema:@TechArticle` (Expo), `meta:description`, `og:*` (Obsidian Help hosts deferred to Obsidian Help template)                                                                                      |
+| Article         | `schema:@Article` (Wikipedia), `og:*`, `{{content}}`                                                                                                                                                   |
+| AI Chat         | ChatGPT: `article[data-testid*="conversation-turn"]`; others: `{{content}}`                                                                                                                            |
 | Code Snippet    | GitHub blob (verified 2026-07-11): `#read-only-cursor-text-area`, `textarea[aria-label="file content"]`, `a[data-testid="raw-button"]`; not Defuddle `content`; Cubic: selection + file-header testids |
-| Generic         | Preset vars only (`title`, `url`, `description`, `content`)                                                                       |
+| Generic         | Preset vars only (`title`, `url`, `description`, `content`)                                                                                                                                            |
 
 ## Vault + IDE
 
