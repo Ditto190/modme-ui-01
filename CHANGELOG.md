@@ -101,6 +101,8 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Fixed
 
+- (next-forge) Pin `@vitejs/plugin-react` to 5.1.4 and remove it from API vitest config so Windows forge pre-push tests load
+- (repo) Fix Ultracite on `(authenticated)` route-group paths and yarn.cmd spawn on Windows pre-commit hooks
 - (next-forge) Clear Ultracite lint/format blockers so workflow-speckit residual branch can push
 - (repo) Builder/preflight/hook spawns — Windows cmd shim via shell string (not `shell:true`+args); lean-ctx probe requires successful `--version`; `session-archive.ps1` checks `preflight:fast` exit code
 
