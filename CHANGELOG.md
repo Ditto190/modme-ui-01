@@ -63,6 +63,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 ## [Unreleased]
 
 ### Added
+- (docs) lean-ctx workspace profiles on cautious-fortnight Copilot tree
 
 - (repo) Agent data plane — Entire CLI (`yarn entire:*`), Dolt sql-server (`yarn dolt:*`), KM hub (`yarn km:status`, `docs/KNOWLEDGE_QUICKSTART.md`, `docs/knowledge/CATALOG.md`), ADR-0013 superseding ADR-0010
 - (repo) KM session startup wiring — `scripts/km-session-bootstrap.ps1` (`yarn km:bootstrap`), session start + worktree setup + VS Code tasks/launch (`Full Stack: Forge Core + Agent Data Plane`, soft `dependsOn` on `next-forge: dev core`); ADR-0014; beads `modme-awz`; runbook `docs/monorepo/km-agent-data-plane-startup.md`
