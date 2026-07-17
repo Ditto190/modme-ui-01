@@ -137,3 +137,8 @@ quality/
 # Local MCP build checkout (do not nest as submodule by accident)
 .tools/skillsh-mcp/
 
+
+# Pre-cutover hygiene
+**/__pycache__/
+scripts/cursor-ai/*.tar.gz
+
