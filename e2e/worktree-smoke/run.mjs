@@ -23,6 +23,39 @@ if (!stacks.forge) {
 
 run("node", ["scripts/generate-mprocs-config.mjs"]);
 run("node", ["scripts/agent-status.mjs", "--ci"]);
+run("node", ["scripts/km-bootstrap-smoke.mjs"]);
+run("node", ["scripts/validate-launch-json.mjs", "--require-manifest-sync"]);
+
+const mprocs = spawnSync(process.execPath, ["scripts/generate-mprocs-config.mjs", "--stdout"], {
+  cwd: ROOT,
+  encoding: "utf8",
+});
+if (mprocs.status !== 0 || !mprocs.stdout?.includes("km_bootstrap")) {
+  console.error("worktree-smoke: mprocs missing km_bootstrap");
+  process.exit(1);
+}
+if (!/km_bootstrap:[\s\S]*?autostart: true/.test(mprocs.stdout)) {
+  console.error("worktree-smoke: km_bootstrap must have autostart: true");
+  process.exit(1);
+}
+
+// Prefer npx vitest — root yarn may lack node_modules in worktrees
+const wiringVitest = spawnSync(
+  "npx",
+  [
+    "--yes",
+    "vitest",
+    "run",
+    "scripts/__tests__/km-startup-wiring.test.mjs",
+    "--config",
+    "vitest.config.mjs",
+  ],
+  { cwd: ROOT, encoding: "utf8", shell: true }
+);
+if (wiringVitest.status !== 0) {
+  console.error(wiringVitest.stdout || wiringVitest.stderr);
+  process.exit(wiringVitest.status ?? 1);
+}
 
 const check = spawnSync(
   "node",
@@ -34,7 +67,7 @@ const check = spawnSync(
     "00000000-0000-0000-0000-000000000001",
     "--force",
   ],
-  { cwd: ROOT, encoding: "utf8" },
+  { cwd: ROOT, encoding: "utf8" }
 );
 if (check.status !== 0) {
   console.error(check.stderr || check.stdout);

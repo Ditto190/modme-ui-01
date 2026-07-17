@@ -108,6 +108,15 @@ try {
   & "$ScriptDir/install-git-hooks.ps1"
   if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+  Write-Host "KM data plane (soft)..." -ForegroundColor Cyan
+  $kmBootstrap = Join-Path $ScriptDir 'km-session-bootstrap.ps1'
+  if (Test-Path $kmBootstrap) {
+    & $kmBootstrap
+  }
+  else {
+    Write-Warning "Missing km-session-bootstrap.ps1 — skipped"
+  }
+
   Write-Host ""
   Write-Host "Agent worktree ready." -ForegroundColor Green
   Write-Host "   Path:   $TargetPath"
@@ -115,6 +124,7 @@ try {
   Write-Host "   Ports:  $TargetPath\.worktree-ports.env"
   Write-Host ""
   Write-Host "   Open this folder in your IDE, or let Cursor Agents Window bootstrap via .cursor/worktrees.json"
+  Write-Host "   Then: yarn agent:session:start / yarn agent:tui"
 }
 finally {
   if ($null -eq $prevDirenvDisable) {

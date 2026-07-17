@@ -1,20 +1,60 @@
+# Copilot coding agent setup steps (Linux cloud agents).
+# Job name MUST be `copilot-setup-steps` for GitHub Copilot Agent recognition.
+# Secrets: only via .worktreeinclude / generate-env — never echo tokens.
+
 name: Copilot Setup Steps
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+permissions:
+  contents: read
 
 jobs:
-  # The job MUST be called 'copilot-setup-steps' to be recognized by GitHub Copilot Agent
   copilot-setup-steps:
     runs-on: ubuntu-latest
-    # Set minimal permissions for setup steps
-    # Copilot Agent receives its own token with appropriate permissions
-    permissions:
-      contents: read
-
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node
+        uses: actions/setup-node@39370e3970a6d050c5454d0f4e42e01109a1e5d3 # v4.1.0
+        with:
+          node-version: "20"
+
       - name: Install gh-aw extension
-        uses: github/gh-aw-actions/setup-cli@c0338fef4749d08c21f8f975fb0e37efa17dda47
-        # Omit the version field to always use the latest version
+        uses: github/gh-aw-actions/setup-cli@c0338fef4749d08c21f8f975fb0e37efa17dda47 # v0.79.8
+
+      - name: Generate workspace env
+        run: |
+          set -euo pipefail
+          if [ -f scripts/copilot-workspace/generate-env.mjs ]; then
+            node scripts/copilot-workspace/generate-env.mjs
+          elif [ -f scripts/copilot-workspace/generate-env.ps1 ]; then
+            echo "generate-env.mjs missing — skip on Linux (PowerShell path is Windows Copilot App)"
+          else
+            echo "No generate-env helper found"
+          fi
+
+      - name: Ensure lean-ctx
+        run: |
+          set -euo pipefail
+          yarn install --immutable 2>/dev/null || yarn install
+          yarn lean-ctx:ensure || true
+
+      - name: Preflight env
+        run: |
+          set -euo pipefail
+          yarn preflight:env || node scripts/preflight.mjs --profile env || true
+
+      - name: Hint review-role sessions
+        run: |
+          echo "When PR has review:* labels, start sessions with:"
+          echo "  pwsh scripts/agent-session-start.ps1 -AgentRole review -CitizenId <from polis-router>"
+          echo "See docs/devops/agent-review-routing.md"

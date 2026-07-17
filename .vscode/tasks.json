@@ -22,6 +22,87 @@
       "problemMatcher": []
     },
     {
+      "label": "modme: KM data plane up",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/km-session-bootstrap.ps1"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "close": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "modme: KM data plane up (strict)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/km-session-bootstrap.ps1",
+        "-Strict"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "modme: KM status",
+      "type": "shell",
+      "command": "node",
+      "args": ["${workspaceFolder}/scripts/km-status.mjs"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "modme: agent session start",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/agent-session-start.ps1"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "modme: beads ready",
+      "type": "shell",
+      "command": "npx",
+      "args": ["--yes", "@beads/bd", "ready"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "modme: session verify",
       "type": "shell",
       "command": "powershell",
@@ -43,9 +124,7 @@
     },
     {
       "label": "vibe-web-app: dev",
-      "dependsOn": [
-        "modme: env bootstrap"
-      ],
+      "dependsOn": ["modme: env bootstrap"],
       "type": "shell",
       "command": "yarn dev",
       "options": {
@@ -71,18 +150,14 @@
     },
     {
       "label": "agent-generator: build",
-      "dependsOn": [
-        "modme: env bootstrap"
-      ],
+      "dependsOn": ["modme: env bootstrap"],
       "type": "shell",
       "command": "yarn build",
       "options": {
         "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-generator",
         "envFile": "${workspaceFolder}/.vscode/.env.runtime"
       },
-      "problemMatcher": [
-        "$tsc"
-      ],
+      "problemMatcher": ["$tsc"],
       "presentation": {
         "reveal": "silent",
         "panel": "shared"
@@ -90,9 +165,8 @@
     },
     {
       "label": "next-forge: dev core",
-      "dependsOn": [
-        "modme: env bootstrap"
-      ],
+      "dependsOn": ["modme: env bootstrap", "modme: KM data plane up"],
+      "dependsOrder": "sequence",
       "type": "shell",
       "command": "yarn dev:forge:core",
       "options": {
@@ -117,9 +191,7 @@
     },
     {
       "label": "agenttrace: overview",
-      "dependsOn": [
-        "modme: env bootstrap"
-      ],
+      "dependsOn": ["modme: env bootstrap"],
       "type": "shell",
       "command": "yarn agenttrace --overview",
       "options": {
@@ -129,6 +201,21 @@
         "reveal": "always",
         "panel": "shared"
       }
+    },
+    {
+      "label": "modme: agent tui",
+      "dependsOn": ["modme: KM data plane up"],
+      "dependsOrder": "sequence",
+      "type": "shell",
+      "command": "yarn agent:mprocs:generate && yarn agent:tui",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
     }
   ]
 }
