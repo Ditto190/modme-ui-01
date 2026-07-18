@@ -24,6 +24,7 @@ Branches: `main`, `master`, `develop`, `dev`
 | `inbox-pipeline-check.yml` | Inbox funnel audit + orchestrator validate |
 | `gitlab-mirror.yml` | Push `dev`/`main` to GitLab (requires secrets) |
 | `agenttrace-ci.yml` | Session anomaly gate (`main`, `dev`) |
+| `repo-file-sync.yml` | Sync shared skills/tools/config/CI to downstream repos (requires `GH_PAT`) — see [`docs/repo-file-sync.md`](../../docs/repo-file-sync.md) |
 
 ## Local parity
 

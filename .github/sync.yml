@@ -1,0 +1,271 @@
+# =============================================================================
+# Repo File Sync configuration — Ditto190/modme-ui-01 (source of truth)
+# =============================================================================
+#
+# Consumed by .github/workflows/repo-file-sync.yml (BetaHuhn/repo-file-sync-action).
+# Full guide: docs/repo-file-sync.md
+#
+# HOW TO USE
+# ----------
+# 1. Replace every `Ditto190/REPLACE-WITH-TARGET-REPO` entry below with the real
+#    downstream repositories you want to keep in sync (one `owner/name` per line;
+#    add `@branch` to target a non-default branch).
+# 2. Add a `GH_PAT` repo secret with full `repo` (+ `workflow`) scope.
+# 3. Push to `main`/`dev` or run the workflow manually (optionally with dry-run).
+#
+# Each group below maps to one of the surfaces requested: CI/CD + testing,
+# session start/end hooks & logs, rulesets, agent skills, agent files/tools/
+# collections/methods/implementations, config + environment management, tmux +
+# multi-agent orchestration, worktree configuration, launch + end-session,
+# lean-ctx, and mcp.json (agent + Copilot cloud agent) config.
+#
+# Directory syncs use `deleteOrphaned: true` so downstream repos track deletions.
+# Set it to `false` on any group where downstreams keep their own extra files.
+# =============================================================================
+
+group:
+  # ---------------------------------------------------------------------------
+  # 1. CI/CD + testing starter actions (GitHub Actions workflows)
+  # ---------------------------------------------------------------------------
+  - repos: |
+      Ditto190/REPLACE-WITH-TARGET-REPO
+    files:
+      - source: .github/workflows/ci.yml
+        dest: .github/workflows/ci.yml
+      - source: .github/workflows/codeql.yml
+        dest: .github/workflows/codeql.yml
+      - source: .github/workflows/pre-commit-check.yml
+        dest: .github/workflows/pre-commit-check.yml
+      - source: .github/workflows/preflight-ci.yml
+        dest: .github/workflows/preflight-ci.yml
+      - source: .github/workflows/changelog-check.yml
+        dest: .github/workflows/changelog-check.yml
+      - source: .github/workflows/markdown-lint.yml
+        dest: .github/workflows/markdown-lint.yml
+      - source: .github/workflows/cicd-failure-handler.yml
+        dest: .github/workflows/cicd-failure-handler.yml
+      - source: .github/workflows/agenttrace-ci.yml
+        dest: .github/workflows/agenttrace-ci.yml
+      # Sync this file itself so downstream repos inherit the sync capability.
+      - source: .github/workflows/repo-file-sync.yml
+        dest: .github/workflows/repo-file-sync.yml
+
+  # ---------------------------------------------------------------------------
+  # 2. Session-start / session-end hooks and log outputs
+  # ---------------------------------------------------------------------------
+  - repos: |
+      Ditto190/REPLACE-WITH-TARGET-REPO
+    files:
+      - source: .github/hooks/
+        dest: .github/hooks/
+        deleteOrphaned: true
+      - source: .cursor/hooks/
+        dest: .cursor/hooks/
+        deleteOrphaned: true
+      - source: .cursor/hooks.json
+        dest: .cursor/hooks.json
+      - source: scripts/agent-session-start.ps1
+        dest: scripts/agent-session-start.ps1
+      - source: scripts/agent-session-finish.ps1
+        dest: scripts/agent-session-finish.ps1
+      - source: scripts/vibe-session-finish.ps1
+        dest: scripts/vibe-session-finish.ps1
+      - source: scripts/modme-session.ps1
+        dest: scripts/modme-session.ps1
+      - source: scripts/modme-session.manifest.json
+        dest: scripts/modme-session.manifest.json
+
+  # ---------------------------------------------------------------------------
+  # 3. Rulesets (Cursor / Copilot rules)
+  # ---------------------------------------------------------------------------
+  - repos: |
+      Ditto190/REPLACE-WITH-TARGET-REPO
+    files:
+      - source: .cursor/rules/
+        dest: .cursor/rules/
+        deleteOrphaned: true
+      - source: .clinerules/
+        dest: .clinerules/
+        deleteOrphaned: true
+      - source: .github/instructions/
+        dest: .github/instructions/
+        deleteOrphaned: true
+
+  # ---------------------------------------------------------------------------
+  # 4. Agent skills (the most important surface)
+  #    .agents/skills + .github/skills + .cursor/skills
+  # ---------------------------------------------------------------------------
+  - repos: |
+      Ditto190/REPLACE-WITH-TARGET-REPO
+    files:
+      - source: .agents/skills/
+        dest: .agents/skills/
+        deleteOrphaned: true
+      - source: .github/skills/
+        dest: .github/skills/
+        deleteOrphaned: true
+      - source: .cursor/skills/
+        dest: .cursor/skills/
+        deleteOrphaned: true
+      - source: skills-lock.json
+        dest: skills-lock.json
+
+  # ---------------------------------------------------------------------------
+  # 5. Agent files, tools, collections, methods, implementations
+  # ---------------------------------------------------------------------------
+  - repos: |
+      Ditto190/REPLACE-WITH-TARGET-REPO
+    files:
+      # Collections (root + .github + .copilot)
+      - source: collections/
+        dest: collections/
+        deleteOrphaned: true
+      - source: .github/collections/
+        dest: .github/collections/
+        deleteOrphaned: true
+      - source: .copilot/collections/
+        dest: .copilot/collections/
+        deleteOrphaned: true
+      # Prompts / instructions / knowledge (methods + implementations)
+      - source: .github/prompts/
+        dest: .github/prompts/
+        deleteOrphaned: true
+      - source: .copilot/prompts/
+        dest: .copilot/prompts/
+        deleteOrphaned: true
+      - source: .copilot/instructions/
+        dest: .copilot/instructions/
+        deleteOrphaned: true
+      - source: .copilot/knowledge/
+        dest: .copilot/knowledge/
+        deleteOrphaned: true
+
+  # ---------------------------------------------------------------------------
+  # 6. Config + environment management
+  # ---------------------------------------------------------------------------
+  - repos: |
+      Ditto190/REPLACE-WITH-TARGET-REPO
+    files:
+      - source: .env.example
+        dest: .env.example
+      - source: .markdownlint.json
+        dest: .markdownlint.json
+      - source: .prettierrc.json
+        dest: .prettierrc.json
+      - source: .pre-commit-config.yaml
+        dest: .pre-commit-config.yaml
+      - source: .devcontainer/
+        dest: .devcontainer/
+        deleteOrphaned: false
+
+  # ---------------------------------------------------------------------------
+  # 7. tmux + multi-agent orchestration
+  # ---------------------------------------------------------------------------
+  - repos: |
+      Ditto190/REPLACE-WITH-TARGET-REPO
+    files:
+      - source: scripts/agent-workspace-tmux.sh
+        dest: scripts/agent-workspace-tmux.sh
+      - source: scripts/agent-workspace-tmux.ps1
+        dest: scripts/agent-workspace-tmux.ps1
+      - source: scripts/generate-mprocs-config.mjs
+        dest: scripts/generate-mprocs-config.mjs
+      - source: scripts/builders-orchestrator.mjs
+        dest: scripts/builders-orchestrator.mjs
+      - source: scripts/quality-orchestrator.mjs
+        dest: scripts/quality-orchestrator.mjs
+      - source: scripts/quality-orchestrator.manifest.json
+        dest: scripts/quality-orchestrator.manifest.json
+      - source: scripts/agent-task-registry-cli.mjs
+        dest: scripts/agent-task-registry-cli.mjs
+      - source: scripts/agent-status.mjs
+        dest: scripts/agent-status.mjs
+
+  # ---------------------------------------------------------------------------
+  # 8. Worktree configuration
+  # ---------------------------------------------------------------------------
+  - repos: |
+      Ditto190/REPLACE-WITH-TARGET-REPO
+    files:
+      - source: .cursor/worktrees.json
+        dest: .cursor/worktrees.json
+      - source: .worktreeinclude
+        dest: .worktreeinclude
+      - source: scripts/init-worktrees.ps1
+        dest: scripts/init-worktrees.ps1
+      - source: scripts/new-agent-worktree.ps1
+        dest: scripts/new-agent-worktree.ps1
+      - source: scripts/remove-agent-worktree.ps1
+        dest: scripts/remove-agent-worktree.ps1
+      - source: scripts/list-worktrees.ps1
+        dest: scripts/list-worktrees.ps1
+      - source: scripts/ensure-worktree.ps1
+        dest: scripts/ensure-worktree.ps1
+      - source: scripts/worktree-doctor.ps1
+        dest: scripts/worktree-doctor.ps1
+      - source: scripts/worktree-allocate-ports.ps1
+        dest: scripts/worktree-allocate-ports.ps1
+      - source: scripts/worktree-copy-env.ps1
+        dest: scripts/worktree-copy-env.ps1
+      - source: scripts/load-worktree-ports.ps1
+        dest: scripts/load-worktree-ports.ps1
+      - source: scripts/migrate-main-to-worktree.ps1
+        dest: scripts/migrate-main-to-worktree.ps1
+
+  # ---------------------------------------------------------------------------
+  # 9. Launch steps + end-session
+  # ---------------------------------------------------------------------------
+  - repos: |
+      Ditto190/REPLACE-WITH-TARGET-REPO
+    files:
+      - source: scripts/launch-manifest.json
+        dest: scripts/launch-manifest.json
+      - source: scripts/validate-launch-json.mjs
+        dest: scripts/validate-launch-json.mjs
+      - source: .github/workflows/launch-json-check.yml
+        dest: .github/workflows/launch-json-check.yml
+
+  # ---------------------------------------------------------------------------
+  # 10. lean-ctx (every repo)
+  # ---------------------------------------------------------------------------
+  - repos: |
+      Ditto190/REPLACE-WITH-TARGET-REPO
+    files:
+      - source: .lean-ctx.toml
+        dest: .lean-ctx.toml
+      - source: LEAN-CTX.md
+        dest: LEAN-CTX.md
+      - source: .cursor/rules/lean-ctx.mdc
+        dest: .cursor/rules/lean-ctx.mdc
+        replace: true
+      - source: .agents/skills/lean-ctx/
+        dest: .agents/skills/lean-ctx/
+        deleteOrphaned: true
+      - source: scripts/ensure-lean-ctx-config.ps1
+        dest: scripts/ensure-lean-ctx-config.ps1
+      - source: scripts/resolve-lean-ctx-hook.mjs
+        dest: scripts/resolve-lean-ctx-hook.mjs
+      - source: scripts/lean-ctx-session-bootstrap.ps1
+        dest: scripts/lean-ctx-session-bootstrap.ps1
+      - source: docs/lean-ctx/
+        dest: docs/lean-ctx/
+        deleteOrphaned: false
+
+  # ---------------------------------------------------------------------------
+  # 11. mcp.json config — agents + Copilot cloud agents
+  # ---------------------------------------------------------------------------
+  - repos: |
+      Ditto190/REPLACE-WITH-TARGET-REPO
+    files:
+      - source: .mcp.json
+        dest: .mcp.json
+      - source: .github/mcp.json
+        dest: .github/mcp.json
+      - source: .cursor/mcp.json
+        dest: .cursor/mcp.json
+      # Copilot cloud agents (custom agent definitions)
+      - source: .github/agents/
+        dest: .github/agents/
+        deleteOrphaned: true
+      - source: .github/copilot-instructions.md
+        dest: .github/copilot-instructions.md

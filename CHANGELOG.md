@@ -72,6 +72,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
+- (ci) Repo File Sync — `.github/workflows/repo-file-sync.yml` + `.github/sync.yml` ([BetaHuhn/repo-file-sync-action](https://github.com/marketplace/actions/repo-file-sync-action)) to distribute agent skills, tools, collections, rulesets, config, orchestration/tmux, worktree setup, launch/end-session, lean-ctx, and mcp.json (agent + Copilot cloud agent) config to downstream repos; docs in `docs/repo-file-sync.md`
 - (repo) Builder orchestration layer — `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
 - (repo) Copilot workspace + builder incident runbook — `docs/runbooks/copilot-workspace-builder-incident.md`
 - (repo) GitHub Copilot App workspace orchestration — `.github/github-app.yml` lifecycle scripts, `.worktreeinclude`, `scripts/copilot-workspace/`, portable `.github/hooks/hooks.json`, and `docs/copilot-workspace-orchestration.md`

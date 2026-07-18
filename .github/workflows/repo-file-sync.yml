@@ -1,0 +1,94 @@
+name: Repo File Sync
+
+# Distribute shared agent tooling, CI/CD, and config from this repo (the
+# source of truth) to downstream repositories using BetaHuhn/repo-file-sync-action.
+#
+# What is synced is declared in .github/sync.yml. See docs/repo-file-sync.md
+# for setup, target-repo configuration, and the GH_PAT secret requirements.
+#
+# The job only runs when the GH_PAT secret is configured, so a fresh clone or a
+# fork without the secret will not fail — it simply skips.
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      # Re-sync only when the config or any synced surface changes.
+      - '.github/sync.yml'
+      - '.github/workflows/repo-file-sync.yml'
+      - '.github/workflows/**'
+      - '.github/agents/**'
+      - '.github/skills/**'
+      - '.github/prompts/**'
+      - '.github/instructions/**'
+      - '.github/collections/**'
+      - '.github/hooks/**'
+      - '.github/mcp.json'
+      - '.agents/skills/**'
+      - '.cursor/rules/**'
+      - '.cursor/skills/**'
+      - '.cursor/hooks/**'
+      - '.cursor/mcp.json'
+      - '.cursor/worktrees.json'
+      - '.cursor/hooks.json'
+      - '.claude/**'
+      - 'collections/**'
+      - '.mcp.json'
+      - '.lean-ctx.toml'
+      - 'LEAN-CTX.md'
+      - 'scripts/**'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Preview changes without opening PRs (DRY_RUN=true)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repo-file-sync-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    # Skip when the required PAT is not configured (e.g. forks, fresh clones).
+    if: ${{ github.repository == 'Ditto190/modme-ui-01' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Guard — require GH_PAT
+        id: guard
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "${GH_PAT}" ]; then
+            echo "GH_PAT secret is not set — skipping sync." >&2
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run repo file sync
+        if: ${{ steps.guard.outputs.enabled == 'true' }}
+        uses: BetaHuhn/repo-file-sync-action@v1
+        with:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          CONFIG_PATH: .github/sync.yml
+          COMMIT_PREFIX: '🔄 sync:'
+          COMMIT_BODY: 'Synced from Ditto190/modme-ui-01 via repo-file-sync-action'
+          PR_LABELS: |
+            repo-file-sync
+            automation
+          PR_BODY: |
+            Automated file sync from **Ditto190/modme-ui-01** — the source of truth for
+            shared agent skills, tools, collections, config, CI/CD, orchestration, and
+            lean-ctx / mcp.json setup. Review before merging.
+          DRY_RUN: ${{ inputs.dry_run || false }}
+          GIT_EMAIL: ${{ vars.SYNC_GIT_EMAIL || '' }}
+          GIT_USERNAME: ${{ vars.SYNC_GIT_USERNAME || '' }}
