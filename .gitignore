@@ -127,8 +127,12 @@ quality/
 
 # Beads / Dolt files (added by bd init)
 .dolt/
+.dolt-data/
 .beads/embeddeddolt/
 .beads/interactions.jsonl
+.beads/backup-pre-*.jsonl
+.beads/backup/
+.beads/backup-store/
 *.db
 .beads-credential-key
 .beads/proxieddb/
@@ -137,8 +141,13 @@ quality/
 # Local MCP build checkout (do not nest as submodule by accident)
 .tools/skillsh-mcp/
 
-
 # Pre-cutover hygiene
 **/__pycache__/
 scripts/cursor-ai/*.tar.gz
 
+# Entire local overrides (settings.json may be committed)
+.entire/settings.local.json
+.entire/tmp/
+.entire/logs/
+.entire/metadata/
+.entire/current_session

@@ -1,93 +1,85 @@
 # Knowledge Management Quickstart
 
-Canonical KM for **Monorepo_ModMe** (2026): **beads** for work, **inbox** for knowledge, **intake** for ingest → KM brain.
+**Single entrypoint** for ModMe knowledge and the agent data plane.
 
-## Flow (5 minutes)
+Canonical architecture: [ADR-0013](architecture/decisions/0013-dolt-beads-entire-agent-data-plane.md) · Catalog index: [knowledge/CATALOG.md](knowledge/CATALOG.md)
 
-```mermaid
-flowchart LR
-  Work[beads_bd] --> Session[agent_session]
-  Drop[inbox_drop] --> Audit[yarn_inbox_audit]
-  Audit --> Intake[yarn_intake]
-  Intake --> PG[Supabase_pgvector]
-  PG --> Brain[catalogue_RAG]
-```
+## Planes (dual-store)
 
-| Step          | Command                                          | Purpose                              |
-| ------------- | ------------------------------------------------ | ------------------------------------ |
-| 1. Capture    | Drop file in `GenerativeUI_monorepo/docs/inbox/` | Knowledge funnel (contract v1)       |
-| 2. Track work | `yarn beads:ready` / session scripts             | Work SoR (`modme` prefix)            |
-| 3. Validate   | `yarn inbox:audit`                               | Contract + manifest quality          |
-| 4. Ingest     | `yarn intake` or `yarn intake:orchestrate`       | Embed + MDA + beads lifecycle        |
-| 5. Query      | Supabase / catalogue / RAG APIs                  | KM brain (HTTP only from next-forge) |
+| Plane                        | SoR                           | Commands                                    |
+| ---------------------------- | ----------------------------- | ------------------------------------------- |
+| Product + inbox/knowledge UI | Supabase Postgres             | `yarn intake*`, `yarn inbox:*`              |
+| Agent tasks                  | Beads (Dolt)                  | `yarn beads:ready`, `yarn beads:push`       |
+| Agent/catalog CMS            | Dolt `config/dolt/catalog/`   | `yarn dolt:up`, `yarn dolt:catalog:init`    |
+| Agent sessions               | Entire CLI (local git branch) | `yarn entire:install`, `yarn entire:status` |
 
-## Capture an inbox drop
+**Do not** put product Prisma / pgvector on Dolt.
 
-Create `GenerativeUI_monorepo/docs/inbox/YYYY-MM-DDTHH-MM-SS_{type}_{role}_{slug}.md`:
-
-```yaml
----
-timestamp: 2026-07-11T10:00:00Z
-agent: cursor
-agent_role: architect
-type: architecture
-severity: medium
-c4_container: next-forge
-tags: [supabase, adr]
-branch: feature/cursor/my-task
----
-```
-
-Required: `timestamp`, `agent`, `type`. See [inbox contract](inbox-pipeline/contracts/inbox-contract.v1.json) and [ADR-0014](adr/0014-km-c4-ownership-taxonomy.md).
-
-## Beads (work SoR)
+## One-command health
 
 ```powershell
-yarn beads:init          # once
-yarn agent:session:start --% -TaskTitle "my task"
-yarn intake:dry-run      # pipeline dry-run (BEADS_DISABLED ok)
-yarn agent:session:finish
-yarn beads:push
+yarn km:status
 ```
 
-Adapter: `scripts/lib/beads-hooks.mjs` · CLI: `scripts/beads-cli.mjs` · Guide: [beads-workflow.md](beads-workflow.md)
+Aggregates Entire, Dolt sql-server, Beads ready, and inbox funnel audit.
 
-## Intake commands
+## First-time local setup
 
-| Command                                       | Description                        |
-| --------------------------------------------- | ---------------------------------- |
-| `yarn inbox:audit`                            | Funnel + pipeline + manifest audit |
-| `yarn inbox:fix`                              | Dry-run autofix suggestions        |
-| `yarn inbox:test`                             | Vitest (contract + beads + e2e)    |
-| `yarn intake`                                 | Ingest only                        |
-| `yarn intake:orchestrate`                     | Audit → ingest → embed → MDA       |
-| `yarn intake:dry-run`                         | No Supabase writes                 |
-| `node scripts/journal-to-inbox.mjs --dry-run` | Promote private journal → inbox    |
+```powershell
+# 1. Entire (session capture) — Scoop or Go
+yarn entire:install
 
-Reports: `docs/inbox-pipeline/reports/latest.md` · Metrics: `docs/inbox-pipeline/reports/km-metrics-latest.json`
+# 2. Dolt
+winget install DoltHub.Dolt   # once
+yarn dolt:up
+yarn dolt:catalog:init
 
-## C4 ownership
+# 3. Beads (already initialized in repo)
+yarn beads:ready
 
-Set `c4_container` on captures:
+# 4. Optional: prepare beads ↔ sql-server env
+yarn dolt:beads:migrate-server
+```
 
-| Value                | Scope                                |
-| -------------------- | ------------------------------------ |
-| `root-orchestration` | `scripts/`, root agent orchestration |
-| `next-forge`         | `next-forge/**`                      |
-| `generative-ui`      | `GenerativeUI_monorepo/**`           |
-| `agent-stack`        | `agent/**`, agent-server             |
+## Daily agent workflow
 
-## SoR split (do not mix)
+```powershell
+.\scripts\new-agent-worktree.ps1 -Name "<task>" -Owner cursor
+# Worktree setup already runs km-session-bootstrap + agent-session-start
+yarn agent:session:start --% -TaskTitle "<task>"   # also runs yarn km:bootstrap
+yarn km:status
+# F5: "Full Stack: Forge Core + Agent Data Plane" (strict KM) or "next-forge: dev core" (soft KM)
+# ... work ...
+.\scripts\agent-session-finish.ps1 -VerifyStack
+```
 
-- **Work:** beads — not chat todos for multi-session, not `data/agent-registry.json` as SoR
-- **Knowledge:** inbox → intake → pgvector / MDA
-- **Product UI DB:** next-forge Prisma/Supabase — separate; HTTP/contracts only
+Manual KM only: `yarn km:bootstrap` (soft) or `yarn km:bootstrap:strict`.
 
-## Deep dive
+Beads: [beads-workflow.md](beads-workflow.md) · Entire checkpoints live on `entire/checkpoints/v1` (not your feature branch).
+Debug launches: [debug-launch-guide.md](debug-launch-guide.md) §2 Agent data plane.
 
-- [KNOWLEDGE_MANAGEMENT.md](KNOWLEDGE_MANAGEMENT.md) — architecture
-- [inbox-pipeline/README.md](inbox-pipeline/README.md) — pipeline reference
-- [ADR-0015](adr/0015-router-layering-km-polis-genui.md) — polis vs MDA vs GenUI routes
+## Inbox → Knowledge (canonical product KM)
+
+Drop notes in `GenerativeUI_monorepo/docs/inbox/` then:
+
+```powershell
+yarn inbox:audit
+yarn intake:orchestrate
+```
+
+Full guide: [inbox-pipeline/README.md](inbox-pipeline/README.md).
+
+## Legacy toolset sync (deprecated path)
+
+`agent/toolsets.json` ↔ `docs/toolsets/` is **legacy** (root `agent/` is deprecated). Prefer inbox + catalog.
+
+```powershell
+yarn km:legacy:validate
+yarn km:legacy:sync
+yarn km:legacy:diagram
+```
+
+Details: [KNOWLEDGE_MANAGEMENT.md](KNOWLEDGE_MANAGEMENT.md) (historical), [scripts/knowledge-management/README.md](../scripts/knowledge-management/README.md) (issue context mapper).
 
 ## Obsidian vault (sidecar)
 
@@ -104,30 +96,19 @@ yarn obsidian:sidecar:setup -OpenVault
 | Dashboards    | [adam/ADAM Command Center.md](adam/ADAM%20Command%20Center.md) |
 | Plugin policy | [adam/Vault Plugin Policy.md](adam/Vault%20Plugin%20Policy.md) |
 
----
+Clipper: `yarn docs:clipper:export` + `templates/obsidian-clipper/`. Capture via inbox when clipper assets are missing (see CATALOG.md).
 
-## Legacy: GenUI toolsets (quarantined)
+## Skills that help
 
-The sections below describe **GenerativeUI canvas toolsets** only (`agent/toolsets.json`, `scripts/knowledge-management/*`). Do **not** use for monorepo KM.
+| Skill                      | When                           |
+| -------------------------- | ------------------------------ |
+| `detecting-port-conflicts` | Port 3307 / forge ports busy   |
+| `suggesting-cursor-rules`  | Encode Entire/Dolt conventions |
+| `awesome-cursor-skills`    | Discover browser/CI helpers    |
+| `/beads`                   | Multi-session task memory      |
 
-<details>
-<summary>Legacy toolset workflow (GenUI only)</summary>
+## Related
 
-### Validate toolsets
-
-```bash
-cd GenerativeUI_monorepo  # or legacy package root with toolsets
-npm run docs:sync -- --validate-only
-```
-
-### Search toolsets
-
-```bash
-npm run search:toolset "upsert_ui_element"
-```
-
-See [TOOLSET_MANAGEMENT.md](TOOLSET_MANAGEMENT.md) for runtime loading.
-
-</details>
-
-**Last updated:** 2026-07-11
+- [agent-index.md](agent-index.md)
+- [agent-terminal-orchestration.md](agent-terminal-orchestration.md)
+- [codebase/STACK.md](codebase/STACK.md) — ports including Dolt 3307

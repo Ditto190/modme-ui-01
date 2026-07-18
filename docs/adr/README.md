@@ -14,6 +14,8 @@ ADRs at this path cover **Monorepo_ModMe root orchestration** (scripts, agents, 
 | **0017** | [Label Studio AI-driven annotation loop (Option C)](./0017-label-studio-ai-annotation-loop.md)                                        | **Accepted** | 2026-07-12 |
 | **0018** | [TODO — Obsidian-first auto-tagging (Option A) deferred](./TODO-0018-obsidian-first-auto-tagging-option-a.md)                         | **TODO**     | 2026-07-12 |
 
+Also see architecture decisions: [0013 dual-store agent data plane](../architecture/decisions/0013-dolt-beads-entire-agent-data-plane.md), [0014 KM session startup](../architecture/decisions/0014-km-session-startup-wiring.md), runbook [`docs/monorepo/km-agent-data-plane-startup.md`](../monorepo/km-agent-data-plane-startup.md).
+
 ## Creating a new root ADR
 
 1. Copy MADR template from `next-forge/docs/adr/README.md`

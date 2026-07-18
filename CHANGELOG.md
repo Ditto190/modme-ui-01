@@ -37,7 +37,7 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 ```markdown
 ### Added
 
-- (repo) Pre-cutover WIP on obsidian-unique-note-pack � scripts/docs/templates/agent tooling carried from main checkout before D: move
+- (repo) Pre-cutover WIP on obsidian-unique-note-pack � scripts/docs/templates/agent tooling carried from main checkout before D: move
 - (scope) Short description (#PR)
 
 ### Changed
@@ -66,9 +66,11 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Added
 
-- (repo) Pre-cutover WIP on obsidian-unique-note-pack � scripts/docs/templates/agent tooling carried from main checkout before D: move
+- (repo) Pre-cutover WIP on obsidian-unique-note-pack � scripts/docs/templates/agent tooling carried from main checkout before D: move
 - (docs/obsidian) Unique note + Advanced URI + Code Emitter pack — `docs/obsidian/`, `tpl-unique-note.md`, `tpl-code-sandbox.md`, Clipper `modme-inbox-obsidian-help.json`, `uid` on Clipper templates, vault path `inbox` for ModMe-Vault
 - (repo) WSL `modme-agent` profile + Jetify Devbox toolchain — `devbox.json`, `yarn wsl:ubuntu:setup`, `scripts/shell/setup-modme-agent-wsl.sh`, Docker/WSL doctor scripts, `docs/windows-docker-wsl-setup.md`
+- (repo) Agent data plane — Entire CLI (`yarn entire:*`), Dolt sql-server (`yarn dolt:*`), KM hub (`yarn km:status`, `docs/KNOWLEDGE_QUICKSTART.md`, `docs/knowledge/CATALOG.md`), ADR-0013 superseding ADR-0010
+- (repo) KM session startup wiring — `scripts/km-session-bootstrap.ps1` (`yarn km:bootstrap`), session start + worktree setup + VS Code tasks/launch (`Full Stack: Forge Core + Agent Data Plane`, soft `dependsOn` on `next-forge: dev core`); ADR-0014; beads `modme-awz`; runbook `docs/monorepo/km-agent-data-plane-startup.md`
 
 ### Changed
 
@@ -80,11 +82,12 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 - (repo) Drop accidental `.tools/skillsh-mcp` gitlink and non-source artifacts from pre-cutover WIP
 - (next-forge) Apply Ultracite/Biome format fixes required for promote-dev-to-main pre-push verify
-- (repo) Devbox package pin `yarn@3` → `yarn-berry_3@3.8.7`; Windows→WSL path conversion in Ubuntu setup; remove accidental npm `sudo`/`devbox` deps
+- (repo) Devbox package pin `yarn@3` ? `yarn-berry_3@3.8.7`; Windows?WSL path conversion in Ubuntu setup; remove accidental npm `sudo`/`devbox` deps
+- (repo) Beads auto-backup Error 1105 ? disable broken `.beads/backup` destination (`backup.enabled: false`); see `docs/beads-workflow.md` troubleshooting
 
 ### Added
 
-- (repo) Pre-cutover WIP on obsidian-unique-note-pack � scripts/docs/templates/agent tooling carried from main checkout before D: move
+- (repo) Pre-cutover WIP on obsidian-unique-note-pack � scripts/docs/templates/agent tooling carried from main checkout before D: move
 - (repo) Obsidian sidecar vault — `scripts/setup-modme-obsidian-sidecar.ps1`, directory junctions, `docs/obsidian-sidecar-setup.md`, `yarn obsidian:sidecar:*` scripts (solves 10–30s Obsidian startup when vault is monorepo root; now 1–2s)
 - (repo) Builder orchestration layer — `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
 - (repo) Copilot workspace + builder incident runbook — `docs/runbooks/copilot-workspace-builder-incident.md`
