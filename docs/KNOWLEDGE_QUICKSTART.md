@@ -96,7 +96,7 @@ yarn obsidian:sidecar:setup -OpenVault
 | Dashboards    | [adam/ADAM Command Center.md](adam/ADAM%20Command%20Center.md) |
 | Plugin policy | [adam/Vault Plugin Policy.md](adam/Vault%20Plugin%20Policy.md) |
 
-Clipper: `yarn docs:clipper:export` + `templates/obsidian-clipper/`. Capture via inbox when clipper assets are missing (see CATALOG.md).
+Clipper templates: `yarn docs:clipper:export` + `templates/obsidian-clipper/`. Capture via inbox when clipper export is unavailable (see [CATALOG.md](knowledge/CATALOG.md)).
 
 ## Skills that help
 
