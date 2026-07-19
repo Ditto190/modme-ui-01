@@ -83,7 +83,7 @@ obsidian://open?path=C:\Users\dylan\ModMe-Vault
 ```
 Obsidian clip → inbox/notes.md (vault)
                        ↓ (junction)
-               MonorepoUI_monorepo/docs/inbox/notes.md (real file)
+               GenerativeUI_monorepo/docs/inbox/notes.md (real file)
                        ↓ (git add .)
                Committed to monorepo history
 ```

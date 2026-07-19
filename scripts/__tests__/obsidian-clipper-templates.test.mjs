@@ -69,8 +69,12 @@ describe("obsidian clipper pack invariants", () => {
       expect(isVaultInboxPath(json.path), `${file} path=${json.path}`).toBe(true);
       expect(json.path, file).not.toBe(DEPRECATED_INBOX_PATH);
       expect(Array.isArray(json.properties), file).toBe(true);
+      for (const property of json.properties) {
+        expect(property && typeof property === "object", `${file} invalid property entry`).toBe(true);
+        expect(typeof property.name, `${file} property missing name`).toBe("string");
+      }
       expect(
-        json.properties.some((p) => p.name === "uid"),
+        json.properties.some((p) => p && p.name === "uid"),
         `${file} missing uid`,
       ).toBe(true);
       expect(json.schemaVersion).toBe("0.1.0");
@@ -83,6 +87,7 @@ describe("obsidian clipper pack invariants", () => {
     const file = files.find((f) =>
       f.replace(/\\/g, "/").endsWith("modme-inbox-obsidian-help.json"),
     );
+    expect(file, "modme-inbox-obsidian-help.json fixture").toBeTruthy();
     const json = JSON.parse(fs.readFileSync(file, "utf8"));
     expect(json.name).toContain("Obsidian Help");
     const type = json.properties.find((p) => p.name === "type")?.value;

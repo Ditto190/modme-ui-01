@@ -6,7 +6,7 @@
 	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_README",
 	"path": "inbox/web-clipper/{{meta:octolytics-dimension-repository_nwo|split:\"/\"|last|safe_name ?? url|split:\"/\"|slice:3,4|first|safe_name}}",
 	"triggers": [
-		"/^https:\\/\\/github\\.com\\/[^\\/]+\\/[^\\/]+\\/?$/"
+		"/^https:\\/\\/github\\.com\\/[^\\/]+\\/[^\\/]+/"
 	],
 	"properties": [
 		{

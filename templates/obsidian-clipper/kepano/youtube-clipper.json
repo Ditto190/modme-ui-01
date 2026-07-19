@@ -4,7 +4,7 @@
 	"behavior": "create",
 	"noteNameFormat": "{{schema:author}} – {{schema:name}}",
 	"path": "inbox",
-	"noteContentFormat": "![{{schema:name}}]({{url}})",
+	"noteContentFormat": "[{{schema:name}}]({{url}})",
 	"properties": [
 		{
 			"name": "uid",
@@ -18,7 +18,7 @@
 		},
 		{
 			"name": "author",
-			"value": "{{schema:author|wikilink}}",
+			"value": "{{schema:author|wikilink|join}}",
 			"type": "multitext"
 		},
 		{
@@ -39,7 +39,7 @@
 		{
 			"name": "created",
 			"value": "{{date}}",
-			"type": "text"
+			"type": "date"
 		},
 		{
 			"name": "tags",
@@ -48,6 +48,9 @@
 		}
 	],
 	"triggers": [
-		"https://www.youtube.com/watch?v="
+		"https://www.youtube.com/watch?v=",
+		"https://youtu.be/",
+		"https://www.youtube.com/shorts/",
+		"https://m.youtube.com/watch?v="
 	]
 }

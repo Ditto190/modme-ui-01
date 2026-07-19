@@ -173,7 +173,7 @@
         "obsidian:kb:download": "node scripts/knowledge-management/obsidian-kb-download.mjs",
         "obsidian:kb:promote": "node scripts/knowledge-management/obsidian-kb-promote.mjs",
         "obsidian:sidecar:setup": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/setup-modme-obsidian-sidecar.ps1",
-        "obsidian:sidecar:open": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Start-Process ([uri]::EscapeUriString('obsidian://open?path=' + [uri]::EscapeDataString('C:\\\\Users\\\\dylan\\\\ModMe-Vault')))\"",
+        "obsidian:sidecar:open": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$vault = if ($env:USERPROFILE) { Join-Path $env:USERPROFILE 'ModMe-Vault' } elseif ($env:HOME) { Join-Path $env:HOME 'ModMe-Vault' } else { 'ModMe-Vault' }; Start-Process ('obsidian://open?path=' + [uri]::EscapeDataString($vault))\"",
         "docker:doctor": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/docker-wsl-doctor.ps1",
         "docker:configure": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/configure-docker-wsl-settings.ps1",
         "docker:prune": "docker system prune -af --volumes",

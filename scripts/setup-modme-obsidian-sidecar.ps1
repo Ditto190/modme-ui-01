@@ -8,7 +8,7 @@
   Uses Windows junctions (directory links) to maintain file paths for Clipper ingest.
 
 .PARAMETER VaultPath
-  Path to create the sidecar vault (default: C:\Users\dylan\ModMe-Vault)
+  Path to create the sidecar vault (default: $env:USERPROFILE\ModMe-Vault on Windows, $env:HOME/ModMe-Vault elsewhere)
 
 .PARAMETER MonorepoRoot
   Path to the monorepo (default: auto-detect parent of this script)
@@ -22,7 +22,15 @@
 #>
 [CmdletBinding()]
 param(
-  [string]$VaultPath = "C:\Users\dylan\ModMe-Vault",
+  [string]$VaultPath = $(if ($env:USERPROFILE) {
+      Join-Path $env:USERPROFILE "ModMe-Vault"
+    }
+    elseif ($env:HOME) {
+      Join-Path $env:HOME "ModMe-Vault"
+    }
+    else {
+      "ModMe-Vault"
+    }),
   # Do not use $PSScriptRoot in param defaults — it is empty during default binding
   # when yarn/nested powershell invoke this script.
   [string]$MonorepoRoot = "",
@@ -88,10 +96,16 @@ Write-Host "Writing app.json"
 $appJson | ConvertTo-Json | Set-Content $appJsonPath -Encoding UTF8
 
 # Create other minimal config files
+$pluginArrayFiles = @("community-plugins.json", "core-plugins.json")
 @("appearance.json", "bookmarks.json", "community-plugins.json", "core-plugins.json", "daily-notes.json", "templates.json", "types.json") | ForEach-Object {
   $filePath = Join-Path $obsidianDir $_
   if (-not (Test-Path $filePath)) {
-    "{}" | Set-Content $filePath -Encoding UTF8
+    if ($pluginArrayFiles -contains $_) {
+      "[]" | Set-Content $filePath -Encoding UTF8
+    }
+    else {
+      "{}" | Set-Content $filePath -Encoding UTF8
+    }
   }
 }
 
@@ -117,8 +131,15 @@ foreach ($junction in $junctions) {
   }
   else {
     Write-Host "Creating junction: $($junction.name) to $targetPath"
-    # Use mklink /J (directory junction)
-    cmd /c mklink /J "$linkPath" "$targetPath" | Out-Null
+    if ($IsWindows -or $env:OS -match "Windows") {
+      cmd /c mklink /J "$linkPath" "$targetPath" | Out-Null
+      if ($LASTEXITCODE -ne 0) {
+        throw "Failed to create junction $($junction.name) -> $targetPath (exit $LASTEXITCODE). Enable Developer Mode or run as Administrator."
+      }
+    }
+    else {
+      New-Item -ItemType SymbolicLink -Path $linkPath -Target $targetPath -Force | Out-Null
+    }
   }
 }
 
@@ -206,7 +227,12 @@ if ($OpenVault) {
   Write-Host ""
   Write-Host "Opening vault in Obsidian..."
   $uri = "obsidian://open?path=" + [uri]::EscapeDataString("$VaultPath")
-  Start-Process $uri
+  try {
+    Start-Process $uri -ErrorAction Stop
+  }
+  catch {
+    Write-Host "Could not open Obsidian via protocol handler. Open manually: $VaultPath" -ForegroundColor Yellow
+  }
 }
 
 Write-Host ""

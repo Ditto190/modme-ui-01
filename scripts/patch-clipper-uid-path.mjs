@@ -63,6 +63,9 @@ export function applyClipperUidAndPath(json) {
 export function listClipperJsonFiles(dir = CLIPPER_ROOT) {
   /** @type {string[]} */
   const out = [];
+  if (!fs.existsSync(dir)) {
+    return out;
+  }
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {

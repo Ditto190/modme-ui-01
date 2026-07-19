@@ -49,7 +49,7 @@
 		},
 		{
 			"name": "summary",
-			"value": "{{description ?? meta:og:description}}",
+			"value": "{{description ?? meta:property:og:description}}",
 			"type": "text"
 		},
 		{
