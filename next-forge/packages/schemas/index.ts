@@ -116,6 +116,19 @@ export {
   InboxSourceFormatSchema,
 } from "./inbox";
 export type {
+  GateCheck,
+  GatePhase,
+  PromotionFrontmatter,
+} from "./intake-gates";
+export {
+  gateChecks,
+  INTAKE_PROMOTION_TAG,
+  PromotionFrontmatterSchema,
+  parsePromotionFrontmatter,
+  shouldPromoteNote,
+  triggerSetHash,
+} from "./intake-gates";
+export type {
   EvalContractResult,
   EvalEvent,
   EvalSession,

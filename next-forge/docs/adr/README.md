@@ -21,6 +21,8 @@ Architecture Decision Records provide:
 | **0009** | [Inbox Data Contract and Quality Gates](./0009-inbox-data-contract-and-quality-gates.md) | **Accepted** | 2026-06-20 | Inbox Pipeline |
 | **0010** | [Dual-store knowledge intake (GreptimeDB + Supabase)](./0010-dual-store-knowledge-intake.md) | **Accepted** | 2026-06-27 | Inbox / Intake |
 | **0011** | [Agent terminal orchestration without Nx](./0011-terminal-orchestration-without-nx.md) | **Accepted** | 2026-06-27 | Agent / DevEx |
+| **0012** | [Bounded parallel agent lifecycle](./0012-bounded-parallel-agent-lifecycle.md) | **Accepted** | 2026-06-28 | Agent / DevEx |
+| **0013** | [Obsidian Intake Trigger and Session Quality Gates](./0013-obsidian-intake-trigger-and-session-gates.md) | **Proposed** | 2026-07-12 | Inbox / Intake |
 
 ## Creating a New ADR
 
