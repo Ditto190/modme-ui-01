@@ -143,8 +143,8 @@ max_age_hours = 168                # 7 days — multi-session agent work
 max_disk_mb = 1024
 
 
-LEAN_CTX_TRUST_WORKSPACE=1
-LEAN_CTX_TRUSTED_ROOTS=1
+# LEAN_CTX_TRUST_WORKSPACE=1
+# LEAN_CTX_TRUSTED_ROOTS=1
 
 [cloud]
 contribute_enabled = true

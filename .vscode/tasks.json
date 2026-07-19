@@ -19,7 +19,11 @@
         "panel": "shared",
         "close": true
       },
-      "problemMatcher": []
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     },
     {
       "label": "modme: KM data plane up",

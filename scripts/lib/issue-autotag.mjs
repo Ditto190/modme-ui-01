@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Path → label mapping for PRs and issues.
  * Stack labels mirror scripts/lib/path-filter.mjs; extra labels from .cursor/bugbot/AUTOTAGS.yml.
@@ -7,6 +6,7 @@ import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { classifyChangedStacks } from "./path-filter.mjs";
+import { beadsLinkExternal } from "./beads-hooks.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
@@ -126,4 +126,18 @@ export function labelsForIssueBody(body) {
     labels.push("devops-autofix");
   }
   return labels;
+}
+
+/**
+ * When GitHub issue body references beads and URL is known, sync external_issue comment.
+ * @param {string} body
+ * @param {string | null | undefined} beadsId
+ * @param {string | null | undefined} externalUrl
+ */
+export async function syncBeadsExternalFromBody(body, beadsId, externalUrl) {
+  if (!beadsId || !externalUrl) return { ok: false, skipped: true };
+  if (!labelsForIssueBody(body).includes("beads-linked")) {
+    return { ok: false, skipped: true, reason: "not beads-linked" };
+  }
+  return beadsLinkExternal(beadsId, externalUrl);
 }

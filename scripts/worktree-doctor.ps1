@@ -10,6 +10,7 @@ param(
   [switch]$Fix,
   [switch]$Json,
   [switch]$Quiet,
+  [switch]$CheckDockerWsl,
   [string]$RepoRoot = ''
 )
 
@@ -205,6 +206,28 @@ elseif ($repo -match '\\next-forge$|/next-forge$') {
 }
 else {
   Add-Check 'cwd' 'ok' 'Working directory OK for root orchestration scripts' ''
+}
+
+if ($CheckDockerWsl) {
+  $dockerDoctor = Join-Path $PSScriptRoot 'docker-wsl-doctor.ps1'
+  if (Test-Path $dockerDoctor) {
+    $dockerJson = & $dockerDoctor -Json 2>$null | ConvertFrom-Json
+    if ($dockerJson.wslConfigExists) {
+      Add-Check 'docker-wsl' 'ok' '.wslconfig present' ''
+    }
+    else {
+      Add-Check 'docker-wsl' 'warn' '.wslconfig missing' 'See docs/windows-docker-wsl-setup.md'
+    }
+    if ($dockerJson.vhdxFiles) {
+      $maxGb = ($dockerJson.vhdxFiles | ForEach-Object { $_.SizeGB } | Measure-Object -Maximum).Maximum
+      if ($maxGb -ge 10) {
+        Add-Check 'docker-disk' 'warn' "Docker VHDX max ${maxGb}GB (budget 10GB)" 'yarn docker:prune or factory reset'
+      }
+      else {
+        Add-Check 'docker-disk' 'ok' "Docker VHDX max ${maxGb}GB" ''
+      }
+    }
+  }
 }
 
 $errorCount = @($checks | Where-Object { $_.status -eq 'error' }).Count

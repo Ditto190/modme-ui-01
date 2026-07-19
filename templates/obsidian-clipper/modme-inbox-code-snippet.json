@@ -1,0 +1,118 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "ModMe Inbox — Code Snippet",
+	"behavior": "create",
+	"description": "AST-ready SoftwareSourceCode envelope for GitHub blobs/raw/gists and Cubic PR file views. Captures source from GitHub textarea (#read-only-cursor-text-area), not Defuddle {{content}}. True AST indexing stays in code-chunk.v1 / code-index.",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_snippet_researcher_{{url|split:\"/\"|last|split:\"?\"|first|split:\".\"|first|safe_name}}",
+	"path": "inbox/web-clipper/{{meta:octolytics-dimension-repository_nwo|split:\"/\"|last|safe_name ?? url|split:\"/\"|slice:3,4|first|safe_name ?? domain|safe_name}}",
+	"triggers": [
+		"/^https:\\/\\/github\\.com\\/.+\\/blob\\//",
+		"/^https:\\/\\/raw\\.githubusercontent\\.com\\//",
+		"/^https:\\/\\/gist\\.github\\.com\\//",
+		"/^https:\\/\\/www\\.cubic\\.dev\\/pr\\//",
+		"/^https:\\/\\/cubic\\.dev\\/pr\\//"
+	],
+	"properties": [
+		{
+			"name": "timestamp",
+			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
+			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
+		{
+			"name": "agent",
+			"value": "human",
+			"type": "text"
+		},
+		{
+			"name": "agent_role",
+			"value": "researcher",
+			"type": "text"
+		},
+		{
+			"name": "type",
+			"value": "snippet",
+			"type": "text"
+		},
+		{
+			"name": "severity",
+			"value": "medium",
+			"type": "text"
+		},
+		{
+			"name": "tags",
+			"value": "clipper, snippet, SoftwareSourceCode, {{domain}}, {{url|split:\"/\"|last|split:\"?\"|first|split:\".\"|last|lower}}",
+			"type": "multitext"
+		},
+		{
+			"name": "title",
+			"value": "{{url|split:\"/\"|last|split:\"?\"|first ?? title}}",
+			"type": "text"
+		},
+		{
+			"name": "summary",
+			"value": "{{description ?? meta:og:description}}",
+			"type": "text"
+		},
+		{
+			"name": "source",
+			"value": "{{url}}",
+			"type": "text"
+		},
+		{
+			"name": "schema_type",
+			"value": "SoftwareSourceCode",
+			"type": "text"
+		},
+		{
+			"name": "code_sample_type",
+			"value": "{% if selection %}code snippet{% else %}full{% endif %}",
+			"type": "text"
+		},
+		{
+			"name": "file_name",
+			"value": "{{url|split:\"/\"|last|split:\"?\"|first}}",
+			"type": "text"
+		},
+		{
+			"name": "file_extension",
+			"value": "{{url|split:\"/\"|last|split:\"?\"|first|split:\".\"|last|lower}}",
+			"type": "text"
+		},
+		{
+			"name": "programming_language",
+			"value": "{% set ext = url|split:\"/\"|last|split:\"?\"|first|split:\".\"|last|lower %}{% if ext == \"ts\" or ext == \"tsx\" %}TypeScript{% elseif ext == \"js\" or ext == \"mjs\" or ext == \"cjs\" or ext == \"jsx\" %}JavaScript{% elseif ext == \"rs\" %}Rust{% elseif ext == \"toml\" %}TOML{% elseif ext == \"py\" %}Python{% elseif ext == \"go\" %}Go{% elseif ext == \"java\" %}Java{% elseif ext == \"kt\" %}Kotlin{% elseif ext == \"rb\" %}Ruby{% elseif ext == \"php\" %}PHP{% elseif ext == \"cs\" %}C#{% elseif ext == \"cpp\" or ext == \"cc\" or ext == \"cxx\" or ext == \"h\" or ext == \"hpp\" %}C++{% elseif ext == \"c\" %}C{% elseif ext == \"swift\" %}Swift{% elseif ext == \"md\" or ext == \"mdx\" %}Markdown{% elseif ext == \"json\" or ext == \"jsonc\" %}JSON{% elseif ext == \"yml\" or ext == \"yaml\" %}YAML{% elseif ext == \"sql\" %}SQL{% elseif ext == \"sh\" or ext == \"bash\" or ext == \"ps1\" %}Shell{% elseif ext == \"css\" %}CSS{% elseif ext == \"html\" or ext == \"htm\" %}HTML{% elseif ext == \"vue\" %}Vue{% elseif ext == \"svelte\" %}Svelte{% elseif ext == \"prisma\" %}Prisma{% else %}{{ext}}{% endif %}",
+			"type": "text"
+		},
+		{
+			"name": "encoding_format",
+			"value": "{% set ext = url|split:\"/\"|last|split:\"?\"|first|split:\".\"|last|lower %}{% if ext == \"ts\" or ext == \"tsx\" %}text/typescript{% elseif ext == \"js\" or ext == \"mjs\" or ext == \"cjs\" or ext == \"jsx\" %}text/javascript{% elseif ext == \"json\" or ext == \"jsonc\" %}application/json{% elseif ext == \"toml\" %}application/toml{% elseif ext == \"md\" or ext == \"mdx\" %}text/markdown{% elseif ext == \"html\" or ext == \"htm\" %}text/html{% elseif ext == \"css\" %}text/css{% elseif ext == \"yml\" or ext == \"yaml\" %}application/yaml{% elseif ext == \"py\" %}text/x-python{% elseif ext == \"rs\" %}text/x-rust{% elseif ext == \"go\" %}text/x-go{% elseif ext == \"sql\" %}application/sql{% else %}text/plain{% endif %}",
+			"type": "text"
+		},
+		{
+			"name": "code_repository",
+			"value": "{% if meta:octolytics-dimension-repository_nwo %}https://github.com/{{meta:octolytics-dimension-repository_nwo}}{% elseif domain contains \"github.com\" or domain contains \"githubusercontent.com\" %}{{url}}{% else %}{% endif %}",
+			"type": "text"
+		},
+		{
+			"name": "code_path",
+			"value": "{{meta:og:title|split:\" at \"|first ?? url|split:\"/\"|last|split:\"?\"|first}}",
+			"type": "text"
+		},
+		{
+			"name": "commit_ref",
+			"value": "{% if url contains \"/blob/\" %}{{url|split:\"/blob/\"|last|split:\"/\"|first}}{% else %}{% endif %}",
+			"type": "text"
+		},
+		{
+			"name": "raw_url",
+			"value": "{% if selector:a[data-testid=\"raw-button\"]?href %}{{selector:a[data-testid=\"raw-button\"]?href}}{% elseif selector:a[href*=\"/raw/\"]?href %}{{selector:a[href*=\"/raw/\"]?href}}{% elseif url contains \"/blob/\" %}{{url|replace:\"/blob/\":\"/raw/\"}}{% else %}{{url}}{% endif %}",
+			"type": "text"
+		}
+	],
+	"noteContentFormat": "{% set file_name = url|split:\"/\"|last|split:\"?\"|first %}\n{% set ext = file_name|split:\".\"|last|lower %}\n{% if ext == \"ts\" or ext == \"tsx\" %}{% set fence = \"typescript\" %}{% set lang = \"TypeScript\" %}{% set mime = \"text/typescript\" %}{% elseif ext == \"js\" or ext == \"mjs\" or ext == \"cjs\" or ext == \"jsx\" %}{% set fence = \"javascript\" %}{% set lang = \"JavaScript\" %}{% set mime = \"text/javascript\" %}{% elseif ext == \"rs\" %}{% set fence = \"rust\" %}{% set lang = \"Rust\" %}{% set mime = \"text/x-rust\" %}{% elseif ext == \"toml\" %}{% set fence = \"toml\" %}{% set lang = \"TOML\" %}{% set mime = \"application/toml\" %}{% elseif ext == \"py\" %}{% set fence = \"python\" %}{% set lang = \"Python\" %}{% set mime = \"text/x-python\" %}{% elseif ext == \"md\" or ext == \"mdx\" %}{% set fence = \"markdown\" %}{% set lang = \"Markdown\" %}{% set mime = \"text/markdown\" %}{% elseif ext == \"yml\" or ext == \"yaml\" %}{% set fence = \"yaml\" %}{% set lang = \"YAML\" %}{% set mime = \"application/yaml\" %}{% elseif ext == \"json\" or ext == \"jsonc\" %}{% set fence = \"json\" %}{% set lang = \"JSON\" %}{% set mime = \"application/json\" %}{% elseif ext == \"ps1\" %}{% set fence = \"powershell\" %}{% set lang = \"Shell\" %}{% set mime = \"text/plain\" %}{% elseif ext == \"sh\" or ext == \"bash\" %}{% set fence = \"bash\" %}{% set lang = \"Shell\" %}{% set mime = \"text/plain\" %}{% else %}{% set fence = ext %}{% set lang = ext %}{% set mime = \"text/plain\" %}{% endif %}\n{% if selection %}{% set sample_type = \"code snippet\" %}{% else %}{% set sample_type = \"full\" %}{% endif %}\n{% set blob_ta = selector:#read-only-cursor-text-area %}\n{% set blob_testid = selector:textarea[data-testid=\"read-only-cursor-text-area\"] %}\n{% set blob_aria = selector:textarea[aria-label=\"file content\"] %}\n{% set raw_link = selector:a[data-testid=\"raw-button\"]?href %}\n{% if selection %}{% set source_code = selection %}{% elseif blob_ta %}{% set source_code = blob_ta %}{% elseif blob_testid %}{% set source_code = blob_testid %}{% elseif blob_aria %}{% set source_code = blob_aria %}{% elseif domain contains \"githubusercontent.com\" %}{% set source_code = content %}{% else %}{% set source_code = \"\" %}{% endif %}\n\n# {{file_name}}\n\n**URL:** {{url}}\n**Path:** {{meta:og:title|split:\" at \"|first ?? file_name}}\n**Language:** {{lang}} · **Extension:** `.{{ext}}`\n**encodingFormat:** {{mime}}\n**codeSampleType:** {{sample_type}}\n{% if meta:octolytics-dimension-repository_nwo %}**Repo:** https://github.com/{{meta:octolytics-dimension-repository_nwo}}\n{% endif %}{% if raw_link %}**Raw:** {{raw_link}}\n{% elseif url contains \"/blob/\" %}**Raw:** {{url|replace:\"/blob/\":\"/raw/\"}}\n{% endif %}{% if url contains \"/blob/\" %}**Ref:** {{url|split:\"/blob/\"|last|split:\"/\"|first}}\n{% endif %}\n\n## Semantic summary\n\n{% if selection %}{{selection|truncate:500}}\n{% else %}{{description ?? meta:og:description}}\n{% endif %}\n\n## Source\n\n{% if source_code %}\n```{{fence}}\n{{source_code}}\n```\n{% else %}\n_No source text extracted from the blob viewer._\n\n1. Wait for the file to finish loading, then clip again, **or**\n2. Open **Raw** (`{{url|replace:\"/blob/\":\"/raw/\"}}`) and clip that page, **or**\n3. Select the code in the viewer before clipping.\n\nDo not rely on Defuddle `{{content}}` for GitHub blobs — it captures page chrome, not the file.\n{% endif %}\n\n{% if domain contains \"cubic.dev\" %}\n## Files in PR view\n\n{% for row in selector:[data-testid^=\"pr-v2-file-header-row-\"] %}- {{row}}\n{% endfor %}\n\n_Tip: select a diff hunk before clipping for a focused code-snippet capture._\n{% endif %}\n\n## Capture metadata\n\n- schema.org: `SoftwareSourceCode` (https://schema.org/SoftwareSourceCode)\n- inbox `type`: `snippet`\n- AST: not parsed in Clipper — promote later via `code-chunk.v1` / code-index\n- GitHub blob source: `#read-only-cursor-text-area` / `textarea[aria-label=\"file content\"]` (full file; visible `.react-code-line-contents` is virtualized/incomplete)\n"
+}

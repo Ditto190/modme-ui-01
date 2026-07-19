@@ -1,0 +1,63 @@
+# Phase 0 intake — Agent Gateway + vLLM + Label Studio full loop
+# Aligned to agent-workbench-orchestration + next-forge ADR-0012 budgets
+
+task_id: "agent-gateway-llm-label-studio"
+title: "vLLM MicroVM + Agent Gateway + Label Studio AI annotation loop"
+branch: "feature/cursor/obsidian-unique-note-pack"
+owner: modme-orchestration
+
+acceptance:
+  - id: adr-numbers
+    description: Root ADRs use free slots 0016+ (0013–0015 already claimed)
+    evidence: docs/adr/0016-*.md, 0017-*.md, TODO-0018-*.md indexed in docs/adr/README.md
+
+  - id: gateway-openai
+    description: Agent Gateway exposes OpenAI-compatible /v1 to vLLM with resource/buffer policies
+    evidence: curl gateway:8080/v1/models with x-modme-gateway-namespace=local-llm returns gemma4
+
+  - id: vllm-primary
+    description: vLLM is primary; llama.cpp installed as fallback profile only
+    evidence: config/vllm/docker-compose.microvm.yml profiles primary + fallback
+
+  - id: label-studio-loop
+    description: Full AI agent+embedding loop; LS visualizes; human supervises benchmarks
+    evidence: inbox clip → LS task with predictions → promote to Supabase on approval
+
+  - id: option-a-todo
+    description: Obsidian-first Option A documented as deferred ADR + beads issue
+    evidence: docs/adr/TODO-0018-*.md + bd issue open
+
+  - id: router-layering
+    description: Respect ADR-0015 — polis ≠ inbox MDA ≠ GenUI routes
+    evidence: label-studio citizen triggers inbox paths only; no GenUI merge
+
+  - id: bounded-parallel
+    description: Waves follow next-forge ADR-0012 (max 2 parallel starts; serial plan/commit)
+    evidence: goal-contract parallel_lanes=2; docs wave before infra wave
+
+metrics:
+  max_tokens_orchestrator: 8000
+  max_tokens_per_subagent: 12000
+  parallel_lanes: 2
+  max_grind_cycles: 2
+  defaultMaxParallelStartsPerWave: 2
+
+agents:
+  coordinator: llm-app-patterns
+  docs_lane: architecture-blueprint-generator
+  infra_lane: backend-development-feature-development
+  meta: awesome-cursor-skills
+  gate: code-reviewer
+
+baselines:
+  merge_base: "5dbdc39f8a0012ea4b05dfa20852eec165ec5b60"
+  logic_diff_verdict: "conditionally_equivalent"
+  divergences: ["L1-adr-numbers", "L2-clipper-pack", "L3-polis-at-root", "L4-microvm-plan-adr-clash", "L5-gas-city-budgets"]
+
+rollback: "Revert docs/ADR commits if infra wave fails health checks twice; keep Obsidian unique-note pack intact"
+
+verify_commands:
+  - yarn worktree:doctor
+  - yarn lean-ctx:ensure
+  - "Test-Path docs/adr/0016-vllm-microvm-agent-gateway.md"
+  - "Test-Path docs/adr/0017-label-studio-ai-annotation-loop.md"

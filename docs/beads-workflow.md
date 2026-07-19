@@ -55,8 +55,16 @@ Issue IDs use **hash suffixes** (e.g. `modme-aqu`), not sequential `modme-1`.
 At **worktree session start** (automatic via Cursor `setup-worktree-windows.ps1` or manual):
 
 ```powershell
+yarn session:start          # modme-launch session-start phase
+yarn launch:health          # advisory health (hooks / profile)
 yarn agent:session:start --% -TaskTitle "my task" -ClaimPaths "next-forge/apps/app"
 yarn beads:ready
+```
+
+**KM Phase 0 gate** (before KM pipeline changes; `BEADS_DISABLED=1`):
+
+```powershell
+yarn km:verify
 ```
 
 At **session finish**:
@@ -67,6 +75,34 @@ yarn beads:push
 ```
 
 Session envelopes: `logs/agent-orchestrator/sessions/<uuid>.json`. Guide: [`docs/agent-terminal-orchestration.md`](agent-terminal-orchestration.md).
+
+### Unified beads adapter (intake + session)
+
+All orchestration uses **`scripts/lib/beads-hooks.mjs`** (re-exports from `beads-intake.mjs`). Set `BEADS_DISABLED=1` to skip bd calls in CI/dry-run.
+
+| Surface                      | Entry                                                         | Lifecycle                                                         |
+| ---------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Intake / scrape / code-index | `beadsStartPipelineRun` → `beadsFinishPipelineRun`            | one create + claim per run; close on success / blocked on failure |
+| Agent session                | `node scripts/beads-cli.mjs session-start` / `session-finish` | create+claim at start; close at finish                            |
+| PowerShell                   | `agent-session-start.ps1` / `agent-session-finish.ps1`        | wraps beads-cli JSON output                                       |
+
+```javascript
+import { beadsStartPipelineRun, beadsFinishPipelineRun } from "./scripts/lib/beads-hooks.mjs";
+
+const { issueId } = await beadsStartPipelineRun({
+  title: "intake:full",
+  description: "yarn intake:orchestrate",
+  pipelineRunId: "run-123",
+});
+// ... pipeline steps ...
+await beadsFinishPipelineRun(issueId, true, "intake complete");
+```
+
+`bd create` always passes `--description` and `--json`; issue IDs are parsed from stdout. Metrics: `docs/inbox-pipeline/reports/km-metrics-latest.json`.
+
+## Intake + beads linkage
+
+`yarn intake:orchestrate` and `yarn intake:dry-run` open a beads issue for the run (unless `BEADS_DISABLED=1` or scrape sub-orchestrator owns beads via `--skip-beads`). See [`docs/inbox-pipeline/README.md`](inbox-pipeline/README.md).
 
 ## When to use beads vs chat todos
 

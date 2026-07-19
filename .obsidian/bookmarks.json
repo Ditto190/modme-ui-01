@@ -1,0 +1,24 @@
+{
+	"items": [
+		{
+			"type": "file",
+			"ctime": 1720600000000,
+			"path": "ModMe Vault.md"
+		},
+		{
+			"type": "folder",
+			"ctime": 1720600000001,
+			"path": "GenerativeUI_monorepo/docs/inbox"
+		},
+		{
+			"type": "folder",
+			"ctime": 1720600000002,
+			"path": "templates/obsidian-clipper"
+		},
+		{
+			"type": "file",
+			"ctime": 1720600000003,
+			"path": "templates/obsidian-clipper/README.md"
+		}
+	]
+}

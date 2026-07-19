@@ -28,7 +28,7 @@ echo ""
 echo "📋 Verifying prerequisites..."
 
 echo "   Node.js: $(node --version)"
-echo "   npm: $(npm --version)"
+echo "   Yarn: $(yarn --version 2>/dev/null || echo 'not installed')"
 echo "   Python: $(python3 --version)"
 echo "   Git: $(git --version)"
 echo ""
@@ -45,12 +45,16 @@ echo ""
 # ============================================================
 # Section 3: Install Node Dependencies
 # ============================================================
-echo "📦 Installing Node.js dependencies..."
+echo "📦 Installing root Yarn dependencies..."
 if [ -f "package.json" ]; then
-    npm install
-    echo "   ✓ Dependencies installed"
+    if command -v corepack >/dev/null 2>&1; then
+        corepack enable >/dev/null 2>&1 || true
+        corepack prepare yarn@3.3.0 --activate >/dev/null 2>&1 || true
+    fi
+    yarn install
+    echo "   ✓ Yarn dependencies installed"
 else
-    echo "   ⚠️  No package.json found - skipping npm install"
+    echo "   ⚠️  No package.json found - skipping yarn install"
 fi
 echo ""
 
@@ -150,14 +154,14 @@ echo "   Node: $(node --version)"
 echo "   Python: $(python3 --version)"
 echo ""
 echo "🚀 Quick Start:"
-echo "   npm run dev       → Start UI + Agent"
-echo "   npm run dev:ui    → Start Next.js only"
-echo "   npm run dev:agent → Start Python ADK only"
+echo "   yarn dev:forge:core  → next-forge app + web + api (3100–3102)"
+echo "   yarn dev:forge:docs  → Mintlify docs (3104)"
+echo "   yarn launch:health   → advisory env health check"
 echo ""
 echo "📖 Documentation:"
-echo "   .devcontainer/README.md → Multi-worktree workflow"
-echo "   DEVCONTAINER_WORKTREE_STRATEGY.md → Full setup guide"
-echo "   MIGRATION_IMPLEMENTATION_PLAN.md → Turborepo roadmap"
+echo "   .cursor/commands/devcontainer-setup.md"
+echo "   docs/debug-launch-guide.md"
+echo "   AGENTS.md"
 echo ""
 echo "🌿 Git Worktree Commands:"
 echo "   git worktree list                          → Show all worktrees"
@@ -166,11 +170,16 @@ echo "   git worktree remove ../feature-x           → Remove worktree"
 echo ""
 echo "Happy coding! 🎉"
 
-# Install Smart Coding MCP
-echo "📦 Installing Smart Coding MCP..."
-npm install -g smart-coding-mcp
-
-# Verify installation
-npx smart-coding-mcp --version
-
-echo "✅ Smart Coding MCP installed!"
+# ModMe workspace bootstrap + launch (advisory)
+if command -v yarn >/dev/null 2>&1; then
+    echo ""
+    echo "📦 ModMe workspace bootstrap..."
+    if [ -f "scripts/setup-workspace-windows.ps1" ] && command -v pwsh >/dev/null 2>&1; then
+        pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/setup-workspace-windows.ps1 -Lite || \
+        yarn workspace:bootstrap:lite || true
+    else
+        yarn workspace:bootstrap:lite || yarn workspace:bootstrap:shared || true
+    fi
+    echo "🚀 ModMe launch (advisory)..."
+    yarn launch:full || true
+fi

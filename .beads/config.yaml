@@ -5,7 +5,6 @@
 
 # Issue prefix for this repository (used by bd init)
 issue-prefix: "modme"
-
 # Use no-db mode: JSONL-only, no Dolt database
 # When true, .beads/issues.jsonl is the only local store
 # no-db: false
@@ -64,10 +63,10 @@ backup:
 # Secret keys (stored in this file but prefer env vars to avoid git exposure):
 # - linear.api_key  → use LINEAR_API_KEY env var instead
 # - github.token    → use GITHUB_TOKEN env var instead
-
 sync.remote: "git+https://github.com/Ditto190/modme-ui-01.git"
-
 federation.remote: "git+https://github.com/Ditto190/modme-ui-01.git"
 # Agent data plane (ADR-0013): shared Dolt sql-server for catalog CMS.
 # Load .dolt-data/beads-server.env (BEADS_DOLT_SERVER_HOST/PORT) when cutting over
 # to `bd init --server --external` on a designated migrator. Embedded remains default.
+backup:
+    enabled: false

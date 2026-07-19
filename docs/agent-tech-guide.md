@@ -13,6 +13,8 @@ Canonical reference for **AI agents** and **humans** working in this repository:
 
 ## 1. Repository map
 
+# @Copilot TODO : This index below is broken and corrupted, please update it according to the results of our codebase mapping (Use gitlabs/Orbit skills or lean-ctx codebase mapping tools)
+
 ```
 Monorepo_ModMe/
 â”œâ”€â”€ AGENTS.md                    # Agent entry point (commands, layout, behavior)
@@ -83,7 +85,7 @@ This repo uses **lean-ctx** as the context compression layer (see `.cursor/rules
 - **Read mode quick pick:** edit → `full`; re-read → `diff`; orient → `map` or `signatures`; unsure → `auto`. See [read modes](https://leanctx.com/docs/concepts/read-modes/).
 - **Search:** `ctx_search(pattern, path)` · **Shell:** `lean-ctx -c "…"` or `ctx_shell`.
 - **Enforcement:** `.cursor/rules/lean-ctx.mdc` (always-on) + `~/.cursor/hooks.json` (`hook redirect` on Read|Grep|Glob).
-- **Skill:** [`.agents/skills/lean-ctx/SKILL.md`](../.agents/skills/lean-ctx/SKILL.md) · **Rules:** [`LEAN-CTX.md`](../LEAN-CTX.md).
+- **Skill:** `[.agents/skills/lean-ctx/SKILL.md](../.agents/skills/lean-ctx/SKILL.md)` · **Rules:** `[LEAN-CTX.md](../LEAN-CTX.md)`.
 - If output is over-compressed: `ctx_read(path, "lines:N-M")` then `full`, or `ctx_shell(cmd, raw=true)`.
 
 ### Diagnostics (human or agent)
@@ -201,7 +203,7 @@ Create API tokens: [Buildkite → Personal Settings → API Access Tokens](https
 
 ### Repo pipeline
 
-Monorepo CI is defined in [`.buildkite/pipeline.yml`](../.buildkite/pipeline.yml) (Buildkite) and [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) (GitHub Actions). See [buildkite-guide.md](./buildkite-guide.md) for setup and the local demo (`scripts/buildkite-demo.ps1`, `/dev/buildkite`).
+Monorepo CI is defined in `[.buildkite/pipeline.yml](../.buildkite/pipeline.yml)` (Buildkite) and `[.github/workflows/ci.yml](../.github/workflows/ci.yml)` (GitHub Actions). See [buildkite-guide.md](./buildkite-guide.md) for setup and the local demo (`scripts/buildkite-demo.ps1`, `/dev/buildkite`).
 
 ### Docs
 
@@ -245,7 +247,7 @@ Restart Cursor / VS Code after editing MCP config. On Windows Antigravity, use `
 
 ## 3.7 Chrome DevTools MCP & CLI
 
-[chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp) allows agents to control and inspect a live Chrome browser. It acts as an MCP server with tools for navigation, evaluating JS, taking screenshots, analyzing performance traces, and more. 
+[chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp) allows agents to control and inspect a live Chrome browser. It acts as an MCP server with tools for navigation, evaluating JS, taking screenshots, analyzing performance traces, and more.
 
 ### Project config
 
@@ -283,6 +285,7 @@ chrome-devtools navigate_page "https://example.com"
 # Start the background daemon explicitly with custom arguments
 chrome-devtools start --auto-connect
 ```
+
 For more CLI features, reference the [CLI documentation](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/main/docs/cli.md).
 
 ## 4. Installed skills (documentation & changelog)
@@ -407,7 +410,7 @@ Manifest: `scripts/preflight.manifest.json` · Skills: `.agents/skills/modme-pre
 
 1. **Local:** `yarn preflight:env` → TDD profile or `yarn preflight:fast --report` → full gate before push.
 2. **PR:** `.github/workflows/preflight-ci.yml` and `pre-commit-check.yml` run `preflight:ci`; artifact `preflight-report` (or `preflight-report-pre-commit`) uploads `docs/devops/reports/preflight-latest.json` with `if: always()`.
-3. **Triage:** gh-aw `preflight-failure-triage.md` comments and runs `apply-preflight-labels.mjs` (`ci:failed`, `failure:<class>`, `stack:*`).
+3. **Triage:** gh-aw `preflight-failure-triage.md` comments and runs `apply-preflight-labels.mjs` (`ci:failed`, `failure:<class>`, `stack:`\*).
 4. **Route:** `yarn quality:route --from docs/devops/reports/preflight-latest.json` (or `--pr N`) picks skills from `quality-skills-roster.json`.
 
 ```powershell
@@ -419,16 +422,16 @@ yarn preflight:tdd-green -- --test <path>
 yarn preflight:tdd-refactor -- --test <path>
 ```
 
-| Asset | Purpose |
-|-------|---------|
-| `docs/devops/preflight-report.schema.json` | Report contract |
-| `docs/devops/quality-loop.md` | Full runbook (mermaid + verification checklist) |
-| `scripts/lib/preflight-report.mjs` | `buildPreflightReport`, `writePreflightReport` |
-| `scripts/quality-orchestrator.mjs` | Route failures to Cursor/tmux |
-| `scripts/apply-preflight-labels.mjs` | PR labels from report |
-| `.agents/skills/modme-quality-orchestrator/SKILL.md` | Orchestrator skill |
-| `.agents/skills/modme-tdd/SKILL.md` | TDD red/green/refactor |
-| `scripts/quality-skills-roster.json` | Optional skills.sh installs |
+| Asset                                                | Purpose                                         |
+| ---------------------------------------------------- | ----------------------------------------------- |
+| `docs/devops/preflight-report.schema.json`           | Report contract                                 |
+| `docs/devops/quality-loop.md`                        | Full runbook (mermaid + verification checklist) |
+| `scripts/lib/preflight-report.mjs`                   | `buildPreflightReport`, `writePreflightReport`  |
+| `scripts/quality-orchestrator.mjs`                   | Route failures to Cursor/tmux                   |
+| `scripts/apply-preflight-labels.mjs`                 | PR labels from report                           |
+| `.agents/skills/modme-quality-orchestrator/SKILL.md` | Orchestrator skill                              |
+| `.agents/skills/modme-tdd/SKILL.md`                  | TDD red/green/refactor                          |
+| `scripts/quality-skills-roster.json`                 | Optional skills.sh installs                     |
 
 gh-aw: `preflight-failure-triage.md`, `pr-preflight-review.md`, `tdd-issue-bootstrap.md` (compile WSL/CI per ADR-0010).
 
@@ -443,7 +446,7 @@ yarn verify:forge                           # alias of preflight:forge via verif
 
 Pre-commit runs automatically on `git commit` after hook install (`setup.ps1`, worktree bootstrap, and `new-agent-worktree.ps1` also install hooks). Staged `next-forge/**` changes trigger `ultracite check`; test/build run in CI only.
 
-CI: `.github/workflows/pre-commit-check.yml`, `.github/workflows/ci.yml` (path-filtered `next-forge` job), and Buildkite step `:mag: Pre-commit checks`. PRs to **`dev`** run the same gates as `main`/`develop`.
+CI: `.github/workflows/pre-commit-check.yml`, `.github/workflows/ci.yml` (path-filtered `next-forge` job), and Buildkite step `:mag: Pre-commit checks`. PRs to `dev` run the same gates as `main`/`develop`.
 
 ### CI
 
@@ -529,7 +532,7 @@ Full detail: **[docs/debug-launch-guide.md](./debug-launch-guide.md)**.
 
 ### Onboard
 
-Run **`/init`** in Cursor chat â€” initializes beads (optional), verifies debug prerequisites, and maps agent docs.
+Run `/init` in Cursor chat â€” initializes beads (optional), verifies debug prerequisites, and maps agent docs.
 
 ### Key files
 
@@ -621,7 +624,7 @@ _Last updated: 2026-06-19 — multi-agent worktrees, port allocation, Cursor wor
 
 ## Continuous integration
 
-GitHub Actions workflows under [`.github/workflows/`](../.github/workflows/):
+GitHub Actions workflows under `[.github/workflows/](../.github/workflows/)`:
 
 | Workflow                | Trigger                                   | Purpose                                                                                                              |
 | ----------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |

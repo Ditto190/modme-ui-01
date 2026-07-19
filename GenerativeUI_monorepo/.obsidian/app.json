@@ -1,0 +1,11 @@
+{
+  "alwaysUpdateLinks": true,
+  "userIgnoreFilters": [
+    "node_modules/",
+    "*/node_modules/",
+    "**/node_modules/*",
+    "node_modules/object.getownpropertydescriptors/",
+    "*/.git"
+  ],
+  "promptDelete": false
+}

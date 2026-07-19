@@ -25,15 +25,25 @@ Two complementary layers share naming, branches, and port logic:
 ### Directory layout
 
 ```
-Monorepo_ModMe/                    ← main (review/merge only)
+C:\Users\dylan\Monorepo_ModMe\          ← main (review/merge only)
   .worktrees/
-    dev/                           ← persistent `dev` branch checkout
-    dev-agent-cursor-<task>/
-    dev-agent-copilot-<task>/
-    dev-agent-claude-<task>/
-    dev-agent-antigravity-<task>/
-    dev-agent-human-<task>/
+    dev/                               ← golden shared-deps image (stays on C:)
+
+D:\Github_Projects\worktrees\Monorepo_ModMe\   ← canonical agent worktrees root
+  dev-agent-cursor-<task>/
+  dev-agent-copilot-<task>/
+  dev-agent-claude-<task>/
+  dev-agent-antigravity-<task>/
+  dev-human-<task>/
+
+D:\Github_Projects\workspace\
+  Monorepo_ModMe.code-workspace        ← multi-root IDE workspace
+  docs\                                ← ops / migration docs
 ```
+
+**Resolution for new agent worktrees:** `$env:WORKTREES_ROOT` → `-WorktreesRoot` → legacy `<repo>/.worktrees`.
+
+**Deprecated:** `D:\AIB Github Projects\worktrees` — do not use for Monorepo_ModMe.
 
 Branch naming: `feature/<owner>/<task>` (e.g. `feature/cursor/auth-fix`).
 
@@ -62,11 +72,20 @@ From the **main** checkout:
 .\scripts\init-worktrees.ps1
 ```
 
-Creates `.worktrees/dev` on the `dev` branch. Optionally add staging:
+Creates golden `.worktrees/dev` on the `dev` branch (shared-deps junction source). Optionally add staging:
 
 ```powershell
 .\scripts\init-worktrees.ps1 -IncludeStaging
 ```
+
+Point new agent trees at D: (recommended):
+
+```powershell
+$env:WORKTREES_ROOT = "D:\Github_Projects\worktrees\Monorepo_ModMe"
+# or: .\scripts\new-agent-worktree.ps1 -Name "my-task" -Owner cursor -WorktreesRoot $env:WORKTREES_ROOT
+```
+
+Open the multi-root workspace: `D:\Github_Projects\workspace\Monorepo_ModMe.code-workspace`.
 
 ---
 
@@ -310,7 +329,7 @@ Open [`workspace.code-workspace`](../workspace.code-workspace) so IDE roots matc
 
 ### Main checkout policy
 
-Agents and humans should **not** implement features in `Monorepo_ModMe/` (the main checkout). Use a worktree under `.worktrees/` instead.
+Agents and humans should **not** implement features in `Monorepo_ModMe/` (the main checkout). Use a worktree under the agent worktrees root (`$env:WORKTREES_ROOT` / `D:\Github_Projects\worktrees\Monorepo_ModMe`, or legacy `.worktrees/`) instead.
 
 Verify before starting feature work:
 
@@ -404,7 +423,7 @@ For humans monitoring multiple worktrees, or agents on Unix shells:
 yarn worktree:tmux -- attach                # from repo root
 ```
 
-Windows pwsh: use `worktree-doctor` + `list-worktrees.ps1` instead (tmux optional via WSL).
+Windows pwsh: use `yarn agent:tui` (mprocs) as the primary terminal manager; `worktree-doctor` + `list-worktrees.ps1` for status. tmux optional via WSL (`yarn worktree:tmux:ps`). See [`windows-docker-wsl-setup.md`](windows-docker-wsl-setup.md).
 
 ---
 
@@ -414,10 +433,12 @@ Windows pwsh: use `worktree-doctor` + `list-worktrees.ps1` instead (tmux optiona
 
 ```json
 {
-  "cursor.worktreeMaxCount": 25,
+  "cursor.worktreeMaxCount": 12,
   "cursor.worktreeCleanupIntervalHours": 6
 }
 ```
+
+Recommended concurrent **agent** worktrees (soft): **8**. Cursor MaxCount can be higher for short-lived `/best-of-n` trees; prune finished agents promptly.
 
 Agent terminals should respect `.worktree-ports.env` when starting dev servers.
 
@@ -429,9 +450,14 @@ Agent terminals should respect `.worktree-ports.env` when starting dev servers.
 | --------------------------- | ---------------------------------------------- |
 | `remove-agent-worktree.ps1` | Task merged or abandoned                       |
 | `git worktree prune`        | Orphaned worktree metadata                     |
-| Cursor auto-cleanup         | Every 6 hours; max 25 Cursor-managed worktrees |
+| Cursor auto-cleanup         | Every 6 hours; max **12** Cursor-managed worktrees (`.vscode/settings.json`) |
+| Soft agent cap              | ~**8** concurrent `dev-agent-*` / `dev-human-*` under `WORKTREES_ROOT` |
 
-**Disk note:** Each worktree has its own `node_modules` and poetry venv (~GB each). Prune stale folders regularly.
+**Disk note:** Prefer **shared-deps junctions** from `.worktrees/dev` — do **not** full-install per agent. `new-agent-worktree.ps1` warns if the worktrees drive has under 20 GB free or agent count is at/above 8. Canonical root: `D:\Github_Projects\worktrees\Monorepo_ModMe`. Ops detail: `D:\Github_Projects\workspace\docs\worktree-essential-mirror-limits.md`.
+
+### Sparse-checkout
+
+**Rejected** for agent worktrees: Yarn/Bun monorepo installs and workspace protocol resolution need a full tree checkout. Essential mirroring is env/lockfiles + junctions, not sparse-checkout.
 
 ---
 
@@ -443,10 +469,10 @@ For multi-agent review of audit/report artifacts, see [Cursor canvas sharing](ht
 
 ## Daily workflow checklist
 
-1. **Once:** `.\scripts\init-worktrees.ps1`
+1. **Once:** `.\scripts\init-worktrees.ps1` (+ set `$env:WORKTREES_ROOT` to `D:\Github_Projects\worktrees\Monorepo_ModMe`)
 2. **Per task:** `.\scripts\new-agent-worktree.ps1 -Name "<task>" -Owner <ide>`
-3. **Cursor:** Agents Window or `/worktree`
-4. **Other IDEs:** File → Open Folder → worktree path
+3. **Cursor:** open `D:\Github_Projects\workspace\Monorepo_ModMe.code-workspace`, then Agents Window or `/worktree`
+4. **Other IDEs:** File → Open Folder → worktree path under the agent root
 5. **Verify:** `yarn worktree:doctor`, load ports, run targeted lint / tests
 6. **Finish:** `.\scripts\vibe-session-finish.ps1` → PR to `dev` → `remove-agent-worktree.ps1 -Yes`
 

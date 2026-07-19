@@ -1,6 +1,18 @@
 {
   "version": 1,
   "skills": {
+    "better-env": {
+      "source": "neondatabase/better-env",
+      "sourceType": "github",
+      "skillPath": "skills/better-env/SKILL.md",
+      "computedHash": "1ba9ce2ae8e41c902488fd4c710c17bf872cf20ee8fcbbed224a9d218cb700ea"
+    },
+    "compat-review": {
+      "source": "toss/es-toolkit",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/compat-review/SKILL.md",
+      "computedHash": "a3594aa20deb44496f36e0211d2452cb85847f6427b9b598d0f1e45a5ec7885a"
+    },
     "create-voltagent": {
       "source": "VoltAgent/skills",
       "sourceType": "github",
@@ -12,6 +24,96 @@
       "sourceType": "github",
       "skillPath": "skills/developing-genkit-js/SKILL.md",
       "computedHash": "9aacfcf07d0eda52488b56f135f88b6ff9f5ccc59c2a14dffe318ff28ef1ffa1"
+    },
+    "direnv": {
+      "source": "julianobarbosa/claude-code-skills",
+      "sourceType": "github",
+      "skillPath": "skills/direnv/SKILL.md",
+      "computedHash": "f7b7f8bdb197be7eb648b20cb60395ceed2e84f15ac03c8710173a413b20ae8f"
+    },
+    "dotenv-manager": {
+      "source": "jeremylongshore/claude-code-plugins-plus-skills",
+      "sourceType": "github",
+      "skillPath": "skills/01-devops-basics/dotenv-manager/SKILL.md",
+      "computedHash": "2fa9e5b496fd127c809483b5f3feaf7cef02842089b50d2c7319116978c428a4"
+    },
+    "editorconfig": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "skillPath": "skills/editorconfig/SKILL.md",
+      "computedHash": "19ce7c1a970666aadccbcbdcf9a37b4675cb7da24f3a5b603ec06ed6d04a0124"
+    },
+    "github-actions-templates": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "skillPath": "plugins/cicd-automation/skills/github-actions-templates/SKILL.md",
+      "computedHash": "d57f2a45525180e30d9130aeab1613930c274917c5002899d8c37185594de411"
+    },
+    "guide": {
+      "source": "toss/es-toolkit",
+      "sourceType": "github",
+      "skillPath": "es-toolkit-plugin/skills/guide/SKILL.md",
+      "computedHash": "f4178aa17ef4be47dba091b3828fc1b6e7a39d148c5ac3ca92096d3a54b19f9a"
+    },
+    "infisical-secret-syncs": {
+      "source": "infisical/ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/infisical-secret-syncs/SKILL.md",
+      "computedHash": "87bf586e0850d8d97f7f5e812efff399cf5ebe04e0e6f84514426dee32840aad"
+    },
+    "issue-label": {
+      "source": "toss/es-toolkit",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/issue-label/SKILL.md",
+      "computedHash": "ca0f731061f456c81745cc0c9326dcc0400d2579f5f87239d952a1603fce9d67"
+    },
+    "issue-review": {
+      "source": "toss/es-toolkit",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/issue-review/SKILL.md",
+      "computedHash": "1aeaf73039bdbfe0e94bd04d7107e5d611297f4c6d607ab4a11a579ad1fd6535"
+    },
+    "managing-github-actions-secrets": {
+      "source": "posthog/posthog",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/managing-github-actions-secrets/SKILL.md",
+      "computedHash": "9e9bbcb9f57491cdcf88ae595eba89e83843fb1525c48dfb0f5f2534f74566aa"
+    },
+    "migrate": {
+      "source": "toss/es-toolkit",
+      "sourceType": "github",
+      "skillPath": "es-toolkit-plugin/skills/migrate/SKILL.md",
+      "computedHash": "9d45a3e84ede6157e316bf2bcb3ffdbe7860afef0152f2f716f4ccedce44d40b"
+    },
+    "pr-review": {
+      "source": "toss/es-toolkit",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/pr-review/SKILL.md",
+      "computedHash": "d59dc2cce98ec79aa7624cb7d7951b5bae53961abe02596e1ff6d71ab3355730"
+    },
+    "pr-triage": {
+      "source": "toss/es-toolkit",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/pr-triage/SKILL.md",
+      "computedHash": "70912b316b84941518e59470e505123b18d414122707b5daa3cc86c629e88e40"
+    },
+    "recommend": {
+      "source": "toss/es-toolkit",
+      "sourceType": "github",
+      "skillPath": "es-toolkit-plugin/skills/recommend/SKILL.md",
+      "computedHash": "14cd55c92037501eb17cee000208e41d6a43a6fbbee6c199f4795b322699bc00"
+    },
+    "release": {
+      "source": "toss/es-toolkit",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/release/SKILL.md",
+      "computedHash": "6c1d7a638f023633784f412f0e9965f5b29e3c3ecb5e6c362336aa076c85353f"
+    },
+    "secrets-management": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "skillPath": "plugins/cicd-automation/skills/secrets-management/SKILL.md",
+      "computedHash": "ac5378fb8ad478d159f74a61c43f6db43fa7bf71e0c4bf27febb60e07efc3bb2"
     },
     "supabase": {
       "source": "supabase/agent-skills",

@@ -1,10 +1,25 @@
 {
   "folders": [
-    { "name": "Root", "path": "." },
-    { "name": "next-forge", "path": "next-forge" },
-    { "name": "GenerativeUI", "path": "GenerativeUI_monorepo" },
-    { "name": "scripts", "path": "scripts" },
-    { "name": "agent-skills", "path": ".agents/skills" }
+    {
+      "name": "Root",
+      "path": "."
+    },
+    {
+      "name": "next-forge",
+      "path": "next-forge"
+    },
+    {
+      "name": "GenerativeUI",
+      "path": "GenerativeUI_monorepo"
+    },
+    {
+      "name": "scripts",
+      "path": "scripts"
+    },
+    {
+      "name": "agent-skills",
+      "path": ".agents/skills"
+    }
   ],
   "settings": {
     "files.exclude": {
@@ -16,7 +31,14 @@
       "**/__pycache__": true,
       "**/.venv": true,
       "**/venv": true,
-      "**/*.pyc": true
+      "**/*.pyc": true,
+      "**/.vendor": true,
+      "**/.worktrees": true,
+      "**/.tools": true,
+      "**/UniversalWorkbench*": true,
+      "**/.turbo": true,
+      "**/coverage": true,
+      "**/.yarn/cache": true
     },
     "search.exclude": {
       "**/node_modules": true,
@@ -28,11 +50,21 @@
       "**/dist": true,
       "**/.git": true,
       "**/yarn.lock": true,
-      "**/pnpm-lock.yaml": true
+      "**/pnpm-lock.yaml": true,
+      "**/.vendor": true,
+      "**/.worktrees": true,
+      "**/.tools": true,
+      "**/UniversalWorkbench*": true,
+      "**/.turbo": true,
+      "**/coverage": true,
+      "**/.yarn/cache": true
     },
     "editor.formatOnSave": true,
     "git.ignoreLimitWarning": true,
-    "terminal.integrated.defaultProfile.windows": "PowerShell"
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "powershell.cwd": "Root",
+    "cursorpyright.nodeMaxOldSpaceSize": 1024,
+    "cursorpyright.analysis.disableWorkspaceSymbol": true
   },
   "extensions": {
     "recommendations": [
@@ -51,35 +83,45 @@
         "label": "Dev: next-forge core",
         "type": "shell",
         "command": "yarn dev:forge:core",
-        "options": { "cwd": "${workspaceFolder:Root}" },
+        "options": {
+          "cwd": "${workspaceFolder:Root}"
+        },
         "problemMatcher": []
       },
       {
         "label": "Dev: GenerativeUI",
         "type": "shell",
         "command": "yarn dev:generative",
-        "options": { "cwd": "${workspaceFolder:Root}" },
+        "options": {
+          "cwd": "${workspaceFolder:Root}"
+        },
         "problemMatcher": []
       },
       {
         "label": "Verify: next-forge",
         "type": "shell",
         "command": "yarn verify:forge",
-        "options": { "cwd": "${workspaceFolder:Root}" },
+        "options": {
+          "cwd": "${workspaceFolder:Root}"
+        },
         "problemMatcher": []
       },
       {
         "label": "Verify: GenerativeUI",
         "type": "shell",
         "command": "yarn verify:generative",
-        "options": { "cwd": "${workspaceFolder:Root}" },
+        "options": {
+          "cwd": "${workspaceFolder:Root}"
+        },
         "problemMatcher": []
       },
       {
         "label": "Repo alignment doctor",
         "type": "shell",
         "command": "yarn repo:doctor",
-        "options": { "cwd": "${workspaceFolder:Root}" },
+        "options": {
+          "cwd": "${workspaceFolder:Root}"
+        },
         "problemMatcher": []
       }
     ]

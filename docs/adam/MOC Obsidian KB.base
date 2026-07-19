@@ -1,0 +1,17 @@
+filters:
+  and:
+    - file.inFolder("docs/obsidian/kb")
+    - file.ext == "md"
+properties:
+  category:
+    displayName: Category
+  file.mtime:
+    displayName: Modified
+views:
+  - type: table
+    name: KB pages
+    order:
+      - file.name
+      - file.folder
+      - file.mtime
+    limit: 100

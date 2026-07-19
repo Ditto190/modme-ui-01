@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Load canonical stack path filters from scripts/lib/stack-paths.json.
  */

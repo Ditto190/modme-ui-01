@@ -1,0 +1,34 @@
+filters:
+  or:
+    - file.inFolder("inbox/web-clipper")
+    - file.hasTag("clipper")
+properties:
+  type:
+    displayName: Type
+  severity:
+    displayName: Severity
+  uid:
+    displayName: UID
+  file.mtime:
+    displayName: Modified
+views:
+  - type: table
+    name: Recent 14d
+    filters:
+      and:
+        - file.ext == "md"
+        - file.mtime > now() - "14 days"
+    order:
+      - file.mtime
+      - file.name
+      - type
+    limit: 40
+  - type: table
+    name: All matching
+    filters:
+      and:
+        - file.ext == "md"
+    order:
+      - file.name
+      - file.mtime
+    limit: 80

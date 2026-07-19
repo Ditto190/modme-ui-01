@@ -25,27 +25,29 @@ const route = routeContract({
 
 ## Citizens
 
-| ID | When |
-|----|------|
-| `devops-ci-champion` | `ci-cd` + self-heal Yes |
-| `forge-reviewer` | `next-forge/**` |
-| `generative-reviewer` | `GenerativeUI_monorepo/**` |
-| `beads-orchestrator` | beads-linked / ready without GitHub issue |
-| `bugbot-merge-champion` | `bugbot-reviewed` + green CI |
+| ID                      | When                                      |
+| ----------------------- | ----------------------------------------- |
+| `devops-ci-champion`    | `ci-cd` + self-heal Yes                   |
+| `forge-reviewer`        | `next-forge/**`                           |
+| `generative-reviewer`   | `GenerativeUI_monorepo/**`                |
+| `beads-orchestrator`    | beads-linked / ready without GitHub issue |
+| `bugbot-merge-champion` | `bugbot-reviewed` + green CI              |
 
 ## acceptance-orchestrator states
 
-| State | beads | GitHub |
-|-------|-------|--------|
-| issue-gated | `bd ready` | acceptance criteria on issue |
-| executing | `agent:session:start` | `status:in-progress` |
+| State       | beads                   | GitHub                            |
+| ----------- | ----------------------- | --------------------------------- |
+| issue-gated | `bd ready`              | acceptance criteria on issue      |
+| executing   | `agent:session:start`   | `status:in-progress`              |
 | review-loop | PR URL in beads comment | `agent-routed`, `bugbot-reviewed` |
-| accepted | close + `beads:push` | close issue |
-| escalated | blocker note | `status:agent-escalated` |
+| accepted    | close + `beads:push`    | close issue                       |
+| escalated   | blocker note            | `status:agent-escalated`          |
 
 ## Session integration
 
 `agent-session-start.ps1` may pass `-CitizenId` from router output.
+
+**KM routing (separate):** inbox MDA classifies knowledge; beads tracks work. See [ADR-0015](../../docs/adr/0015-router-layering-km-polis-genui.md).
 
 ## GitLab adjunct
 

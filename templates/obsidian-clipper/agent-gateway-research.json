@@ -1,0 +1,64 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "ModMe — Agent Gateway research",
+	"behavior": "create",
+	"description": "Clip agentgateway README and routing docs for A2A/MCP gateway ADR research.",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
+	"triggers": [
+		"/^https:\\/\\/github\\.com\\/(agentgateway\\/agentgateway|Ditto190\\/agentgateway-modme)/"
+	],
+	"properties": [
+		{
+			"name": "timestamp",
+			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
+			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
+		{
+			"name": "agent",
+			"value": "cursor",
+			"type": "text"
+		},
+		{
+			"name": "agent_role",
+			"value": "researcher",
+			"type": "text"
+		},
+		{
+			"name": "type",
+			"value": "research",
+			"type": "text"
+		},
+		{
+			"name": "severity",
+			"value": "high",
+			"type": "text"
+		},
+		{
+			"name": "tags",
+			"value": "clipper, agentgateway, a2a, mcp, llm-gateway",
+			"type": "multitext"
+		},
+		{
+			"name": "title",
+			"value": "{{title}}",
+			"type": "text"
+		},
+		{
+			"name": "summary",
+			"value": "{{description}}",
+			"type": "text"
+		},
+		{
+			"name": "source",
+			"value": "{{url}}",
+			"type": "text"
+		}
+	],
+	"noteContentFormat": "# {{title}}\n\n**URL:** {{url}}\n\n## Summary\n\n{{selection}}\n\n## Notes\n\n- Layer 4 above lean-ctx MCP per ADR-0012\n- Fork: https://github.com/Ditto190/agentgateway-modme\n\n{{content}}\n"
+}

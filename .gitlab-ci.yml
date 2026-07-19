@@ -4,8 +4,12 @@
 
 include:
   - local: .gitlab/ci/devops-autofix.yml
+  - local: .gitlab/ci/scripts.yml
 
 stages:
+  - lint
+  - test
+  - code_review
   - devops
 
 workflow:

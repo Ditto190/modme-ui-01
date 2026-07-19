@@ -100,26 +100,31 @@
     }
   },
 
-  "forwardPorts": [3000, 8000, 8001, 8002],
+  "forwardPorts": [3100, 3101, 3102, 3104, 6106],
   "portsAttributes": {
-    "3000": {
-      "label": "Next.js UI",
+    "3100": {
+      "label": "next-forge App",
       "onAutoForward": "notify"
     },
-    "8000": {
-      "label": "Python ADK Agent",
+    "3101": {
+      "label": "next-forge Web",
       "onAutoForward": "notify"
     },
-    "8001": {
-      "label": "ChromaDB",
+    "3102": {
+      "label": "next-forge API",
       "onAutoForward": "notify"
     },
-    "8002": {
-      "label": "Session Memory",
+    "3104": {
+      "label": "Mintlify Docs",
+      "onAutoForward": "notify"
+    },
+    "6106": {
+      "label": "Storybook Workshop",
       "onAutoForward": "notify"
     }
   },
   "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "yarn launch:health",
 
   "remoteEnv": {
     "NODE_ENV": "development",

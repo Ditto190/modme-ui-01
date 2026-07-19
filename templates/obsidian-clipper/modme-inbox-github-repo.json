@@ -1,0 +1,74 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "ModMe Inbox — GitHub Repo",
+	"behavior": "create",
+	"description": "Clip a GitHub repository home page into an inbox research note (inbox-contract.v1).",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_README",
+	"path": "inbox/web-clipper/{{meta:octolytics-dimension-repository_nwo|split:\"/\"|last|safe_name ?? url|split:\"/\"|slice:3,4|first|safe_name}}",
+	"triggers": [
+		"/^https:\\/\\/github\\.com\\/[^\\/]+\\/[^\\/]+\\/?$/"
+	],
+	"properties": [
+		{
+			"name": "timestamp",
+			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
+			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
+		{
+			"name": "agent",
+			"value": "human",
+			"type": "text"
+		},
+		{
+			"name": "agent_role",
+			"value": "researcher",
+			"type": "text"
+		},
+		{
+			"name": "type",
+			"value": "research",
+			"type": "text"
+		},
+		{
+			"name": "severity",
+			"value": "medium",
+			"type": "text"
+		},
+		{
+			"name": "tags",
+			"value": "clipper, github, repo, {{meta:octolytics-dimension-user_login}}",
+			"type": "multitext"
+		},
+		{
+			"name": "title",
+			"value": "{{title}}",
+			"type": "text"
+		},
+		{
+			"name": "summary",
+			"value": "{{description ?? meta:og:description}}",
+			"type": "text"
+		},
+		{
+			"name": "source",
+			"value": "{{url}}",
+			"type": "text"
+		},
+		{
+			"name": "owner",
+			"value": "{{meta:octolytics-dimension-user_login}}",
+			"type": "text"
+		},
+		{
+			"name": "stars",
+			"value": "{{selector:#repo-stars-counter-star}}",
+			"type": "text"
+		}
+	],
+	"noteContentFormat": "# {{title}}\n\n**URL:** {{url}}\n**Owner:** {{meta:octolytics-dimension-user_login}}\n**Stars:** {{selector:#repo-stars-counter-star}}\n\n## Summary\n\n{{description ?? meta:og:description}}\n\n{% if selection %}## Selection\n\n{{selection}}\n\n{% endif %}## README\n\n{{selectorHtml:article|markdown ?? content}}\n"
+}

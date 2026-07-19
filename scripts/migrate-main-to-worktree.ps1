@@ -8,6 +8,9 @@ param(
   [ValidateSet("cursor", "copilot", "claude", "antigravity", "human")]
   [string]$Owner = "cursor",
 
+  [Parameter(Mandatory = $false)]
+  [string]$WorktreesRoot,
+
   [switch]$FromCurrentBranch,
   [switch]$DryRun
 )
@@ -21,6 +24,7 @@ migrate-main-to-worktree — stash main-checkout WIP into a new agent worktree
 Options:
   -Name <task>           Task slug (required)
   -Owner cursor|copilot|claude|antigravity|human
+  -WorktreesRoot <path>  Agent worktrees root (else WORKTREES_ROOT, else <repo>/.worktrees)
   -FromCurrentBranch     Branch worktree from current HEAD (fewer stash conflicts)
   -DryRun                Preview only
 
@@ -34,11 +38,11 @@ Examples:
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $RepoRoot = Split-Path -Parent $ScriptDir
-$ProjectName = Split-Path -Leaf $RepoRoot
-$ParentName = Split-Path -Leaf (Split-Path -Parent $RepoRoot)
-$ExpectedDevRoot = "${ProjectName}-dev"
 
-if ($ParentName -eq $ExpectedDevRoot) {
+. (Join-Path $ScriptDir "lib/worktree-context.ps1")
+$ctx = Get-WorktreeContext -RepoRoot $RepoRoot -WorktreesRoot $WorktreesRoot
+
+if (-not $ctx.IsMainCheckout) {
   Write-Error "Already in a worktree ($RepoRoot). Run from the main Monorepo_ModMe checkout."
 }
 
@@ -50,8 +54,8 @@ if ([string]::IsNullOrWhiteSpace($status)) {
 $Name = $Name.Trim().ToLower() -replace '\s+', '-'
 $BranchName = "feature/$Owner/$Name"
 $FolderName = if ($Owner -eq "human") { "dev-human-$Name" } else { "dev-agent-$Owner-$Name" }
-$DevWorktreeRoot = Join-Path (Split-Path -Parent $RepoRoot) $ExpectedDevRoot
-$TargetPath = Join-Path $DevWorktreeRoot $FolderName
+$AgentWorktreesRoot = $ctx.WorktreesRoot
+$TargetPath = Join-Path $AgentWorktreesRoot $FolderName
 $CurrentBranch = git -C $RepoRoot branch --show-current
 $stashMessage = "migrate-main-to-worktree-$Owner-$Name-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
 
@@ -75,8 +79,8 @@ if (Test-Path $TargetPath) {
 
 function New-MigrateWorktree {
   if ($FromCurrentBranch) {
-    if (!(Test-Path $DevWorktreeRoot)) {
-      Write-Error "Dev worktree root not found at $DevWorktreeRoot. Run init-worktrees.ps1 first."
+    if (!(Test-Path $AgentWorktreesRoot)) {
+      New-Item -ItemType Directory -Force -Path $AgentWorktreesRoot | Out-Null
     }
     $branchExists = $false
     $prevEap = $ErrorActionPreference
@@ -105,7 +109,11 @@ function New-MigrateWorktree {
     if ($LASTEXITCODE -ne 0) { throw "install-git-hooks failed" }
   }
   else {
-    & "$ScriptDir/new-agent-worktree.ps1" -Name $Name -Owner $Owner
+    $newArgs = @{ Name = $Name; Owner = $Owner }
+    if (-not [string]::IsNullOrWhiteSpace($WorktreesRoot)) {
+      $newArgs.WorktreesRoot = $WorktreesRoot
+    }
+    & "$ScriptDir/new-agent-worktree.ps1" @newArgs
     if ($LASTEXITCODE -ne 0) {
       throw "new-agent-worktree.ps1 failed (exit $LASTEXITCODE)"
     }

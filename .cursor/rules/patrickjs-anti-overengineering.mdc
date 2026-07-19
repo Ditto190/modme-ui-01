@@ -1,7 +1,5 @@
 ---
-description: "Prevent AI over-engineering by keeping changes scoped, simple, and directly tied to the user's request"
-globs: ["**/*"]
-alwaysApply: false
+alwaysApply: true
 ---
 # Anti-Over-Engineering
 

@@ -81,9 +81,22 @@ yarn km:legacy:diagram
 
 Details: [KNOWLEDGE_MANAGEMENT.md](KNOWLEDGE_MANAGEMENT.md) (historical), [scripts/knowledge-management/README.md](../scripts/knowledge-management/README.md) (issue context mapper).
 
-## Obsidian
+## Obsidian vault (sidecar)
 
-Intended: `yarn docs:clipper:export` + `templates/obsidian-clipper/`. **Currently missing** on disk — see CATALOG.md status `missing`. Capture via inbox until restored.
+Lean vault at `C:\Users\dylan\ModMe-Vault` — junctions to `inbox/`, `docs/`, `Templates/`.
+
+```powershell
+yarn obsidian:sidecar:setup -OpenVault
+```
+
+| Entry         | Path                                                           |
+| ------------- | -------------------------------------------------------------- |
+| Setup         | [obsidian-sidecar-setup.md](obsidian-sidecar-setup.md)         |
+| A.D.A.M hub   | [adam/ADAM Index.md](adam/ADAM%20Index.md)                     |
+| Dashboards    | [adam/ADAM Command Center.md](adam/ADAM%20Command%20Center.md) |
+| Plugin policy | [adam/Vault Plugin Policy.md](adam/Vault%20Plugin%20Policy.md) |
+
+Clipper templates: `yarn docs:clipper:export` + `templates/obsidian-clipper/`. Capture via inbox when clipper export is unavailable (see [CATALOG.md](knowledge/CATALOG.md)).
 
 ## Skills that help
 

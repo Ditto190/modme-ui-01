@@ -1,0 +1,86 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "ModMe Inbox — AI Chat (multi-agent)",
+	"behavior": "create",
+	"description": "Clip shared/chat threads from ChatGPT, Claude, Gemini, Perplexity, Grok, Copilot, and Cursor into inbox notes. Based on kepano/chatgpt-clipper; agent field inferred from domain.",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
+	"triggers": [
+		"https://chatgpt.com/share",
+		"https://chatgpt.com/c",
+		"https://chat.openai.com/c",
+		"https://chat.openai.com/share",
+		"https://claude.ai/chat",
+		"https://claude.ai/share",
+		"https://gemini.google.com/app",
+		"https://gemini.google.com/share",
+		"https://www.perplexity.ai/search",
+		"https://www.perplexity.ai/s/",
+		"https://grok.com/",
+		"https://x.com/i/grok",
+		"https://copilot.microsoft.com/",
+		"https://www.bing.com/chat",
+		"https://cursor.com/",
+		"/^https:\\/\\/chatgpt\\.com\\//",
+		"/^https:\\/\\/claude\\.ai\\//",
+		"/^https:\\/\\/gemini\\.google\\.com\\//"
+	],
+	"properties": [
+		{
+			"name": "timestamp",
+			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
+			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
+		{
+			"name": "agent",
+			"value": "{% if domain contains \"chatgpt\" or domain contains \"openai\" %}chatgpt{% elseif domain contains \"claude\" %}claude{% elseif domain contains \"gemini\" %}gemini{% elseif domain contains \"perplexity\" %}perplexity{% elseif domain contains \"grok\" or url contains \"grok\" %}grok{% elseif domain contains \"copilot\" or domain contains \"bing\" %}copilot{% elseif domain contains \"cursor\" %}cursor{% else %}ai-chat{% endif %}",
+			"type": "text"
+		},
+		{
+			"name": "agent_role",
+			"value": "researcher",
+			"type": "text"
+		},
+		{
+			"name": "type",
+			"value": "research",
+			"type": "text"
+		},
+		{
+			"name": "severity",
+			"value": "medium",
+			"type": "text"
+		},
+		{
+			"name": "tags",
+			"value": "clipper, ai-chat, conversation, {{domain}}",
+			"type": "multitext"
+		},
+		{
+			"name": "title",
+			"value": "{{title}}",
+			"type": "text"
+		},
+		{
+			"name": "summary",
+			"value": "{{description ?? meta:og:description}}",
+			"type": "text"
+		},
+		{
+			"name": "source",
+			"value": "{{url}}",
+			"type": "text"
+		},
+		{
+			"name": "chat_platform",
+			"value": "{{domain}}",
+			"type": "text"
+		}
+	],
+	"noteContentFormat": "{% set platform = domain %}\n{% if domain contains \"chatgpt\" or domain contains \"openai\" %}{% set platform = \"chatgpt\" %}{% elseif domain contains \"claude\" %}{% set platform = \"claude\" %}{% elseif domain contains \"gemini\" %}{% set platform = \"gemini\" %}{% elseif domain contains \"perplexity\" %}{% set platform = \"perplexity\" %}{% elseif domain contains \"grok\" or url contains \"grok\" %}{% set platform = \"grok\" %}{% elseif domain contains \"copilot\" or domain contains \"bing\" %}{% set platform = \"copilot\" %}{% elseif domain contains \"cursor\" %}{% set platform = \"cursor\" %}{% endif %}\n\n# {{title}}\n\n**URL:** {{url}}\n**Platform:** {{platform}}\n\n## Summary\n\n{{description ?? meta:og:description}}\n\n{% if selection %}## Selection\n\n{{selection}}\n\n{% endif %}## Conversation\n\n{% if platform == \"chatgpt\" %}{{selectorHtml:article[data-testid*=\"conversation-turn\"]|replace:\"/<svg.*?svg>/g\":\"### ChatGPT\\:\"|join:\"\\n\\n\"|markdown|replace:(\"\\\\###\":\"###\", \"##### You said\": \"### You:\")}}\n{% else %}{{content}}\n{% endif %}\n"
+}

@@ -1,0 +1,46 @@
+# Scripts CI — focused checks for repository automation under /scripts
+# Keeps lint, tests, and review-style validation scoped to script changes.
+
+stages:
+  - lint
+  - test
+  - code_review
+
+scripts:lint:
+  stage: lint
+  image: node:20-bullseye
+  rules:
+    # Run for any pipeline source; this file is intentionally lightweight.
+    - when: on_success
+  script:
+    - node --version
+    - yarn --version
+    - yarn lint:harness
+    - yarn verify:scripts
+  allow_failure: false
+
+scripts:test:
+  stage: test
+  image: node:20-bullseye
+  rules:
+    # Exercise the script test matrix whenever the scripts pipeline is present.
+    - when: on_success
+  script:
+    - node --version
+    - yarn --version
+    - yarn test:scripts:node
+    - yarn test:scripts:python
+    - yarn test:scripts
+  allow_failure: false
+
+scripts:code_review:
+  stage: code_review
+  image: node:20-bullseye
+  rules:
+    # Review-style gate: run the repo preflight checks that validate CI-adjacent script changes.
+    - when: on_success
+  script:
+    - node --version
+    - yarn --version
+    - yarn pre-commit:check --ci
+  allow_failure: false

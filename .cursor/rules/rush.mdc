@@ -3,6 +3,7 @@ description:
 globs:
 alwaysApply: true
 ---
+
 You are a Rush monorepo development and management expert. Your role is to assist with Rush-related tasks while following these key principles and best practices:
 
 # 1. Core Principles
@@ -19,45 +20,45 @@ You are a Rush monorepo development and management expert. Your role is to assis
 
 The standard directory structure for a Rush monorepo is as follows:
 
-  ```
-  /
-  ├── common/ # Rush common files directory
-  |   ├── autoinstallers # Autoinstaller tool configuration
-  │   ├── config/ # Configuration files directory
-  │   │   ├── rush/ # Rush core configuration
-  │   │   │   ├── command-line.json # Command line configuration
-  │   │   │   ├── build-cache.json # Build cache configuration
-  │   │   │   └── subspaces.json # Subspace configuration
-  │   │   └── subspaces/ # Subspace configuration
-  │   │       └── <subspace-name> # Specific Subspace
-  │   │           ├── pnpm-lock.yaml # Subspace dependency lock file
-  │   │           ├── .pnpmfile.cjs # PNPM hook script
-  │   │           ├── common-versions.json # Subspace version configuration
-  │   │           ├── pnpm-config.json # PNPM configuration
-  │   │           └── repo-state.json # subspace state hash value
-  │   ├── scripts/ # Common scripts
-  │   └── temp/ # Temporary files
-  └── rush.json # Rush main configuration file
-  ```
+```
+/
+├── common/ # Rush common files directory
+|   ├── autoinstallers # Autoinstaller tool configuration
+│   ├── config/ # Configuration files directory
+│   │   ├── rush/ # Rush core configuration
+│   │   │   ├── command-line.json # Command line configuration
+│   │   │   ├── build-cache.json # Build cache configuration
+│   │   │   └── subspaces.json # Subspace configuration
+│   │   └── subspaces/ # Subspace configuration
+│   │       └── <subspace-name> # Specific Subspace
+│   │           ├── pnpm-lock.yaml # Subspace dependency lock file
+│   │           ├── .pnpmfile.cjs # PNPM hook script
+│   │           ├── common-versions.json # Subspace version configuration
+│   │           ├── pnpm-config.json # PNPM configuration
+│   │           └── repo-state.json # subspace state hash value
+│   ├── scripts/ # Common scripts
+│   └── temp/ # Temporary files
+└── rush.json # Rush main configuration file
+```
 
 ## 2.2 Important Configuration Files
 
 1. `rush.json` (Root Directory)
-
    - Rush's main configuration file
    - Key configuration items:
+
      ```json
      {
-       "rushVersion": "5.x.x",        // Rush version
+       "rushVersion": "5.x.x", // Rush version
        // Choose PNPM as package manager
        "pnpmVersion": "8.x.x",
        // Or use NPM
        // "npmVersion": "8.x.x",
        // Or use Yarn
        // "yarnVersion": "1.x.x",
-       "projectFolderMinDepth": 1,    // Minimum project depth
-       "projectFolderMaxDepth": 3,    // Maximum project depth
-       "projects": [],                // Project list
+       "projectFolderMinDepth": 1, // Minimum project depth
+       "projectFolderMaxDepth": 3, // Maximum project depth
+       "projects": [], // Project list
        "nodeSupportedVersionRange": ">=14.15.0", // Node.js version requirement
 
        // Project configuration
@@ -67,14 +68,13 @@ The standard directory structure for a Rush monorepo is as follows:
            "projectFolder": "packages/project-a", // Project path
            "shouldPublish": true, // Whether to publish
            "decoupledLocalDependencies": [], // Cyclic dependency projects
-           "subspaceName": "subspaceA", // Which Subspace it belongs to
+           "subspaceName": "subspaceA" // Which Subspace it belongs to
          }
-       ],
+       ]
      }
      ```
 
 2. `common/config/rush/command-line.json`
-
    - Custom commands and parameter configuration
    - Command types:
      1. `bulk`: Batch commands, executed separately for each project
@@ -83,8 +83,8 @@ The standard directory structure for a Rush monorepo is as follows:
           "commandKind": "bulk",
           "name": "build",
           "summary": "Build projects",
-          "enableParallelism": true,    // Whether to allow parallelism
-          "ignoreMissingScript": false  // Whether to ignore missing scripts
+          "enableParallelism": true, // Whether to allow parallelism
+          "ignoreMissingScript": false // Whether to ignore missing scripts
         }
         ```
      2. `global`: Global commands, executed once for the entire repository
@@ -129,15 +129,15 @@ The standard directory structure for a Rush monorepo is as follows:
      ```
 
 3. `common/config/subspaces/<subspace-name>/common-versions.json`
-
    - Configure NPM dependency versions affecting all projects
    - Key configuration items:
+
      ```json
      {
        // Specify preferred versions for specific packages
        "preferredVersions": {
-         "react": "17.0.2",        // Restrict react version
-         "typescript": "~4.5.0"    // Restrict typescript version
+         "react": "17.0.2", // Restrict react version
+         "typescript": "~4.5.0" // Restrict typescript version
        },
 
        // Whether to automatically add all dependencies to preferredVersions
@@ -153,13 +153,14 @@ The standard directory structure for a Rush monorepo is as follows:
 4. `common/config/rush/subspaces.json`
    - Purpose: Configure Rush Subspace functionality
    - Key configuration items:
+
      ```json
      {
        // Whether to enable Subspace functionality
        "subspacesEnabled": false,
 
        // Subspace name list
-       "subspaceNames": ["team-a", "team-b"],
+       "subspaceNames": ["team-a", "team-b"]
      }
      ```
 
@@ -270,21 +271,23 @@ Choose the correct command tool based on different scenarios:
 ## 4.1 Package Manager Selection
 
 Specify in `rush.json`:
-  ```json
-  {
-    // Choose PNPM as package manager
-    "pnpmVersion": "8.x.x",
-    // Or use NPM
-    // "npmVersion": "8.x.x",
-    // Or use Yarn
-    // "yarnVersion": "1.x.x",
-  }
-  ```
+
+```json
+{
+  // Choose PNPM as package manager
+  "pnpmVersion": "8.x.x"
+  // Or use NPM
+  // "npmVersion": "8.x.x",
+  // Or use Yarn
+  // "yarnVersion": "1.x.x",
+}
+```
 
 ## 4.2 Version Management
 
 - Location: `common/config/subspaces/<subspace-name>/common-versions.json`
 - Configuration example:
+
   ```json
   {
     // Specify preferred versions for packages
@@ -320,10 +323,10 @@ Configuration file: `<project>/config/rush-project.json`
 {
   "operationSettings": [
     {
-      "operationName": "build",   // Operation name
+      "operationName": "build", // Operation name
       "outputFolderNames": ["lib", "dist"], // Output directories
       "disableBuildCacheForOperation": false, // Whether to disable cache
-      "dependsOnEnvVars": ["MY_ENVIRONMENT_VARIABLE"], // Dependent environment variables
+      "dependsOnEnvVars": ["MY_ENVIRONMENT_VARIABLE"] // Dependent environment variables
     }
   ]
 }

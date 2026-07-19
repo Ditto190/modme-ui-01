@@ -213,3 +213,16 @@ if ($env:TERM_PROGRAM -eq "vscode") {
     Write-Host "ModMe workspace (next-forge + GenerativeUI)" -ForegroundColor Magenta
     Write-Host "Type modme-help for commands`n" -ForegroundColor Gray
 }
+
+# Advisory launch once per integrated terminal session
+if ($env:MODME_LAUNCH_DONE -ne '1') {
+    $launchScript = Join-Path $projectRoot "scripts\modme-launch.ps1"
+    if (Test-Path $launchScript) {
+        try {
+            & $launchScript -Mode auto
+        }
+        catch {
+            Write-Warning "[modme-launch] advisory: $_"
+        }
+    }
+}

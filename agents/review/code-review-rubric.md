@@ -25,10 +25,10 @@
 > Will the next developer (human or agent) understand this code without your help?
 
 - [ ] Names (variables, functions, components, IDs) are descriptive and follow repo conventions
-  (`snake_case` for IDs, `PascalCase` for component types, `camelCase` for props).
+      (`snake_case` for IDs, `PascalCase` for component types, `camelCase` for props).
 - [ ] Functions and components are small and focused on a single responsibility.
 - [ ] No unnecessary duplication — shared logic is extracted or reused from `agents/skills/` or
-  `src/lib/`.
+      `src/lib/`.
 - [ ] Complex logic has a brief explanatory comment (matching the style of existing comments).
 - [ ] Temporary / debug code (console.log, TODO, hardcoded credentials) is absent.
 
@@ -51,9 +51,9 @@
 
 - [ ] No secrets, API keys, or tokens are introduced into source code or git history.
 - [ ] All user/agent inputs are validated before use (Zod for TypeScript props; explicit checks in
-  Python tools).
+      Python tools).
 - [ ] No new external dependencies are introduced without an advisory check
-  (`gh-advisory-database` or equivalent).
+      (`gh-advisory-database` or equivalent).
 - [ ] Pinned dependency versions are used where security matters.
 - [ ] HTTP endpoints do not leak internal state or stack traces to clients.
 
@@ -64,12 +64,15 @@
 > Does the change align with established patterns and avoid reinvention?
 
 - [ ] Existing utilities in `src/lib/`, `agent/tools/`, or `agents/` were checked before adding
-  new ones.
+      new ones.
 - [ ] `awesome-copilot` index was consulted for matching prompts/skills/checklists
-  (see `vendor/awesome-copilot-index/` or `agents/index.json`).
+      (see `vendor/awesome-copilot-index/` or `agents/index.json`).
 - [ ] The PR template's "awesome-copilot Reuse" section is filled in (not left blank).
-- [ ] New reusable patterns are proposed for upstreaming to `Ditto190/awesome-copilot` or added
-  to `agents/`.
+- [ ] New reusable patterns are proposed for upstreaming to `Ditto190/modifyme-ui-01` or added
+
+# @Copilot TODO - please update the URLs and Paths in this and surrounding files
+
+      to `agents/`.
 
 ---
 
@@ -78,24 +81,24 @@
 > Are docs, instructions, and agent guidance kept in sync?
 
 - [ ] If behaviour or public interfaces changed, `README.md` and/or relevant `*.md` in `docs/`
-  are updated.
+      are updated.
 - [ ] If new component types were added, `AGENTS.md` / `CLAUDE.md` / `.github/copilot-instructions.md`
-  reference them.
+      reference them.
 - [ ] If new agent tools were added, `CODEBASE_INDEX.md` and `agent/toolsets.json` are updated.
 - [ ] If conventions changed, this rubric (`agents/review/code-review-rubric.md`) should be
-  updated accordingly.
+      updated accordingly.
 
 ---
 
 ## Quick Severity Guide (for review comments)
 
-| Label | Meaning |
-|-------|---------|
-| `BLOCKER` | Must be resolved before merge. Correctness, security, or data-loss risk. |
-| `NON-BLOCKER` | Should be addressed in a follow-up issue. Maintainability or test gap. |
-| `SUGGESTION` | Optional improvement. Style, naming, or alternative approach. |
+| Label         | Meaning                                                                  |
+| ------------- | ------------------------------------------------------------------------ |
+| `BLOCKER`     | Must be resolved before merge. Correctness, security, or data-loss risk. |
+| `NON-BLOCKER` | Should be addressed in a follow-up issue. Maintainability or test gap.   |
+| `SUGGESTION`  | Optional improvement. Style, naming, or alternative approach.            |
 
 ---
 
-*This rubric is maintained in `agents/review/code-review-rubric.md`.
-It is indexed in `agents/index.json` and referenced by the Copilot Pre-Review Gate workflow.*
+_This rubric is maintained in `agents/review/code-review-rubric.md`.
+It is indexed in `agents/index.json` and referenced by the Copilot Pre-Review Gate workflow._

@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "hooks": {
     "beforeSubmitPrompt": [
       {
@@ -10,17 +11,34 @@
         "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor pre-compact'"
       }
     ],
+    "sessionStart": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/ensure-lean-ctx-config.ps1 -CheckOnly",
+        "failClosed": false,
+        "timeoutSec": 5
+      },
+      {
+        "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor session-start'"
+      }
+    ],
     "sessionEnd": [
       {
         "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor session-end'"
       }
     ],
-    "sessionStart": [
+    "afterFileEdit": [
       {
-        "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor session-start'"
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/lean-ctx-post-edit.ps1",
+        "failClosed": false,
+        "timeoutSec": 3
       }
     ],
     "stop": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/lean-ctx-stop-marker.ps1",
+        "failClosed": false,
+        "timeoutSec": 3
+      },
       {
         "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor stop'"
       }
@@ -35,6 +53,5 @@
         "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor subagent-stop'"
       }
     ]
-  },
-  "version": 1
+  }
 }

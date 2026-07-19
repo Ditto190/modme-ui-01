@@ -1,5 +1,5 @@
 {
-  "cursor.worktreeMaxCount": 25,
+  "cursor.worktreeMaxCount": 12,
   "cursor.worktreeCleanupIntervalHours": 6,
   "git.path": "C:/Program Files/Git/cmd/git.exe",
   "leanctx.binaryPath": "C:/Users/dylan/.gemini/antigravity/bin/lean-ctx.exe",
@@ -44,7 +44,7 @@
   "debug.focusEditorOnBreak": false,
   "files.autoSave": "afterDelay",
   "editor.formatOnSave": true,
-  "workbench.colorTheme": "Dark Modern",
+  "workbench.colorTheme": "Default Dark Modern",
   "terminal.integrated.gpuAcceleration": "off",
   "explorer.autoReveal": true,
   "explorer.confirmDelete": false,

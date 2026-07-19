@@ -69,3 +69,17 @@ Write-Host "Setup complete." -ForegroundColor Green
 Write-Host "  yarn dev:forge:core     # app 3100 web 3101 api 3102"
 Write-Host "  gh aw status            # agentic workflow health"
 Write-Host "  yarn worktree:doctor    # worktree pre-flight"
+Write-Host "  yarn launch:full        # advisory health + KM verify (optional)"
+
+# Advisory launch orchestration at end of setup
+$launch = Join-Path $PSScriptRoot "modme-launch.ps1"
+if ((Test-Path $launch) -and -not $DryRun) {
+    Write-Host ""
+    Write-Host "== ModMe launch (advisory) ==" -ForegroundColor Cyan
+    try {
+        & $launch -Mode full
+    }
+    catch {
+        Write-Warning "launch:full advisory step failed: $_"
+    }
+}
