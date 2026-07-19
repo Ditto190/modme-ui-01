@@ -6,6 +6,11 @@
         "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/ensure-lean-ctx-config.ps1 -CheckOnly",
         "failClosed": false,
         "timeoutSec": 5
+      },
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/modme-session-launch.ps1",
+        "failClosed": false,
+        "timeoutSec": 120
       }
     ],
     "afterFileEdit": [
@@ -13,6 +18,11 @@
         "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/lean-ctx-post-edit.ps1",
         "failClosed": false,
         "timeoutSec": 3
+      },
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/check-types.ps1",
+        "failClosed": false,
+        "timeoutSec": 30
       }
     ],
     "stop": [

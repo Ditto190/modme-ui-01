@@ -1,0 +1,28 @@
+{
+	"attachmentFolderPath": "GenerativeUI_monorepo/docs/inbox/_attachments",
+	"alwaysUpdateLinks": true,
+	"newFileLocation": "folder",
+	"newFileFolderPath": "GenerativeUI_monorepo/docs/inbox",
+	"userIgnoreFilters": [
+		"node_modules/",
+		".git/",
+		".yarn/",
+		".worktrees/",
+		".vendor/",
+		".next/",
+		".turbo/",
+		"dist/",
+		"build/",
+		"coverage/",
+		"logs/",
+		"data/",
+		"UniversalWorkbench-staging/",
+		"UniversalWorkbench-dev/",
+		"GenerativeUI_monorepo/UniversalWorkbench/",
+		"GenerativeUI_monorepo/node_modules/",
+		"next-forge/node_modules/",
+		"next-forge/.next/",
+		"next-forge/.turbo/",
+		"**/*.tsbuildinfo"
+	]
+}

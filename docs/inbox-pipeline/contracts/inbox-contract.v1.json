@@ -42,6 +42,12 @@
       "categorized",
       "archived",
       "superseded"
+    ],
+    "c4Container": [
+      "root-orchestration",
+      "next-forge",
+      "generative-ui",
+      "agent-stack"
     ]
   },
   "frontmatter": {
@@ -59,7 +65,8 @@
       "branch",
       "pr_number",
       "title",
-      "summary"
+      "summary",
+      "c4_container"
     ],
     "appliesTo": [
       "md"

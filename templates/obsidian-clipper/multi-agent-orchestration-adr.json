@@ -1,0 +1,65 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "ModMe — Multi-agent orchestration ADR",
+	"behavior": "create",
+	"description": "Clip architecture decision records and orchestration docs into inbox.",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_architecture_architect_{{title|safe_name}}",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
+	"triggers": [
+		"/^https:\\/\\/github\\.com\\/[^/]+\\/[^/]+\\/blob\\/[^/]+\\/docs\\/architecture\\//",
+		"/copilot-workspace-orchestration/"
+	],
+	"properties": [
+		{
+			"name": "timestamp",
+			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
+			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
+		{
+			"name": "agent",
+			"value": "cursor",
+			"type": "text"
+		},
+		{
+			"name": "agent_role",
+			"value": "architect",
+			"type": "text"
+		},
+		{
+			"name": "type",
+			"value": "architecture",
+			"type": "text"
+		},
+		{
+			"name": "severity",
+			"value": "high",
+			"type": "text"
+		},
+		{
+			"name": "tags",
+			"value": "clipper, orchestration, multi-agent, copilot, worktree, beads",
+			"type": "multitext"
+		},
+		{
+			"name": "title",
+			"value": "{{title}}",
+			"type": "text"
+		},
+		{
+			"name": "summary",
+			"value": "{{description}}",
+			"type": "text"
+		},
+		{
+			"name": "source",
+			"value": "{{url}}",
+			"type": "text"
+		}
+	],
+	"noteContentFormat": "# {{title}}\n\n**URL:** {{url}}\n\n{% if selection %}## Selection\n\n{{selection}}\n\n{% endif %}{{content}}\n"
+}

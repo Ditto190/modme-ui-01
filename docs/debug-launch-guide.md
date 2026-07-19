@@ -2,11 +2,12 @@
 
 How to use VS Code / Cursor debug configs in **Monorepo_ModMe**, keep them in sync with CI, and add new apps safely.
 
-| Audience | Start here |
-|----------|------------|
-| New contributor | Run `/init` in Cursor chat |
-| Agent session | `AGENTS.md` → this guide → `.vscode/launch.json` |
-| CI maintainer | `scripts/validate-launch-json.mjs`, `.github/workflows/launch-json-check.yml` |
+| Audience            | Start here                                                                   |
+| ------------------- | ---------------------------------------------------------------------------- |
+| New contributor     | Run `/init` in Cursor chat                                                   |
+| Agent session       | `AGENTS.md` → this guide → `.vscode/launch.json`                             |
+| Windows Docker/WSL  | [`windows-docker-wsl-setup.md`](windows-docker-wsl-setup.md)                 |
+| CI maintainer       | `scripts/validate-launch-json.mjs`, `.github/workflows/launch-json-check.yml` |
 
 ---
 
@@ -34,31 +35,31 @@ scripts/
 
 ### next-forge (`next-forge/apps/`)
 
-| Name | Port | Notes |
-|------|------|-------|
-| next-forge App (SaaS) | **3100** | Main authenticated app |
-| next-forge Web (Marketing) | **3101** | Marketing site |
-| next-forge API | **3102** | Webhooks / API routes |
-| next-forge Docs (Mintlify) | **3104** | Documentation site |
+| Name                            | Port     | Notes                  |
+| ------------------------------- | -------- | ---------------------- |
+| next-forge App (SaaS)           | **3100** | Main authenticated app |
+| next-forge Web (Marketing)      | **3101** | Marketing site         |
+| next-forge API                  | **3102** | Webhooks / API routes  |
+| next-forge Docs (Mintlify)      | **3104** | Documentation site     |
 | next-forge Storybook (Workshop) | **6106** | Design system workshop |
 
 Run from repo root: `yarn dev:forge`, `yarn dev:forge:docs`, or `yarn dev:forge:storybook`. Worktrees offset these via `FORGE_*_PORT` in `.worktree-ports.env`.
 
 ### Primary apps (`GenerativeUI_monorepo/apps/`)
 
-| Name | Type | Port | Notes |
-|------|------|------|-------|
-| Web Dashboard (Next.js) | `node-terminal` | **3001** | Avoids clash with Vibe on 3000; auto-opens Chrome when ready |
-| Vibe Web App (Chrome) | `chrome` + task | **3000** | Starts Vite via `vibe-web-app: dev` task |
-| Agent Server (FastAPI) | `debugpy` / uvicorn | **8000** | Loads root `.env` via `envFile` |
-| Agent Generator: build + current test | `node --test` | — | Builds first via `agent-generator: build` |
-| Agent Generator: schema crawler | `node` | — | Runs `dist/mcp-registry/schema-crawler.js` after build |
+| Name                                  | Type                | Port     | Notes                                                        |
+| ------------------------------------- | ------------------- | -------- | ------------------------------------------------------------ |
+| Web Dashboard (Next.js)               | `node-terminal`     | **3001** | Avoids clash with Vibe on 3000; auto-opens Chrome when ready |
+| Vibe Web App (Chrome)                 | `chrome` + task     | **3000** | Starts Vite via `vibe-web-app: dev` task                     |
+| Agent Server (FastAPI)                | `debugpy` / uvicorn | **8000** | Loads root `.env` via `envFile`                              |
+| Agent Generator: build + current test | `node --test`       | —        | Builds first via `agent-generator: build`                    |
+| Agent Generator: schema crawler       | `node`              | —        | Runs `dist/mcp-registry/schema-crawler.js` after build       |
 
 ### Template packages (`GenerativeUI_monorepo/packages/`)
 
-| Name | Port |
-|------|------|
-| Example Next: dev server | 3002 |
+| Name                      | Port |
+| ------------------------- | ---- |
+| Example Next: dev server  | 3002 |
 | Example React: dev server | 3003 |
 
 Jest configs use `yarn jest --runInBand` on the **current file** in each package.
@@ -67,10 +68,25 @@ Jest configs use `yarn jest --runInBand` on the **current file** in each package
 
 - **Full Stack: Agent Server + Web Dashboard** — backend + Next UI
 - **Full Stack: Agent Server + Vibe Web App** — backend + Vite playground
+- **Full Stack: Forge Core + Agent Data Plane** — strict KM bootstrap (`modme: KM data plane up (strict)`) then `next-forge: dev core` (soft KM also runs via task `dependsOn`)
+
+### Agent data plane (ADR-0013)
+
+Infrastructure beside product (does **not** replace Supabase/Prisma):
+
+| Entry                                                  | Behavior                                                                |
+| ------------------------------------------------------ | ----------------------------------------------------------------------- |
+| `yarn km:bootstrap` / task **modme: KM data plane up** | Soft: Dolt up + Entire + beads ready + `km:status`; warns and continues |
+| Launch **Agent Data Plane: bootstrap (strict)**        | Hard fail if `km:status` fails — use for KM/agent debugging             |
+| `yarn agent:session:start`                             | Runs KM bootstrap (non-strict) before `catalog-cms-eval`                |
+| Worktree setup step 9                                  | Calls `km-session-bootstrap.ps1` then session start                     |
+
+See [ADR-0013](architecture/decisions/0013-dolt-beads-entire-agent-data-plane.md) and [KNOWLEDGE_QUICKSTART.md](KNOWLEDGE_QUICKSTART.md).
 
 ### Utility
 
 - **Node: current file** — debug whatever file is open (`${file}`)
+- **Agent Data Plane: bootstrap (strict)** — KM-only launch (Dolt :3307, Entire, Beads)
 
 ---
 
@@ -96,6 +112,18 @@ poetry install
 - Root `.env` is used by Agent Server (`envFile` in launch.json).
 - Reference **variable names** in docs only (`OPENAI_API_KEY`, `PORT`, `HOST`, `CORS_ORIGINS`).
 - Never commit secrets.
+
+### Launch health (advisory)
+
+Before debugging, optional env smoke:
+
+```powershell
+yarn launch:health    # lean-ctx + worktree doctor + session verify
+yarn session:verify     # env bootstrap assert only
+yarn env:runtime        # refresh .vscode/.env.runtime for envFile
+```
+
+Devcontainer `postStartCommand` runs `yarn launch:health`. See `.cursor/commands/devcontainer-setup.md`.
 
 ### Extensions
 
@@ -232,11 +260,11 @@ node scripts/validate-launch-json.mjs --require-manifest-sync
 
 ## 7. How this guide relates to `agent-tech-guide.md`
 
-| Topic | Where |
-|-------|-------|
-| lean-ctx, skills-sh, MCP | `docs/agent-tech-guide.md` |
-| Changelog CI | `docs/agent-tech-guide.md` §6 |
-| **Debug / launch.json** | **this file** |
+| Topic                    | Where                                    |
+| ------------------------ | ---------------------------------------- |
+| lean-ctx, skills-sh, MCP | `docs/agent-tech-guide.md`               |
+| Changelog CI             | `docs/agent-tech-guide.md` §6            |
+| **Debug / launch.json**  | **this file**                            |
 | Onboarding slash command | `.cursor/commands/init.md` → run `/init` |
 
 Agents: read `agent-tech-guide.md` for repo-wide tooling; read **this file** before editing `.vscode/launch.json`.
@@ -245,14 +273,14 @@ Agents: read `agent-tech-guide.md` for repo-wide tooling; read **this file** bef
 
 ## 8. Troubleshooting
 
-| Problem | Fix |
-|---------|-----|
-| Port already in use | Change `PORT` in launch env or stop other dev server |
-| Python config not found | Install `ms-python.debugpy`; run `poetry install` in agent-server |
-| `preLaunchTask` not found | Add task label to `.vscode/tasks.json` |
-| Jest debug fails | Run `yarn install` in monorepo; open a test file first |
-| CI launch-json-check fails | Run validator locally; sync manifest + launch.json |
-| `dist/` missing for agent-generator | `cd GenerativeUI_monorepo/apps/agent-generator && yarn build` |
+| Problem                             | Fix                                                               |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| Port already in use                 | Change `PORT` in launch env or stop other dev server              |
+| Python config not found             | Install `ms-python.debugpy`; run `poetry install` in agent-server |
+| `preLaunchTask` not found           | Add task label to `.vscode/tasks.json`                            |
+| Jest debug fails                    | Run `yarn install` in monorepo; open a test file first            |
+| CI launch-json-check fails          | Run validator locally; sync manifest + launch.json                |
+| `dist/` missing for agent-generator | `cd GenerativeUI_monorepo/apps/agent-generator && yarn build`     |
 
 ---
 
@@ -274,4 +302,4 @@ cd GenerativeUI_monorepo/apps/agent-generator && yarn build
 
 ---
 
-*Last updated: 2026-06-12 — launch.json, manifest validator, and CI workflow added.*
+_Last updated: 2026-06-12 — launch.json, manifest validator, and CI workflow added._

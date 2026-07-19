@@ -42,6 +42,18 @@ export const FORMAT_MAP = {
 };
 
 export const SKIP_FILES = new Set(['README.md', '_index.json', '.gitkeep', 'knowledge.db']);
+/** Curated research dumps — not Clipper captures; skip recursive ingest/audit. */
+export const SKIP_INBOX_DIRS = new Set([
+  'angular-webmcp-schema',
+  'glab-agents_workflows',
+  'observability_SEMANTIC_CONVENTIONS_METRICS',
+  'schema-org-guide',
+  'scoping-specs',
+  'serena',
+  'sico-digitalworker',
+]);
+/** Always recurse: Obsidian Clipper destination under ModMe-Vault junction. */
+export const RECURSIVE_INBOX_DIRS = new Set(['web-clipper']);
 export const TEXT_FORMATS = new Set(['md', 'txt', 'csv', 'html', 'url', 'jsx', 'snippet']);
 
 let _contract = null;
@@ -59,13 +71,55 @@ export function sha256(content) {
   return createHash('sha256').update(content).digest('hex');
 }
 
-export function listInboxFilesSync(inboxDir = INBOX_DIR) {
+/**
+ * List ingestible inbox files. Top-level files plus recursive `web-clipper/`
+ * (Obsidian Clipper path). Returns posix-relative paths from inboxDir.
+ */
+export function listInboxFilesSync(inboxDir = INBOX_DIR, { recursiveClipper = true } = {}) {
   if (!existsSync(inboxDir)) return [];
-  return readdirSync(inboxDir).filter((f) => {
-    if (SKIP_FILES.has(f) || f.startsWith('.')) return false;
-    const ext = extname(f).toLowerCase();
-    return ext in FORMAT_MAP;
-  });
+
+  const out = [];
+
+  function pushIfIngestible(relPosix) {
+    const base = basename(relPosix);
+    if (SKIP_FILES.has(base) || base.startsWith('.')) return;
+    const ext = extname(base).toLowerCase();
+    if (!(ext in FORMAT_MAP)) return;
+    out.push(relPosix.replace(/\\/g, '/'));
+  }
+
+  function walkDir(absDir, relPrefix) {
+    for (const entry of readdirSync(absDir, { withFileTypes: true })) {
+      const name = entry.name;
+      if (name.startsWith('.')) continue;
+      const rel = relPrefix ? `${relPrefix}/${name}` : name;
+      const abs = join(absDir, name);
+      if (entry.isDirectory()) {
+        walkDir(abs, rel);
+        continue;
+      }
+      if (entry.isFile()) pushIfIngestible(rel);
+    }
+  }
+
+  for (const entry of readdirSync(inboxDir, { withFileTypes: true })) {
+    const name = entry.name;
+    if (name.startsWith('.')) continue;
+    if (entry.isFile()) {
+      pushIfIngestible(name);
+      continue;
+    }
+    if (
+      entry.isDirectory() &&
+      recursiveClipper &&
+      RECURSIVE_INBOX_DIRS.has(name) &&
+      !SKIP_INBOX_DIRS.has(name)
+    ) {
+      walkDir(join(inboxDir, name), name);
+    }
+  }
+
+  return out.sort();
 }
 
 export function parseInboxFile(filePath, filename) {
@@ -205,13 +259,24 @@ export function validateFrontmatter(frontmatter, contract, { requireAll = false 
     });
   }
 
+  if (frontmatter.c4_container && !enums.c4Container?.includes(frontmatter.c4_container)) {
+    findings.push({
+      code: 'INBOX.FM.INVALID_C4_CONTAINER',
+      severity: 'warning',
+      automatable: true,
+      message: `Invalid c4_container: ${frontmatter.c4_container}`,
+      fixHint: `Use one of: ${(enums.c4Container ?? []).join(', ')}`,
+    });
+  }
+
   return findings;
 }
 
 export function validateMdFilename(filename) {
+  const leaf = basename(filename);
   const structured =
-    /^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}_[a-z-]+_[a-z-]+_[a-z0-9-]+\.md$/i.test(filename);
-  if (!structured && !filename.startsWith('.')) {
+    /^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}_[a-z-]+_[a-z-]+_[a-z0-9-]+\.md$/i.test(leaf);
+  if (!structured && !leaf.startsWith('.')) {
     return {
       code: 'INBOX.FM.FILENAME_CONVENTION',
       severity: 'warning',

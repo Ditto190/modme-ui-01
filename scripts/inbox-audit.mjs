@@ -20,6 +20,7 @@ import {
 } from './lib/inbox-contract.mjs';
 import { summarizeFindings, exitCodeFromSummary } from './lib/inbox-diagnostics.mjs';
 import { writeInboxReport } from './lib/inbox-report.mjs';
+import { recordKmMetric } from './lib/km-metrics.mjs';
 
 const args = process.argv.slice(2);
 const lensIdx = args.indexOf('--lens');
@@ -37,6 +38,14 @@ async function auditFunnel(contract) {
     const parsed = parseInboxFile(filePath, filename);
     const fileFindings = validateFunnelFile(parsed, contract);
     findings.push(...fileFindings);
+
+    if (parsed.format === 'md') {
+      const hasError = fileFindings.some((f) => f.severity === 'error');
+      recordKmMetric(hasError ? 'capture_invalid' : 'capture_valid', {
+        file: filename,
+        source: 'inbox-audit',
+      });
+    }
   }
 
   return { findings, filesScanned: files.length };

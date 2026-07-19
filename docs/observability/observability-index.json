@@ -1,0 +1,61 @@
+{
+  "version": "1.1",
+  "domain": "observability",
+  "sources": [
+    {
+      "id": "obs.schemas",
+      "path": "next-forge/packages/schemas/observability.ts",
+      "kind": "schema",
+      "exports": [
+        "TelemetrySourceSchema",
+        "TelemetryLevelSchema",
+        "PipelineStatusSchema",
+        "EvalImpactLevelSchema",
+        "TelemetryEventSchema",
+        "PipelineRunSchema",
+        "EvalSignalSchema",
+        "TestResultSchema",
+        "AgentPlatformSchema",
+        "OtelSpanNameSchema",
+        "LeanCtxSourceSchema",
+        "TraceRefSchema",
+        "OtelSpanSchema",
+        "TelemetryEventV11Schema"
+      ]
+    },
+    {
+      "id": "obs.doc.readme",
+      "path": "docs/observability/README.md",
+      "kind": "doc",
+      "role": "pipeline overview"
+    },
+    {
+      "id": "obs.doc.voltops",
+      "path": "docs/observability/voltops-mapping.md",
+      "kind": "doc",
+      "role": "cross-platform semantic mapping"
+    },
+    {
+      "id": "obs.adr.0013",
+      "path": "docs/adr/0013-observability-pipeline-entry-points-and-session-trace-config.md",
+      "kind": "adr",
+      "role": "pipeline entry-point contract"
+    },
+    {
+      "id": "obs.guides.runbooks",
+      "path": "docs/observability/runbooks/",
+      "kind": "runbook-set",
+      "role": "failure modes"
+    }
+  ],
+  "pipeline": {
+    "collect": ["session-logger", "agenttrace", "lean-ctx-journal", "lean-ctx-tee", "lean-ctx-debug", "lean-ctx-marker", "lean-ctx-archive"],
+    "normalize": ["telemetry-cli", "telemetry-bridge", "Zod contracts"],
+    "promote": ["Supabase", "Greptime"],
+    "ui": ["OpsSignalCard", "SessionOpsPanel"]
+  },
+  "entities": {
+    "correlation_keys": ["tenant_id", "session_id", "trace_id", "span_id", "parent_session_id", "agent_platform"],
+    "span_names": ["agent.session", "agent.tool_call", "agent.handoff", "telemetry.sync", "lean_ctx.read"]
+  }
+}

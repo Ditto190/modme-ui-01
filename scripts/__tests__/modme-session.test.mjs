@@ -16,6 +16,7 @@ describe('modme session lifecycle', () => {
       'pre-launch',
       'session-end',
       'verify',
+      'launch',
     ]) {
       expect(manifest.phases[phase]).toBeDefined();
     }
@@ -27,6 +28,16 @@ describe('modme session lifecycle', () => {
       'scripts/modme-session.ps1',
       'scripts/modme-terminal.ps1',
       'scripts/lib/modme-env-bootstrap.ps1',
+    ]) {
+      expect(existsSync(join(root, file))).toBe(true);
+    }
+  });
+
+  it('launch dispatcher scripts exist', () => {
+    for (const file of [
+      'scripts/modme-launch.ps1',
+      'scripts/modme-launch.mjs',
+      'scripts/shell/modme-launch.bash',
     ]) {
       expect(existsSync(join(root, file))).toBe(true);
     }

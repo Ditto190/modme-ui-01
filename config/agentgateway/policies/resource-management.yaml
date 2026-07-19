@@ -1,0 +1,46 @@
+# Agent Gateway resource / network / buffering policies — ADR-0016
+# Applied with routes.example.yaml local-llm route.
+
+version: 1
+
+resource_management:
+  max_parallel_agents: 4
+  max_inflight_per_namespace:
+    local-llm: 4
+    context7: 2
+    supabase: 2
+    gitlab: 2
+  queue_depth: 32
+  request_timeout_ms: 120000
+  rate_limit_rpm: 60
+  token_budget_hint: route_repo_reads_through_lean_ctx_only
+
+network:
+  allow_upstream_hosts:
+    - vllm
+    - llama-cpp-fallback
+  deny_direct_client_to_model: true
+  require_namespace_header: x-modme-gateway-namespace
+
+buffering:
+  request_body_max_mb: 8
+  response_stream_enabled: true
+  retry:
+    max_attempts: 2
+    backoff_ms: 500
+    failover_upstream: llama-cpp-fallback
+
+health:
+  vllm:
+    path: /health
+    interval_ms: 15000
+  llama_cpp_fallback:
+    path: /health
+    interval_ms: 15000
+
+sampling_defaults_local_llm:
+  temperature: 1.0
+  top_p: 0.95
+  top_k: 64
+  repetition_penalty: 1.1
+  note: "Gemma4 agentic GGUF — preserve OpenAI tools field; use jinja-compatible chat template"

@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "arXiv",
+	"behavior": "create",
+	"noteNameFormat": "{{title}}",
+	"path": "inbox",
+	"noteContentFormat": "{{content}}",
+	"properties": [
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
+		{
+			"name": "title",
+			"value": "{{title}}",
+			"type": "text"
+		},
+		{
+			"name": "author",
+			"value": "{{selector:.ltx_authors .ltx_personname|wikilink|join}}",
+			"type": "multitext"
+		},
+		{
+			"name": "url",
+			"value": "{{url}}",
+			"type": "text"
+		},
+		{
+			"name": "published",
+			"value": "{{selector:.ltx_dates|replace:\\\"(\\\",\\\"\\\"|replace:\\\")\\\",\\\"\\\"|date:\\\"YYYY-MM-DD\\\"}}",
+			"type": "date"
+		},
+		{
+			"name": "year",
+			"value": "{{selector:.ltx_dates|replace:\\\"(\\\",\\\"\\\"|replace:\\\")\\\",\\\"\\\"|date:\\\"YYYY\\\"}}",
+			"type": "number"
+		},
+		{
+			"name": "arxiv",
+			"value": "{{url|split:\\\"/\\\"|slice:4|split:\\\"#\\\"|slice:0,1}}",
+			"type": "text"
+		}
+	],
+	"triggers": [
+		"https://arxiv.org/html/"
+	]
+}

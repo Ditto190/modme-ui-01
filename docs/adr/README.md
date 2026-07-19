@@ -4,9 +4,17 @@ ADRs at this path cover **Monorepo_ModMe root orchestration** (scripts, agents, 
 
 ## Index
 
-| ADR | Title | Status | Date |
-|-----|-------|--------|------|
-| **0012** | [Advisory lean-ctx Session Config Workflow](./0012-advisory-lean-ctx-session-config-workflow.md) | **Accepted** | 2026-06-27 |
+| ADR      | Title                                                                                                                                  | Status       | Date       |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------ | ---------- |
+| **0012** | [Advisory lean-ctx Session Config Workflow](./0012-advisory-lean-ctx-session-config-workflow.md)                                       | **Accepted** | 2026-06-27 |
+| **0013** | [Observability Pipeline Entry Points and Session Trace Config](./0013-observability-pipeline-entry-points-and-session-trace-config.md) | **Proposed** | 2026-07-11 |
+| **0014** | [KM C4 Ownership Taxonomy](./0014-km-c4-ownership-taxonomy.md)                                                                         | **Accepted** | 2026-07-11 |
+| **0015** | [Router Layering — Polis, Inbox MDA, GenUI Routes](./0015-router-layering-km-polis-genui.md)                                           | **Accepted** | 2026-07-11 |
+| **0016** | [vLLM in MicroVM behind Agent Gateway](./0016-vllm-microvm-agent-gateway.md)                                                          | **Proposed** | 2026-07-12 |
+| **0017** | [Label Studio AI-driven annotation loop (Option C)](./0017-label-studio-ai-annotation-loop.md)                                        | **Accepted** | 2026-07-12 |
+| **0018** | [TODO — Obsidian-first auto-tagging (Option A) deferred](./TODO-0018-obsidian-first-auto-tagging-option-a.md)                         | **TODO**     | 2026-07-12 |
+
+Also see architecture decisions: [0013 dual-store agent data plane](../architecture/decisions/0013-dolt-beads-entire-agent-data-plane.md), [0014 KM session startup](../architecture/decisions/0014-km-session-startup-wiring.md), runbook [`docs/monorepo/km-agent-data-plane-startup.md`](../monorepo/km-agent-data-plane-startup.md).
 
 ## Creating a new root ADR
 

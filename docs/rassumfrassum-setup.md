@@ -44,6 +44,19 @@ Expect:
 
 ---
 
+## Error handling
+
+If validation fails:
+
+- `rass` missing → reinstall with `python -m pip install --upgrade rassumfrassum`
+- `rass --help` fails → verify Python 3.10+ and reopen the shell so PATH refreshes
+- `ty` or `ruff` missing → install them or skip the `python` preset until they are available
+- custom server crashes → run the underlying server command directly first, then add it back to `rass`
+
+Use the smallest fix first, then rerun `yarn rass:validate`.
+
+---
+
 ## Usage examples
 
 ### Python preset (ty + ruff)

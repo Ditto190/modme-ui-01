@@ -1,0 +1,76 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "ModMe Inbox — Article / Landing",
+	"behavior": "create",
+	"description": "Clip Article, NewsArticle, or BlogPosting pages into inbox research notes via schema.org.",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
+	"triggers": [
+		"schema:@Article",
+		"schema:@NewsArticle",
+		"schema:@BlogPosting"
+	],
+	"properties": [
+		{
+			"name": "timestamp",
+			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
+			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
+		{
+			"name": "agent",
+			"value": "human",
+			"type": "text"
+		},
+		{
+			"name": "agent_role",
+			"value": "researcher",
+			"type": "text"
+		},
+		{
+			"name": "type",
+			"value": "research",
+			"type": "text"
+		},
+		{
+			"name": "severity",
+			"value": "medium",
+			"type": "text"
+		},
+		{
+			"name": "tags",
+			"value": "clipper, article, {{domain}}",
+			"type": "multitext"
+		},
+		{
+			"name": "title",
+			"value": "{{schema:@Article:headline ?? schema:@Article:name ?? title}}",
+			"type": "text"
+		},
+		{
+			"name": "summary",
+			"value": "{{schema:@Article:description ?? description ?? meta:og:description}}",
+			"type": "text"
+		},
+		{
+			"name": "source",
+			"value": "{{url}}",
+			"type": "text"
+		},
+		{
+			"name": "author",
+			"value": "{{schema:@Article:author.name ?? author}}",
+			"type": "text"
+		},
+		{
+			"name": "published",
+			"value": "{{schema:@Article:datePublished ?? published}}",
+			"type": "datetime"
+		}
+	],
+	"noteContentFormat": "# {{schema:@Article:headline ?? schema:@Article:name ?? title}}\n\n**URL:** {{url}}\n**Author:** {{schema:@Article:author.name ?? author}}\n**Published:** {{schema:@Article:datePublished ?? published}}\n\n## Summary\n\n{{schema:@Article:description ?? description ?? meta:og:description}}\n\n{% if selection %}## Selection\n\n{{selection}}\n\n{% endif %}## Content\n\n{{content}}\n"
+}

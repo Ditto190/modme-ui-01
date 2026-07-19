@@ -4,17 +4,17 @@ Co-created for **Observability Round 2** — DSP subgraph orientation, data-qual
 
 ## Role → skill mapping
 
-| Parallel agent role | Primary skills / agents | Install |
-|---------------------|-------------------------|---------|
-| **orchestrator** | `memory-merger`, `parallel-agents` (global) | Collection + `npx skills add` |
-| **explorer-agent** | `acquire-codebase-knowledge`, `data-structure-protocol` (global) | Collection + DSP `read-toc` |
-| **backend-specialist** | `gem-devops`, project `observability-pipeline` | Collection + `.cursor/skills/observability-pipeline/` |
-| **frontend-specialist** | Session Ops / OpsSignalCard patterns | `docs/evaluation/ARCHITECTURE.md` UI section |
-| **test-engineer** | `quality-playbook`, `doublecheck` | Collection |
-| **devops-engineer** | `github-actions-efficiency`, `phoenix-tracing`, `appinsights-instrumentation` | Collection |
-| **database-architect** | `api-architect`, `postgresql-code-review` | Collection |
-| **documentation-writer** | `create-agentsmd`, `ai-readiness-reporter`, `context7-auto-research` (global) | Collection + `npx skills add` |
-| **debugger** | `dynatrace-expert`, `comet-opik`, `se-security-reviewer` | Collection |
+| Parallel agent role      | Primary skills / agents                                                       | Install                                               |
+| ------------------------ | ----------------------------------------------------------------------------- | ----------------------------------------------------- |
+| **orchestrator**         | `memory-merger`, `parallel-agents` (global)                                   | Collection + `npx skills add`                         |
+| **explorer-agent**       | `acquire-codebase-knowledge`, `data-structure-protocol` (global)              | Collection + DSP `read-toc`                           |
+| **backend-specialist**   | `gem-devops`, project `observability-pipeline`                                | Collection + `.cursor/skills/observability-pipeline/` |
+| **frontend-specialist**  | Session Ops / OpsSignalCard patterns                                          | `docs/evaluation/ARCHITECTURE.md` UI section          |
+| **test-engineer**        | `quality-playbook`, `doublecheck`                                             | Collection                                            |
+| **devops-engineer**      | `github-actions-efficiency`, `phoenix-tracing`, `appinsights-instrumentation` | Collection                                            |
+| **database-architect**   | `api-architect`, `postgresql-code-review`                                     | Collection                                            |
+| **documentation-writer** | `create-agentsmd`, `ai-readiness-reporter`, `context7-auto-research` (global) | Collection + `npx skills add`                         |
+| **debugger**             | `dynatrace-expert`, `comet-opik`, `se-security-reviewer`                      | Collection                                            |
 
 ```powershell
 node scripts/install-agents.mjs -c scripts/collections/modme-observability.collection.json
@@ -66,23 +66,27 @@ After each observability maintenance run, emit:
 ## Observability orchestration synthesis
 
 ### Task summary
+
 [scope: contracts | bridge | UI | CI; pipeline_run_id if any]
 
 ### Agent contributions
-| Lane | Finding |
-|------|---------|
-| explorer-agent | DSP subgraph N entities, no cycles |
-| database-architect | Migration 009 / RLS status |
-| backend-specialist | Bridge or API contract delta |
-| frontend-specialist | OpsSignalCard / Session Ops gap |
-| test-engineer | telemetry:test + telemetry:audit result |
-| devops-engineer | CI workflow / Greptime env status |
+
+| Lane                | Finding                                 |
+| ------------------- | --------------------------------------- |
+| explorer-agent      | DSP subgraph N entities, no cycles      |
+| database-architect  | Migration 009 / RLS status              |
+| backend-specialist  | Bridge or API contract delta            |
+| frontend-specialist | OpsSignalCard / Session Ops gap         |
+| test-engineer       | telemetry:test + telemetry:audit result |
+| devops-engineer     | CI workflow / Greptime env status       |
 
 ### Consolidated recommendations
+
 1. **Critical**: [OBS.* code or contract id]
 2. **Important**: [top theme or lens warning]
 
 ### Action items
+
 - [ ] `yarn telemetry:audit --lens all`
 - [ ] `yarn telemetry:sync` (after `bun run db:push` if Session Ops empty)
 - [ ] Update golden fixture if enums changed
@@ -95,3 +99,22 @@ After each observability maintenance run, emit:
 - Collection: [`scripts/collections/modme-observability.collection.json`](../../scripts/collections/modme-observability.collection.json)
 - Distributed orchestrator: [`.agents/skills/modme-distributed-observability/SKILL.md`](../../.agents/skills/modme-distributed-observability/SKILL.md)
 - Round 2 plan: `.cursor/plans/observability_round_2_7efe0a10.plan.md` (read-only reference)
+
+## KM pipeline metrics (v1)
+
+Artifact: [`docs/inbox-pipeline/reports/km-metrics-latest.json`](../inbox-pipeline/reports/km-metrics-latest.json)  
+Emitter: `scripts/lib/km-metrics.mjs`
+
+| Event / field                                  | Meaning                                                       |
+| ---------------------------------------------- | ------------------------------------------------------------- |
+| `capture_valid` / `capture_invalid`            | Inbox funnel file passed/failed contract (`yarn inbox:audit`) |
+| `beads_create` / `claim` / `close` / `blocked` | Beads lifecycle via `beads-hooks.mjs`                         |
+| `intake_run_link`                              | Pipeline run id ↔ beads issue id                              |
+| `doc_freshness.km_entry_points`                | Canonical KM doc paths + last rewrite date                    |
+
+```powershell
+yarn inbox:audit --lens funnel   # updates capture_compliance counters
+yarn inbox:test                  # includes km-pipeline e2e (offline)
+```
+
+Guide: [`docs/KNOWLEDGE_MANAGEMENT.md`](../KNOWLEDGE_MANAGEMENT.md) · ADRs: [0014](../adr/0014-km-c4-ownership-taxonomy.md), [0015](../adr/0015-router-layering-km-polis-genui.md)

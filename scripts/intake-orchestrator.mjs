@@ -4,12 +4,16 @@
  * Quality-gated intake pipeline orchestrator.
  *
  * Usage:
- *   node scripts/intake-orchestrator.mjs --mode=session|ci|pr-validate|staging-dry-run|scrape|code-index|full [--dry-run] [--skip-fix] [--lean-ctx-index] [--lean-ctx-index]
+ *   node scripts/intake-orchestrator.mjs --mode=session|ci|pr-validate|staging-dry-run|scrape|code-index|full [--dry-run] [--skip-fix] [--lean-ctx-index]
  */
 import { spawnSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { beadsCreate, beadsUpdate } from "./lib/beads-hooks.mjs";
+import {
+  beadsStartPipelineRun,
+  beadsFinishPipelineRun,
+  beadsComment,
+} from "./lib/beads-hooks.mjs";
 import { loadRootEnv } from "./lib/load-root-env.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -22,6 +26,10 @@ const DRY_RUN = args.includes("--dry-run");
 const SKIP_FIX = args.includes("--skip-fix");
 const LEAN_CTX_INDEX = args.includes("--lean-ctx-index");
 
+let pipelineRunId = null;
+let closePipelineRun = null;
+let beadsIssueId = null;
+
 function runNode(script, scriptArgs = []) {
   const result = spawnSync(process.execPath, [resolve(ROOT, script), ...scriptArgs], {
     cwd: ROOT,
@@ -29,10 +37,6 @@ function runNode(script, scriptArgs = []) {
     stdio: "inherit",
   });
   return result.status ?? 1;
-}
-
-async function runStep(label, script, scriptArgs = []) {
-  return runStepWithPipeline(label, "inbox", MODE, script, scriptArgs);
 }
 
 async function runStepWithPipeline(label, pipeline, mode, script, scriptArgs = []) {
@@ -59,15 +63,29 @@ async function runStepWithPipeline(label, pipeline, mode, script, scriptArgs = [
 
   if (code !== 0) {
     console.error(`intake-orchestrator: ${label} failed (exit ${code})`);
-    process.exit(code);
+    throw new Error(`${label} failed (exit ${code})`);
   }
+}
+
+async function runStep(label, script, scriptArgs = []) {
+  return runStepWithPipeline(label, "inbox", MODE, script, scriptArgs);
+}
+
+async function startBeadsForRun() {
+  if (MODE === "pr-validate") return;
+  const description = `Intake orchestrator mode=${MODE} dry_run=${DRY_RUN}`;
+  const { issueId } = await beadsStartPipelineRun({
+    title: `intake:${MODE}`,
+    description,
+    priority: 2,
+    pipelineRunId,
+  });
+  beadsIssueId = issueId;
 }
 
 async function main() {
   loadRootEnv({ fileWins: true });
 
-  let pipelineRunId = null;
-  let closePipelineRun = null;
   try {
     const bridge = await import("./telemetry/lib/telemetry-bridge.mjs");
     const run = await bridge.openPipelineRun({
@@ -84,6 +102,8 @@ async function main() {
       bridgeErr instanceof Error ? bridgeErr.message : bridgeErr
     );
   }
+
+  await startBeadsForRun();
 
   const auditLens =
     MODE === "pr-validate" ? "funnel" : MODE === "staging-dry-run" ? "all" : "funnel";
@@ -121,12 +141,12 @@ async function main() {
   }
 
   if (MODE === "scrape" || MODE === "full") {
-    await beadsCreate(`intake:${MODE}`, { priority: 2 });
     const manifestArg = args.find((a) => a.startsWith("--manifest="));
     const manifest = manifestArg ? manifestArg.split("=")[1] : "docs-sitemap";
     const engineArg = args.find((a) => a.startsWith("--engine="));
     const scrapeArgs = [
       `--manifest=${manifest}`,
+      "--skip-beads",
       ...(DRY_RUN ? ["--dry-run"] : []),
       ...(engineArg ? [engineArg] : []),
     ];
@@ -144,7 +164,6 @@ async function main() {
   }
 
   if (MODE === "code-index") {
-    await beadsUpdate(`intake:${MODE}`, "done");
     console.log("\nintake-orchestrator: code-index complete");
     if (closePipelineRun) {
       await closePipelineRun({
@@ -154,6 +173,7 @@ async function main() {
         dryRun: DRY_RUN,
       });
     }
+    await beadsFinishPipelineRun(beadsIssueId, true, `intake:${MODE} complete`);
     process.exit(0);
   }
 
@@ -170,6 +190,7 @@ async function main() {
         dryRun: DRY_RUN,
       });
     }
+    await beadsFinishPipelineRun(beadsIssueId, true, `intake:${MODE} staging dry-run complete`);
     process.exit(0);
   }
 
@@ -187,10 +208,6 @@ async function main() {
     );
   }
 
-  if (MODE === "full") {
-    await beadsUpdate("intake:full", "done");
-  }
-
   console.log("\nintake-orchestrator: complete");
 
   if (closePipelineRun) {
@@ -202,10 +219,19 @@ async function main() {
     });
   }
 
+  if (beadsIssueId && pipelineRunId) {
+    await beadsComment(beadsIssueId, `intake complete pipeline_run_id=${pipelineRunId}`);
+  }
+  await beadsFinishPipelineRun(beadsIssueId, true, `intake:${MODE} complete`);
   process.exit(0);
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error("Fatal:", err);
+  await beadsFinishPipelineRun(
+    beadsIssueId,
+    false,
+    err instanceof Error ? err.message : String(err)
+  );
   process.exit(1);
 });

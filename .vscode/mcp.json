@@ -1,16 +1,45 @@
 {
- "servers": {
-  "supabase": {
-   "type": "http",
-   "url": "https://mcp.supabase.com/mcp?project_ref=aevemmmmouxqlfyxthzf"
-  },
-  "next-devtools": {
-   "command": "npx",
-   "args": [
-    "-y",
-    "next-devtools-mcp@latest"
-   ]
+  "servers": {
+    "supabase": {
+      "type": "stdio",
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@0.8.2",
+        "--project-ref=aevemmmmouxqlfyxthzf",
+        "--read-only"
+      ],
+      "envFile": "${workspaceFolder}/.env"
+    },
+    "next-devtools": {
+      "type": "stdio",
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "next-devtools-mcp@latest"
+      ]
+    },
+    "skills-sh": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/.tools/skillsh-mcp/dist/index.js"
+      ]
+    },
+    "obsidian": {
+      "type": "stdio",
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "mcp-remote@0.1.38",
+        "https://127.0.0.1:27124/mcp/",
+        "--header",
+        "Authorization: Bearer ${env:OBSIDIAN_API_KEY}"
+      ],
+      "env": {
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      },
+      "envFile": "${workspaceFolder}/.env"
+    }
   }
- }
 }
-

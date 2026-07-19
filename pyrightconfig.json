@@ -1,0 +1,60 @@
+{
+  "venvPath": "agent",
+  "venv": ".venv",
+  "pythonVersion": "3.12",
+  "typeCheckingMode": "basic",
+  "include": [
+    "agent",
+    "GenerativeUI_monorepo/apps/agent-server",
+    "GenerativeUI_monorepo/scrape-pipeline",
+    "with-a2a-a2ui",
+    "scripts"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/.git",
+    "**/.vendor",
+    "**/.worktrees",
+    "**/.tools",
+    "**/dist",
+    "**/.next",
+    "**/.turbo",
+    "**/coverage",
+    "**/build",
+    "**/out",
+    "**/logs",
+    "**/tmp",
+    "**/UniversalWorkbench*",
+    "next-forge",
+    ".agents",
+    ".cursor",
+    "AntiGravity/**",
+    "**/__pycache__",
+    "**/.venv",
+    "**/venv",
+    "**/knowledge-base.json"
+  ],
+  "executionEnvironments": [
+    {
+      "root": "agent",
+      "pythonVersion": "3.12",
+      "extraPaths": ["agent"]
+    },
+    {
+      "root": "GenerativeUI_monorepo/apps/agent-server",
+      "pythonVersion": "3.12"
+    },
+    {
+      "root": "GenerativeUI_monorepo/scrape-pipeline",
+      "pythonVersion": "3.12"
+    },
+    {
+      "root": "with-a2a-a2ui",
+      "pythonVersion": "3.12"
+    },
+    {
+      "root": "scripts",
+      "pythonVersion": "3.12"
+    }
+  ]
+}

@@ -1,4 +1,19 @@
-﻿# Monorepo build & CI setup
+# No Web Page Content Found
+
+I don't see any web page content in the context to work with.
+
+**To generate the Obsidian note, please:**
+
+1. Open a web page in the **Web Viewer** plugin in Obsidian (or use `@` to select a web tab)
+2. Or open a note clipped by **Obsidian Web Clipper**
+3. Then use this command again
+
+Once you provide the content, I'll generate the note with the exact structure you requested:
+- Title and metadata header
+- Summary
+- Key Takeaways
+- Mermaid mindmap
+- Notable Quotes# Monorepo build & CI setup
 
 Operator guide for ModMe's **dual-stack** monorepo: Turbo caching, GitHub Actions CI, optional self-hosted remote cache, and toolchain pins. This repo does **not** use Rush â€” see [rush-evaluation-decision-log.md](research/rush-evaluation-decision-log.md).
 

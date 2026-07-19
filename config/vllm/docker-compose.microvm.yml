@@ -1,0 +1,107 @@
+# ModMe MicroVM LLM stack — ADR-0016
+# Primary: vLLM OpenAI API. Fallback: llama.cpp (profile: fallback).
+# Label Studio / ML backend ports reserved for ADR-0017 compose overlay.
+
+name: modme-llm-microvm
+
+services:
+  vllm:
+    profiles: ["primary", "full"]
+    image: vllm/vllm-openai:latest
+    container_name: modme-vllm
+    runtime: nvidia
+    environment:
+      HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN:-}
+      VLLM_ATTENTION_BACKEND: FLASH_ATTN
+    volumes:
+      - ${MODME_MODEL_DIR:-./models}/gemma4-v2:/models/gemma4-v2:ro
+    ports:
+      - "${VLLM_PORT:-8000}:8000"
+    command:
+      - /models/gemma4-v2/gemma4-v2-Q4_K_M.gguf
+      - --tokenizer
+      - google/gemma-4-12B-it
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8000"
+      - --max-model-len
+      - "16384"
+      - --gpu-memory-utilization
+      - "0.90"
+      - --enable-auto-tool-choice
+      # Validate Gemma4 parser against pinned vLLM; override via VLLM_TOOL_CALL_PARSER
+      - --tool-call-parser
+      - ${VLLM_TOOL_CALL_PARSER:-hermes}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - modme-llm
+
+  llama-cpp-fallback:
+    profiles: ["fallback", "full"]
+    image: ghcr.io/ggerganov/llama.cpp:server
+    container_name: modme-llama-cpp
+    volumes:
+      - ${MODME_MODEL_DIR:-./models}/gemma4-v2:/models/gemma4-v2:ro
+    ports:
+      - "${LLAMA_CPP_PORT:-18080}:18080"
+    command:
+      - --model
+      - /models/gemma4-v2/gemma4-v2-Q4_K_M.gguf
+      - --ctx-size
+      - "16384"
+      - --n-gpu-layers
+      - "99"
+      - --jinja
+      - --temp
+      - "1.0"
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "18080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:18080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - modme-llm
+
+  # Stub sidecar: real agentgateway-modme image wired when fork routes validated.
+  agent-gateway:
+    profiles: ["primary", "fallback", "full"]
+    image: ${AGENTGATEWAY_IMAGE:-ghcr.io/agentgateway/agentgateway:latest}
+    container_name: modme-agent-gateway
+    volumes:
+      - ../agentgateway/routes.example.yaml:/etc/agentgateway/routes.yaml:ro
+      - ../agentgateway/policies/resource-management.yaml:/etc/agentgateway/policies.yaml:ro
+    ports:
+      - "${AGENT_GATEWAY_PORT:-8080}:8080"
+    environment:
+      AGENTGATEWAY_CONFIG: /etc/agentgateway/routes.yaml
+      VLLM_UPSTREAM: http://vllm:8000
+      LLAMA_FALLBACK_UPSTREAM: http://llama-cpp-fallback:18080
+    depends_on:
+      vllm:
+        condition: service_healthy
+        required: false
+    networks:
+      - modme-llm
+
+networks:
+  modme-llm:
+    driver: bridge
+    name: modme-llm-net

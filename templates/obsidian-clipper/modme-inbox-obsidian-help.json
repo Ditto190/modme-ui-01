@@ -1,0 +1,79 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "ModMe Inbox — Obsidian Help",
+	"behavior": "create",
+	"description": "Clip Obsidian Help and Advanced URI Publish docs as TechArticle research notes (Defuddle content). Never SoftwareSourceCode — use before generic Docs Site for obsidian.md/help and publish.obsidian.md.",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{url|split:\"/\"|last|split:\"?\"|first|safe_name}}",
+	"path": "inbox/web-clipper/obsidian",
+	"triggers": [
+		"/^https:\\/\\/(www\\.)?obsidian\\.md\\/help\\//",
+		"/^https:\\/\\/help\\.obsidian\\.md\\//",
+		"/^https:\\/\\/publish\\.obsidian\\.md\\//",
+		"https://obsidian.md/help/",
+		"https://help.obsidian.md/",
+		"https://publish.obsidian.md/"
+	],
+	"properties": [
+		{
+			"name": "timestamp",
+			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
+			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
+		{
+			"name": "agent",
+			"value": "human",
+			"type": "text"
+		},
+		{
+			"name": "agent_role",
+			"value": "researcher",
+			"type": "text"
+		},
+		{
+			"name": "type",
+			"value": "research",
+			"type": "text"
+		},
+		{
+			"name": "severity",
+			"value": "medium",
+			"type": "text"
+		},
+		{
+			"name": "tags",
+			"value": "clipper, docs, obsidian, {{domain}}",
+			"type": "multitext"
+		},
+		{
+			"name": "title",
+			"value": "{{schema:@TechArticle:headline ?? schema:@Article:headline ?? title}}",
+			"type": "text"
+		},
+		{
+			"name": "summary",
+			"value": "{{schema:@TechArticle:description ?? description ?? meta:og:description}}",
+			"type": "text"
+		},
+		{
+			"name": "source",
+			"value": "{{url}}",
+			"type": "text"
+		},
+		{
+			"name": "schema_type",
+			"value": "TechArticle",
+			"type": "text"
+		},
+		{
+			"name": "site",
+			"value": "{{site ?? domain}}",
+			"type": "text"
+		}
+	],
+	"noteContentFormat": "# {{schema:@TechArticle:headline ?? schema:@Article:headline ?? title}}\n\n**URL:** {{url}}\n**Site:** {{site ?? domain}}\n**UID:** {{time|date:\"YYYYMMDDHHmm\"}}\n**schema.org:** TechArticle\n\n## Summary\n\n{{schema:@TechArticle:description ?? description ?? meta:og:description}}\n\n{% if selection %}## Selection\n\n{{selection}}\n\n{% endif %}## Content\n\n{{content}}\n\n## Capture metadata\n\n- inbox `type`: `research`\n- schema: TechArticle (HTML help/docs — not SoftwareSourceCode)\n- body: Defuddle `{{content}}`\n- related: [[clipper-source-matching]] · [[unique-notes]]\n"
+}

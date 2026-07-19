@@ -45,6 +45,25 @@
       "steps": [
         "delegates-to-preflight.mjs"
       ]
+    },
+    "launch": {
+      "description": "ModMe launch orchestration — health, KM verify, session bootstrap (advisory hooks)",
+      "steps": [
+        "lean-ctx-ensure-check",
+        "worktree-doctor",
+        "session-verify",
+        "km-verify-optional",
+        "session-start-optional"
+      ],
+      "modes": {
+        "auto": "Idempotent health once per terminal/Cursor session",
+        "health": "yarn launch:health",
+        "full": "yarn launch:full",
+        "verify": "yarn session:verify",
+        "km-verify": "yarn km:verify"
+      },
+      "stateFile": ".cursor/hooks/state/modme-launch.json",
+      "dispatcher": "scripts/modme-launch.ps1"
     }
   },
   "envSources": [

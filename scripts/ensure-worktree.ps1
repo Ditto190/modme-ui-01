@@ -1,4 +1,4 @@
-# Fail fast when feature work runs from the main checkout instead of .worktrees/.
+# Fail fast when feature work runs from the main checkout instead of an agent worktree.
 param(
   [switch]$WarnOnly
 )
@@ -27,8 +27,8 @@ $ctx = Get-WorktreeContext -RepoRoot $RepoRoot
 
 function Write-WorktreeHint {
   Write-Host ""
-  Write-Host "Feature work belongs in a worktree under .worktrees/" -ForegroundColor Yellow
-  Write-Host "  .\scripts\init-worktrees.ps1                    # persistent dev checkout" -ForegroundColor Gray
+  Write-Host "Feature work belongs in an agent worktree under $($ctx.WorktreesRoot)" -ForegroundColor Yellow
+  Write-Host "  .\scripts\init-worktrees.ps1                    # persistent golden .worktrees/dev" -ForegroundColor Gray
   Write-Host "  .\scripts\new-agent-worktree.ps1 -Name `"<task>`" -Owner cursor" -ForegroundColor Gray
   Write-Host "  .\scripts\migrate-main-to-worktree.ps1 -Name `"<task>`" -Owner cursor" -ForegroundColor Gray
   Write-Host "See docs/multi-agent-worktrees.md" -ForegroundColor Gray
@@ -39,7 +39,7 @@ if ($ctx.IsWorktree) {
   exit 0
 }
 
-$message = "Main checkout detected ($($ctx.RepoRoot)). Use a worktree under .worktrees/ for feature work."
+$message = "Main checkout detected ($($ctx.RepoRoot)). Use a worktree under $($ctx.WorktreesRoot) for feature work."
 
 if ($WarnOnly) {
   Write-Warning $message

@@ -1,12 +1,18 @@
-﻿{
+{
   "mcpServers": {
     "skills-sh": {
       "command": "node",
-      "args": ["C:/Users/dylan/Monorepo_ModMe/.tools/skillsh-mcp/dist/index.js"]
+      "args": [
+        "C:/Users/dylan/Monorepo_ModMe/.tools/skillsh-mcp/dist/index.js"
+      ]
     },
     "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ],
+      "envFile": "C:/Users/dylan/Monorepo_ModMe/.env",
       "env": {
         "CONTEXT7_API_KEY": "${env:CONTEXT7_API_KEY}"
       }
@@ -15,12 +21,34 @@
       "url": "https://mcp.buildkite.com/mcp"
     },
     "mantine": {
-      "command": "npx",
-      "args": ["-y", "@mantine/mcp-server"]
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "@mantine/mcp-server"
+      ]
     },
     "next-devtools": {
-      "command": "npx",
-      "args": ["-y", "next-devtools-mcp@latest"]
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "next-devtools-mcp@latest"
+      ]
+    },
+    "supabase": {
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@0.8.2",
+        "--project-ref=aevemmmmouxqlfyxthzf",
+        "--read-only"
+      ],
+      "envFile": "C:/Users/dylan/Monorepo_ModMe/.env"
+    },
+    "railway": {
+      "command": "C:\\Users\\dylan\\AppData\\Roaming\\npm\\railway.cmd",
+      "args": [
+        "mcp"
+      ]
     }
   }
 }

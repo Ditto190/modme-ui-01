@@ -5,6 +5,8 @@ source: anthropics/skills
 license: Apache-2.0
 ---
 
+# TODO : @Copilot - These schemas may be out of date and not as effective as they have become, they also might be out of alignment with our more recent approaches. Schedule a task or reminder to research this a bit more - use our inbox-intake pipeline to search for related information.
+
 # Skill Creator
 
 Skills are modular packages that extend Claude's capabilities by providing specialized knowledge, workflows, and tools.

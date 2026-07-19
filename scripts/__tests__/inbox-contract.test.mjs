@@ -1,10 +1,14 @@
 import { describe, it, expect } from 'vitest';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import {
   loadContract,
   validateFrontmatter,
   validateMdFilename,
   inferTypeFromFilename,
   isIsoTimestamp,
+  listInboxFilesSync,
 } from '../lib/inbox-contract.mjs';
 
 describe('inbox contract', () => {
@@ -65,6 +69,58 @@ describe('inbox contract', () => {
   it('warns on non-structured md filename', () => {
     const finding = validateMdFilename('shopping-list.md');
     expect(finding?.code).toBe('INBOX.FM.FILENAME_CONVENTION');
+  });
+
+  it('validates leaf name for nested web-clipper paths', () => {
+    expect(
+      validateMdFilename(
+        'web-clipper/obsidian/2026-06-20T13-08-00_research_researcher_zettelkasten.md'
+      )
+    ).toBeNull();
+    expect(validateMdFilename('web-clipper/gascity.md')?.code).toBe(
+      'INBOX.FM.FILENAME_CONVENTION'
+    );
+  });
+
+  it('lists top-level and recursive web-clipper files only', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'inbox-list-'));
+    try {
+      writeFileSync(
+        join(dir, 'shopping-list.md'),
+        '---\ntimestamp: 2026-01-01T00:00:00Z\nagent: t\ntype: research\n---\n'
+      );
+      writeFileSync(join(dir, 'README.md'), '# skip');
+      mkdirSync(join(dir, 'web-clipper', 'obsidian'), { recursive: true });
+      writeFileSync(
+        join(dir, 'web-clipper', 'obsidian', '2026-06-20T13-08-00_research_researcher_note.md'),
+        '---\ntimestamp: 2026-01-01T00:00:00Z\nagent: t\ntype: research\n---\n'
+      );
+      mkdirSync(join(dir, 'schema-org-guide'), { recursive: true });
+      writeFileSync(join(dir, 'schema-org-guide', 'dump.md'), 'x');
+
+      const files = listInboxFilesSync(dir);
+      expect(files).toContain('shopping-list.md');
+      expect(files).toContain(
+        'web-clipper/obsidian/2026-06-20T13-08-00_research_researcher_note.md'
+      );
+      expect(files.some((f) => f.startsWith('schema-org-guide/'))).toBe(false);
+      expect(files).not.toContain('README.md');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('warns on invalid c4_container', () => {
+    const findings = validateFrontmatter(
+      {
+        timestamp: '2026-06-20T13:08:52Z',
+        agent: 'cursor',
+        type: 'architecture',
+        c4_container: 'unknown-container',
+      },
+      contract
+    );
+    expect(findings.some((f) => f.code === 'INBOX.FM.INVALID_C4_CONTAINER')).toBe(true);
   });
 
   it('validates scrape-promote funnel export frontmatter fixture', () => {

@@ -26,8 +26,10 @@ Options:
   -ClaimPaths     Optional path prefixes to claim in agent registry
   -AgentRole      A2A role for catalog register (dev|review|test|plan) default dev
   -BootstrapIntelligence  Run lean-ctx-session-bootstrap.ps1 (index + MCP hints)
-  -SkipBeads      Skip bd ready / create
+  -SkipBeads      Skip bd ready / create (KM bootstrap also skips beads when set)
   -DebugTrace     Enable LEAN_CTX_DEBUG_LOG=1 for this session (observability debug mode)
+
+Also runs scripts/km-session-bootstrap.ps1 (non-strict) before catalog-cms-eval.
 "@
   exit 0
 }
@@ -62,17 +64,22 @@ if ($TaskTitle) {
 }
 
 $beadsIssue = $BeadsIssueId
+$beadsCli = Join-Path $ScriptDir 'beads-cli.mjs'
 if (-not $SkipBeads) {
+  $sessionDesc = if ($TaskTitle) { $TaskTitle } else { "agent session $sessionId" }
   if (-not $beadsIssue) {
-    Write-Host 'Checking beads ready...' -ForegroundColor Cyan
-    npx --yes @beads/bd ready 2>&1 | Out-Host
-    if ($TaskTitle) {
-      Write-Host "Creating beads issue: $TaskTitle" -ForegroundColor Cyan
-      npx --yes @beads/bd create $TaskTitle --prefix modme --priority 2 2>&1 | Out-Host
+    Write-Host 'Starting beads session issue...' -ForegroundColor Cyan
+    $beadsOut = node $beadsCli session-start --title $sessionDesc --description $sessionDesc 2>&1 | Out-String
+    try {
+      $beadsJson = $beadsOut | ConvertFrom-Json
+      if ($beadsJson.id) { $beadsIssue = $beadsJson.id }
+    }
+    catch {
+      Write-Warning "beads-cli session-start did not return JSON: $beadsOut"
     }
   }
   else {
-    npx --yes @beads/bd update $beadsIssue --status in_progress 2>&1 | Out-Host
+    node $beadsCli session-start --issue $beadsIssue --description $sessionDesc 2>&1 | Out-Host
   }
 }
 
@@ -85,7 +92,7 @@ $sessionsDir = Join-Path $RepoRoot 'logs/agent-orchestrator/sessions'
 New-Item -ItemType Directory -Force -Path $sessionsDir | Out-Null
 
 $leanCtxStateDir = $env:LEAN_CTX_STATE_DIR ?? (Join-Path $RepoRoot 'logs/lean-ctx')
-$leanCtxDataDir  = $env:LEAN_CTX_DATA_DIR  ?? (Join-Path $RepoRoot 'data/lean-ctx')
+$leanCtxDataDir = $env:LEAN_CTX_DATA_DIR ?? (Join-Path $RepoRoot 'data/lean-ctx')
 
 $catalogSnapshot = $null
 $catalogVersion = $null
@@ -98,7 +105,8 @@ if (Test-Path $catalogCli) {
     $regJson = $regOut | ConvertFrom-Json
     $catalogVersion = $regJson.catalog.version
     $catalogSnapshot = $regJson.catalog
-  } catch { }
+  }
+  catch { }
 }
 
 $envelope = [ordered]@{
@@ -110,17 +118,17 @@ $envelope = [ordered]@{
   ports_env     = if (Test-Path $portsEnv) { '.worktree-ports.env' } else { $null }
   started_at    = (Get-Date).ToUniversalTime().ToString('o')
   trace         = @{
-    session_logger     = 'logs/copilot/session.log'
-    agenttrace         = 'yarn agenttrace --latest'
-    lean_ctx           = @{
-      journal           = (Join-Path $leanCtxStateDir 'journal*')
-      tee               = (Join-Path $leanCtxStateDir 'tee')
-      debug_log         = if ($env:LEAN_CTX_DEBUG_LOG -eq '1') { (Join-Path $leanCtxStateDir 'debug.log') } else { $null }
-      session_markers   = '.cursor/hooks/state/lean-ctx-session-markers.jsonl'
-      archive           = (Join-Path $leanCtxDataDir 'archive')
-      catalog_agent     = $catalogSnapshot
-      catalog_version   = $catalogVersion
-      a2a_role          = $AgentRole
+    session_logger = 'logs/copilot/session.log'
+    agenttrace     = 'yarn agenttrace --latest'
+    lean_ctx       = @{
+      journal         = (Join-Path $leanCtxStateDir 'journal*')
+      tee             = (Join-Path $leanCtxStateDir 'tee')
+      debug_log       = if ($env:LEAN_CTX_DEBUG_LOG -eq '1') { (Join-Path $leanCtxStateDir 'debug.log') } else { $null }
+      session_markers = '.cursor/hooks/state/lean-ctx-session-markers.jsonl'
+      archive         = (Join-Path $leanCtxDataDir 'archive')
+      catalog_agent   = $catalogSnapshot
+      catalog_version = $catalogVersion
+      a2a_role        = $AgentRole
     }
   }
 }
@@ -143,7 +151,8 @@ if ((Test-Path $otelScript) -and (Get-Command node -ErrorAction SilentlyContinue
   if ($env:GREPTIME_OTEL_ENABLED -eq '1') {
     $otelResult = node $otelScript 2>&1
     Write-Host "[otel/greptime] $otelResult" -ForegroundColor DarkCyan
-  } else {
+  }
+  else {
     # Always run for session envelope registration (dry-run when Greptime not enabled)
     $otelResult = node $otelScript --dry-run 2>&1
     Write-Verbose "[otel] dry-run (GREPTIME_OTEL_ENABLED not set): $otelResult"
@@ -175,12 +184,28 @@ $markerDir = Join-Path $RepoRoot '.cursor/hooks/state'
 New-Item -ItemType Directory -Force -Path $markerDir | Out-Null
 $marker = Join-Path $markerDir 'lean-ctx-session-markers.jsonl'
 @{ at = (Get-Date).ToUniversalTime().ToString('o'); event = 'a2a-register'; session_id = $sessionId; branch = $branch; agent_type = 'cursor'; role = $AgentRole; catalog_version = $catalogVersion } |
-  ConvertTo-Json -Compress | Add-Content -Path $marker -Encoding utf8
+ConvertTo-Json -Compress | Add-Content -Path $marker -Encoding utf8
 @{ at = (Get-Date).ToUniversalTime().ToString('o'); event = 'agent-session-start'; session_id = $sessionId; branch = $branch; a2a_role = $AgentRole; catalog_version = $catalogVersion } |
-  ConvertTo-Json -Compress | Add-Content -Path $marker -Encoding utf8
+ConvertTo-Json -Compress | Add-Content -Path $marker -Encoding utf8
 
 if (Get-Command lean-ctx -ErrorAction SilentlyContinue) {
   lean-ctx -c "echo agent-session-start $sessionId" 2>$null | Out-Null
+}
+
+# Agent data plane: KM bootstrap (Dolt/Entire/Beads) then catalog-cms-eval
+$kmBootstrap = Join-Path $ScriptDir 'km-session-bootstrap.ps1'
+if (Test-Path $kmBootstrap) {
+  Write-Host 'Agent data plane: KM session bootstrap...' -ForegroundColor Cyan
+  $kmArgs = @()
+  if ($SkipBeads) { $kmArgs += '-SkipBeads' }
+  & $kmBootstrap @kmArgs
+  # Non-strict: continue even if KM warns (product path)
+}
+
+$buildersCli = Join-Path $ScriptDir 'builders-orchestrator.mjs'
+if (Test-Path $buildersCli) {
+  Write-Host 'Agent data plane: catalog-cms-eval preflight...' -ForegroundColor Cyan
+  node $buildersCli pipeline catalog-cms-eval 2>&1 | Out-Host
 }
 
 Write-Host ''
@@ -188,4 +213,5 @@ Write-Host "Agent session started: $sessionId" -ForegroundColor Green
 Write-Host "  envelope: $envelopePath"
 Write-Host "  TUI:        yarn agent:tui"
 Write-Host "  status:     yarn agent:status --json"
+Write-Host "  km:status:  yarn km:status"
 Write-Host ''

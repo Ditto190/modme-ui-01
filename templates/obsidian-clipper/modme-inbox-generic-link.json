@@ -1,0 +1,67 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "ModMe Inbox — Generic Link",
+	"behavior": "create",
+	"description": "Fallback catch-all for arbitrary URLs and landing pages. Place last in Clipper template order. type=link.",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_link_researcher_{{title|safe_name}}",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
+	"triggers": [],
+	"properties": [
+		{
+			"name": "timestamp",
+			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
+			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
+		{
+			"name": "agent",
+			"value": "human",
+			"type": "text"
+		},
+		{
+			"name": "agent_role",
+			"value": "researcher",
+			"type": "text"
+		},
+		{
+			"name": "type",
+			"value": "link",
+			"type": "text"
+		},
+		{
+			"name": "severity",
+			"value": "low",
+			"type": "text"
+		},
+		{
+			"name": "tags",
+			"value": "clipper, link, {{domain}}",
+			"type": "multitext"
+		},
+		{
+			"name": "title",
+			"value": "{{title}}",
+			"type": "text"
+		},
+		{
+			"name": "summary",
+			"value": "{{description ?? meta:og:description}}",
+			"type": "text"
+		},
+		{
+			"name": "source",
+			"value": "{{url}}",
+			"type": "text"
+		},
+		{
+			"name": "site",
+			"value": "{{site ?? domain}}",
+			"type": "text"
+		}
+	],
+	"noteContentFormat": "# {{title}}\n\n**URL:** {{url}}\n**Site:** {{site ?? domain}}\n\n## Summary\n\n{{description ?? meta:og:description}}\n\n{% if selection %}## Selection\n\n{{selection}}\n\n{% endif %}## Page content\n\n{{content}}\n"
+}

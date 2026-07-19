@@ -1,0 +1,64 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "ModMe — Expo / CNG research",
+	"behavior": "create",
+	"description": "Clip Expo Router, prebuild, and self-host docs for mobile OSS deployment research.",
+	"noteNameFormat": "{{time|date:\"YYYY-MM-DDTHH-mm-ss\"}}_research_researcher_{{title|safe_name}}",
+	"path": "inbox/web-clipper/{{domain|safe_name}}",
+	"triggers": [
+		"/^https:\\/\\/docs\\.expo\\.dev\\//"
+	],
+	"properties": [
+		{
+			"name": "timestamp",
+			"value": "{{time|date:\"YYYY-MM-DDTHH:mm:ssZ\"}}",
+			"type": "datetime"
+		},
+		{
+			"name": "uid",
+			"value": "{{time|date:\"YYYYMMDDHHmm\"}}",
+			"type": "text"
+		},
+		{
+			"name": "agent",
+			"value": "cursor",
+			"type": "text"
+		},
+		{
+			"name": "agent_role",
+			"value": "researcher",
+			"type": "text"
+		},
+		{
+			"name": "type",
+			"value": "research",
+			"type": "text"
+		},
+		{
+			"name": "severity",
+			"value": "medium",
+			"type": "text"
+		},
+		{
+			"name": "tags",
+			"value": "clipper, expo, expo-router, cng, self-host",
+			"type": "multitext"
+		},
+		{
+			"name": "title",
+			"value": "{{schema:@TechArticle:headline ?? title}}",
+			"type": "text"
+		},
+		{
+			"name": "summary",
+			"value": "{{schema:@TechArticle:description ?? description}}",
+			"type": "text"
+		},
+		{
+			"name": "source",
+			"value": "{{url}}",
+			"type": "text"
+		}
+	],
+	"noteContentFormat": "# {{schema:@TechArticle:headline ?? title}}\n\n**URL:** {{url}}\n\n{% if selection %}## Selection\n\n{{selection}}\n\n{% endif %}{{content}}\n"
+}
