@@ -67,7 +67,7 @@ Write-Host 'KM session bootstrap (agent data plane)...' -ForegroundColor Cyan
 
 # 1. Refresh PATH so winget/scoop installs are visible in this process
 $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' +
-  [System.Environment]::GetEnvironmentVariable('Path', 'User')
+[System.Environment]::GetEnvironmentVariable('Path', 'User')
 
 # 2. Optional Beads ↔ sql-server env hints
 $beadsServerEnv = Join-Path $RepoRoot '.dolt-data\beads-server.env'
@@ -120,32 +120,70 @@ if (-not $SkipEntire) {
   }
 }
 
-# 5. Beads ready (read-only check)
+# 5. Beads ready (read-only check) — prefer global bd; timeout so npx never hangs the shell
 if (-not $SkipBeads) {
   Write-KmInfo 'Checking beads ready...'
-  if (Get-Command npx -ErrorAction SilentlyContinue) {
-    $prevEap = $ErrorActionPreference
-    $ErrorActionPreference = 'Continue'
-    $bdOut = & npx --yes @beads/bd ready 2>&1
-    $bdCode = $LASTEXITCODE
-    $ErrorActionPreference = $prevEap
-    $bdText = ($bdOut | Out-String)
-    if ($bdText -match 'Error 1105|auto-backup failed|table file not found') {
-      Write-KmWarn 'Beads auto-backup noise detected — see docs/beads-workflow.md (backup.enabled)'
+  $bdTimeoutSec = 20
+
+  function Resolve-BeadsReadyInvocation {
+    $bd = Get-Command bd -ErrorAction SilentlyContinue
+    if ($bd -and $bd.CommandType -eq 'Application') {
+      return @{ File = $bd.Source; Args = @('ready') }
     }
-    if ($bdCode -ne 0) {
-      Write-Host $bdText
-      Set-KmFailed "bd ready failed (exit $bdCode)"
+    # Prefer npx.cmd — Start-Process cannot run npx.ps1 ("%1 is not a valid Win32 application")
+    $npxCmd = Join-Path $env:ProgramFiles 'nodejs\npx.cmd'
+    if (-not (Test-Path -LiteralPath $npxCmd)) {
+      $npx = Get-Command npx.cmd -ErrorAction SilentlyContinue
+      if ($npx) { $npxCmd = $npx.Source }
+      else { $npxCmd = $null }
     }
-    else {
-      Write-KmOk 'Beads ready OK'
-      if ($bdText.Trim()) {
-        Write-Host ($bdText.Trim() -split "`n" | Select-Object -First 12) -ForegroundColor DarkGray
-      }
+    if ($npxCmd -and (Test-Path -LiteralPath $npxCmd)) {
+      return @{ File = $npxCmd; Args = @('--yes', '@beads/bd', 'ready') }
     }
+    return $null
+  }
+
+  $inv = Resolve-BeadsReadyInvocation
+  if (-not $inv) {
+    Set-KmFailed 'bd/npx.cmd not on PATH — cannot run bd ready'
   }
   else {
-    Set-KmFailed 'npx not on PATH — cannot run bd ready'
+    $outFile = [System.IO.Path]::GetTempFileName()
+    $errFile = [System.IO.Path]::GetTempFileName()
+    try {
+      $proc = Start-Process -FilePath $inv.File -ArgumentList $inv.Args `
+        -NoNewWindow -PassThru `
+        -RedirectStandardOutput $outFile -RedirectStandardError $errFile
+      if (-not $proc.WaitForExit($bdTimeoutSec * 1000)) {
+        try { $proc.Kill() } catch { }
+        Set-KmFailed "bd ready timed out after ${bdTimeoutSec}s (silent attach will retry later)"
+      }
+      else {
+        $bdCode = $proc.ExitCode
+        if ($null -eq $bdCode) { $bdCode = 0 }
+        $bdText = ((Get-Content -LiteralPath $outFile -Raw -ErrorAction SilentlyContinue) + "`n" +
+          (Get-Content -LiteralPath $errFile -Raw -ErrorAction SilentlyContinue))
+        if ($bdText -match 'Error 1105|auto-backup failed|table file not found') {
+          Write-KmWarn 'Beads auto-backup noise detected — see docs/beads-workflow.md (backup.enabled)'
+        }
+        if ([int]$bdCode -ne 0) {
+          Write-Host $bdText
+          Set-KmFailed "bd ready failed (exit $bdCode)"
+        }
+        else {
+          Write-KmOk 'Beads ready OK'
+          if ($bdText.Trim()) {
+            Write-Host ($bdText.Trim() -split "`n" | Select-Object -First 12) -ForegroundColor DarkGray
+          }
+        }
+      }
+    }
+    catch {
+      Set-KmFailed "bd ready invoke failed: $_"
+    }
+    finally {
+      Remove-Item -LiteralPath $outFile, $errFile -Force -ErrorAction SilentlyContinue
+    }
   }
 }
 

@@ -1,8 +1,11 @@
 {
+  "version": 1,
   "hooks": {
     "beforeSubmitPrompt": [
       {
-        "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor before-submit-prompt'"
+        "command": "sh -c 'if [ \"${MODME_ENTIRE_SUBMIT_HOOK:-}\" != \"1\" ]; then exit 0; fi; if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor before-submit-prompt'",
+        "failClosed": false,
+        "timeoutSec": 2
       }
     ],
     "preCompact": [
@@ -10,17 +13,44 @@
         "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor pre-compact'"
       }
     ],
-    "sessionEnd": [
-      {
-        "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor session-end'"
-      }
-    ],
     "sessionStart": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/ensure-lean-ctx-config.ps1 -CheckOnly",
+        "failClosed": false,
+        "timeoutSec": 5
+      },
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/km-session-bootstrap.ps1",
+        "failClosed": false,
+        "timeoutSec": 90
+      },
       {
         "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor session-start'"
       }
     ],
+    "sessionEnd": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/session-beads-dolt-sync.ps1",
+        "failClosed": false,
+        "timeoutSec": 60
+      },
+      {
+        "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor session-end'"
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/lean-ctx-post-edit.ps1",
+        "failClosed": false,
+        "timeoutSec": 3
+      }
+    ],
     "stop": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/lean-ctx-stop-marker.ps1",
+        "failClosed": false,
+        "timeoutSec": 3
+      },
       {
         "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor stop'"
       }
@@ -35,6 +65,5 @@
         "command": "sh -c 'if ! command -v entire >/dev/null 2>&1; then exit 0; fi; exec entire hooks cursor subagent-stop'"
       }
     ]
-  },
-  "version": 1
+  }
 }
