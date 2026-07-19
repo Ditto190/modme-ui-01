@@ -65,8 +65,9 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 ### Added
 - (docs) Document intake-trigger pre-push tip-commit note for Windows forge build gap
 - (obsidian) Intake trigger script, session gates schema/tests, and ADR-0013 intake gates
-
 - (intake) Event-triggered intake: `scripts/obsidian-intake-trigger.ps1` watches the ModMe-Vault inbox junction and invokes `intake-orchestrator.mjs` (dry-run default) when a note qualifies via `pipeline_ready`, high/critical severity, or `intake/ready` tag; typed gate phases + promotion predicate in `@repo/schemas/intake-gates`; ADR-0013 (next-forge), C4 intake-pipeline expansion, `docs/tech-matrix.md`, `docs/technical-change-tracker.md` (modme-7lo)
+- (repo) Agent data plane — Entire CLI (`yarn entire:*`), Dolt sql-server (`yarn dolt:*`), KM hub (`yarn km:status`, `docs/KNOWLEDGE_QUICKSTART.md`, `docs/knowledge/CATALOG.md`), ADR-0013 superseding ADR-0010
+- (repo) KM session startup wiring — `scripts/km-session-bootstrap.ps1` (`yarn km:bootstrap`), session start + worktree setup + VS Code tasks/launch (`Full Stack: Forge Core + Agent Data Plane`, soft `dependsOn` on `next-forge: dev core`); ADR-0014; beads `modme-awz`; runbook `docs/monorepo/km-agent-data-plane-startup.md`
 
 ### Changed
 
@@ -76,6 +77,7 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 - (next-forge) Normalize CRLF to LF via ultracite so pre-push forge check passes on Windows
 
 - (next-forge) Apply Ultracite/Biome format fixes required for promote-dev-to-main pre-push verify
+- (repo) Beads auto-backup Error 1105 — disable broken `.beads/backup` destination (`backup.enabled: false`); see `docs/beads-workflow.md` troubleshooting
 
 ### Added
 
