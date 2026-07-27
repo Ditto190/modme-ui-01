@@ -157,7 +157,7 @@
     "@supabase/supabase-js": "^2.108.2",
     "ajv": "^8.17.1",
     "gray-matter": "^4.0.3",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^5.2.2",
     "vfile": "^6.0.3",
     "vfile-matter": "^5.0.1",
     "zod": "^3.24.2"
