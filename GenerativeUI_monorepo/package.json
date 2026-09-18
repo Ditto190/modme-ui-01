@@ -52,7 +52,7 @@
     "@typescript-eslint/eslint-plugin": "^5.46.0",
     "@typescript-eslint/parser": "^5.46.0",
     "@yarnpkg/sdks": "^3.0.0-rc.32",
-    "browserslist": "^4.21.4",
+    "browserslist": "^4.28.7",
     "eslint": "^8.29.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
