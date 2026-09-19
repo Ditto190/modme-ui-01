@@ -94,11 +94,23 @@
     "Agent Server (FastAPI)",
     "Agent Generator: build + current test",
     "Example Next: dev server",
-    "Example React: dev server"
+    "Example React: dev server",
+    "next-forge: dev core",
+    "Agent Data Plane: bootstrap (strict)"
   ],
-  "requiredTasks": ["vibe-web-app: dev", "agent-generator: build"],
+  "requiredTasks": [
+    "vibe-web-app: dev",
+    "agent-generator: build",
+    "next-forge: dev core",
+    "modme: KM data plane up",
+    "modme: KM data plane up (strict)",
+    "modme: KM status",
+    "modme: agent session start",
+    "modme: beads ready"
+  ],
   "requiredCompounds": [
     "Full Stack: Agent Server + Web Dashboard",
-    "Full Stack: Agent Server + Vibe Web App"
+    "Full Stack: Agent Server + Vibe Web App",
+    "Full Stack: Forge Core + Agent Data Plane"
   ]
 }

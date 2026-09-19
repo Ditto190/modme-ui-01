@@ -50,8 +50,21 @@ flowchart TB
 | next-forge   | api           | 3102 |
 | next-forge   | docs          | 3104 |
 | next-forge   | storybook     | 6106 |
+| Agent plane  | Dolt sql-server | 3307 |
+| Agent plane  | Entire checkpoints | git branch `entire/checkpoints/v1` |
 
-Worktrees apply slot offsets via `.worktree-ports.env` (see `docs/multi-agent-worktrees.md`).
+Worktrees apply slot offsets via `.worktree-ports.env` (see `docs/multi-agent-worktrees.md`). **Dolt :3307 is host-shared** — one `yarn dolt:up` per machine, not per worktree.
+
+### Agent data plane (ADR-0013)
+
+| Tool | Command | Role |
+|------|---------|------|
+| Entire | `yarn entire:status` | Local session capture |
+| Dolt | `yarn dolt:status` | Catalog CMS + optional beads server |
+| Beads | `yarn beads:ready` | Task graph on Dolt |
+| KM hub | `yarn km:status` | Aggregate health |
+
+Product DB remains Supabase/Postgres (`@repo/database`). See [KNOWLEDGE_QUICKSTART.md](../KNOWLEDGE_QUICKSTART.md).
 
 ### Root legacy stack (deprecated)
 
