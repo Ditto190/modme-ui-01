@@ -4,15 +4,24 @@ on:
   issues:
     types: [opened, edited]
 
-permissions:
-  issues: write
-  contents: read
+permissions: {}
+
+concurrency:
+  group: issue-labeler-${{ github.event.issue.number }}
+  cancel-in-progress: true
 
 jobs:
   label:
+    name: Label issue from body
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read # checkout
+      issues: write # add labels
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Detect labels from issue body
         id: detect
@@ -33,9 +42,11 @@ jobs:
       - name: Apply labels
         if: steps.detect.outputs.labels != '[]'
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799c31a # v7.0.1
+        env:
+          LABELS: ${{ steps.detect.outputs.labels }}
         with:
           script: |
-            const labels = JSON.parse('${{ steps.detect.outputs.labels }}');
+            const labels = JSON.parse(process.env.LABELS || '[]');
             if (labels.length === 0) return;
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
