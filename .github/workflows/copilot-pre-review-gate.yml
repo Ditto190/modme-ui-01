@@ -7,22 +7,33 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: copilot-pre-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   gate:
     name: Validate agent/LLM resources
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read # checkout + diff only
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Detect changed files
         id: changed
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
-          git fetch origin "${{ github.base_ref }}" --depth=1
-          git diff --name-only "origin/${{ github.base_ref }}" HEAD > /tmp/all-changed-files.txt
+          set -euo pipefail
+          git fetch origin "$BASE_REF" --depth=1
+          git diff --name-only "origin/${BASE_REF}" HEAD > /tmp/all-changed-files.txt
           echo "All changed files:"
           cat /tmp/all-changed-files.txt
 
@@ -50,13 +61,13 @@ jobs:
 
       - name: Setup Node.js
         if: steps.filter.outputs.count > 0
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "22"
 
       - name: Install ts-node
         if: steps.filter.outputs.count > 0
-        run: npm install -g ts-node typescript
+        run: npm install -g ts-node@10.9.2 typescript@5.6.3 # zizmor: ignore[adhoc-packages] -- exact versions pinned; global CLI only, no lockfile applies
 
       - name: Run validator
         if: steps.filter.outputs.count > 0
@@ -78,15 +89,19 @@ jobs:
 
       - name: Prepare pre-review artifact
         if: always() && steps.filter.outputs.count > 0
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          VALIDATOR_STATUS: ${{ steps.validator.outputs.status }}
         run: |
+          set -euo pipefail
           mkdir -p pre-review
-          echo "${{ github.event.pull_request.number }}" > pre-review/pr-number.txt
+          printf '%s\n' "$PR_NUMBER" > pre-review/pr-number.txt
           cp /tmp/agent-files.txt pre-review/changed-resources.txt
-          echo "${{ steps.validator.outputs.status || 'SKIPPED' }}" > pre-review/status.txt
+          printf '%s\n' "${VALIDATOR_STATUS:-SKIPPED}" > pre-review/status.txt
 
       - name: Upload pre-review results
         if: always() && steps.filter.outputs.count > 0
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: copilot-pre-review-results
           path: pre-review/
