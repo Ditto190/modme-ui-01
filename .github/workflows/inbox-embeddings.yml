@@ -1,10 +1,12 @@
 name: Inbox Embeddings Generator
 
 on:
-  workflow_run:
+  # Only same-repo runs of the upstream pipeline on main (job `if:`); code is checked out
+  # from the default branch, never from the triggering run's head.
+  workflow_run: # zizmor: ignore[dangerous-triggers] -- guarded: main + same repo only
     workflows: ['Inbox Ingest Pipeline']
     types: [completed]
-    branches: [main, dev, 'chore/**', 'feat/**', 'fix/**']
+    branches: [main]
   workflow_dispatch:
     inputs:
       reindex_all:
@@ -12,27 +14,39 @@ on:
         type: boolean
         default: false
 
+permissions: {}
+
+concurrency:
+  group: inbox-embeddings
+  cancel-in-progress: false
+
 jobs:
   generate-embeddings:
     name: Generate semantic embeddings
     runs-on: ubuntu-latest
-    if: |
+    timeout-minutes: 30
+    if: >-
       github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    permissions:
+      contents: read # checkout
+      actions: write # dispatch mda-categorize.yml
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '20'
 
       - name: Install embedding dependencies
-        run: |
-          npm install --save-dev @xenova/transformers
-          npm install --save @supabase/supabase-js
+        run: npm install --no-save @xenova/transformers@2.17.2 @supabase/supabase-js@2.108.2 # zizmor: ignore[adhoc-packages] -- exact versions pinned (supabase matches package-lock)
 
       - name: Run embedding generation
         env:
@@ -43,8 +57,8 @@ jobs:
 
       - name: Trigger MDA categorization
         if: success()
-        uses: benc-uk/workflow-dispatch@v1
+        uses: benc-uk/workflow-dispatch@d004979be141727c7a17c28f603e2facc40d0855 # v1.3.3
         with:
           workflow: mda-categorize.yml
-          ref: ${{ github.ref_name || github.event.workflow_run.head_branch }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.ref_name }}
+          token: ${{ github.token }}
