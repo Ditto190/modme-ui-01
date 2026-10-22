@@ -13,8 +13,10 @@ concurrency:
 jobs:
   summary:
     name: Summarise issue
-    # Trigger guard: skip bots
-    if: github.event.issue.user.type != 'Bot'
+    # Trigger guard: skip bots; only summarise issues from trusted authors (DT-approved 2026-10-23)
+    if: >-
+      github.event.issue.user.type != 'Bot' &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
