@@ -25,8 +25,9 @@ jobs:
     name: Generate Toolset Reference Documentation
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # Manual runs only from main (feature-branch dispatches would push docs to that branch).
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.head_branch == 'main' &&
        github.event.workflow_run.head_repository.full_name == github.repository)
@@ -254,28 +255,33 @@ jobs:
 
   notify-completion:
     name: Notify Documentation Updated
-    needs: [publish-docs]
+    needs: [generate-toolset-docs, publish-docs]
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: always()
+    # Report upstream results; skip entirely when generation never ran (guard not met).
+    if: always() && needs.generate-toolset-docs.result != 'skipped'
     permissions: {}
 
     steps:
       - name: Create summary
         env:
           TRIGGER: ${{ github.event_name }}
-          JOB_STATUS: ${{ job.status }}
+          GENERATE_STATUS: ${{ needs.generate-toolset-docs.result }}
+          PUBLISH_STATUS: ${{ needs.publish-docs.result }}
         run: |
           {
-            echo "## Documentation Generation Complete 📚"
+            echo "## Documentation Generation 📚"
             echo ""
             echo "**Trigger**: ${TRIGGER}"
-            echo "**Status**: ${JOB_STATUS}"
-            echo ""
-            echo "### Updated Files"
-            echo "- Toolset reference docs"
-            echo "- README.md"
-            echo "- CHANGELOG.md"
-            echo "- Deprecation table"
-            echo "- Migration guides index"
+            echo "**Generate**: ${GENERATE_STATUS}"
+            echo "**Publish**: ${PUBLISH_STATUS}"
+            if [ "${PUBLISH_STATUS}" = "success" ]; then
+              echo ""
+              echo "### Updated Files"
+              echo "- Toolset reference docs"
+              echo "- README.md"
+              echo "- CHANGELOG.md"
+              echo "- Deprecation table"
+              echo "- Migration guides index"
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
