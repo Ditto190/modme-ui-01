@@ -15,6 +15,7 @@ permissions: {}
 concurrency:
   group: toolset-docs
   cancel-in-progress: false
+  queue: max # a later workflow_run must not replace a pending manual deployment
 
 env:
   NODE_VERSION: '22.9.0'
@@ -243,8 +244,9 @@ jobs:
           # If using a docs generator like VitePress
           npm run docs:build
       
+      # schedule was dropped, so automatic (guarded same-repo main) workflow_run updates publish too
       - name: Deploy to GitHub Pages
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_run'
         uses: peaceiris/actions-gh-pages@373f7f263a76c20808c831209c920827a82a2847 # v3.9.3
         with:
           github_token: ${{ github.token }}
