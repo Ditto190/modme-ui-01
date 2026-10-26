@@ -18,7 +18,9 @@ permissions: {}
 concurrency:
   group: mda-categorize
   cancel-in-progress: false
-  queue: max # keep every pending dispatch (each entry_ids set); default queue replaces pending runs
+  # queue: max keeps up to 100 pending dispatches (each entry_ids set) instead of replacing the
+  # one pending run; GitHub cancels runs beyond 100. Accepted: this pipeline is low-volume.
+  queue: max
 
 jobs:
   categorize:
@@ -30,6 +32,8 @@ jobs:
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.head_branch == 'main' &&
        github.event.workflow_run.head_repository.full_name == github.repository)
+    # Service-role secret is gated by a protected environment (deployment branch: main).
+    environment: mda-pipeline
     permissions:
       contents: read # checkout
 
@@ -51,8 +55,9 @@ jobs:
         env:
           ENTRY_IDS: ${{ inputs.entry_ids || '' }}
         run: |
-          # Whole-value match (bash =~), so multi-line input cannot pass on its first line.
-          if [ -n "$ENTRY_IDS" ] && ! [[ "$ENTRY_IDS" =~ ^[A-Za-z0-9_-]+(,[A-Za-z0-9_-]+)*$ ]]; then
+          # Whole-value match (bash =~): single line, blanks allowed around IDs and commas.
+          # scripts/mda-categorize.mjs re-validates (UUIDs only) and fails loud.
+          if [ -n "$ENTRY_IDS" ] && ! [[ "$ENTRY_IDS" =~ ^[[:blank:]]*[A-Za-z0-9_-]+([[:blank:]]*,[[:blank:]]*[A-Za-z0-9_-]+)*[[:blank:]]*$ ]]; then
             echo "entry_ids must be comma-separated ids ([A-Za-z0-9_-])" >&2
             exit 1
           fi

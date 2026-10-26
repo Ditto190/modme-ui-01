@@ -19,7 +19,9 @@ permissions: {}
 concurrency:
   group: inbox-embeddings
   cancel-in-progress: false
-  queue: max # keep every pending run (incl. reindex_all); default queue replaces pending runs
+  # queue: max keeps up to 100 pending runs (incl. reindex_all) instead of replacing the one
+  # pending run; GitHub cancels runs beyond 100. Accepted: this pipeline is low-volume.
+  queue: max
 
 jobs:
   generate-embeddings:

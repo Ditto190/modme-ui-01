@@ -22,8 +22,11 @@
  *   node scripts/mda-categorize.mjs --dry-run
  */
 
-import { createClient } from "@supabase/supabase-js";
 import { loadRootEnv } from "./lib/load-root-env.mjs";
+import { EntryIdsError, missingEntryIds, parseEntryIds } from "./lib/mda-entry-ids.mjs";
+
+// Default (no ENTRY_IDS) taxonomy batch: up to this many entries with status = "indexed".
+const DEFAULT_INDEXED_BATCH_LIMIT = 50;
 
 loadRootEnv({ fileWins: true });
 
@@ -33,17 +36,24 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const args = process.argv.slice(2);
 const TEAM = args[args.indexOf("--team") + 1] ?? "all";
 const DRY_RUN = args.includes("--dry-run");
-// Optional comma-separated entry IDs (validated in the workflow); empty = all uncategorized.
-const ENTRY_IDS = (process.env.ENTRY_IDS ?? "")
-  .split(",")
-  .map((s) => s.trim())
-  .filter(Boolean);
+// Optional comma-separated entry UUIDs; unset/empty = default indexed batch.
+// Malformed input fails fast (exit 2) and never falls back to the default batch.
+let ENTRY_IDS;
+try {
+  ENTRY_IDS = parseEntryIds(process.env.ENTRY_IDS);
+} catch (err) {
+  if (!(err instanceof EntryIdsError)) throw err;
+  console.error(`[mda] Invalid ENTRY_IDS: ${err.message}`);
+  process.exit(2);
+}
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
   console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
   process.exit(1);
 }
 
+// Loaded after input validation so bad input fails before any dependency or network use.
+const { createClient } = await import("@supabase/supabase-js");
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ─── Taxonomy Team ─────────────────────────────────────────────────────────
@@ -103,14 +113,24 @@ async function runTaxonomyTeam() {
     .select("id, extracted_text, title, summary, tags, severity");
   if (ENTRY_IDS.length) {
     console.log(`[mda/taxonomy] Fetching ${ENTRY_IDS.length} requested entries...`);
-    query = query.in("id", ENTRY_IDS);
+    // Keep the readiness guard: only indexed entries are (re)categorised.
+    query = query.in("id", ENTRY_IDS).eq("status", "indexed");
   } else {
     console.log("[mda/taxonomy] Fetching uncategorized entries...");
-    query = query.eq("status", "indexed").limit(50);
+    query = query.eq("status", "indexed").limit(DEFAULT_INDEXED_BATCH_LIMIT);
   }
   const { data: entries, error } = await query;
 
   if (error) throw new Error(error.message);
+  if (ENTRY_IDS.length) {
+    // A targeted run must be complete: no unknown, non-indexed or truncated IDs.
+    const missing = missingEntryIds(ENTRY_IDS, entries);
+    if (missing.length) {
+      throw new Error(
+        `${missing.length} requested ENTRY_IDS not found with status "indexed": ${missing.slice(0, 10).join(", ")}${missing.length > 10 ? ", ..." : ""}`
+      );
+    }
+  }
   if (!entries?.length) {
     console.log("[mda/taxonomy] No uncategorized entries found.");
     return;
