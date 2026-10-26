@@ -18,7 +18,7 @@ jobs:
   dependency-check:
     name: Check for Dependency Updates
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event.inputs.task_type == 'dependency-update'
+    if: github.event.inputs.task_type == 'dependency-update'
     
     steps:
       - name: Checkout repository
@@ -84,7 +84,7 @@ jobs:
   security-audit:
     name: Security Audit
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event.inputs.task_type == 'security-audit'
+    if: github.event.inputs.task_type == 'security-audit'
     
     steps:
       - name: Checkout repository
@@ -212,7 +212,7 @@ jobs:
             - [Security Best Practices](https://docs.github.com/en/code-security)
             
             ---
-            *This issue was created automatically. To disable these reports, adjust the workflow schedule.*
+            *This issue was created automatically by a manual run of the AI-Assisted Maintenance workflow.*
             `;
             
             // Search for existing maintenance issue
