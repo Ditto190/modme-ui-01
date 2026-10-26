@@ -74,7 +74,8 @@ jobs:
         id: validator
         run: |
           set +e
-          npx ts-node --project scripts/tsconfig.json --transpileOnly \
+          # Call the pinned global ts-node directly; npx could fetch a different version.
+          ts-node --project scripts/tsconfig.json --transpileOnly \
             scripts/validate_copilot_resources.ts /tmp/agent-files.txt
           EXIT_CODE=$?
           set -e

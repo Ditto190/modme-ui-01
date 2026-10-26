@@ -2,9 +2,9 @@ name: "Copilot Pre-Review — PR Comment"
 
 on:
   # Privileged follow-up to an unprivileged PR gate (fork PRs included). The artifact is
-  # treated as hostile: read in-script (never via $GITHUB_OUTPUT), size-capped, the PR number
-  # must match an open PR whose head SHA equals the triggering run's head SHA, and nothing
-  # from the PR is checked out or executed.
+  # treated as hostile: size-checked before download, read in-script with a bounded read
+  # (never via $GITHUB_OUTPUT), the PR number must match an open PR whose head SHA, head repo
+  # and head branch equal the triggering run's, and nothing from the PR is checked out or executed.
   workflow_run: # zizmor: ignore[dangerous-triggers] -- guarded as described above
     workflows: ["Copilot Pre-Review — PR Gate"]
     types: [completed]
@@ -12,7 +12,9 @@ on:
 permissions: {}
 
 concurrency:
-  group: copilot-pre-review-comment-${{ github.event.workflow_run.head_sha }}
+  # One queue per PR head (repo + branch) so jobs for successive commits of the same PR
+  # are serialised; the head is re-checked right before any comment is written.
+  group: copilot-pre-review-comment-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: true
 
 jobs:
@@ -20,13 +22,40 @@ jobs:
     name: Post pre-review results as PR comment
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: github.event.workflow_run.event == 'pull_request'
+    # Cancelled gate runs (superseded by a newer commit) upload no artifact; skip them.
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion != 'cancelled'
     permissions:
       actions: read # download the gate run's artifact
       pull-requests: write # create/update the pre-review comment
 
     steps:
+      - name: Check artifact size before download
+        id: artifact
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        env:
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        with:
+          script: |
+            const MAX_ARTIFACT_BYTES = 1024 * 1024;
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: Number(process.env.RUN_ID),
+              per_page: 100,
+            });
+            const a = artifacts.find((x) => x.name === 'copilot-pre-review-results');
+            if (!a) {
+              core.warning('Pre-review artifact not found; skipping.');
+              core.setOutput('ok', 'false');
+            } else if (a.expired || a.size_in_bytes > MAX_ARTIFACT_BYTES) {
+              core.warning(`Pre-review artifact expired or too large (${a.size_in_bytes} bytes); skipping.`);
+              core.setOutput('ok', 'false');
+            } else {
+              core.setOutput('ok', 'true');
+            }
+
       - name: Download pre-review artifact
+        if: steps.artifact.outputs.ok == 'true'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: copilot-pre-review-results
@@ -35,22 +64,31 @@ jobs:
           path: ${{ runner.temp }}/pre-review
 
       - name: Post or update PR comment
+        if: steps.artifact.outputs.ok == 'true'
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         env:
           ARTIFACT_DIR: ${{ runner.temp }}/pre-review
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
         with:
           script: |
             const fs = require('fs');
             const path = require('path');
             const dir = process.env.ARTIFACT_DIR;
             const MAX = 20000;
+            // Bounded read: never load more than MAX bytes of a hostile file into memory.
             const read = (name) => {
+              let fd;
               try {
-                const buf = fs.readFileSync(path.join(dir, name));
-                return buf.subarray(0, MAX).toString('utf8');
+                fd = fs.openSync(path.join(dir, name), 'r');
+                const buf = Buffer.alloc(MAX);
+                const n = fs.readSync(fd, buf, 0, MAX, 0);
+                return buf.subarray(0, n).toString('utf8');
               } catch {
                 return '';
+              } finally {
+                if (fd !== undefined) fs.closeSync(fd);
               }
             };
 
@@ -61,16 +99,28 @@ jobs:
             }
             const prNumber = Number(prRaw);
 
-            // The PR must be open and its head must be the commit the gate ran on.
-            const { data: pr } = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNumber,
-            });
-            if (pr.state !== 'open' || pr.head.sha !== process.env.HEAD_SHA) {
-              core.warning(`PR #${prNumber} does not match the triggering run head; skipping.`);
-              return;
-            }
+            // The PR must be open and its head (SHA, repo, branch) must be the one the gate ran on.
+            const headMatches = async () => {
+              let pr;
+              try {
+                ({ data: pr } = await github.rest.pulls.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prNumber,
+                }));
+              } catch {
+                core.warning(`Could not load PR #${prNumber}; skipping.`);
+                return false;
+              }
+              const ok =
+                pr.state === 'open' &&
+                pr.head.sha === process.env.HEAD_SHA &&
+                pr.head.repo?.full_name === process.env.HEAD_REPO &&
+                pr.head.ref === process.env.HEAD_BRANCH;
+              if (!ok) core.warning(`PR #${prNumber} does not match the triggering run head; skipping.`);
+              return ok;
+            };
+            if (!(await headMatches())) return;
 
             const rawStatus = read('status.txt').trim();
             const status = ['OK', 'FAIL', 'SKIPPED'].includes(rawStatus) ? rawStatus : 'UNKNOWN';
@@ -107,6 +157,9 @@ jobs:
             const existing = comments.find(
               (c) => c.body && c.body.includes(marker) && c.user && c.user.type === 'Bot',
             );
+
+            // Re-check the head immediately before writing, in case a newer commit landed.
+            if (!(await headMatches())) return;
 
             if (existing) {
               await github.rest.issues.updateComment({
