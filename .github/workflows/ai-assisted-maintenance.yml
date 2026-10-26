@@ -1,9 +1,7 @@
 name: AI-Assisted Maintenance
 
 on:
-  schedule:
-    # Run weekly on Monday at 9 AM UTC
-    - cron: '0 9 * * 1'
+  # schedule trigger dropped (DT event-only rule, approved 2026-10-23)
   workflow_dispatch:
     inputs:
       task_type:
@@ -20,7 +18,7 @@ jobs:
   dependency-check:
     name: Check for Dependency Updates
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event.inputs.task_type == 'dependency-update'
+    if: github.event.inputs.task_type == 'dependency-update'
     
     steps:
       - name: Checkout repository
@@ -86,7 +84,7 @@ jobs:
   security-audit:
     name: Security Audit
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event.inputs.task_type == 'security-audit'
+    if: github.event.inputs.task_type == 'security-audit'
     
     steps:
       - name: Checkout repository
@@ -189,9 +187,21 @@ jobs:
 
       - name: Create or update maintenance issue
         uses: actions/github-script@v7
+        env:
+          DEPENDENCY_RESULT: ${{ needs.dependency-check.result }}
+          SECURITY_RESULT: ${{ needs.security-audit.result }}
         with:
           script: |
             const date = new Date().toISOString().split('T')[0];
+            // Report only what this manual run actually did (one task_type per run).
+            const describe = (label, result) =>
+              result === 'success' ? `${label} completed`
+              : result === 'skipped' ? `${label} not run (not selected)`
+              : `${label} ${result}`;
+            const summaryLines = [
+              `- 📦 ${describe('Dependency check', process.env.DEPENDENCY_RESULT)}`,
+              `- 🔒 ${describe('Security audit', process.env.SECURITY_RESULT)}`,
+            ].join('\n');
             const title = `🤖 AI-Assisted Maintenance Report - ${date}`;
             
             const body = `
@@ -200,8 +210,7 @@ jobs:
             This issue was automatically created by the AI-assisted maintenance workflow.
             
             ## Summary
-            - 📦 Dependency check completed
-            - 🔒 Security audit completed
+            ${summaryLines}
             
             ## Next Steps
             1. Review the workflow run artifacts for detailed reports
@@ -214,7 +223,7 @@ jobs:
             - [Security Best Practices](https://docs.github.com/en/code-security)
             
             ---
-            *This issue was created automatically. To disable these reports, adjust the workflow schedule.*
+            *This issue was created automatically by a manual run of the AI-Assisted Maintenance workflow.*
             `;
             
             // Search for existing maintenance issue
@@ -232,7 +241,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issues.data[0].number,
-                body: `## Update - ${date}\n\nNew maintenance check completed. See [workflow run](${context.payload.repository.html_url}/actions/runs/${context.runId}) for details.`
+                body: `## Update - ${date}\n\n${summaryLines}\n\nSee [workflow run](${context.payload.repository.html_url}/actions/runs/${context.runId}) for details.`
               });
             } else {
               // Create new issue
