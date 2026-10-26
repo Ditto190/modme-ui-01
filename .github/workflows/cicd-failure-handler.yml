@@ -11,8 +11,11 @@ on:
 permissions: {}
 
 concurrency:
-  group: cicd-failure-${{ github.event.workflow_run.id }}
+  # One repo-wide queue so dedupe + create are serialised across concurrent failures;
+  # queue: max keeps every pending run instead of replacing it.
+  group: cicd-failure-${{ github.repository }}
   cancel-in-progress: false
+  queue: max
 
 jobs:
   handle-failure:
@@ -48,14 +51,14 @@ jobs:
             const jobName = clean(failedJob?.name || "Unknown Job");
             const stepName = clean(failedStep?.name || "Unknown Step");
             const pipelineName = clean(run.name || "Unknown Pipeline");
-            const title = `[CI/CD Failure]: ${pipelineName} - ${stepName} failed`;
+            // GitHub caps issue titles at 256 characters.
+            const title = clean(`[CI/CD Failure]: ${pipelineName} - ${stepName} failed`, 256);
 
-            // 2. Dedupe: skip if an open issue with the same title exists
+            // 2. Dedupe: skip if any open issue with the same title exists (label-independent)
             const open = await github.paginate(github.rest.issues.listForRepo, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
-              labels: 'ci-cd',
               per_page: 100
             });
             const dupe = open.find(i => !i.pull_request && i.title === title);
