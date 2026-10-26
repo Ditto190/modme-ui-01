@@ -33,6 +33,11 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const args = process.argv.slice(2);
 const TEAM = args[args.indexOf("--team") + 1] ?? "all";
 const DRY_RUN = args.includes("--dry-run");
+// Optional comma-separated entry IDs (validated in the workflow); empty = all uncategorized.
+const ENTRY_IDS = (process.env.ENTRY_IDS ?? "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
   console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
@@ -93,12 +98,17 @@ function matchCategory(text, categories) {
 }
 
 async function runTaxonomyTeam() {
-  console.log("[mda/taxonomy] Fetching uncategorized entries...");
-  const { data: entries, error } = await supabase
+  let query = supabase
     .from("inbox_entries")
-    .select("id, extracted_text, title, summary, tags, severity")
-    .eq("status", "indexed")
-    .limit(50);
+    .select("id, extracted_text, title, summary, tags, severity");
+  if (ENTRY_IDS.length) {
+    console.log(`[mda/taxonomy] Fetching ${ENTRY_IDS.length} requested entries...`);
+    query = query.in("id", ENTRY_IDS);
+  } else {
+    console.log("[mda/taxonomy] Fetching uncategorized entries...");
+    query = query.eq("status", "indexed").limit(50);
+  }
+  const { data: entries, error } = await query;
 
   if (error) throw new Error(error.message);
   if (!entries?.length) {

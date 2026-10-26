@@ -18,6 +18,7 @@ permissions: {}
 concurrency:
   group: mda-categorize
   cancel-in-progress: false
+  queue: max # keep every pending dispatch (each entry_ids set); default queue replaces pending runs
 
 jobs:
   categorize:
@@ -50,7 +51,8 @@ jobs:
         env:
           ENTRY_IDS: ${{ inputs.entry_ids || '' }}
         run: |
-          if [ -n "$ENTRY_IDS" ] && ! printf '%s' "$ENTRY_IDS" | grep -Eq '^[A-Za-z0-9_-]+(,[A-Za-z0-9_-]+)*$'; then
+          # Whole-value match (bash =~), so multi-line input cannot pass on its first line.
+          if [ -n "$ENTRY_IDS" ] && ! [[ "$ENTRY_IDS" =~ ^[A-Za-z0-9_-]+(,[A-Za-z0-9_-]+)*$ ]]; then
             echo "entry_ids must be comma-separated ids ([A-Za-z0-9_-])" >&2
             exit 1
           fi
