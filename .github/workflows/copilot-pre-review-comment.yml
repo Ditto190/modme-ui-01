@@ -1,68 +1,139 @@
 name: "Copilot Pre-Review — PR Comment"
 
 on:
-  workflow_run:
+  # Privileged follow-up to an unprivileged PR gate (fork PRs included). The artifact is
+  # treated as hostile: size-checked before download, read in-script with a bounded read
+  # (never via $GITHUB_OUTPUT), the PR number must match an open PR whose head SHA, head repo
+  # and head branch equal the triggering run's, and nothing from the PR is checked out or executed.
+  workflow_run: # zizmor: ignore[dangerous-triggers] -- guarded as described above
     workflows: ["Copilot Pre-Review — PR Gate"]
     types: [completed]
 
-permissions:
-  pull-requests: write
-  actions: read
+permissions: {}
+
+concurrency:
+  # One queue per PR head (repo + branch) so jobs for successive commits of the same PR
+  # are serialised; the head is re-checked right before any comment is written.
+  group: copilot-pre-review-comment-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
 
 jobs:
   comment:
     name: Post pre-review results as PR comment
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Cancelled gate runs (superseded by a newer commit) upload no artifact; skip them.
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion != 'cancelled'
+    permissions:
+      actions: read # download the gate run's artifact
+      pull-requests: write # create/update the pre-review comment
 
     steps:
+      - name: Check artifact size before download
+        id: artifact
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        env:
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        with:
+          script: |
+            const MAX_ARTIFACT_BYTES = 1024 * 1024;
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: Number(process.env.RUN_ID),
+              per_page: 100,
+            });
+            const a = artifacts.find((x) => x.name === 'copilot-pre-review-results');
+            if (!a) {
+              core.warning('Pre-review artifact not found; skipping.');
+              core.setOutput('ok', 'false');
+            } else if (a.expired || a.size_in_bytes > MAX_ARTIFACT_BYTES) {
+              core.warning(`Pre-review artifact expired or too large (${a.size_in_bytes} bytes); skipping.`);
+              core.setOutput('ok', 'false');
+            } else {
+              core.setOutput('ok', 'true');
+            }
+
       - name: Download pre-review artifact
-        uses: actions/download-artifact@v4
+        if: steps.artifact.outputs.ok == 'true'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: copilot-pre-review-results
           run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: pre-review/
-
-      - name: Read artifact files
-        id: read
-        run: |
-          PR_NUMBER=$(cat pre-review/pr-number.txt 2>/dev/null | tr -d '[:space:]' || echo "")
-          STATUS=$(cat pre-review/status.txt 2>/dev/null | tr -d '[:space:]' || echo "")
-          RESOURCES=$(cat pre-review/changed-resources.txt 2>/dev/null || echo "")
-
-          echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
-          echo "status=${STATUS}" >> "$GITHUB_OUTPUT"
-
-          # Store multi-line value safely
-          {
-            echo "resources<<EOF"
-            echo "${RESOURCES}"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/pre-review
 
       - name: Post or update PR comment
-        uses: actions/github-script@v7
+        if: steps.artifact.outputs.ok == 'true'
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         env:
-          PR_NUMBER: ${{ steps.read.outputs.pr_number }}
-          STATUS: ${{ steps.read.outputs.status }}
-          RESOURCES: ${{ steps.read.outputs.resources }}
+          ARTIFACT_DIR: ${{ runner.temp }}/pre-review
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
         with:
           script: |
-            const prNumber = parseInt(process.env.PR_NUMBER || '', 10);
-            const status   = process.env.STATUS || '';
-            const resources = (process.env.RESOURCES || '').trim();
+            const fs = require('fs');
+            const path = require('path');
+            const dir = process.env.ARTIFACT_DIR;
+            const MAX = 20000;
+            // Bounded read: never load more than MAX bytes of a hostile file into memory.
+            const read = (name) => {
+              let fd;
+              try {
+                fd = fs.openSync(path.join(dir, name), 'r');
+                const buf = Buffer.alloc(MAX);
+                const n = fs.readSync(fd, buf, 0, MAX, 0);
+                return buf.subarray(0, n).toString('utf8');
+              } catch {
+                return '';
+              } finally {
+                if (fd !== undefined) fs.closeSync(fd);
+              }
+            };
 
-            if (!prNumber) {
-              core.warning('Could not determine PR number from artifact.');
+            const prRaw = read('pr-number.txt').trim();
+            if (!/^[0-9]{1,9}$/.test(prRaw)) {
+              core.warning('Artifact PR number missing or not numeric; skipping.');
               return;
             }
+            const prNumber = Number(prRaw);
+
+            // The PR must be open and its head (SHA, repo, branch) must be the one the gate ran on.
+            const headMatches = async () => {
+              let pr;
+              try {
+                ({ data: pr } = await github.rest.pulls.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prNumber,
+                }));
+              } catch {
+                core.warning(`Could not load PR #${prNumber}; skipping.`);
+                return false;
+              }
+              const ok =
+                pr.state === 'open' &&
+                pr.head.sha === process.env.HEAD_SHA &&
+                pr.head.repo?.full_name === process.env.HEAD_REPO &&
+                pr.head.ref === process.env.HEAD_BRANCH;
+              if (!ok) core.warning(`PR #${prNumber} does not match the triggering run head; skipping.`);
+              return ok;
+            };
+            if (!(await headMatches())) return;
+
+            const rawStatus = read('status.txt').trim();
+            const status = ['OK', 'FAIL', 'SKIPPED'].includes(rawStatus) ? rawStatus : 'UNKNOWN';
+            const resources = read('changed-resources.txt')
+              .split('\n')
+              .map((l) => l.replace(/`/g, "'").trim())
+              .filter(Boolean)
+              .slice(0, 200)
+              .join('\n');
 
             const marker = '<!-- copilot-pre-review -->';
-
             const statusEmoji = status === 'OK' ? '✅' : status === 'FAIL' ? '❌' : '⚠️';
-            const resourceBlock = resources
-              ? '```\n' + resources + '\n```'
-              : '_(none)_';
+            const resourceBlock = resources ? '```\n' + resources + '\n```' : '_(none)_';
 
             const body = [
               marker,
@@ -77,26 +148,31 @@ jobs:
               '_Review checklist: [`agents/review/code-review-rubric.md`](agents/review/code-review-rubric.md)_',
             ].join('\n');
 
-            const { data: comments } = await github.rest.issues.listComments({
+            const comments = await github.paginate(github.rest.issues.listComments, {
               owner: context.repo.owner,
-              repo:  context.repo.repo,
+              repo: context.repo.repo,
               issue_number: prNumber,
+              per_page: 100,
             });
+            const existing = comments.find(
+              (c) => c.body && c.body.includes(marker) && c.user && c.user.type === 'Bot',
+            );
 
-            const existing = comments.find(c => c.body && c.body.includes(marker));
+            // Re-check the head immediately before writing, in case a newer commit landed.
+            if (!(await headMatches())) return;
 
             if (existing) {
               await github.rest.issues.updateComment({
-                owner:      context.repo.owner,
-                repo:       context.repo.repo,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 comment_id: existing.id,
                 body,
               });
               core.info(`Updated existing pre-review comment (id=${existing.id}) on PR #${prNumber}.`);
             } else {
               await github.rest.issues.createComment({
-                owner:        context.repo.owner,
-                repo:         context.repo.repo,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 issue_number: prNumber,
                 body,
               });
