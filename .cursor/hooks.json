@@ -1,1 +1,11 @@
-[]
+﻿{
+    "version":  1,
+    "hooks":  {
+                  "sessionStart":  [
+                                       {
+                                           "command":  "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/ensure-lean-ctx-config.ps1 -CheckOnly",
+                                           "timeout":  90
+                                       }
+                                   ]
+              }
+}
