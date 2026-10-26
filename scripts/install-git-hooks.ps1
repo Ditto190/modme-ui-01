@@ -45,3 +45,7 @@ Write-Host 'Hooks:' -ForegroundColor Cyan
 Write-Host '  pre-commit  -> node scripts/pre-commit-checks.mjs (+ main/master guard)'
 Write-Host '  commit-msg  -> conventional commit warn-only'
 Write-Host '  pre-push    -> node scripts/pre-push-checks.mjs (path-filtered verify)'
+Write-Host ''
+Write-Host 'Note: ModMe .githooks are SoR. After `entire enable` or Entire hook install,' -ForegroundColor DarkYellow
+Write-Host '      re-run yarn hooks:install (this script) if Entire overwrote pre-commit/pre-push.' -ForegroundColor DarkYellow
+Write-Host '      Entire keeps prior hooks as *.pre-entire under .git/hooks / .beads/hooks.' -ForegroundColor DarkYellow

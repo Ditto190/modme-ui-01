@@ -8,6 +8,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '../..');
 const MAP_PATH = join(ROOT, 'specs/013-agent-workflow-gates/patterns/coverage-map.json');
 const REGISTRY_PATH = join(ROOT, 'specs/013-agent-workflow-gates/patterns/registry.json');
+const UW_PREFIX = 'GenerativeUI_monorepo/UniversalWorkbench';
+const FORGE_PREFIX = 'next-forge/';
+
 const PKG = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
 
 function pathExists(relPath) {
@@ -37,7 +40,7 @@ describe('pattern coverage map', () => {
     }
   });
 
-  it('every yarn verify command maps to package.json scripts', () => {
+  it('every yarn verify cmd maps to pkg.json scripts', () => {
     for (const [id, entry] of Object.entries(map.patterns)) {
       for (const cmd of entry.verify ?? []) {
         for (const script of extractYarnScripts(cmd)) {
@@ -51,5 +54,29 @@ describe('pattern coverage map', () => {
     for (const [id, entry] of Object.entries(map.patterns)) {
       assert.ok(entry.checklistDomain, `${id}: missing checklistDomain`);
     }
+  });
+
+  it('nonMigrate patterns stay under UniversalWorkbench and avoid next-forge', () => {
+    for (const [id, meta] of Object.entries(registry.patterns)) {
+      if (!meta.nonMigrate) continue;
+      const entry = map.patterns[id];
+      assert.ok(entry, `${id}: nonMigrate missing coverage-map`);
+      assert.equal(entry.checklistDomain, 'uw-archive', `${id}: checklistDomain`);
+      for (const rel of entry.paths ?? []) {
+        assert.ok(
+          rel.startsWith(UW_PREFIX),
+          `${id}: path must start with ${UW_PREFIX}: ${rel}`
+        );
+        assert.ok(
+          !rel.startsWith(FORGE_PREFIX),
+          `${id}: forge path not allowed on nonMigrate: ${rel}`
+        );
+      }
+    }
+  });
+
+  it('at least five nonMigrate UW patterns are registered', () => {
+    const count = Object.values(registry.patterns).filter((p) => p.nonMigrate).length;
+    assert.ok(count >= 5, `expected >=5 nonMigrate patterns, got ${count}`);
   });
 });

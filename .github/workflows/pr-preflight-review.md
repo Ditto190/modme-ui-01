@@ -25,6 +25,8 @@ timeout-minutes: 15
 
 Run when a PR is **synchronized** (new commits pushed). Verify preflight CI is **green** before posting a lightweight review checklist.
 
+**Gate:** Prefer when `review:*` labels exist (agent-codeowners dispatch). Docs-only (`review:docs`) → keep checklist minimal. SaaS bots stay path-gated (`.coderabbit.yaml`, `cubic.yaml`). See `docs/devops/agent-review-routing.md`.
+
 ## Preconditions
 
 - PR targets `dev` (or repo default integration branch)
@@ -37,11 +39,13 @@ Post **one** comment (marker `<!-- pr-preflight-review -->`) with:
 
 1. **Preflight status** — green on head SHA
 2. **Stack scope** — `next-forge/`, `GenerativeUI_monorepo/`, or both (from changed files)
-3. **Boundaries** — confirm no `workspace:*` across stacks, no forbidden relative imports
-4. **Test delta** — note new/changed `*.test.*` / `*.spec.*` files; flag if production code changed without tests
-5. **Suggested commands** before merge:
+3. **Agent roles** — `review:*` labels / expected `modme/agent-*` checks
+4. **Boundaries** — confirm no `workspace:*` across stacks, no forbidden relative imports
+5. **Test delta** — note new/changed `*.test.*` / `*.spec.*` files; flag if production code changed without tests
+6. **Suggested commands** before merge:
    - `yarn preflight:fast` (local)
    - `yarn quality:route --pr <N>` for optional bugbot review
+   - Trunk `/trunk merge` only after `modme/agent-merge` green
 
 ## Review tone
 

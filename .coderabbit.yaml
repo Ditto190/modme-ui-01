@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# Path/label-gated CodeRabbit — prefer agent-codeowners roles over full-repo noise.
+
+language: en-US
+early_access: false
+
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: true
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - dev
+      - main
+      - master
+    # Skip docs-only / changelog noise; force with `@coderabbitai review`
+    ignore_title_keywords:
+      - WIP
+      - wip
+      - draft
+    path_filters:
+      - "!**/*.md"
+      - "!docs/**"
+      - "!**/AGENTS.md"
+      - "!CHANGELOG.md"
+      - "!**/*.lock"
+      - "!**/bun.lock"
+      - "!**/.yarn/**"
+      - "!.vendor/**"
+      - "!agent-library/**"
+  path_instructions:
+    - path: "next-forge/**"
+      instructions: >
+        Focus on Bun/Turborepo, Next.js App Router, @repo/* boundaries.
+        Do not suggest yarn install inside next-forge.
+    - path: "GenerativeUI_monorepo/**"
+      instructions: >
+        Focus on Yarn 3 workspaces, CopilotKit, FastAPI agent-server.
+        Do not suggest bun install inside GenerativeUI_monorepo.
+    - path: ".github/**"
+      instructions: >
+        Defer CI YAML deep review to Cubic (devops lane). Flag secrets and pull_request_target risks only.
+    - path: "scripts/**"
+      instructions: >
+        Prefer lean-ctx / existing orchestrators. Flag shell allowlist and secret echo risks.
+
+chat:
+  auto_reply: true
+
+# Prefer on-demand when only review:docs is present — operators: @coderabbitai review

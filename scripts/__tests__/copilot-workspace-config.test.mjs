@@ -44,14 +44,17 @@ describe("copilot-workspace config", () => {
     }
   });
 
+  it("shared worktree-bootstrap.ps1 exists for Copilot Invoke-WorktreeBootstrap", () => {
+    expect(existsSync(join(ROOT, "scripts/lib/worktree-bootstrap.ps1"))).toBe(true);
+    const text = readFileSync(join(ROOT, "scripts/lib/worktree-bootstrap.ps1"), "utf8");
+    expect(text).toMatch(/Invoke-WorktreeBootstrap/);
+    expect(text).toMatch(/km-session-bootstrap/);
+  });
+
   it("hooks.json uses portable lean-ctx resolver", () => {
-    const hooks = JSON.parse(
-      readFileSync(join(ROOT, ".github/hooks/hooks.json"), "utf8")
-    );
+    const hooks = JSON.parse(readFileSync(join(ROOT, ".github/hooks/hooks.json"), "utf8"));
     const pre = hooks.hooks?.preToolUse ?? [];
-    expect(pre.some((h) => h.bash?.includes("resolve-lean-ctx-hook.mjs"))).toBe(
-      true
-    );
+    expect(pre.some((h) => h.bash?.includes("resolve-lean-ctx-hook.mjs"))).toBe(true);
     expect(hooks.hooks?.sessionStart?.length).toBeGreaterThan(0);
     expect(hooks.hooks?.sessionEnd?.length).toBeGreaterThan(0);
   });

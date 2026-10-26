@@ -25,8 +25,9 @@ Push-Location $worktreeRoot
 try {
   & "$PSScriptRoot/generate-env.ps1" -WorktreePath $worktreeRoot
   . "$repoRoot/scripts/lib/worktree-bootstrap.ps1"
-  Invoke-WorktreeBootstrap -WorktreeRoot $worktreeRoot -SourceRoot $sourceRoot -SharedDeps -SkipSession
-  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+  $bootCode = Invoke-WorktreeBootstrap -WorktreeRoot $worktreeRoot -SourceRoot $sourceRoot -SharedDeps -SkipSession
+  if ($bootCode -ne 0) { exit $bootCode }
+  # Belt-and-suspenders: KM also runs inside Invoke-WorktreeBootstrap (even with -SkipSession)
 
   & "$repoRoot/scripts/ensure-lean-ctx-config.ps1" 2>&1 | Out-Null
 

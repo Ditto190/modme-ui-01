@@ -74,7 +74,9 @@
       "id": "dolt",
       "name": "Dolt (Git for Data)",
       "docs": "https://github.com/dolthub/dolt",
-      "optional": true,
+      "optional": false,
+      "agentPreflightRequired": true,
+      "ciOptional": true,
       "installHint": "https://github.com/dolthub/dolt#installation — winget install DoltHub.Dolt",
       "verify": {
         "cmd": "dolt",
@@ -83,7 +85,7 @@
       "catalog": {
         "path": "config/dolt/catalog",
         "schema": "config/dolt/catalog/schema.sql",
-        "adr": "docs/architecture/decisions/0010-dolt-catalog-cms-evaluation.md"
+        "adr": "docs/architecture/decisions/0013-dolt-beads-entire-agent-data-plane.md"
       }
     }
   ],

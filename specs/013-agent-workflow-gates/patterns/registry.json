@@ -6,27 +6,90 @@
     "federated-dual-stack": {
       "title": "Federated dual-stack",
       "principle": "Independent monorepos; HTTP/WebSocket integration only; no workspace:* cross-imports",
-      "source": ".cursor/rules/monorepo-boundaries.mdc"
+      "source": ".cursor/rules/monorepo-boundaries.mdc",
+      "lifecycle": "active",
+      "stack": "root",
+      "nonMigrate": false
     },
     "path-filtered-ci": {
       "title": "Path-filtered CI",
       "principle": "Single stack-paths manifest drives CI, pre-push hooks, and agent verify",
-      "source": "scripts/lib/stack-paths.json"
+      "source": "scripts/lib/stack-paths.json",
+      "lifecycle": "active",
+      "stack": "root",
+      "nonMigrate": false
     },
     "contract-first-integration": {
       "title": "Contract-first integration",
       "principle": "Golden Zod schemas and WS contracts before UI migration cutover",
-      "source": "next-forge/packages/schemas/"
+      "source": "next-forge/packages/schemas/",
+      "lifecycle": "active",
+      "stack": "forge",
+      "nonMigrate": false
     },
     "bounded-parallel-agents": {
       "title": "Bounded parallel agents",
       "principle": "Serial plan, parallel exploration waves, serial commit",
-      "source": "next-forge/docs/adr/0012-bounded-parallel-agent-lifecycle.md"
+      "source": "next-forge/docs/adr/0012-bounded-parallel-agent-lifecycle.md",
+      "lifecycle": "active",
+      "stack": "forge",
+      "nonMigrate": false
     },
     "ecl-structured-change": {
       "title": "ECL structured change",
       "principle": "Harness lint gates structural and cross-stack changes",
-      "source": "docs/ECL.md"
+      "source": "docs/ECL.md",
+      "lifecycle": "active",
+      "stack": "root",
+      "nonMigrate": false
+    },
+    "uw-flow-behavior-sync": {
+      "title": "UW .flow behavior sync",
+      "principle": "Tests drive behavior registry; scanners sync DONE/IN_PROGRESS/PLANNED from test results",
+      "source": "GenerativeUI_monorepo/UniversalWorkbench/.flow",
+      "lifecycle": "archive",
+      "stack": "universal-workbench",
+      "nonMigrate": true
+    },
+    "uw-flow-taxonomy": {
+      "title": "UW .flow taxonomy",
+      "principle": "Feature taxonomy YAML + README define behavior domains for agent-dev workflows",
+      "source": "GenerativeUI_monorepo/UniversalWorkbench/.flow/taxonomy.yaml",
+      "lifecycle": "archive",
+      "stack": "universal-workbench",
+      "nonMigrate": true
+    },
+    "uw-agent-inbox-pipeline-tools": {
+      "title": "UW agent inbox pipeline tools",
+      "principle": "Base UW agent tools/workflows are pattern references; root intake scripts are the runtime",
+      "source": "GenerativeUI_monorepo/UniversalWorkbench/apps/agent/src/tools",
+      "lifecycle": "archive",
+      "stack": "universal-workbench",
+      "nonMigrate": true
+    },
+    "uw-generate-schemas-py": {
+      "title": "UW generate_schemas.py",
+      "principle": "Scan TS tool interfaces and SKILL.md files to emit JSON schemas and agent prompts",
+      "source": "GenerativeUI_monorepo/UniversalWorkbench/generate_schemas.py",
+      "lifecycle": "archive",
+      "stack": "universal-workbench",
+      "nonMigrate": true
+    },
+    "uw-worktree-scripts": {
+      "title": "UW worktree scripts",
+      "principle": "UW-local worktree and feature scaffold scripts stay in the archive tree",
+      "source": "GenerativeUI_monorepo/UniversalWorkbench/scripts",
+      "lifecycle": "archive",
+      "stack": "universal-workbench",
+      "nonMigrate": true
+    },
+    "uw-validation-patterns-doc": {
+      "title": "UW validation patterns docs",
+      "principle": "Validation playbook and feature taxonomy docs remain UW knowledge, not forge runtime",
+      "source": "GenerativeUI_monorepo/UniversalWorkbench/docs",
+      "lifecycle": "archive",
+      "stack": "universal-workbench",
+      "nonMigrate": true
     }
   }
 }

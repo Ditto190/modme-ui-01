@@ -1,0 +1,43 @@
+name: Agent review routing failure
+description: Dispatcher / agent-codeowners / required check mis-route
+title: "[agent-review] "
+labels: ["ci-cd", "needs-triage", "agent:review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        File when `agent-review-dispatch` or `modme/agent-*` checks misbehave.
+        Runbook: `docs/devops/agent-review-routing.md`
+  - type: input
+    id: pr
+    attributes:
+      label: PR number or URL
+      placeholder: "https://github.com/Ditto190/modme-ui-01/pull/NNN"
+    validations:
+      required: true
+  - type: textarea
+    id: paths
+    attributes:
+      label: Changed paths (or paste matcher JSON)
+      description: Output of `node scripts/lib/agent-codeowners.mjs --paths ... --json`
+    validations:
+      required: true
+  - type: dropdown
+    id: symptom
+    attributes:
+      label: Symptom
+      options:
+        - Wrong roles matched
+        - Required check stuck pending (no skip-success)
+        - SaaS bot overlap / noise
+        - Merge champion blocked incorrectly
+        - Copilot session.create / bootstrap failure
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual
+    validations:
+      required: true
