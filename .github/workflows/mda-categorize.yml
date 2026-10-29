@@ -1,34 +1,72 @@
 name: MDA Categorization Pipeline
 
 on:
-  workflow_run:
+  # Only same-repo runs of the upstream pipeline on main (job `if:`); code is checked out
+  # from the default branch, never from the triggering run's head.
+  workflow_run: # zizmor: ignore[dangerous-triggers] -- guarded: main + same repo only
     workflows: ['Inbox Embeddings Generator']
     types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       entry_ids:
         description: 'Comma-separated entry IDs to categorize (leave blank for all uncategorized)'
         required: false
 
+permissions: {}
+
+concurrency:
+  group: mda-categorize
+  cancel-in-progress: false
+  # queue: max keeps up to 100 pending dispatches (each entry_ids set) instead of replacing the
+  # one pending run; GitHub cancels runs beyond 100. Accepted: this pipeline is low-volume.
+  queue: max
+
 jobs:
   categorize:
     name: MDA parallel categorization
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
+    timeout-minutes: 30
+    # Manual runs only from main (same limit as workflow_run): a feature-branch
+    # dispatch would check out that branch and run its script with the service-role secret.
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    # Service-role secret is gated by a protected environment (deployment branch: main).
+    environment: mda-pipeline
+    permissions:
+      contents: read # checkout
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '20'
 
+      # Root package-lock is incomplete (yarn is packageManager); pin supabase via a
+      # workflow-local lockfile at the same version the repo declares (2.108.2).
       - name: Install dependencies
-        run: npm install --save @supabase/supabase-js
+        run: |
+          npm ci --prefix .github/deps/mda-categorize --ignore-scripts --no-audit --no-fund
+          mv .github/deps/mda-categorize/node_modules ./node_modules
+
+      - name: Validate entry IDs
+        env:
+          ENTRY_IDS: ${{ inputs.entry_ids || '' }}
+        run: |
+          # Whole-value match (bash =~): single line, blanks allowed around IDs and commas.
+          # scripts/mda-categorize.mjs re-validates (UUIDs only) and fails loud.
+          if [ -n "$ENTRY_IDS" ] && ! [[ "$ENTRY_IDS" =~ ^[[:blank:]]*[A-Za-z0-9_-]+([[:blank:]]*,[[:blank:]]*[A-Za-z0-9_-]+)*[[:blank:]]*$ ]]; then
+            echo "entry_ids must be comma-separated ids ([A-Za-z0-9_-])" >&2
+            exit 1
+          fi
 
       - name: Run MDA taxonomy team (parallel)
         env:
@@ -53,12 +91,15 @@ jobs:
     needs: categorize
     if: success()
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write # dispatch output-generate.yml
 
     steps:
       - name: Trigger output generation
-        uses: benc-uk/workflow-dispatch@v1
+        uses: benc-uk/workflow-dispatch@d004979be141727c7a17c28f603e2facc40d0855 # v1.3.3
         with:
           workflow: output-generate.yml
-          ref: ${{ github.ref_name || github.event.workflow_run.head_branch }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.ref_name }}
+          token: ${{ github.token }}
           inputs: '{"source": "mda-pipeline"}'
