@@ -1,14 +1,21 @@
 name: Generate Toolset Documentation
 
 on:
-  workflow_run:
+  # Same-repo runs on main only (first job `if:`); code comes from the default branch and
+  # the only artifact consumed is the one this run's own first job uploaded.
+  workflow_run: # zizmor: ignore[dangerous-triggers] -- guarded: main + same repo only
     workflows: ["Toolset Update & Registration", "Toolset Deprecation"]
     types: [completed]
     branches: [main]
   workflow_dispatch:
-  schedule:
-    # Run weekly to keep docs fresh
-    - cron: '0 0 * * 0'  # Every Sunday at midnight
+  # schedule trigger dropped (DT event-only rule, approved 2026-10-23)
+
+permissions: {}
+
+concurrency:
+  group: toolset-docs
+  cancel-in-progress: false
+  queue: max # a later workflow_run must not replace a pending manual deployment
 
 env:
   NODE_VERSION: '22.9.0'
@@ -17,17 +24,24 @@ jobs:
   generate-toolset-docs:
     name: Generate Toolset Reference Documentation
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Manual runs only from main (feature-branch dispatches would push docs to that branch).
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
     permissions:
-      contents: write
-    
+      contents: read # checkout only
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
       
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       
@@ -55,7 +69,7 @@ jobs:
             --output docs/migration/README.md
       
       - name: Upload documentation artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: generated-docs
           path: docs/
@@ -65,21 +79,24 @@ jobs:
     name: Update README with Toolsets
     needs: generate-toolset-docs
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
-      contents: write
+      contents: read # checkout only; changes are not pushed from this job
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-      
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
       - name: Download generated docs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: generated-docs
           path: docs/
       
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       
@@ -96,19 +113,29 @@ jobs:
           # Update toolset count and other stats
           node scripts/update-readme-stats.js
 
+      - name: Upload README updates
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: readme-update
+          path: README.md
+          retention-days: 30
+
   update-changelog:
     name: Update CHANGELOG
     needs: generate-toolset-docs
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
-      contents: write
+      contents: read # checkout only; changes are not pushed from this job
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-      
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       
@@ -125,32 +152,52 @@ jobs:
           # Ensure changelog follows Keep a Changelog format
           node scripts/validate-changelog.js
 
+      - name: Upload CHANGELOG updates
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: changelog-update
+          path: CHANGELOG.md
+          retention-days: 30
+
   commit-docs:
     name: Commit Documentation Updates
     needs: [update-readme, update-changelog]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
-      contents: write
-    
+      contents: write # push generated docs
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout repository # zizmor: ignore[artipacked] -- this job pushes; no artifact upload follows
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
       
-      - name: Download all updates
-        uses: actions/download-artifact@v4
+      - name: Download generated docs
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: generated-docs
           path: docs/
+
+      - name: Download README updates
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: readme-update
+          path: .
+
+      - name: Download CHANGELOG updates
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: changelog-update
+          path: .
       
       - name: Check for changes
         id: check
         run: |
           if [[ -n $(git status --porcelain) ]]; then
-            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
           else
-            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
           fi
       
       - name: Commit and push
@@ -166,15 +213,19 @@ jobs:
     name: Validate Generated Documentation
     needs: commit-docs
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 20
+    permissions:
+      contents: read # checkout only
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: main  # Get latest changes
+          persist-credentials: false
       
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       
@@ -196,14 +247,19 @@ jobs:
     name: Publish Documentation
     needs: validate-docs
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     if: github.ref == 'refs/heads/main'
-    
+    permissions:
+      contents: write # push to gh-pages
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       
@@ -215,30 +271,43 @@ jobs:
           # If using a docs generator like VitePress
           npm run docs:build
       
+      # schedule was dropped, so automatic (guarded same-repo main) workflow_run updates publish too
       - name: Deploy to GitHub Pages
-        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
-        uses: peaceiris/actions-gh-pages@v3
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_run'
+        uses: peaceiris/actions-gh-pages@373f7f263a76c20808c831209c920827a82a2847 # v3.9.3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ github.token }}
           publish_dir: ./docs/.vitepress/dist
 
   notify-completion:
     name: Notify Documentation Updated
-    needs: [publish-docs]
+    needs: [generate-toolset-docs, publish-docs]
     runs-on: ubuntu-latest
-    if: always()
-    
+    timeout-minutes: 5
+    # Report upstream results; skip entirely when generation never ran (guard not met).
+    if: always() && needs.generate-toolset-docs.result != 'skipped'
+    permissions: {}
+
     steps:
       - name: Create summary
+        env:
+          TRIGGER: ${{ github.event_name }}
+          GENERATE_STATUS: ${{ needs.generate-toolset-docs.result }}
+          PUBLISH_STATUS: ${{ needs.publish-docs.result }}
         run: |
-          echo "## Documentation Generation Complete 📚" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Updated Files" >> $GITHUB_STEP_SUMMARY
-          echo "- Toolset reference docs" >> $GITHUB_STEP_SUMMARY
-          echo "- README.md" >> $GITHUB_STEP_SUMMARY
-          echo "- CHANGELOG.md" >> $GITHUB_STEP_SUMMARY
-          echo "- Deprecation table" >> $GITHUB_STEP_SUMMARY
-          echo "- Migration guides index" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## Documentation Generation 📚"
+            echo ""
+            echo "**Trigger**: ${TRIGGER}"
+            echo "**Generate**: ${GENERATE_STATUS}"
+            echo "**Publish**: ${PUBLISH_STATUS}"
+            if [ "${PUBLISH_STATUS}" = "success" ]; then
+              echo ""
+              echo "### Updated Files"
+              echo "- Toolset reference docs"
+              echo "- README.md"
+              echo "- CHANGELOG.md"
+              echo "- Deprecation table"
+              echo "- Migration guides index"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
