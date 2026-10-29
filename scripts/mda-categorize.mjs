@@ -23,7 +23,7 @@
  */
 
 import { loadRootEnv } from "./lib/load-root-env.mjs";
-import { EntryIdsError, missingEntryIds, parseEntryIds } from "./lib/mda-entry-ids.mjs";
+import { EntryIdsError, chunkIdsForInFilter, missingEntryIds, parseEntryIds } from "./lib/mda-entry-ids.mjs";
 
 // Default (no ENTRY_IDS) taxonomy batch: up to this many entries with status = "indexed".
 const DEFAULT_INDEXED_BATCH_LIMIT = 50;
@@ -107,22 +107,29 @@ function matchCategory(text, categories) {
   return null;
 }
 
+async function fetchIndexedByIds(ids) {
+  // Chunk so each .in() stays ≤500 IDs and the request URL stays under 16 KB.
+  const chunks = chunkIdsForInFilter(ids);
+  const rows = [];
+  for (let i = 0; i < chunks.length; i++) {
+    const chunk = chunks[i];
+    console.log(`[mda/taxonomy] .in() chunk ${i + 1}/${chunks.length} (${chunk.length} ids)`);
+    const { data, error } = await supabase
+      .from("inbox_entries")
+      .select("id, extracted_text, title, summary, tags, severity")
+      .in("id", chunk)
+      .eq("status", "indexed");
+    if (error) throw new Error(error.message);
+    rows.push(...(data ?? []));
+  }
+  return rows;
+}
+
 async function runTaxonomyTeam() {
-  let query = supabase
-    .from("inbox_entries")
-    .select("id, extracted_text, title, summary, tags, severity");
+  let entries;
   if (ENTRY_IDS.length) {
     console.log(`[mda/taxonomy] Fetching ${ENTRY_IDS.length} requested entries...`);
-    // Keep the readiness guard: only indexed entries are (re)categorised.
-    query = query.in("id", ENTRY_IDS).eq("status", "indexed");
-  } else {
-    console.log("[mda/taxonomy] Fetching uncategorized entries...");
-    query = query.eq("status", "indexed").limit(DEFAULT_INDEXED_BATCH_LIMIT);
-  }
-  const { data: entries, error } = await query;
-
-  if (error) throw new Error(error.message);
-  if (ENTRY_IDS.length) {
+    entries = await fetchIndexedByIds(ENTRY_IDS);
     // A targeted run must be complete: no unknown, non-indexed or truncated IDs.
     const missing = missingEntryIds(ENTRY_IDS, entries);
     if (missing.length) {
@@ -130,6 +137,15 @@ async function runTaxonomyTeam() {
         `${missing.length} requested ENTRY_IDS not found with status "indexed": ${missing.slice(0, 10).join(", ")}${missing.length > 10 ? ", ..." : ""}`
       );
     }
+  } else {
+    console.log("[mda/taxonomy] Fetching uncategorized entries...");
+    const { data, error } = await supabase
+      .from("inbox_entries")
+      .select("id, extracted_text, title, summary, tags, severity")
+      .eq("status", "indexed")
+      .limit(DEFAULT_INDEXED_BATCH_LIMIT);
+    if (error) throw new Error(error.message);
+    entries = data;
   }
   if (!entries?.length) {
     console.log("[mda/taxonomy] No uncategorized entries found.");
