@@ -113,6 +113,13 @@ jobs:
           # Update toolset count and other stats
           node scripts/update-readme-stats.js
 
+      - name: Upload README updates
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: readme-update
+          path: README.md
+          retention-days: 30
+
   update-changelog:
     name: Update CHANGELOG
     needs: generate-toolset-docs
@@ -145,6 +152,13 @@ jobs:
           # Ensure changelog follows Keep a Changelog format
           node scripts/validate-changelog.js
 
+      - name: Upload CHANGELOG updates
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: changelog-update
+          path: CHANGELOG.md
+          retention-days: 30
+
   commit-docs:
     name: Commit Documentation Updates
     needs: [update-readme, update-changelog]
@@ -159,11 +173,23 @@ jobs:
         with:
           token: ${{ github.token }}
       
-      - name: Download all updates
+      - name: Download generated docs
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: generated-docs
           path: docs/
+
+      - name: Download README updates
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: readme-update
+          path: .
+
+      - name: Download CHANGELOG updates
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: changelog-update
+          path: .
       
       - name: Check for changes
         id: check
