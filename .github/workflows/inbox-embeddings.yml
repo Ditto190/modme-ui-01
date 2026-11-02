@@ -28,8 +28,11 @@ jobs:
     name: Generate semantic embeddings
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Manual runs only from main (same limit as workflow_run / mda-categorize): a
+    # feature-branch dispatch would check out that branch and run its script with
+    # SUPABASE_SERVICE_ROLE_KEY and actions:write.
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.head_branch == 'main' &&
        github.event.workflow_run.head_repository.full_name == github.repository)
@@ -38,9 +41,11 @@ jobs:
       actions: write # dispatch mda-categorize.yml
 
     steps:
+      # Always take scripts from main so this workflow revision never runs branch code with the secret.
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          ref: main
           persist-credentials: false
 
       - name: Setup Node.js
