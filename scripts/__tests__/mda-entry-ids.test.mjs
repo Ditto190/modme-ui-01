@@ -5,12 +5,15 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   EntryIdsError,
+  IN_FILTER_HEADERS_RESERVE_BYTES,
+  IN_FILTER_ORIGIN_EXAMPLE,
   MAX_ENTRY_IDS,
   MAX_IDS_PER_IN_CHUNK,
   MAX_IN_FILTER_URL_BYTES,
   TAXONOMY_IN_FILTER_BASE,
   chunkIdsForInFilter,
   estimateInFilterUrlBytes,
+  inFilterUrlBudget,
   missingEntryIds,
   parseEntryIds,
 } from "../lib/mda-entry-ids.mjs";
@@ -18,9 +21,21 @@ import {
 const SCRIPT = resolve(dirname(fileURLToPath(import.meta.url)), "../mda-categorize.mjs");
 const A = "0b6f3c2e-1d4a-4f5b-9c8d-7e6f5a4b3c2d";
 const B = "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d";
+const URL_BUDGET = inFilterUrlBudget();
 
 function uuid(n) {
   return `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
+}
+
+function assertChunksPreserve(ids, chunks) {
+  assert.deepEqual(chunks.flat(), ids);
+  for (const c of chunks) {
+    assert.ok(c.length <= MAX_IDS_PER_IN_CHUNK);
+    assert.ok(
+      estimateInFilterUrlBytes(c) <= URL_BUDGET,
+      `chunk of ${c.length} estimated ${estimateInFilterUrlBytes(c)} > budget ${URL_BUDGET}`
+    );
+  }
 }
 
 describe("parseEntryIds", () => {
@@ -65,58 +80,44 @@ describe("missingEntryIds", () => {
 
 describe("chunkIdsForInFilter", () => {
   it("returns [] for 0 IDs", () => {
-    assert.deepEqual(chunkIdsForInFilter([]), []);
+    const chunks = chunkIdsForInFilter([]);
+    assert.deepEqual(chunks, []);
+    assertChunksPreserve([], chunks);
   });
 
   it("keeps a single ID in one chunk", () => {
-    assert.deepEqual(chunkIdsForInFilter([A]), [[A]]);
-    assert.ok(estimateInFilterUrlBytes([A]) <= MAX_IN_FILTER_URL_BYTES);
+    const ids = [A];
+    const chunks = chunkIdsForInFilter(ids);
+    assert.deepEqual(chunks, [[A]]);
+    assertChunksPreserve(ids, chunks);
   });
 
-  it("keeps 500 UUIDs under the URL budget by splitting before the 16 KB limit", () => {
+  it("keeps 500 UUIDs under the encoded URL budget by splitting", () => {
     const ids = Array.from({ length: 500 }, (_, i) => uuid(i));
     const chunks = chunkIdsForInFilter(ids);
     assert.ok(chunks.length >= 2, `expected URL-driven split, got ${chunks.length} chunk(s)`);
-    assert.equal(chunks.flat().length, 500);
-    for (const c of chunks) {
-      assert.ok(c.length <= MAX_IDS_PER_IN_CHUNK);
-      assert.ok(
-        estimateInFilterUrlBytes(c) <= MAX_IN_FILTER_URL_BYTES,
-        `chunk of ${c.length} estimated ${estimateInFilterUrlBytes(c)} bytes`
-      );
-    }
+    assertChunksPreserve(ids, chunks);
   });
 
-  it("splits 501 IDs into at least two chunks of ≤500", () => {
+  it("splits 501 IDs into at least two chunks of ≤500 and preserves IDs", () => {
     const ids = Array.from({ length: 501 }, (_, i) => uuid(i));
     const chunks = chunkIdsForInFilter(ids);
     assert.ok(chunks.length >= 2);
-    assert.ok(chunks.every((c) => c.length <= MAX_IDS_PER_IN_CHUNK));
-    assert.equal(chunks.flat().length, 501);
-    for (const c of chunks) {
-      assert.ok(estimateInFilterUrlBytes(c) <= MAX_IN_FILTER_URL_BYTES);
-    }
+    assertChunksPreserve(ids, chunks);
   });
 
   it("splits many long IDs so each chunk stays under the URL-length bound", () => {
-    // Long synthetic IDs (not UUIDs) exercise the byte budget without going through parseEntryIds.
     const long = Array.from({ length: 40 }, (_, i) => `long-id-${i}-` + "x".repeat(400));
-    const chunks = chunkIdsForInFilter(long, { maxIds: MAX_IDS_PER_IN_CHUNK, maxBytes: MAX_IN_FILTER_URL_BYTES });
+    const chunks = chunkIdsForInFilter(long);
     assert.ok(chunks.length >= 2, `expected several chunks, got ${chunks.length}`);
-    assert.equal(chunks.flat().length, 40);
-    for (const c of chunks) {
-      const bytes = estimateInFilterUrlBytes(c);
-      assert.ok(bytes <= MAX_IN_FILTER_URL_BYTES, `chunk bytes ${bytes}`);
-      assert.ok(c.length <= MAX_IDS_PER_IN_CHUNK);
-    }
+    assertChunksPreserve(long, chunks);
   });
 
   it("honours a tight maxIds even when the URL budget would allow more", () => {
     const ids = Array.from({ length: 10 }, (_, i) => uuid(i));
-    assert.deepEqual(
-      chunkIdsForInFilter(ids, { maxIds: 3 }).map((c) => c.length),
-      [3, 3, 3, 1]
-    );
+    const chunks = chunkIdsForInFilter(ids, { maxIds: 3 });
+    assert.deepEqual(chunks.map((c) => c.length), [3, 3, 3, 1]);
+    assertChunksPreserve(ids, chunks);
   });
 
   it("throws when a single ID alone exceeds the URL budget", () => {
@@ -124,9 +125,18 @@ describe("chunkIdsForInFilter", () => {
     assert.throws(() => chunkIdsForInFilter([huge]), EntryIdsError);
   });
 
-  it("estimate matches base + joined length", () => {
-    assert.equal(estimateInFilterUrlBytes([]), TAXONOMY_IN_FILTER_BASE.length);
-    assert.equal(estimateInFilterUrlBytes([A, B]), TAXONOMY_IN_FILTER_BASE.length + A.length + 1 + B.length);
+  it("estimate uses URLSearchParams encoding and leaves header reserve", () => {
+    assert.equal(IN_FILTER_HEADERS_RESERVE_BYTES, 2048);
+    assert.equal(URL_BUDGET, MAX_IN_FILTER_URL_BYTES - IN_FILTER_HEADERS_RESERVE_BYTES);
+    const one = estimateInFilterUrlBytes([A]);
+    const filter = "in." + encodeURIComponent("(" + A + ")");
+    assert.equal(one, IN_FILTER_ORIGIN_EXAMPLE.length + TAXONOMY_IN_FILTER_BASE.length + filter.length);
+    // 400 encoded UUIDs exceed the path/query budget once headers are reserved.
+    const ids400 = Array.from({ length: 400 }, (_, i) => uuid(i));
+    assert.ok(estimateInFilterUrlBytes(ids400) > URL_BUDGET);
+    const chunks = chunkIdsForInFilter(ids400);
+    assert.ok(chunks.length >= 2);
+    assertChunksPreserve(ids400, chunks);
   });
 });
 

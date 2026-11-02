@@ -35,14 +35,18 @@ jobs:
        github.event.workflow_run.head_branch == 'main' &&
        github.event.workflow_run.head_repository.full_name == github.repository)
     # Service-role secret is gated by a protected environment (deployment branch: main).
+    # Older workflow revisions on feature branches can still be dispatched from the Actions UI;
+    # only a main-restricted environment branch policy blocks those (pending DT — see env-gate thread).
     environment: mda-pipeline
     permissions:
       contents: read # checkout
 
     steps:
+      # Always take scripts from main so this workflow revision never runs branch code with the secret.
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          ref: main
           persist-credentials: false
 
       - name: Setup Node.js

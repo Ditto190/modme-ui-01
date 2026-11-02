@@ -6,7 +6,7 @@
  *   otherwise throws EntryIdsError. Malformed input never falls back to the default batch.
  *
  * Targeted `.in()` queries are chunked so each request stays within Supabase/PostgREST
- * limits (≤500 IDs and ≤16 KB for the request URL).
+ * limits (≤500 IDs and ≤16 KB for the full request URL including origin and auth headers).
  */
 
 export const MAX_ENTRY_IDS = 500;
@@ -14,13 +14,23 @@ export const MAX_ENTRY_IDS = 500;
 export const MAX_IDS_PER_IN_CHUNK = 500;
 /**
  * Supabase documents REST failures when the URL and headers exceed ~16 KB.
- * We budget the whole request URL (path + query) under this limit.
+ * This is the total budget for origin + path/query + auth headers.
  */
 export const MAX_IN_FILTER_URL_BYTES = 16 * 1024;
+/**
+ * Reserve for `apikey` + `Authorization: Bearer <jwt>` (and similar) headers.
+ * Path/query + origin must fit in MAX_IN_FILTER_URL_BYTES - this reserve.
+ */
+export const IN_FILTER_HEADERS_RESERVE_BYTES = 2048;
+/** Typical hosted Supabase origin length used when estimating the absolute URL. */
+export const IN_FILTER_ORIGIN_EXAMPLE = "https://abcdefghijklmnopqrst.supabase.co";
 
-/** Base path+query for the taxonomy select, with an empty `id=in.()` filter. */
+/**
+ * Path + query prefix for the taxonomy select. The `id` filter value is appended
+ * after encoding as `in.%28...%29` (supabase-js v2 URLSearchParams serialization).
+ */
 export const TAXONOMY_IN_FILTER_BASE =
-  "/rest/v1/inbox_entries?select=id%2Cextracted_text%2Ctitle%2Csummary%2Ctags%2Cseverity&status=eq.indexed&id=in.()";
+  "/rest/v1/inbox_entries?select=id%2Cextracted_text%2Ctitle%2Csummary%2Ctags%2Cseverity&status=eq.indexed&id=";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -62,24 +72,40 @@ export function missingEntryIds(requested, rows) {
 }
 
 /**
- * Estimate the request URL byte length for `id=in.(...)` against TAXONOMY_IN_FILTER_BASE.
- * UUIDs and commas are unreserved in query strings, so length === byte length (UTF-8).
+ * Estimate absolute request URL bytes for `id=in.(...)` as supabase-js v2.108.2
+ * serializes it via URLSearchParams (commas → %2C, parentheses → %28/%29).
+ * Does not include header bytes; callers compare against
+ * MAX_IN_FILTER_URL_BYTES - IN_FILTER_HEADERS_RESERVE_BYTES.
  */
-export function estimateInFilterUrlBytes(ids, base = TAXONOMY_IN_FILTER_BASE) {
-  if (!ids.length) return base.length;
-  // id=in.() already has the empty parens; insert comma-joined ids between them.
-  return base.length + ids.join(",").length;
+export function estimateInFilterUrlBytes(
+  ids,
+  {
+    base = TAXONOMY_IN_FILTER_BASE,
+    origin = IN_FILTER_ORIGIN_EXAMPLE,
+  } = {}
+) {
+  const filter = "in." + encodeURIComponent("(" + ids.join(",") + ")");
+  return origin.length + base.length + filter.length;
+}
+
+/** Max bytes allowed for origin + path/query so headers still fit under 16 KB. */
+export function inFilterUrlBudget(
+  maxBytes = MAX_IN_FILTER_URL_BYTES,
+  headerReserve = IN_FILTER_HEADERS_RESERVE_BYTES
+) {
+  return maxBytes - headerReserve;
 }
 
 /**
- * Split IDs into chunks of ≤ maxIds whose estimated request URL stays ≤ maxBytes.
- * Empty input -> []. A single ID that alone exceeds maxBytes throws.
+ * Split IDs into chunks of ≤ maxIds whose estimated absolute URL stays within
+ * the path/query budget (16 KB total minus header reserve).
+ * Empty input -> []. A single ID that alone exceeds the budget throws.
  */
 export function chunkIdsForInFilter(
   ids,
   {
     maxIds = MAX_IDS_PER_IN_CHUNK,
-    maxBytes = MAX_IN_FILTER_URL_BYTES,
+    maxBytes = inFilterUrlBudget(),
     estimate = estimateInFilterUrlBytes,
   } = {}
 ) {
@@ -95,12 +121,12 @@ export function chunkIdsForInFilter(
       current = [id];
       if (estimate(current) > maxBytes) {
         throw new EntryIdsError(
-          `ENTRY_ID produces an .in() filter larger than ${maxBytes} bytes`
+          `ENTRY_ID produces an .in() filter larger than ${maxBytes} bytes (URL budget)`
         );
       }
     } else if (!current.length && overBytes) {
       throw new EntryIdsError(
-        `ENTRY_ID produces an .in() filter larger than ${maxBytes} bytes`
+        `ENTRY_ID produces an .in() filter larger than ${maxBytes} bytes (URL budget)`
       );
     } else {
       current = candidate;
