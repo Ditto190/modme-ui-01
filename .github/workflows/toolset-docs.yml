@@ -253,9 +253,11 @@ jobs:
       contents: write # push to gh-pages
 
     steps:
+      # commit-docs already pushed to main; build from that tip (not github.sha of this run).
       - name: Checkout repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          ref: main
           persist-credentials: false
       
       - name: Setup Node.js
@@ -281,7 +283,7 @@ jobs:
 
   notify-completion:
     name: Notify Documentation Updated
-    needs: [generate-toolset-docs, publish-docs]
+    needs: [generate-toolset-docs, commit-docs, publish-docs]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     # Report upstream results; skip entirely when generation never ran (guard not met).
@@ -293,6 +295,7 @@ jobs:
         env:
           TRIGGER: ${{ github.event_name }}
           GENERATE_STATUS: ${{ needs.generate-toolset-docs.result }}
+          COMMIT_STATUS: ${{ needs.commit-docs.result }}
           PUBLISH_STATUS: ${{ needs.publish-docs.result }}
         run: |
           {
@@ -300,8 +303,10 @@ jobs:
             echo ""
             echo "**Trigger**: ${TRIGGER}"
             echo "**Generate**: ${GENERATE_STATUS}"
+            echo "**Commit**: ${COMMIT_STATUS}"
             echo "**Publish**: ${PUBLISH_STATUS}"
-            if [ "${PUBLISH_STATUS}" = "success" ]; then
+            # Docs land at commit-docs (before validate/publish); show the list even if publish fails.
+            if [ "${COMMIT_STATUS}" = "success" ]; then
               echo ""
               echo "### Updated Files"
               echo "- Toolset reference docs"
