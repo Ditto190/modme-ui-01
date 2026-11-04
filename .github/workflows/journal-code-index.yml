@@ -33,9 +33,7 @@ on:
         description: "Embedding model"
         required: false
         default: "Xenova/all-MiniLM-L6-v2"
-  schedule:
-    # Full reindex weekly
-    - cron: "0 3 * * 0"
+  # schedule trigger dropped (DT event-only rule, approved 2026-10-23)
 
 env:
   PYTHON_VERSION: "3.12"
