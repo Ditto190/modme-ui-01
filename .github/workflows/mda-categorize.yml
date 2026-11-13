@@ -34,9 +34,10 @@ jobs:
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.head_branch == 'main' &&
        github.event.workflow_run.head_repository.full_name == github.repository)
-    # Service-role secret is gated by a protected environment (deployment branch: main).
-    # Older workflow revisions on feature branches can still be dispatched from the Actions UI;
-    # only a main-restricted environment branch policy blocks those (pending DT — see env-gate thread).
+    # Service-role secret is gated by the protected `mda-pipeline` environment
+    # (deployment branch policy: main). DT moved the secret into that environment
+    # on 2026-11-13 (approval 23:45 AEDT). Feature-branch dispatches of older
+    # workflow revisions are blocked by the environment branch policy.
     environment: mda-pipeline
     permissions:
       contents: read # checkout

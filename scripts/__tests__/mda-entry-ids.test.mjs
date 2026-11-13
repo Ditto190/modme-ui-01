@@ -1,4 +1,4 @@
-import { describe, it } from "node:test";
+import { describe, it, after } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
@@ -159,10 +159,14 @@ describe("mda-categorize.mjs with malformed ENTRY_IDS", () => {
 });
 
 describe("mda-categorize.mjs targeted selection (caller-level)", () => {
+  let tmp;
+  after(() => {
+    if (tmp) fs.rmSync(tmp, { recursive: true, force: true });
+  });
   it("applies .in(id, chunk) so only requested indexed rows are processed", () => {
     const C = "2c3d4e5f-6a7b-4c8d-9e0f-1a2b3c4d5e6f"; // unrelated indexed
     const D = "3d4e5f6a-7b8c-4d9e-0f1a-2b3c4d5e6f7a"; // requested but not indexed
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "mda-target-"));
+    tmp = fs.mkdtempSync(path.join(os.tmpdir(), "mda-target-"));
     const mockFile = path.join(tmp, "supabase-mock.mjs");
     const hookFile = path.join(tmp, "resolve-hook.mjs");
     const preloadFile = path.join(tmp, "preload.mjs");
