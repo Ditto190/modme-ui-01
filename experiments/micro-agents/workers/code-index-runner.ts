@@ -4,7 +4,6 @@
 import { createHash } from 'node:crypto';
 import { indexTypeScriptPaths, type CodeChunk } from './ast-indexer.js';
 import { greptimeClient } from '../models/greptimedb_client.js';
-import { pipeline } from '@xenova/transformers';
 
 export interface CodeIndexResult {
   indexed: number;
@@ -13,9 +12,11 @@ export interface CodeIndexResult {
   greptime_ids: string[];
 }
 
-async function embedText(extractor: Awaited<ReturnType<typeof pipeline>>, text: string): Promise<number[]> {
-  const fn = extractor as (t: string, o: Record<string, unknown>) => Promise<{ data: Float32Array }>;
-  const output = await fn(text, { pooling: 'mean', normalize: true });
+async function embedText(
+  extractor: (t: string, o: Record<string, unknown>) => Promise<{ data: Float32Array }>,
+  text: string
+): Promise<number[]> {
+  const output = await extractor(text, { pooling: 'mean', normalize: true });
   return Array.from(output.data);
 }
 
@@ -38,9 +39,10 @@ export async function runCodeIndex(options: {
     return { indexed: 0, skipped: 0, chunks, greptime_ids };
   }
 
-  const extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
+  const { pipeline } = await import('@xenova/transformers');
+  const extractor = (await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
     quantized: true,
-  });
+  })) as (t: string, o: Record<string, unknown>) => Promise<{ data: Float32Array }>;
 
   await greptimeClient.init();
 

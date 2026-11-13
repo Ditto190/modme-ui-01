@@ -152,6 +152,17 @@ E2E smoke doc: [`e2e/worktree-smoke/README.md`](../e2e/worktree-smoke/README.md)
 
 CI job: `.github/workflows/ci.yml` → `worktree-smoke` (continue-on-error, paths-filtered on `scripts/` + `e2e/`).
 
+### Entire + Dolt agent data plane (ADR-0013)
+
+```powershell
+yarn entire:install          # Scoop/Go + enable Cursor (local-only)
+yarn dolt:up                 # shared sql-server :3307
+yarn dolt:catalog:init
+yarn km:status               # Entire + Dolt + Beads + inbox
+```
+
+Session start runs `catalog-cms-eval` builders preflight. See [`docs/KNOWLEDGE_QUICKSTART.md`](KNOWLEDGE_QUICKSTART.md).
+
 ---
 
 ## Yarn scripts reference
@@ -164,3 +175,6 @@ CI job: `.github/workflows/ci.yml` → `worktree-smoke` (continue-on-error, path
 | `yarn agent:audit` | Session audit markdown report |
 | `yarn agent:session:start` | PowerShell session start |
 | `yarn agent:session:finish` | PowerShell session finish + vibe finish |
+| `yarn entire:status` | Entire CLI status |
+| `yarn dolt:status` | Dolt + sql-server + catalog |
+| `yarn km:status` | Aggregate agent/KM plane health |

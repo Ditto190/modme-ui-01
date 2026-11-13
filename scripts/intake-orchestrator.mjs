@@ -36,26 +36,44 @@ async function runStep(label, script, scriptArgs = []) {
 }
 
 async function runStepWithPipeline(label, pipeline, mode, script, scriptArgs = []) {
-  const bridge = await import("./telemetry/lib/telemetry-bridge.mjs");
+  let run = { id: null };
+  let bridge = null;
   const started = Date.now();
-  const run = await bridge.openPipelineRun({
-    pipeline,
-    mode,
-    triggerSource: "intake-orchestrator",
-    metadata: { label },
-    dryRun: DRY_RUN,
-  });
+  try {
+    bridge = await import("./telemetry/lib/telemetry-bridge.mjs");
+    run = await bridge.openPipelineRun({
+      pipeline,
+      mode,
+      triggerSource: "intake-orchestrator",
+      metadata: { label },
+      dryRun: DRY_RUN,
+    });
+  } catch (bridgeErr) {
+    console.warn(
+      `intake-orchestrator: telemetry open advisory (${label}):`,
+      bridgeErr instanceof Error ? bridgeErr.message : bridgeErr
+    );
+  }
 
   console.log(`\n== ${label} ==`);
   const code = runNode(script, scriptArgs);
 
-  await bridge.closePipelineRun({
-    pipelineRunId: run.id,
-    status: code === 0 ? "completed" : "failed",
-    stats: { duration_ms: Date.now() - started, label },
-    errorMessage: code !== 0 ? `${label} exit ${code}` : null,
-    dryRun: DRY_RUN,
-  });
+  if (bridge?.closePipelineRun && run?.id) {
+    try {
+      await bridge.closePipelineRun({
+        pipelineRunId: run.id,
+        status: code === 0 ? "completed" : "failed",
+        stats: { duration_ms: Date.now() - started, label },
+        errorMessage: code !== 0 ? `${label} exit ${code}` : null,
+        dryRun: DRY_RUN,
+      });
+    } catch (closeErr) {
+      console.warn(
+        `intake-orchestrator: telemetry close advisory (${label}):`,
+        closeErr instanceof Error ? closeErr.message : closeErr
+      );
+    }
+  }
 
   if (code !== 0) {
     console.error(`intake-orchestrator: ${label} failed (exit ${code})`);
@@ -64,7 +82,21 @@ async function runStepWithPipeline(label, pipeline, mode, script, scriptArgs = [
 }
 
 async function main() {
-  loadRootEnv({ fileWins: true });
+  if (process.env.MODME_INTAKE_SKIP_DOTENV !== "1") {
+    loadRootEnv({ fileWins: true });
+  }
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  if (!url || !serviceKey) {
+    console.error(
+      "intake-orchestrator: missing Supabase env — set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in root .env"
+    );
+    console.error(
+      "  Diagnose: yarn supabase:env:diagnose   (KM/Dolt is a separate plane — yarn km:status)"
+    );
+    process.exit(1);
+  }
 
   let pipelineRunId = null;
   let closePipelineRun = null;

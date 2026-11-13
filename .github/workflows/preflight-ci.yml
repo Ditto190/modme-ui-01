@@ -17,6 +17,8 @@ on:
       - dev
     paths-ignore:
       - "LICENSE"
+  merge_group:
+    types: [checks_requested]
 
 concurrency:
   group: preflight-ci-${{ github.workflow }}-${{ github.ref }}

@@ -49,15 +49,16 @@ function assertPathExists(relativeOrAbsolute, context) {
   if (normalized.includes("${")) {
     return;
   }
-  const absolute = normalized.startsWith("/") || /^[A-Za-z]:/.test(normalized)
-    ? normalized
-    : join(ROOT, normalized);
+  const absolute =
+    normalized.startsWith("/") || /^[A-Za-z]:/.test(normalized)
+      ? normalized
+      : join(ROOT, normalized);
   if (!existsSync(absolute)) {
     const isOptionalArtifact =
       /[/\\]dist[/\\]/.test(normalized) || /[/\\]node_modules[/\\]/.test(normalized);
     if (isOptionalArtifact) {
       console.warn(
-        `launch-json-check: warning — build output not present yet for ${context}: ${relativeOrAbsolute}`,
+        `launch-json-check: warning — build output not present yet for ${context}: ${relativeOrAbsolute}`
       );
       return;
     }
@@ -100,7 +101,7 @@ for (const config of configurations) {
     const taskLabels = new Set((tasks.tasks ?? []).map((task) => task.label));
     if (!taskLabels.has(config.preLaunchTask)) {
       fail(
-        `Configuration "${config.name}" references missing preLaunchTask "${config.preLaunchTask}"`,
+        `Configuration "${config.name}" references missing preLaunchTask "${config.preLaunchTask}"`
       );
     }
   }
@@ -135,10 +136,11 @@ if (requireManifestSync) {
     assertPathExists(app.cwd, `manifest app "${app.id}" cwd`);
 
     const matchingConfig = configurations.find((config) => config.name === app.name);
-    if (matchingConfig?.cwd && !stripVars(matchingConfig.cwd).endsWith(app.cwd.replaceAll("\\", "/"))) {
-      fail(
-        `Configuration "${app.name}" cwd does not match manifest cwd "${app.cwd}"`,
-      );
+    if (
+      matchingConfig?.cwd &&
+      !stripVars(matchingConfig.cwd).endsWith(app.cwd.replaceAll("\\", "/"))
+    ) {
+      fail(`Configuration "${app.name}" cwd does not match manifest cwd "${app.cwd}"`);
     }
 
     if (app.port && matchingConfig) {
@@ -149,7 +151,7 @@ if (requireManifestSync) {
       const configuredPort = envPort ?? argsPort;
       if (configuredPort && String(configuredPort) !== String(app.port)) {
         fail(
-          `Configuration "${app.name}" port ${configuredPort} does not match manifest port ${app.port}`,
+          `Configuration "${app.name}" port ${configuredPort} does not match manifest port ${app.port}`
         );
       }
     }
@@ -159,6 +161,16 @@ if (requireManifestSync) {
   for (const requiredTask of manifest.requiredTasks ?? []) {
     if (!taskLabels.has(requiredTask)) {
       fail(`Missing required task from manifest: ${requiredTask}`);
+    }
+  }
+
+  const forgeCoreTask = (tasks.tasks ?? []).find((t) => t.label === "next-forge: dev core");
+  if (forgeCoreTask) {
+    const deps = forgeCoreTask.dependsOn ?? [];
+    if (!deps.includes("modme: KM data plane up")) {
+      fail(
+        'Task "next-forge: dev core" must dependOn "modme: KM data plane up" (KM soft bootstrap)'
+      );
     }
   }
 
@@ -172,5 +184,5 @@ if (requireManifestSync) {
 
 ok(
   `Validated ${configurations.length} configurations, ${compounds.length} compounds` +
-    (requireManifestSync ? " (manifest sync enforced)" : ""),
+    (requireManifestSync ? " (manifest sync enforced)" : "")
 );

@@ -11,6 +11,8 @@ system-prompt:
     - .github/copilot-instructions.md
     - docs/multi-agent-worktrees.md
     - docs/copilot-workspace-orchestration.md
+    - docs/devops/agent-review-routing.md
+    - .cursor/bugbot/MERGE-CHAMPION.md
 
 scripts:
   session.create:
@@ -20,6 +22,8 @@ scripts:
   run:
     bootstrap:
       command: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/copilot-workspace/bootstrap.ps1
+    session:review:
+      command: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/agent-session-start.ps1 -AgentRole review -BootstrapIntelligence -SkipBeads
     preflight:fast:
       command: node scripts/preflight.mjs --profile fast
     preflight:env:
@@ -34,6 +38,8 @@ scripts:
       command: yarn dev:forge:storybook
     agent:status:
       command: yarn agent:status
+    polis:route:
+      command: node scripts/lib/polis-router.mjs --all --labels review:forge,review:generative
     workbench:
       command: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/copilot-workspace/run-workbench.ps1
     builders:ensure:

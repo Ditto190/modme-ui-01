@@ -105,7 +105,8 @@ docs/devops/reports/
 .lean-ctx-id
 
 # agenttrace
-.agenttrace/
+.agent-resource.lock
+debug-*.log
 /agenttrace-report.*
 /agenttrace-baseline.*
 
@@ -126,10 +127,21 @@ quality/
 
 # Beads / Dolt files (added by bd init)
 .dolt/
+.dolt-data/
 .beads/embeddeddolt/
 .beads/interactions.jsonl
+.beads/backup-pre-*.jsonl
+.beads/backup/
+.beads/backup-store/
 *.db
 .beads-credential-key
 .beads/proxieddb/
+
+# Entire local overrides (settings.json may be committed)
+.entire/settings.local.json
+.entire/tmp/
+.entire/logs/
+.entire/metadata/
+.entire/current_session
 
 /generated/prisma

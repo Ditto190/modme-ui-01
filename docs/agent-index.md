@@ -38,7 +38,12 @@ Single onboarding map for Cursor agents, cloud agents, and Copilot. Run `/init` 
 | `yarn pre-commit:check` | Staged-aware hook checks |
 | `yarn agent:tui` / `yarn agent:status` / `yarn agent:audit` | Agent terminal orchestration |
 | `yarn agent:session:start` / `yarn agent:session:finish` | Session envelope + beads |
+| `yarn entire:install` / `entire:status` / `entire:doctor` | Entire session capture |
+| `yarn dolt:up` / `dolt:status` / `dolt:catalog:init` | Local Dolt agent plane |
+| `yarn km:status` | Entire + Dolt + Beads + inbox health |
 | `.\scripts\new-agent-worktree.ps1` | Isolated feature worktrees |
+
+KM entrypoint: [`docs/KNOWLEDGE_QUICKSTART.md`](KNOWLEDGE_QUICKSTART.md) · ADR: [`0013-dolt-beads-entire-agent-data-plane.md`](architecture/decisions/0013-dolt-beads-entire-agent-data-plane.md)
 
 ### Codebase deep docs (`docs/codebase/`)
 

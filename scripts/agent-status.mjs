@@ -56,8 +56,15 @@ function doctorSummary() {
   }
   const result = spawnSync(
     "powershell.exe",
-    ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", resolve(ROOT, "scripts/worktree-doctor.ps1"), "-Quiet"],
-    { cwd: ROOT, encoding: "utf8" },
+    [
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      resolve(ROOT, "scripts/worktree-doctor.ps1"),
+      "-Quiet",
+    ],
+    { cwd: ROOT, encoding: "utf8" }
   );
   return {
     ok: result.status === 0,
@@ -80,6 +87,24 @@ function activeSession() {
   return null;
 }
 
+function kmSummary() {
+  const statusScript = resolve(ROOT, "scripts/km-status.mjs");
+  if (!existsSync(statusScript)) {
+    return { ok: false, skipped: "km-status.mjs missing" };
+  }
+  const result = spawnSync(process.execPath, [statusScript], {
+    cwd: ROOT,
+    encoding: "utf8",
+    timeout: 120_000,
+  });
+  const out = `${result.stdout || ""}${result.stderr || ""}`.trim();
+  return {
+    ok: result.status === 0,
+    exitCode: result.status ?? 1,
+    output: out.slice(0, 1500),
+  };
+}
+
 const payload = {
   at: new Date().toISOString(),
   repoRoot: ROOT,
@@ -89,6 +114,7 @@ const payload = {
   doctor: doctorSummary(),
   session: activeSession(),
   beads: process.env.BEADS_ISSUE_ID ?? null,
+  km: isCi ? { ok: true, skipped: "ci-soft" } : kmSummary(),
 };
 
 if (isCi) {
@@ -110,7 +136,17 @@ if (asJson) {
   }
   const p = payload.ports;
   if (Object.keys(p).length > 0) {
-    console.log("ports:", Object.entries(p).map(([k, v]) => `${k}=${v}`).join(" "));
+    console.log(
+      "ports:",
+      Object.entries(p)
+        .map(([k, v]) => `${k}=${v}`)
+        .join(" ")
+    );
   }
   console.log(`doctor: ${payload.doctor.ok ? "ok" : "issues"}`);
+  if (payload.km) {
+    console.log(
+      `km: ${payload.km.skipped ? `skipped (${payload.km.skipped})` : payload.km.ok ? "ok" : "partial/fail"}`
+    );
+  }
 }

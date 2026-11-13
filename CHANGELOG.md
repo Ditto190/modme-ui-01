@@ -37,10 +37,13 @@ Skip changelog updates for typo-only edits, vendored mirror refreshes with no lo
 ```markdown
 ### Added
 
+- (ci) Agent review routing � `agent-codeowners`, role-review workflows, Issue template, and `docs/devops/agent-review-routing.md` 
 - (scope) Short description (#PR)
 
 ### Changed
 
+- (repo) Update Polis routing docs/tests and leftover agent settings for dolt/beads worktree
+- (repo) Expand workflow-gates coverage-map/registry schemas and `pattern:uw` / `pattern:e2e` verify scripts for UW non-migrate catalogue
 - (scope) Short description
 
 ### Fixed
@@ -62,16 +65,29 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ## [Unreleased]
 
+### Added
+
+- (ci) Agent review routing � `agent-codeowners`, role-review workflows, Issue template, and `docs/devops/agent-review-routing.md` 
+- (repo) UniversalWorkbench non-migrate pattern catalogue — inventory, six `nonMigrate` registry patterns, `yarn pattern:uw` / `pattern:coverage` / `pattern:e2e` gates, `--ast-only` code-index promote path (`docs/migration/uw-non-migrate-inventory.md`)
+- (repo) Agent data plane — Entire CLI (`yarn entire:*`), Dolt sql-server (`yarn dolt:*`), KM hub (`yarn km:status`, `docs/KNOWLEDGE_QUICKSTART.md`, `docs/knowledge/CATALOG.md`), ADR-0013 superseding ADR-0010
+- (repo) KM session startup wiring — `scripts/km-session-bootstrap.ps1` (`yarn km:bootstrap`), session start + worktree setup + VS Code tasks/launch (`Full Stack: Forge Core + Agent Data Plane`, soft `dependsOn` on `next-forge: dev core`); ADR-0014; beads `modme-awz`; runbook `docs/monorepo/km-agent-data-plane-startup.md`
+- (repo) KM auto-start proof — `scripts/lib/worktree-bootstrap.ps1` (Copilot), mprocs `km_bootstrap` autostart, `new-agent-worktree` KM call, contract tests `km-startup-wiring` + `km:bootstrap:smoke`, intake preflight (Supabase ≠ KM)
+
 ### Changed
 
+- (repo) Update Polis routing docs/tests and leftover agent settings for dolt/beads worktree
+- (repo) Expand workflow-gates coverage-map/registry schemas and `pattern:uw` / `pattern:e2e` verify scripts for UW non-migrate catalogue
 - (repo) Merge `github/main` into promotion branch `feature/cursor/promote-dev-to-main` to resolve dual-branch drift before promoting `dev` to `main`
 
 ### Fixed
 
 - (next-forge) Apply Ultracite/Biome format fixes required for promote-dev-to-main pre-push verify
+- (repo) Beads auto-backup Error 1105 — disable broken `.beads/backup` destination (`backup.enabled: false`); see `docs/beads-workflow.md` troubleshooting
+- (repo) `intake:orchestrate` — fail-fast Supabase env preflight; telemetry `pipeline_runs` failures are advisory (not fatal)
 
 ### Added
 
+- (ci) Agent review routing � `agent-codeowners`, role-review workflows, Issue template, and `docs/devops/agent-review-routing.md` 
 - (repo) Builder orchestration layer — `scripts/builders.manifest.json`, SWC ([swc.rs](https://swc.rs)), Vite ([vite](https://github.com/vitejs/vite)), Dolt catalog stub ([dolt](https://github.com/dolthub/dolt)); Copilot `builders:*` Run scripts
 - (repo) Copilot workspace + builder incident runbook — `docs/runbooks/copilot-workspace-builder-incident.md`
 - (repo) GitHub Copilot App workspace orchestration — `.github/github-app.yml` lifecycle scripts, `.worktreeinclude`, `scripts/copilot-workspace/`, portable `.github/hooks/hooks.json`, and `docs/copilot-workspace-orchestration.md`
@@ -115,6 +131,8 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
+- (repo) Update Polis routing docs/tests and leftover agent settings for dolt/beads worktree
+- (repo) Expand workflow-gates coverage-map/registry schemas and `pattern:uw` / `pattern:e2e` verify scripts for UW non-migrate catalogue
 - (scripts) Null-safe git output handling in `install-git-hooks.ps1` and `repo-alignment-doctor.ps1` (PR #91 review)
 - (scripts) repo-alignment doctor accepts `github` remote when `origin` is the GitLab mirror
 - (GenerativeUI) Agent-server WebSocket timestamps aligned to Unix milliseconds to match `@repo/schemas` golden contract
@@ -169,6 +187,8 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ### Changed
 
+- (repo) Update Polis routing docs/tests and leftover agent settings for dolt/beads worktree
+- (repo) Expand workflow-gates coverage-map/registry schemas and `pattern:uw` / `pattern:e2e` verify scripts for UW non-migrate catalogue
 - (ci) Worktree bootstrap (`setup-worktree-windows.ps1`, `setup-worktree-unix.sh`, `new-agent-worktree.ps1`) auto-installs git pre-commit hooks
 - (next-forge) Replace Clerk with Auth.js credentials in `@repo/auth`; replace Neon adapter with Supabase local Postgres + Prisma
 - (docs/ci) Post-restart agent tooling validation: lean-ctx 3.7.5, skills-sh MCP, global skills, changelog-check CI â€” all verified; installed `internal-comms` globally

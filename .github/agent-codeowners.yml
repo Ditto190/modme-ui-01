@@ -1,0 +1,70 @@
+# Agent CODEOWNERS — GitLab-style multi-approval rules for cloud agents.
+# SoT for path → role → required check. Humans are not required approvers.
+# Parser: scripts/lib/agent-codeowners.mjs
+
+version: 1
+
+roles:
+  forge:
+    label: review:forge
+    check: modme/agent-forge
+    required: true
+    citizen: forge-reviewer
+    paths:
+      - next-forge/**
+
+  generative:
+    label: review:generative
+    check: modme/agent-generative
+    required: true
+    citizen: generative-reviewer
+    paths:
+      - GenerativeUI_monorepo/**
+
+  devops:
+    label: review:devops
+    check: modme/agent-devops
+    required: true
+    citizen: devops-ci-champion
+    paths:
+      - .github/**
+      - scripts/**
+      - .githooks/**
+      - .gitlab/**
+      - .gitlab-ci.yml
+
+  security:
+    label: review:security
+    check: modme/agent-security
+    required: true
+    citizen: security-reviewer
+    paths:
+      - "**/auth/**"
+      - "**/supabase/**"
+      - "**/.env*"
+      - "**/SECURITY.md"
+      - next-forge/packages/database/**
+      - next-forge/packages/auth/**
+      - yarn.lock
+      - GenerativeUI_monorepo/yarn.lock
+      - next-forge/bun.lock
+
+  docs:
+    label: review:docs
+    check: modme/agent-docs
+    required: false
+    citizen: docs-reviewer
+    paths:
+      - docs/**
+      - "**/AGENTS.md"
+      - "**/README.md"
+      - CHANGELOG.md
+
+  merge:
+    label: review:merge
+    check: modme/agent-merge
+    required: true
+    citizen: bugbot-merge-champion
+    # Always matched after other roles resolve (dispatcher adds when any required role matched)
+    paths: []
+    always: true
