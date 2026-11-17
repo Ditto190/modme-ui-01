@@ -38,6 +38,6 @@
     "type-coverage": "^2.29.7",
     "typescript": "^5.9.2",
     "vite": "^6.0.7",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.11"
   }
 }
