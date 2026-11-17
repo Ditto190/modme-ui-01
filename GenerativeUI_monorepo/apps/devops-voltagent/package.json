@@ -20,7 +20,7 @@
 		"@voltagent/server-hono": "latest",
 		"ai": "^6.0.0",
 		"dotenv": "^16.4.5",
-		"zod": "^3.23.8"
+		"zod": "^4.6.6"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.8.1",
