@@ -17,7 +17,7 @@ __metadata:
     tsx: ^4.20.6
     typescript: ^5.9.2
     vitest: ^3.2.4
-    zod: ^3.25.7
+    zod: ^4.6.6
   languageName: unknown
   linkType: soft
 
@@ -41,7 +41,7 @@ __metadata:
     type-coverage: ^2.29.7
     typescript: ^5.9.2
     vitest: ^3.2.4
-    zod: ^3.25.7
+    zod: ^4.6.6
   languageName: unknown
   linkType: soft
 
@@ -56,7 +56,7 @@ __metadata:
     tsx: ^4.20.6
     typescript: ^5.9.2
     vitest: ^3.2.4
-    zod: ^3.25.7
+    zod: ^4.6.6
   languageName: unknown
   linkType: soft
 
@@ -90,7 +90,7 @@ __metadata:
     fastify: ^5.12.1
     typescript: ^5.9.2
     vitest: ^3.2.4
-    zod: ^3.25.7
+    zod: ^4.6.6
   languageName: unknown
   linkType: soft
 
@@ -121,7 +121,7 @@ __metadata:
     type-coverage: ^2.29.7
     typescript: ^5.9.2
     vitest: ^3.2.4
-    zod: ^3.25.7
+    zod: ^4.6.6
   languageName: unknown
   linkType: soft
 
@@ -170,7 +170,7 @@ __metadata:
     typescript: ^5.9.2
     vite: ^6.0.7
     vitest: ^3.2.4
-    zod: ^3.25.7
+    zod: ^4.6.6
   languageName: unknown
   linkType: soft
 
@@ -3408,15 +3408,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cssesc@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "cssesc@npm:3.0.0"
-  bin:
-    cssesc: bin/cssesc
-  checksum: 6bcfd898662671be15ae7827120472c5667afb3d7429f1f917737f3bf84c4176003228131b643ae74543f17a394446247df090c597bb9a728cce298606ed0aa7
-  languageName: node
-  linkType: hard
-
 "csstype@npm:^3.0.2, csstype@npm:^3.1.0":
   version: 3.1.3
   resolution: "csstype@npm:3.1.3"
@@ -3922,9 +3913,9 @@ __metadata:
   linkType: hard
 
 "fast-uri@npm:^3.0.0, fast-uri@npm:^3.0.1":
-  version: 3.1.7
-  resolution: "fast-uri@npm:3.1.7"
-  checksum: 8/2095554c1e48b5a772529175dfa8d3c2ca33a1db6c84abe1584f9c4c3337b62d8e4807ed60a806f85bb7635cb7acca6c66c0c642b867efc3ea4e20a0d6c40cbe
+  version: 3.1.9
+  resolution: "fast-uri@npm:3.1.9"
+  checksum: 8/4f882cff34cb1c4099b07285e5c7a628c62ff06d91f1a5b0aeb12d8ec002080bd2095ce5eec0855949d649dd8aeeff959a6f1db0f584f29b2e3e08fbb99d37fc
   languageName: node
   linkType: hard
 
@@ -4032,12 +4023,12 @@ __metadata:
   linkType: hard
 
 "follow-redirects@npm:^1.15.6":
-  version: 1.15.11
-  resolution: "follow-redirects@npm:1.15.11"
+  version: 1.16.3
+  resolution: "follow-redirects@npm:1.16.3"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: d301f430542520a54058d4aeeb453233c564aaccac835d29d15e050beb33f339ad67d9bddbce01739c5dc46a6716dbe3d9d0d5134b1ca203effa11a7ef092343
+  checksum: 8/5500c44e473b8eb8f85ce43703f6fa93ffe63a2943dfca479ead0f08c6ad756b75696e5b8a654446b01feb0e63dd0c4f0192a8e2049c43e523567e7a1835aff3
   languageName: node
   linkType: hard
 
@@ -5186,12 +5177,11 @@ __metadata:
   linkType: hard
 
 "postcss-selector-parser@npm:^6.1.1, postcss-selector-parser@npm:^6.1.2":
-  version: 6.1.4
-  resolution: "postcss-selector-parser@npm:6.1.4"
+  version: 6.1.6
+  resolution: "postcss-selector-parser@npm:6.1.6"
   dependencies:
-    cssesc: ^3.0.0
     util-deprecate: ^1.0.2
-  checksum: 8/6dac8996778480a4cd274d2588cccfd989f38c40853b7b83dc31c90ce6ba32e1e1b89811ad3beafdee72887fac9ddf9f1fca3876dc17467eed62d6a825d54bfb
+  checksum: 8/a2adb456032efca7e4abab82631038aad6b6759c71e4341575b35422d238398b71e2b1313c91d99bd79a201b46562fc09daa6196cff4dbefd0356a071639d72c
   languageName: node
   linkType: hard
 
@@ -6584,9 +6574,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.23.8, zod@npm:^3.24.2, zod@npm:^3.25.7":
+"zod@npm:^3.23.8, zod@npm:^3.24.2":
   version: 3.25.76
   resolution: "zod@npm:3.25.76"
   checksum: 5718ec35e3c40b600316c5b4c5e4976f7fee68151bc8f8d90ec18a469be9571f072e1bbaace10f1e85cf8892ea12d90821b200e980ab46916a6166a4260a983c
+  languageName: node
+  linkType: hard
+
+"zod@npm:^4.6.6":
+  version: 4.6.6
+  resolution: "zod@npm:4.6.6"
+  checksum: 8/9274ef2492f25549ade182f5142dff1093c7a9578152eb91a18d891f0b4a86445ac1b2dde37f457e749c1f8fba32f708a733c39017cf51a3bf18aebf294f5db6
   languageName: node
   linkType: hard

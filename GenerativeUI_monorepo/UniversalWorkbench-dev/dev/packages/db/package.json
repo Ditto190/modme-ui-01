@@ -24,7 +24,7 @@
     "drizzle-orm": "^0.32.2",
     "drizzle-zod": "^0.5.1",
     "postgres": "^3.4.7",
-    "zod": "^3.25.7"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "tsx": "^4.20.6",
