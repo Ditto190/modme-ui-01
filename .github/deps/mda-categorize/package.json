@@ -1,0 +1,8 @@
+{
+  "name": "mda-categorize-ci-deps",
+  "private": true,
+  "description": "Pinned runtime deps for .github/workflows/mda-categorize.yml (npm ci from this lockfile; version matches repo package-lock @supabase/supabase-js@2.108.2).",
+  "dependencies": {
+    "@supabase/supabase-js": "2.108.2"
+  }
+}

@@ -102,7 +102,7 @@
     "test:orchestration": "vitest run --config vitest.config.mjs --project orchestration",
     "test:scripts": "yarn test:orchestration && yarn test:knowledge-management && yarn test:scripts:python",
     "test:scripts:python": "python -m pytest scripts/tests -q",
-    "test:scripts:node": "node --test scripts/__tests__/issue-autotag.test.mjs",
+    "test:scripts:node": "node --test scripts/__tests__/issue-autotag.test.mjs scripts/__tests__/mda-entry-ids.test.mjs",
     "test:shell": "bats scripts/bats/",
     "test:knowledge-management": "vitest run --config vitest.config.mjs --project knowledge-management",
     "trunk:check": "trunk check --ci",
