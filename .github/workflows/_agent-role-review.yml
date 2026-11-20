@@ -1,0 +1,169 @@
+# Reusable role review — publishes check modme/agent-<role>
+# Called from agent-review-dispatch.yml (never pull_request_target).
+
+name: Agent role review
+
+on:
+  workflow_call:
+    inputs:
+      role:
+        description: Role id (forge|generative|devops|security|docs|merge)
+        required: true
+        type: string
+      skipped:
+        description: Publish skip-success (path did not match)
+        required: false
+        type: boolean
+        default: false
+      citizen:
+        description: Citizen card id
+        required: false
+        type: string
+        default: ""
+      check_name:
+        description: Required check name
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: read
+
+jobs:
+  review:
+    name: modme/agent-${{ inputs.role }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        if: ${{ !inputs.skipped }}
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Resolve citizen + prompt artifact
+        if: ${{ !inputs.skipped }}
+        id: prep
+        env:
+          ROLE: ${{ inputs.role }}
+          CITIZEN_IN: ${{ inputs.citizen }}
+          CHECK_IN: ${{ inputs.check_name }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/agent-review
+          CITIZEN="${CITIZEN_IN}"
+          if [ -z "$CITIZEN" ]; then
+            CITIZEN=$(awk -v role="$ROLE" '
+              $0 ~ "^  "role":" {inrole=1; next}
+              inrole && /^  [a-z]/ {exit}
+              inrole && /citizen:/ {print $2; exit}
+            ' .github/agent-codeowners.yml)
+          fi
+          CHECK="${CHECK_IN}"
+          if [ -z "$CHECK" ]; then
+            CHECK="modme/agent-${ROLE}"
+          fi
+          echo "citizen=${CITIZEN}" >> "$GITHUB_OUTPUT"
+          echo "check=${CHECK}" >> "$GITHUB_OUTPUT"
+          {
+            echo "# Agent review — role=${ROLE}"
+            echo ""
+            echo "- citizen: ${CITIZEN}"
+            echo "- check: ${CHECK}"
+            echo "- sha: ${GITHUB_SHA}"
+            echo "- event: ${GITHUB_EVENT_NAME}"
+            echo "- ref: ${GITHUB_REF}"
+            echo ""
+            echo "## Instructions"
+            echo "Run the citizen skills from data/agent-citizens/${CITIZEN}.yaml."
+            echo "Post findings as PR review comments; do not approve unless role=merge and policy allows."
+            echo "Merge Champion only: see .cursor/bugbot/MERGE-CHAMPION.md"
+          } > "artifacts/agent-review/${ROLE}-prompt.md"
+          STARTED=$(date +%s%3N)
+          echo "$STARTED" > artifacts/agent-review/started_ms
+          cat > artifacts/agent-review/trace.json <<EOF
+          {
+            "role": "${ROLE}",
+            "citizen": "${CITIZEN}",
+            "check": "${CHECK}",
+            "sha": "${GITHUB_SHA}",
+            "event": "${GITHUB_EVENT_NAME}",
+            "skipped": false,
+            "conclusion": "success",
+            "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+
+      - name: Role policy gate
+        if: ${{ !inputs.skipped }}
+        env:
+          ROLE: ${{ inputs.role }}
+        run: |
+          set -euo pipefail
+          case "$ROLE" in
+            forge|generative|devops|security|docs|merge) echo "role ok: $ROLE" ;;
+            *) echo "::error::Unknown role $ROLE"; exit 1 ;;
+          esac
+          if [ "$ROLE" = "merge" ]; then
+            echo "Merge lane: verify other modme/agent-* checks before Trunk enqueue (MERGE-CHAMPION)."
+          fi
+          echo "Agent role review gate passed for ${ROLE}."
+
+      - name: Finalize trace
+        if: ${{ !inputs.skipped }}
+        run: |
+          set -euo pipefail
+          STARTED=$(cat artifacts/agent-review/started_ms)
+          NOW=$(date +%s%3N)
+          DUR=$((NOW - STARTED))
+          python3 - <<'PY'
+          import json, os, time
+          path = "artifacts/agent-review/trace.json"
+          with open(path) as f:
+              trace = json.load(f)
+          started = int(open("artifacts/agent-review/started_ms").read().strip())
+          # started_ms may be ms or s depending on date +%s%3N support
+          now_ms = int(time.time() * 1000)
+          if started < 10_000_000_000:
+              started *= 1000
+          trace["duration_ms"] = max(0, now_ms - started)
+          trace["finished_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+          trace["conclusion"] = "success"
+          with open(path, "w") as f:
+              json.dump(trace, f, indent=2)
+          PY
+
+      - name: Skip-success (unmatched path)
+        if: ${{ inputs.skipped }}
+        env:
+          ROLE: ${{ inputs.role }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/agent-review
+          cat > artifacts/agent-review/trace.json <<EOF
+          {
+            "role": "${ROLE}",
+            "skipped": true,
+            "conclusion": "success",
+            "sha": "${GITHUB_SHA}",
+            "event": "${GITHUB_EVENT_NAME}",
+            "reason": "path did not match agent-codeowners role"
+          }
+          EOF
+          echo "Skip-success for modme/agent-${ROLE} (unmatched paths)."
+
+      - name: Upload agent-review-trace
+        if: always()
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: agent-review-trace-${{ inputs.role }}-${{ github.run_id }}
+          path: artifacts/agent-review/
+          retention-days: 14
+          if-no-files-found: ignore

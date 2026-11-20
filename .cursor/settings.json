@@ -104,12 +104,6 @@
     "supabase": {
       "enabled": true
     },
-    "prisma": {
-      "enabled": true
-    },
-    "gitlab": {
-      "enabled": true
-    },
     "buildkite": {
       "enabled": true
     },

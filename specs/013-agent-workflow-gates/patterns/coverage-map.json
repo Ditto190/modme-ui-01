@@ -47,6 +47,69 @@
       ],
       "verify": ["yarn lint:harness"],
       "checklistDomain": "monorepo-boundaries"
+    },
+    "uw-flow-behavior-sync": {
+      "specSections": ["Boundaries", "Commands"],
+      "paths": [
+        "GenerativeUI_monorepo/UniversalWorkbench/.flow/behavior-sync.ts",
+        "GenerativeUI_monorepo/UniversalWorkbench/.flow/behavior-validate.ts",
+        "GenerativeUI_monorepo/UniversalWorkbench/.flow/behavior-search.ts"
+      ],
+      "variants": [
+        "GenerativeUI_monorepo/UniversalWorkbench-dev/dev/.flow/behavior-sync.ts",
+        "GenerativeUI_monorepo/UniversalWorkbench-staging/.flow/behavior-sync.ts"
+      ],
+      "verify": ["yarn pattern:uw"],
+      "checklistDomain": "uw-archive"
+    },
+    "uw-flow-taxonomy": {
+      "specSections": ["Boundaries"],
+      "paths": [
+        "GenerativeUI_monorepo/UniversalWorkbench/.flow/taxonomy.yaml",
+        "GenerativeUI_monorepo/UniversalWorkbench/.flow/README.md"
+      ],
+      "variants": [
+        "GenerativeUI_monorepo/UniversalWorkbench-dev/dev/.flow/taxonomy.yaml",
+        "GenerativeUI_monorepo/UniversalWorkbench-staging/.flow/taxonomy.yaml"
+      ],
+      "verify": ["yarn pattern:uw"],
+      "checklistDomain": "uw-archive"
+    },
+    "uw-agent-inbox-pipeline-tools": {
+      "specSections": ["Integration", "Commands"],
+      "paths": [
+        "GenerativeUI_monorepo/UniversalWorkbench/apps/agent/src/tools/inboxIngest.ts",
+        "GenerativeUI_monorepo/UniversalWorkbench/apps/agent/src/tools/mdaCategorize.ts",
+        "GenerativeUI_monorepo/UniversalWorkbench/apps/agent/src/workflows/inboxPipeline.ts"
+      ],
+      "verify": ["yarn pattern:uw"],
+      "checklistDomain": "uw-archive"
+    },
+    "uw-generate-schemas-py": {
+      "specSections": ["Commands"],
+      "paths": [
+        "GenerativeUI_monorepo/UniversalWorkbench/generate_schemas.py"
+      ],
+      "verify": ["yarn pattern:uw"],
+      "checklistDomain": "uw-archive"
+    },
+    "uw-worktree-scripts": {
+      "specSections": ["Commands", "Workflow Preferences"],
+      "paths": [
+        "GenerativeUI_monorepo/UniversalWorkbench/scripts/init-worktrees.ps1",
+        "GenerativeUI_monorepo/UniversalWorkbench/scripts/new-feature.ps1"
+      ],
+      "verify": ["yarn pattern:uw"],
+      "checklistDomain": "uw-archive"
+    },
+    "uw-validation-patterns-doc": {
+      "specSections": ["Testing Strategy"],
+      "paths": [
+        "GenerativeUI_monorepo/UniversalWorkbench/docs/validation-patterns.md",
+        "GenerativeUI_monorepo/UniversalWorkbench/docs/FEATURE-TAXONOMY.md"
+      ],
+      "verify": ["yarn pattern:uw"],
+      "checklistDomain": "uw-archive"
     }
   }
 }

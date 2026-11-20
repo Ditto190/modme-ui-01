@@ -8,6 +8,7 @@ param(
   [string]$BeadsIssueId = '',
   [string[]]$ClaimPaths = @(),
   [string]$AgentRole = 'dev',
+  [string]$CitizenId = '',
   [switch]$SkipBeads,
   [switch]$BootstrapIntelligence,
   [switch]$DebugTrace,
@@ -25,9 +26,12 @@ Options:
   -BeadsIssueId   Link existing beads issue (modme-xxx)
   -ClaimPaths     Optional path prefixes to claim in agent registry
   -AgentRole      A2A role for catalog register (dev|review|test|plan) default dev
+  -CitizenId      Optional polis citizen id (forge-reviewer, devops-ci-champion, ...)
   -BootstrapIntelligence  Run lean-ctx-session-bootstrap.ps1 (index + MCP hints)
-  -SkipBeads      Skip bd ready / create
+  -SkipBeads      Skip bd ready / create (KM bootstrap also skips beads when set)
   -DebugTrace     Enable LEAN_CTX_DEBUG_LOG=1 for this session (observability debug mode)
+
+Also runs scripts/km-session-bootstrap.ps1 (non-strict) before catalog-cms-eval.
 "@
   exit 0
 }
@@ -121,6 +125,7 @@ $envelope = [ordered]@{
       catalog_agent     = $catalogSnapshot
       catalog_version   = $catalogVersion
       a2a_role          = $AgentRole
+      citizen_id        = if ($CitizenId) { $CitizenId } else { $null }
     }
   }
 }
@@ -131,6 +136,7 @@ $envelope | ConvertTo-Json -Depth 5 | Set-Content -Path $envelopePath -Encoding 
 $env:AGENT_SESSION_ID = $sessionId
 $env:AGENT_SESSION_ENVELOPE = $envelopePath
 if ($beadsIssue) { $env:BEADS_ISSUE_ID = $beadsIssue }
+if ($CitizenId) { $env:AGENT_CITIZEN_ID = $CitizenId }
 
 # OTel session bootstrap — set standard env vars before calling Node bridge
 $env:OTEL_SERVICE_NAME = 'modme-agent-orchestrator'
@@ -183,9 +189,26 @@ if (Get-Command lean-ctx -ErrorAction SilentlyContinue) {
   lean-ctx -c "echo agent-session-start $sessionId" 2>$null | Out-Null
 }
 
+# Agent data plane: KM bootstrap (Dolt/Entire/Beads) then catalog-cms-eval
+$kmBootstrap = Join-Path $ScriptDir 'km-session-bootstrap.ps1'
+if (Test-Path $kmBootstrap) {
+  Write-Host 'Agent data plane: KM session bootstrap...' -ForegroundColor Cyan
+  $kmArgs = @()
+  if ($SkipBeads) { $kmArgs += '-SkipBeads' }
+  & $kmBootstrap @kmArgs
+  # Non-strict: continue even if KM warns (product path)
+}
+
+$buildersCli = Join-Path $ScriptDir 'builders-orchestrator.mjs'
+if (Test-Path $buildersCli) {
+  Write-Host 'Agent data plane: catalog-cms-eval preflight...' -ForegroundColor Cyan
+  node $buildersCli pipeline catalog-cms-eval 2>&1 | Out-Host
+}
+
 Write-Host ''
 Write-Host "Agent session started: $sessionId" -ForegroundColor Green
 Write-Host "  envelope: $envelopePath"
 Write-Host "  TUI:        yarn agent:tui"
 Write-Host "  status:     yarn agent:status --json"
+Write-Host "  km:status:  yarn km:status"
 Write-Host ''

@@ -46,14 +46,7 @@
       "request": "launch",
       "preLaunchTask": "modme: env bootstrap",
       "module": "uvicorn",
-      "args": [
-        "src.main:app",
-        "--reload",
-        "--host",
-        "127.0.0.1",
-        "--port",
-        "8000"
-      ],
+      "args": ["src.main:app", "--reload", "--host", "127.0.0.1", "--port", "8000"],
       "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-server",
       "envFile": "${workspaceFolder}/.vscode/.env.runtime",
       "jinja": true,
@@ -79,19 +72,13 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "node",
-      "runtimeArgs": [
-        "--test"
-      ],
-      "args": [
-        "${relativeFile}"
-      ],
+      "runtimeArgs": ["--test"],
+      "args": ["${relativeFile}"],
       "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-generator",
       "preLaunchTask": "agent-generator: build",
       "envFile": "${workspaceFolder}/.vscode/.env.runtime",
       "console": "integratedTerminal",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "Agent Generator: schema crawler",
@@ -101,9 +88,7 @@
       "cwd": "${workspaceFolder}/GenerativeUI_monorepo/apps/agent-generator",
       "preLaunchTask": "agent-generator: build",
       "envFile": "${workspaceFolder}/.vscode/.env.runtime",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "Example Next: dev server",
@@ -122,16 +107,10 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "yarn",
-      "runtimeArgs": [
-        "jest",
-        "--runInBand",
-        "${relativeFile}"
-      ],
+      "runtimeArgs": ["jest", "--runInBand", "${relativeFile}"],
       "cwd": "${workspaceFolder}/GenerativeUI_monorepo/packages/example-next-application",
       "console": "integratedTerminal",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "Example React: dev server",
@@ -151,16 +130,10 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "yarn",
-      "runtimeArgs": [
-        "jest",
-        "--runInBand",
-        "${relativeFile}"
-      ],
+      "runtimeArgs": ["jest", "--runInBand", "${relativeFile}"],
       "cwd": "${workspaceFolder}/GenerativeUI_monorepo/packages/example-react-application",
       "console": "integratedTerminal",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "Node: current file",
@@ -168,9 +141,7 @@
       "request": "launch",
       "preLaunchTask": "modme: env bootstrap",
       "envFile": "${workspaceFolder}/.vscode/.env.runtime",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "program": "${file}",
       "cwd": "${fileDirname}",
       "console": "integratedTerminal"
@@ -183,15 +154,20 @@
       "envFile": "${workspaceFolder}/.vscode/.env.runtime",
       "command": "yarn dev:forge:core",
       "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Agent Data Plane: bootstrap (strict)",
+      "type": "node-terminal",
+      "request": "launch",
+      "preLaunchTask": "modme: KM data plane up (strict)",
+      "command": "node scripts/km-status.mjs",
+      "cwd": "${workspaceFolder}"
     }
   ],
   "compounds": [
     {
       "name": "Full Stack: Agent Server + Web Dashboard",
-      "configurations": [
-        "Agent Server (FastAPI)",
-        "Web Dashboard (Next.js)"
-      ],
+      "configurations": ["Agent Server (FastAPI)", "Web Dashboard (Next.js)"],
       "stopAll": true,
       "presentation": {
         "order": 1
@@ -199,13 +175,19 @@
     },
     {
       "name": "Full Stack: Agent Server + Vibe Web App",
-      "configurations": [
-        "Agent Server (FastAPI)",
-        "Vibe Web App (Chrome)"
-      ],
+      "configurations": ["Agent Server (FastAPI)", "Vibe Web App (Chrome)"],
       "stopAll": true,
       "presentation": {
         "order": 2
+      }
+    },
+    {
+      "name": "Full Stack: Forge Core + Agent Data Plane",
+      "configurations": ["Agent Data Plane: bootstrap (strict)", "next-forge: dev core"],
+      "stopAll": true,
+      "presentation": {
+        "order": 3,
+        "group": "forge"
       }
     }
   ]

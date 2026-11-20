@@ -14,6 +14,7 @@ flowchart LR
   subgraph ci [GitHub Actions]
     gha[preflight-ci.yml]
     artifact[preflight-report artifact]
+    dispatch[agent-review-dispatch]
   end
   subgraph react [React]
     ghaw[preflight-failure-triage]
@@ -24,7 +25,10 @@ flowchart LR
   pf --> gha --> artifact
   artifact --> ghaw --> labels
   report --> route
+  dispatch --> route
 ```
+
+Path-routed agent approvals: [`agent-review-routing.md`](agent-review-routing.md) (SoT `.github/agent-codeowners.yml`).
 
 ## Local workflow
 
@@ -41,9 +45,9 @@ flowchart LR
 
 ## CI
 
-| Workflow | Purpose |
-|----------|---------|
-| `.github/workflows/preflight-ci.yml` | PR/push preflight + artifact upload |
+| Workflow                                 | Purpose                                           |
+| ---------------------------------------- | ------------------------------------------------- |
+| `.github/workflows/preflight-ci.yml`     | PR/push preflight + artifact upload               |
 | `.github/workflows/pre-commit-check.yml` | Delegates to `preflight:ci` via pre-commit-checks |
 
 Artifact name: `preflight-report`  
@@ -51,11 +55,11 @@ Schema: `docs/devops/preflight-report.schema.json`
 
 ## gh-aw Copilot workflows
 
-| Workflow | Trigger | Action |
-|----------|---------|--------|
-| `preflight-failure-triage.md` | Preflight CI failed | PR comment + labels |
-| `pr-preflight-review.md` | PR synchronize + green | Review checklist |
-| `tdd-issue-bootstrap.md` | Issue labeled `tdd` | Red-phase checklist |
+| Workflow                      | Trigger                | Action              |
+| ----------------------------- | ---------------------- | ------------------- |
+| `preflight-failure-triage.md` | Preflight CI failed    | PR comment + labels |
+| `pr-preflight-review.md`      | PR synchronize + green | Review checklist    |
+| `tdd-issue-bootstrap.md`      | Issue labeled `tdd`    | Red-phase checklist |
 
 Compile in WSL or CI (ADR-0010). Native Windows: skip local `gh aw compile`.
 
@@ -83,6 +87,7 @@ yarn quality:route --pr 123 --runtime tmux   # WSL + agent-manager
 ```
 
 Skills:
+
 - `.agents/skills/modme-preflight/SKILL.md`
 - `.agents/skills/modme-quality-orchestrator/SKILL.md`
 - `.agents/skills/modme-tdd/SKILL.md`

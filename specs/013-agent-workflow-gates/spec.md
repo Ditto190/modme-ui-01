@@ -89,9 +89,10 @@ scripts/__tests__/pattern-coverage.test.mjs
 ## Success Criteria
 
 - [ ] `yarn hooks:install` passes in linked worktrees; doctor reports hooks ok
-- [ ] All five patterns in `registry.json` have coverage-map entries with existing paths
+- [ ] All patterns in `registry.json` have coverage-map entries with existing paths (5 workflow + 6 `uw-archive` nonMigrate)
 - [ ] `pattern-coverage.test.mjs` passes in CI/pre-commit path
-- [ ] Three checklist domains exist with ≥80% traceability tags
+- [ ] `yarn pattern:uw` and `yarn pattern:e2e` pass for UW archive catalogue
+- [ ] Four checklist domains exist with ≥80% traceability tags (`monorepo-boundaries`, `ci-architecture`, `contracts`, `uw-archive`)
 - [ ] `modme-workflow-speckit-bridge` skill documents the 6-step pipeline
 
 ## Open Questions

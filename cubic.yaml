@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://cubic.dev/schema/cubic-repository-config.schema.json
+# Cubic — devops lane (CI/scripts). Ignore product app trees to reduce overlap with CodeRabbit/Bugbot.
+
+version: 1
+
+reviews:
+  enabled: true
+  sensitivity: medium
+  incremental_commits: true
+  check_drafts: false
+  auto_approve: disabled
+  auto_approve_behavior: disabled
+  custom_instructions: |
+    ModMe dual monorepo. Prefer reviewing .github/** and scripts/** only.
+    Flag pull_request_target, unpinned actions, secret echoes, and missing permissions blocks.
+    Do not duplicate full-stack product reviews (CodeRabbit/Bugbot cover next-forge and GenerativeUI).
+
+  ignore:
+    files:
+      - next-forge/**
+      - GenerativeUI_monorepo/**
+      - docs/**
+      - .vendor/**
+      - agent-library/**
+      - "**/*.md"
+      - "**/*.lock"
+      - "**/bun.lock"
+      - "**/.yarn/**"
+    pr_labels:
+      - skip-review
+      - review:docs
+    max_changed_lines: 8000
+
+  custom_rules:
+    - name: Devops CI YAML
+      description: >
+        Review GitHub Actions and scripts for least-privilege permissions,
+        SHA-pinned actions, no pull_request_target for untrusted code, and
+        no secret leakage in logs.
+      include:
+        - .github/**
+        - scripts/**
+        - .githooks/**
+        - .gitlab/**

@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "registry.schema.json",
+  "title": "Pattern registry",
+  "type": "object",
+  "required": ["version", "patterns"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "number" },
+    "description": { "type": "string" },
+    "patterns": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["title", "principle", "source"],
+        "properties": {
+          "title": { "type": "string" },
+          "principle": { "type": "string" },
+          "source": { "type": "string" },
+          "lifecycle": {
+            "type": "string",
+            "enum": ["archive", "active", "migrate"]
+          },
+          "stack": {
+            "type": "string",
+            "enum": ["universal-workbench", "forge", "generative", "root"]
+          },
+          "nonMigrate": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -76,9 +76,10 @@ Generated file `.copilot/workspace.generated.env` also includes `.worktree-ports
 ### session.create
 
 1. `lifecycle.ps1` → `bootstrap.ps1`
-2. `generate-env.ps1` + `Invoke-WorktreeBootstrap -SharedDeps -SkipSession`
+2. `generate-env.ps1` + `Invoke-WorktreeBootstrap -SharedDeps -SkipSession` (from `scripts/lib/worktree-bootstrap.ps1`)
+   - **KM soft bootstrap always runs** inside `Invoke-WorktreeBootstrap` even when `-SkipSession` (unless `-SkipKm`)
 3. **Builder pipeline** — `run-builders.ps1` → SWC ensure, Vite verify, Dolt status (optional)
-4. `session-start.ps1` → `yarn agent:session:start -BootstrapIntelligence -SkipBeads`
+4. `session-start.ps1` → `yarn agent:session:start -BootstrapIntelligence -SkipBeads` (KM again, idempotent)
 5. Log: `logs/copilot/workspace-lifecycle.jsonl`
 
 ### session.archive

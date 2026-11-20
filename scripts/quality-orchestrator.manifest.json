@@ -100,6 +100,39 @@
       "tmux": ["EMP_REVIEW"],
       "diffLinesThreshold": 400
     },
+    "agentReviewRoles": {
+      "forge": {
+        "citizen": "forge-reviewer",
+        "check": "modme/agent-forge",
+        "cursor": ["bugbot", "code-reviewer"]
+      },
+      "generative": {
+        "citizen": "generative-reviewer",
+        "check": "modme/agent-generative",
+        "cursor": ["code-reviewer"]
+      },
+      "devops": {
+        "citizen": "devops-ci-champion",
+        "check": "modme/agent-devops",
+        "cursor": ["ci-investigator"]
+      },
+      "security": {
+        "citizen": "security-reviewer",
+        "check": "modme/agent-security",
+        "cursor": ["security-review"]
+      },
+      "docs": {
+        "citizen": "docs-reviewer",
+        "check": "modme/agent-docs",
+        "cursor": [],
+        "advisory": true
+      },
+      "merge": {
+        "citizen": "bugbot-merge-champion",
+        "check": "modme/agent-merge",
+        "cursor": ["bugbot"]
+      }
+    },
     "tddIssue": {
       "cursor": ["tdd-red", "tdd-green", "tdd-refactor"],
       "tmux": ["EMP_TDD_RED", "EMP_TDD_GREEN", "EMP_TDD_REFACTOR"]
@@ -118,6 +151,8 @@
     "applyLabels": "scripts/apply-preflight-labels.mjs",
     "skillsRoster": "scripts/quality-skills-roster.json",
     "runbook": "docs/devops/quality-loop.md",
+    "agentReviewRouting": "docs/devops/agent-review-routing.md",
+    "agentCodeowners": ".github/agent-codeowners.yml",
     "skill": ".agents/skills/modme-quality-orchestrator/SKILL.md",
     "adr": "next-forge/docs/adr/0010-gh-aw-copilot-secrets-and-root-env-sync.md"
   }

@@ -66,9 +66,12 @@ Write-Host "8/9 Installing git hooks..." -ForegroundColor Cyan
 & "$WorktreeRoot/scripts/install-git-hooks.ps1"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-Write-Host "9/9 Starting agent session envelope..." -ForegroundColor Cyan
+Write-Host "9/9 KM data plane + agent session envelope..." -ForegroundColor Cyan
+# Soft KM bootstrap first (Dolt/Entire/Beads); session start also calls it — idempotent
+& "$WorktreeRoot/scripts/km-session-bootstrap.ps1" 2>&1 | Out-Host
 $branch = git -C $WorktreeRoot branch --show-current 2>$null
 $taskTitle = if ($branch -match 'feature/[^/]+/(.+)') { $Matches[1] -replace '-', ' ' } else { "worktree: $branch" }
+# -SkipBeads: beads DB often shared from main checkout; bootstrap still ran bd ready
 & "$WorktreeRoot/scripts/agent-session-start.ps1" -TaskTitle $taskTitle -SkipBeads 2>&1 | Out-Null
 
 Write-Host ""

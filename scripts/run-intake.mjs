@@ -7,6 +7,7 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadRootEnv, parseEnvFile } from './lib/load-root-env.mjs';
+import { assertSupabaseReachable } from './lib/supabase-connectivity.mjs';
 
 const scriptsDir = dirname(fileURLToPath(import.meta.url));
 const repoRoot = dirname(scriptsDir);
@@ -74,6 +75,10 @@ if (full) {
 
 const ingestArgs = [join(repoRoot, 'scripts', 'inbox-ingest.mjs')];
 if (dryRun) ingestArgs.push('--dry-run');
+
+if (!dryRun) {
+  await assertSupabaseReachable({ hint: 'Use: node scripts/run-intake.mjs --dry-run' });
+}
 
 const result = spawnSync('node', ingestArgs, {
   cwd: repoRoot,
