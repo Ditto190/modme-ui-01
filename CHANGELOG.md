@@ -62,6 +62,10 @@ CI runs `node scripts/validate-changelog.mjs` on pull requests. See `docs/agent-
 
 ## [Unreleased]
 
+### Added
+
+- (docs) lean-ctx D-drive workspace profiles guide (docs/lean-ctx/workspace-profiles.md) and Cursor sessionStart hook for lean-ctx config check
+
 ### Changed
 
 - (repo) Merge `github/main` into promotion branch `feature/cursor/promote-dev-to-main` to resolve dual-branch drift before promoting `dev` to `main`
